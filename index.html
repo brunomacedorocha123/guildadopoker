@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guilda do Poker</title>
+
+  <style>
+    :root{
+      --bg:#121212;
+      --bg-2:#1c1c1c;
+      --bg-3:#2c2c2c;
+      --gold:#ffcc00;
+      --text:#f5f5f5;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header{
+      background: var(--bg-2);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+    }
+    header img{ max-width: 200px; height: auto; }
+
+    /* Menu Hamburguer */
+    .menu-toggle {
+      display: none;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30px;
+      height: 21px;
+      z-index: 1001;
+    }
+    .menu-toggle span {
+      height: 3px;
+      width: 100%;
+      background-color: var(--gold);
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    /* Navegação */
+    nav{
+      background: var(--bg-3);
+      padding: 10px 0;
+      text-align: center;
+    }
+    nav a{
+      color: var(--gold);
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+    }
+    nav a:hover,
+    nav a.active{ color:#ffffff; }
+
+    /* ===== BANNER DE TOPO ===== */
+    .banner-topo {
+      width: 100%;
+      background-color: #2a2a2a;
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid var(--gold);
+    }
+    
+    .ad-placeholder {
+      background-color: #2a2a2a;
+      border: 2px dashed #666;
+      border-radius: 8px;
+      color: #999;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    
+    .ad-topo {
+      width: 728px;
+      height: 90px;
+      margin: 0 auto;
+    }
+    
+    .ad-lateral {
+      width: 300px;
+      height: 600px;
+      margin-left: 20px;
+    }
+    
+    .ad-placeholder p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .conteudo-principal {
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      width: 100%;
+      flex: 1;
+    }
+    
+    .conteudo {
+      flex: 1;
+    }
+
+    section{
+      padding: 30px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    section .texto{
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    section .texto h1{
+      color: var(--gold);
+      margin-bottom: 20px;
+      font-size: 2.6em;
+      text-align: center;
+    }
+    
+    section .texto p{
+      color:#e6e6e6;
+      font-size: 1.1em;
+      text-align: justify;
+      margin-bottom: 20px;
+    }
+
+    .highlight{
+      color: var(--gold);
+      font-weight: bold;
+    }
+
+    section .imagem img{
+      max-width: 500px;
+      width: 100%;
+      border-radius: 12px;
+      border: 3px solid var(--gold);
+      box-shadow:0 4px 12px rgba(0,0,0,.6);
+    }
+
+    /* Barra lateral para banner */
+    .sidebar {
+      width: 340px;
+      padding: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Nova seção Sobre Nós */
+    .sobre-nos {
+      background-color: var(--bg-2);
+      padding: 60px 20px;
+      margin: 40px 0;
+      border-top: 2px solid var(--gold);
+      border-bottom: 2px solid var(--gold);
+    }
+    
+    .sobre-nos h2 {
+      color: var(--gold);
+      text-align: center;
+      font-size: 2.2em;
+      margin-bottom: 30px;
+    }
+    
+    .sobre-nos p {
+      color: #e6e6e6;
+      font-size: 1.1em;
+      line-height: 1.8;
+      text-align: justify;
+      max-width: 900px;
+      margin: 0 auto 20px;
+    }
+    
+    .sobre-nos .assinatura {
+      text-align: right;
+      margin-top: 30px;
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    footer{
+      background: var(--bg-2);
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+      border-top: 2px solid var(--gold);
+      font-size: 14px;
+      color:#bbb;
+    }
+
+    .aviso18{
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .icone18{
+      background: red;
+      color: white;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    /* Responsividade geral */
+    @media(max-width: 1100px) {
+      .conteudo-principal {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        order: 3;
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+      }
+      
+      .ad-lateral {
+        margin-left: 0;
+        height: 250px;
+        width: 100%;
+        max-width: 728px;
+      }
+    }
+    
+    @media(max-width:900px){
+      section{
+        flex-direction: column-reverse;
+        align-items: center;
+        text-align: center;
+      }
+      
+      section .texto, section .imagem{
+        width: 100%;
+      }
+      
+      .aviso18{ 
+        flex-direction: column; 
+        text-align:center; 
+      }
+      
+      .sobre-nos p {
+        width: 95%;
+      }
+      
+      .ad-topo {
+        width: 100%;
+        height: auto;
+        min-height: 90px;
+      }
+    }
+
+    /* Menu responsivo tipo hambúrguer (somente celular) */
+    @media(max-width:768px){
+      .menu-toggle {
+        display: flex;
+      }
+      
+      nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--bg-3);
+        z-index: 1000;
+        padding: 70px 0 20px;
+        overflow-y: auto;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      }
+      
+      nav.active {
+        display: block;
+        animation: slideIn 0.3s ease-out;
+      }
+      
+      nav a{
+        display: block;
+        margin: 15px 0;
+        padding: 15px;
+        font-size: 18px;
+        border-bottom: 1px solid rgba(255, 204, 0, 0.2);
+      }
+      
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .close-menu {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: var(--gold);
+        font-size: 24px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        z-index: 1002;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header>
+    <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
+    <div class="menu-toggle" id="mobile-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </header>
+
+  <!-- Navegação -->
+  <nav id="nav">
+    <button class="close-menu" id="close-menu" style="display:none;">X</button>
+    <a href="index.html" class="active">Home</a>
+    <a href="pppoker.html">PPPoker</a>
+    <a href="suprema.html">Suprema Poker</a>
+    <a href="torneios.html">Torneios</a>
+    <a href="regrasdopoker.html">Regras do Poker</a>
+    <a href="divulgacao.html">Divulgação</a>
+    <a href="dicionario.html">Dicionário</a>
+    <a href="contato.html">Contato</a>
+  </nav>
+
+  <!-- ===== BANNER DE TOPO ===== -->
+  <div class="banner-topo">
+    <div class="ad-placeholder ad-topo">
+      <p>Espaço reservado para banner (728x90)</p>
+    </div>
+  </div>
+
+  <div class="conteudo-principal">
+    <div class="conteudo">
+      <!-- Seção principal -->
+      <section>
+        <div class="texto">
+          <h1>Bem-vindo à Guilda do Poker</h1>
+          <p>
+            A Guilda do Poker é um espaço para jogadores apaixonados por estratégia, diversão e competição. 
+            Aqui você encontra torneios, cash games e parceiros confiáveis.
+            <br><br>
+            🎲 <span class="highlight">ID da Guilda do Poker no PPPoker</span>: <strong>4583211</strong><br>
+            🎲 <span class="highlight">Agente no Suprema Poker</span><br>
+            ID do Clube: <strong>29446</strong><br>
+            ID do Agente: <strong>1422946</strong><br><br><br>
+          </p>
+        </div>
+
+        <div class="imagem">
+          <img src="mulhercroupier1.jpg" alt="Croupier do Poker">
+        </div>
+      </section>
+
+      <!-- Seção Sobre Nós -->
+      <div class="sobre-nos">
+        <h2>Sobre Nós</h2>
+        <p>
+         A Guilda do Poker foi criada com o objetivo de reunir jogadores em uma comunidade acolhedora, aberta tanto a iniciantes quanto a experientes. 
+         Nosso propósito é proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
+        <p>
+          Estamos em constante crescimento e evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam 
+          nossa comunidade. Um dos nossos principais objetivos é introduzir formatos inovadores de torneios, trazendo variedade e 
+          dinamismo para nossas mesas, mantendo sempre a acessibilidade e o equilíbrio competitivo.
+        </p>
+        <p>
+          Nosso trabalho é guiado por valores fundamentais: a responsabilidade no jogo, a diversão como elemento central, 
+          a competitividade saudável e o respeito entre todos os membros. Acreditamos que o poker vai além das cartas e fichas - 
+          é uma experiência social que une pessoas em torno da estratégia, do raciocínio rápido e da emoção do jogo.
+        </p>
+        <p>
+          Meu nome é Bruno Macedo, e tenho como missão pessoal fortalecer cada vez mais nossa comunidade, criando laços duradouros 
+          entre jogadores e estabelecendo a Guilda do Poker como referência em ambientes virtuais de poker. Estou comprometido em 
+          evoluir nosso clube continuamente, ouvindo sugestões e implementando melhorias que elevem a experiência de jogo para todos.
+        </p>
+        <p>
+          Junte-se a nós nessa jornada e faça parte de uma comunidade que valoriza cada jogador, onde sua presença contribui para 
+          tornar nosso clube ainda mais especial e acolhedor.
+        </p>
+        <p class="assinatura">Bruno Macedo<br>Fundador da Guilda do Poker</p>
+      </div>
+    </div>
+    
+    <!-- ===== BANNER LATERAL ===== -->
+    <div class="sidebar">
+      <div class="ad-placeholder ad-lateral">
+        <p>Espaço reservado para banner (300x600)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  <footer>
+    <p>© 2025 Guilda do Poker - Todos os direitos reservados</p>
+    <div class="aviso18">
+      <span class="icone18">18+</span>
+      <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+    </div>
+    <!-- Links para Política de Privacidade e Termos e Condições -->
+    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+      <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
+      <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
+    </div>
+  </footer>
+
+  <!-- Script do menu mobile -->
+  <script>
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeMenu = document.getElementById('close-menu');
+    const nav = document.getElementById('nav');
+
+    mobileMenu.addEventListener('click', function() {
+      nav.classList.add('active');
+      closeMenu.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    });
+
+    closeMenu.addEventListener('click', function() {
+      nav.classList.remove('active');
+      closeMenu.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+
+    const navLinks = document.querySelectorAll('nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          nav.classList.remove('active');
+          closeMenu.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        nav.classList.remove('active');
+        closeMenu.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guilda do Poker - Dicionário de Termos</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --bg-2: #1c1c1c;
+      --bg-3: #2c2c2c;
+      --gold: #ffcc00;
+      --text: #f5f5f5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--bg-2);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    header img {
+      max-width: 200px;
+      height: auto;
+    }
+
+    /* Menu Hamburguer */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 25px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      position: absolute;
+      right: 20px;
+    }
+
+    .menu-toggle span {
+      width: 100%;
+      height: 3px;
+      background-color: var(--gold);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    nav {
+      background: var(--bg-3);
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: var(--gold);
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    /* ===== BANNER DE TOPO ===== */
+    .banner-topo {
+      width: 100%;
+      background-color: #2a2a2a;
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid var(--gold);
+    }
+    
+    .ad-placeholder {
+      background-color: #2a2a2a;
+      border: 2px dashed #666;
+      border-radius: 8px;
+      color: #999;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    
+    .ad-topo {
+      width: 728px;
+      height: 90px;
+      margin: 0 auto;
+    }
+    
+    .ad-placeholder p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    section {
+      padding: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    section h1 {
+      color: var(--gold);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    section h2 {
+      color: var(--gold);
+      margin: 30px 0 10px;
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 8px;
+    }
+
+    section h3 {
+      color: var(--gold);
+      margin: 16px 0 8px;
+    }
+
+    section p {
+      color: #e6e6e6;
+      margin: 8px 0;
+      text-align: justify;
+    }
+
+    .mesa {
+      display: block;
+      max-width: 400px;
+      width: 100%;
+      height: auto;
+      margin: 25px auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, .5);
+    }
+
+    .termo {
+      background-color: var(--bg-3);
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid var(--gold);
+    }
+
+    .termo h3 {
+      color: var(--gold);
+      margin-top: 0;
+    }
+
+    .alfabeto {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .alfabeto a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+
+    .alfabeto a:hover {
+      background-color: var(--bg-3);
+    }
+
+    footer {
+      background: var(--bg-2);
+      text-align: center;
+      padding: 20px 10px;
+      margin-top: 40px;
+      border-top: 2px solid var(--gold);
+      font-size: 14px;
+      color: #bbb;
+    }
+
+    footer .direitos {
+      text-align: center;
+      margin: 0;
+    }
+
+    .aviso18 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .icone18 {
+      background: red;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
+
+    .aviso18 p {
+      margin: 0;
+      color: #ccc;
+    }
+
+    /* Media Queries para Responsividade */
+    @media (max-width: 900px) {
+      .ad-topo {
+        width: 100%;
+        height: auto;
+        min-height: 90px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+
+      nav {
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--bg-3);
+        z-index: 1000;
+        padding: 60px 0 0 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        overflow-y: auto;
+      }
+
+      nav.active {
+        display: flex;
+      }
+
+      nav a {
+        display: block;
+        padding: 18px;
+        margin: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 18px;
+      }
+
+      header {
+        padding: 15px;
+        justify-content: center;
+      }
+
+      header img {
+        max-width: 150px;
+      }
+      
+      section {
+        padding: 15px;
+      }
+      
+      .alfabeto {
+        gap: 5px;
+      }
+      
+      .alfabeto a {
+        font-size: 16px;
+        padding: 4px 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .mesa {
+        max-width: 100%;
+        margin: 15px auto;
+      }
+      
+      section h1 {
+        font-size: 1.8rem;
+      }
+      
+      section h2 {
+        font-size: 1.5rem;
+      }
+      
+      section h3 {
+        font-size: 1.2rem;
+      }
+      
+      nav a {
+        padding: 16px;
+        font-size: 16px;
+      }
+      
+      .termo {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
+    <button class="menu-toggle" id="menuToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <nav id="mainNav">
+    <a href="index.html">Home</a>
+    <a href="pppoker.html">PPPoker</a>
+    <a href="suprema.html">Suprema Poker</a>
+    <a href="torneios.html">Torneios</a>
+    <a href="regrasdopoker.html">Regras do Poker</a>
+    <a href="dicionario.html" class="active">Dicionário</a>
+    <a href="divulgacao.html">Divulgação</a>
+    <a href="contato.html">Contato</a>
+  </nav>
+
+  <!-- ===== BANNER DE TOPO ===== -->
+  <div class="banner-topo">
+    <div class="ad-placeholder ad-topo">
+      <p>Espaço reservado para banner (728x90)</p>
+    </div>
+  </div>
+
+  <section>
+    <h1>Dicionário de Termos de Poker</h1>
+
+    <img class="mesa" src="dicionariopoker.jpg" alt="Mesa de Poker - Dicionário">
+
+    <p>Explore nosso extenso glossário de terminologia do poker, uma ferramenta essencial para mergulhar no universo deste jogo fascinante. Esta referência detalhada foi meticulosamente elaborada para servir como guia tanto para entusiastas que estão dando seus primeiros passos no poker quanto para veterans experientes que desejam solidificar seu conhecimento. Através de definições claras e exemplos práticos, facilitamos o entendimento da rica e às vezes complexa linguagem utilizada nas mesas de poker, tornando mais acessível o caminho para a melhoria do seu jogo e a compreensão das nuances estratégicas que envolvem este universo de cartas, apostas e blefes.</p>
+
+    <div class="alfabeto">
+      <a href="#A">A</a>
+      <a href="#B">B</a>
+      <a href="#C">C</a>
+      <a href="#D">D</a>
+      <a href="#E">E</a>
+      <a href="#F">F</a>
+      <a href="#G">G</a>
+      <a href="#H">H</a>
+      <a href="#I">I</a>
+      <a href="#K">K</a>
+      <a href="#L">L</a>
+      <a href="#M">M</a>
+      <a href="#N">N</a>
+      <a href="#O">O</a>
+      <a href="#P">P</a>
+      <a href="#Q">Q</a>
+      <a href="#R">R</a>
+      <a href="#S">S</a>
+      <a href="#T">T</a>
+      <a href="#U">U</a>
+      <a href="#V">V</a>
+      <a href="#W">W</a>
+    </div>
+
+    <h2 id="A">A</h2>
+    
+    <div class="termo">
+      <h3>Add-on</h3>
+      <p>Valor opcional pago pela compra de mais fichas ao final de um período pré-determinado.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Air</h3>
+      <p>Uma mão sem valor, mão que não acertou nada.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>All-in</h3>
+      <p>Apostar todas as suas fichas.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Agressor</h3>
+      <p>É o jogador que fez o raise pré flop, logo este jogador é o agressor da mão.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Ante</h3>
+      <p>Um pequeno valor em fichas que os jogadores tem que pagar antes de começar a mão.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Ax</h3>
+      <p>Quando você tem um As com qualquer outra carta (ex: A4, A5, A6 = Ax).</p>
+    </div>
+
+    <h2 id="B">B</h2>
+    
+    <div class="termo">
+      <h3>Backdoor</h3>
+      <p>Quando você ainda tem a possibilidade de acertar uma mão caso se acerte as devidas cartas no turn e no river.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Bad beat</h3>
+      <p>Quando uma mão que é muito favorita de ganhar acaba perdendo para uma mão que é a menos favorita.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Bankroll</h3>
+      <p>É a quantidade de dinheiro que você tem disponível para jogar.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Bet</h3>
+      <p>No poker "dar um bet" é a forma abrasileirada de falar que vamos apostar.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Big blind</h3>
+      <p>O Big blind no poker é a pessoa que tem que obrigatoriamente pagar uma aposta cheia antes mesmo de começar a mão.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Blank</h3>
+      <p>Uma carta que vem na mesa e parece não alterar em nada o jogo.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Blind</h3>
+      <p>Os blinds são as pessoas que tem que pagar uma aposta inicial antes da mão começar.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Blocking bet</h3>
+      <p>Quando o jogador que é o primeiro a falar faz uma pequena aposta a fim de chegar ao showdown por um valor barato.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Bluff (Blefe)</h3>
+      <p>Fazer com que seu adversário acredite que você tem uma mão melhor do que a dele quando na verdade você não tem.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Broadway cards</h3>
+      <p>Cartas que são conectadas e podem terminar em uma sequência com As, ex: KQ, KJ, QJ, JT etc.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Board</h3>
+      <p>São as cartas comunitárias que são viradas na mesa.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Bolha</h3>
+      <p>A bolha no poker (bubble) é o momento em que se está prestes a entrar na premiação.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Bottom pair</h3>
+      <p>Quando você acerta o menor par, ex: você tem J9 e o flop vem AQ9, você tem um par de 9 que é o bottom pair.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Button (botão/dealer)</h3>
+      <p>É o botão que fica na frente do jogador que está sentado na posição do dealer no momento da mão.</p>
+    </div>
+    
+    <div class="termo">
+      <h3>Buy in</h3>
+      <p>É a taxa de inscrição paga para se inscrever em um torneio ou se sentar em uma mesa de cash game.</p>
+    </div>
+
+    <h2 id="C">C</h2>
+
+<div class="termo">
+  <h3>Call</h3>
+  <p>Ação de igualar uma aposta feita por outro jogador, permanecendo na mão.</p>
+</div>
+
+<div class="termo">
+  <h3>Calling station</h3>
+  <p>Jogador passivo que frequentemente paga apostas em vez de aumentar ou desistir, geralmente cometendo um erro estratégico.</p>
+</div>
+
+<div class="termo">
+  <h3>Cash game</h3>
+  <p>Modalidade de poker onde as fichas representam dinheiro real diretamente, diferentemente dos torneios com buy-in fixo.</p>
+</div>
+
+<div class="termo">
+  <h3>Check</h3>
+  <p>Ação de passar a vez sem apostar, apenas possível quando não há apostas anteriores na rodada.</p>
+</div>
+
+<div class="termo">
+  <h3>Check behind</h3>
+  <p>Quando um jogador também decide dar check após outro jogador ter feito check anteriormente.</p>
+</div>
+
+<div class="termo">
+  <h3>Check-raise</h3>
+  <p>Estratégia onde um jogador inicialmente faz check e depois aumenta quando um oponente aposta.</p>
+</div>
+
+<div class="termo">
+  <h3>Chip leader</h3>
+  <p>Jogador com a maior quantidade de fichas em uma mesa ou torneio em determinado momento.</p>
+</div>
+
+<div class="termo">
+  <h3>Coach</h3>
+  <p>Treinador ou instrutor de poker que oferece orientação estratégica para melhorar o jogo.</p>
+</div>
+
+<div class="termo">
+  <h3>Cold call</h3>
+  <p>Ação de pagar uma aposta quando já houve raise anterior na mesma rodada.</p>
+</div>
+
+<div class="termo">
+  <h3>Coin flip</h3>
+  <p>Situação onde duas mãos têm probabilidades aproximadamente iguais de vitória (em torno de 50/50).</p>
+</div>
+
+<div class="termo">
+  <h3>Cooler</h3>
+  <p>Situação de azar onde se tem uma mão muito forte, mas o oponente tem uma mão ainda melhor.</p>
+</div>
+
+<div class="termo">
+  <h3>Community cards</h3>
+  <p>Cartas comunitárias viradas na mesa que todos os jogadores podem usar para formar sua mão.</p>
+</div>
+
+<div class="termo">
+  <h3>Connector</h3>
+  <p>Cartas consecutivas que podem formar sequências, como 7-6, 10-J ou 8-9.</p>
+</div>
+
+<div class="termo">
+  <h3>Cut off</h3>
+  <p>Posição à direita do dealer (botão), considerada uma das melhores posições para jogar.</p>
+</div>
+
+<h2 id="D">D</h2>
+
+<div class="termo">
+  <h3>Dead money</h3>
+  <p>Fichas ou dinheiro que já estão no pote e não pertencem mais a nenhum jogador, geralmente de jogadores que já desistiram da mão.</p>
+</div>
+
+<div class="termo">
+  <h3>Dealer</h3>
+  <p>1) Posição privilegiada à mesa (também chamada de "botão") que age por último em cada rodada de apostas. 2) Pessoa responsável por distribuir as cartas durante o jogo.</p>
+</div>
+
+<div class="termo">
+  <h3>Dominated hand</h3>
+  <p>Mão que tem poucas chances de vencer contra a mão do oponente, geralmente por compartilhar a mesma carta alta mas com kicker inferior. Exemplo: K7 contra KT.</p>
+</div>
+
+<div class="termo">
+  <h3>Donkbet</h3>
+  <p>Aposta feita por um jogador que não era o agressor pré-flop, geralmente considerada uma jogada pouco convencional ou inesperada.</p>
+</div>
+
+<div class="termo">
+  <h3>Draw</h3>
+  <p>Mão que ainda não está completa mas tem potencial para melhorar nas próximas cartas, como um flush draw ou straight draw.</p>
+</div>
+
+<div class="termo">
+  <h3>Draw dead</h3>
+  <p>Situação em que um jogador não tem mais possibilidade de vencer a mão, mesmo que complete seu draw nas cartas seguintes.</p>
+</div>
+
+<div class="termo">
+  <h3>Dry board</h3>
+  <p>Board (cartas comunitárias) que oferece poucas possibilidades de draws ou melhorias significativas para as mãos dos jogadores.</p>
+</div>
+
+<h2 id="E">E</h2>
+
+<div class="termo">
+  <h3>Early position</h3>
+  <p>Refere-se às primeiras posições à esquerda dos blinds (geralmente as duas primeiras posições), onde os jogadores devem agir primeiro em cada rodada de apostas, sem conhecer as ações dos demais.</p>
+</div>
+
+<div class="termo">
+  <h3>Edge</h3>
+  <p>Vantagem técnica ou estatística que um jogador possui sobre seus oponentes, resultante de maior habilidade, melhor posição ou situação favorável no jogo.</p>
+</div>
+
+<div class="termo">
+  <h3>Equity</h3>
+  <p>Participação percentual esperada no pote baseada nas chances de vitória da mão. Representa o valor teórico que se espera ganhar a longo prazo naquela situação específica.</p>
+</div>
+    <!-- As demais seções (C a W) permanecem exatamente como no código anterior -->
+
+    <h2 id="F">F</h2>
+
+<div class="termo">
+  <h3>Field</h3>
+  <p>Refere-se ao número total de participantes em um torneio ou em uma mesa. Por exemplo, se um evento teve 245 inscrições, dizemos que o field foi de 245 jogadores.</p>
+</div>
+
+<div class="termo">
+  <h3>Fish</h3>
+  <p>Termo usado para descrever um jogador inexperiente ou que joga de forma pouco estratégica, tornando-se um alvo lucrativo para oponentes mais habilidosos.</p>
+</div>
+
+<div class="termo">
+  <h3>Flat Call</h3>
+  <p>Ação de apenas pagar uma aposta (call) em uma situação onde o movimento mais comum ou agressivo seria aumentar (raise).</p>
+</div>
+
+<div class="termo">
+  <h3>Float</h3>
+  <p>Estratégia em que um jogador paga uma aposta sem ter formado uma mão forte, com a intenção de blefar em rodadas futuras caso o oponente demonstre fraqueza.</p>
+</div>
+
+<div class="termo">
+  <h3>Flop</h3>
+  <p>Refere-se às três primeiras cartas comunitárias que são distribuídas viradas para cima na mesa de poker.</p>
+</div>
+
+<div class="termo">
+  <h3>Flip</h3>
+  <p>Situação em que as chances de vitória são aproximadamente 50% para cada jogador envolvido, tornando o resultado praticamente aleatório.</p>
+</div>
+
+<div class="termo">
+  <h3>Flush Draw</h3>
+  <p>Quando um jogador possui quatro cartas do mesmo naipe e aguarda a quinta carta para completar o flush. Exemplo: ter 4♣5♣ e o flop trazer 2♣T♣8♥.</p>
+</div>
+
+<div class="termo">
+  <h3>Flush</h3>
+  <p>Mão formada por cinco cartas do mesmo naipe, não necessariamente em sequência.</p>
+</div>
+
+<div class="termo">
+  <h3>Fold</h3>
+  <p>Ação de desistir da mão atual, abandonando qualquer chance de ganhar o pote, mas também evitando perder mais fichas.</p>
+</div>
+
+<div class="termo">
+  <h3>Fold Equity</h3>
+  <p>Probabilidade de fazer os oponentes desistirem da mão (fold) quando se faz uma aposta ou aumento agressivo.</p>
+</div>
+
+<div class="termo">
+  <h3>Four of a Kind (Quadra)</h3>
+  <p>Mão formada por quatro cartas do mesmo valor, como quatro Ases ou quatro Reis.</p>
+</div>
+
+<div class="termo">
+  <h3>Free Card</h3>
+  <p>Quando um jogador consegue ver a próxima carta comunitaria sem precisar pagar nenhuma aposta adicional, geralmente por ser o último a agir e todos os jogadores terem passado.</p>
+</div>
+
+<div class="termo">
+  <h3>Free Roll</h3>
+  <p>Torneio onde não é necessário pagar para participar, mas ainda há prêmios em dinheiro ou fichas para os melhores colocados.</p>
+</div>
+
+<div class="termo">
+  <h3>Freezeout</h3>
+  <p>Formato de torneio onde os jogadores não podem fazer reentradas após serem eliminados, jogando apenas com as fichas iniciais.</p>
+</div>
+
+<div class="termo">
+  <h3>FT (Final Table)</h3>
+  <p>Refere-se à mesa final de um torneio, onde restam apenas os últimos jogadores ainda em competição.</p>
+</div>
+
+<div class="termo">
+  <h3>Full House</h3>
+  <p>Mão formada por uma trinca (três cartas do mesmo valor) e um par (duas cartas de outro valor igual).</p>
+</div>
+
+<h2 id="G">G</h2>
+
+<div class="termo">
+  <h3>GAP</h3>
+  <p>Refere-se a uma lacuna ou situação em que todos os jogadores anteriores desistiram (foldaram) e a ação chega a você sem nenhuma ação prévia. Exemplo: você está no botão e a mesa roda em GAP, significando que todos foldaram e a decisão é toda sua.</p>
+</div>
+
+<div class="termo">
+  <h3>Gutshot Straight</h3>
+  <p>Sequência em que falta apenas uma carta específica no meio para completar o straight. Exemplo: você tem 7♦8♠ e o flop vem 9♣J♥2♠, precisando de um 10 para completar a sequência 7-8-9-10-J.</p>
+</div>
+
+<h2 id="H">H</h2>
+
+<div class="termo">
+  <h3>Hand for Hand</h3>
+  <p>Fase de um torneio onde cada mesa joga uma mão simultaneamente antes de prosseguir para a próxima. Este procedimento é utilizado próximo à bolha ou em momentos de aumento de premiação para garantir justiça na classificação dos jogadores eliminados.</p>
+</div>
+
+<div class="termo">
+  <h3>Heads Up</h3>
+  <p>Situação em que apenas dois jogadores permanecem envolvidos em uma mão, seja em uma mesa heads-up ou nos estágios finais de um torneio.</p>
+</div>
+
+<div class="termo">
+  <h3>Hijack</h3>
+  <p>Posição situada dois assentos à direita do botão, considerada uma posição favorável para jogar uma variedade de mãos devido à ação limitada que seguirá.</p>
+</div>
+
+<div class="termo">
+  <h3>Hole Cards</h3>
+  <p>Cartas individuais distribuídas para cada jogador, que permanecem visíveis apenas para o detentor durante a mão.</p>
+</div>
+
+<div class="termo">
+  <h3>Holdem Manager</h3>
+  <p>Software especializado que coleta e exibe estatísticas detalhadas sobre o desempenho dos oponentes e gera relatórios analíticos sobre o próprio jogo.</p>
+</div>
+
+<div class="termo">
+  <h3>HUD (Heads Up Display)</h3>
+  <p>Interface que apresenta informações estatísticas em tempo real durante as partidas, permitindo aos jogadores tomar decisões baseadas em dados sobre os oponentes.</p>
+</div>
+
+<h2 id="I">I</h2>
+
+<div class="termo">
+  <h3>Implied Odds</h3>
+  <p>Estimativa de odds que inclui não apenas o valor atual do pote, mas também as apostas futuras que se espera ganhar caso complete sua mão. Por exemplo: pagar uma aposta com um flush draw pode ser justificável se você antecipa que poderá extrair valor significativo do oponente ao completar o flush.</p>
+</div>
+
+<div class="termo">
+  <h3>ITM (In the Money)</h3>
+  <p>Termo que descreve a situação em que um jogador atinge as posições pagas de um torneio, garantindo assim pelo menos o prêmio mínimo da premiação.</p>
+</div>
+
+<h2 id="K">K</h2>
+
+<div class="termo">
+  <h3>Kicker</h3>
+  <p>Carta secundária utilizada para desempatar quando dois ou mais jogadores possuem a mesma mão principal. Por exemplo: em um par de Ases, o kicker (segunda carta mais alta) determina o vencedor caso os oponentes também tenham par de Ases.</p>
+</div>
+
+<div class="termo">
+  <h3>Kill Pot</h3>
+  <p>Jogo especial onde as blinds são aumentadas, geralmente após um jogador ganhar dois potes consecutivos. O kill pot exige que o jogador "assassino" coloque uma blind adicional, aumentando o tamanho das apostas.</p>
+</div>
+
+<h2 id="L">L</h2>
+
+<div class="termo">
+  <h3>Late Position</h3>
+  <p>Refere-se às posições mais vantajosas à mesa, onde os jogadores agem por último em cada rodada de apostas. Normalmente incluem o botão, cut off e hijack, permitindo maior informação sobre as ações dos oponentes antes de tomar decisões.</p>
+</div>
+
+<div class="termo">
+  <h3>Leak</h3>
+  <p>Deficiência ou ponto fraco recorrente no estilo de jogo de um pokerista que resulta em perdas de longo prazo. Identificar e corrigir esses vazamentos é fundamental para a evolução no poker.</p>
+</div>
+
+<div class="termo">
+  <h3>Level (Metagame)</h3>
+  <p>Camada estratégica que envolve como ações passadas influenciam decisões futuras. Por exemplo: quando um oponente aplica vários 3-bets contra você, isso cria uma dinâmica que afetará como ambos jogarão mãos subsequentes.</p>
+</div>
+
+<div class="termo">
+  <h3>Limp</h3>
+  <p>Ação de entrar num pote apenas pagando o valor da big blind inicial, sem aumentar a aposta. Geralmente considerado um movimento passivo que permite ver o flop com custo reduzido.</p>
+</div>
+
+<div class="termo">
+  <h3>Limper</h3>
+  <p>Jogador que frequentemente entra nos potes apenas pagando a blind inicial (limpando), em vez de aumentar as apostas preflop.</p>
+</div>
+
+<div class="termo">
+  <h3>Live Cards</h3>
+  <p>Situação em que um jogador não é favorito na mão, mas possui cartas com potencial significativo para melhorar e vencer. Exemplo: ter QJ contra AK, onde suas cartas permanecem "vivas" com chances reais de ganhar.</p>
+</div>
+
+<div class="termo">
+  <h3>Loose</h3>
+  <p>Estilo de jogo caracterizado por participar de muitos potes com uma ampla variedade de mãos. Um jogador loose joga mais mãos do que seria considerado ideal estrategicamente.</p>
+</div>
+
+<h2 id="M">M</h2>
+
+<div class="termo">
+  <h3>Maniac</h3>
+  <p>Jogador extremamente agressivo que participa de muitas mãos e aposta com frequência, muitas vezes sem levar em consideração a força real de suas cartas.</p>
+</div>
+
+<div class="termo">
+  <h3>Marginal</h3>
+  <p>Refere-se a uma mão fraca ou situação de jogo desfavorável que pode ser evitada para prevenir perdas desnecessárias.</p>
+</div>
+
+<div class="termo">
+  <h3>Middle Position</h3>
+  <p>Posições intermediárias à mesa de poker, localizadas entre as posições iniciais (early position) e as posições finais (late position).</p>
+</div>
+
+<div class="termo">
+  <h3>Miniraise</h3>
+  <p>Aumento mínimo permitido pelas regras do jogo, geralmente equivalente ao dobro da aposta anterior.</p>
+</div>
+
+<div class="termo">
+  <h3>Monster</h3>
+  <p>Mão extremamente forte e premium, como pares de Ases (AA), Reis (KK) ou Damas (QQ), que possui alta probabilidade de vitória.</p>
+</div>
+
+<div class="termo">
+  <h3>MTT (Multi Table Tournament)</h3>
+  <p>Torneio de poker que acontece simultaneamente em várias mesas, com jogadores sendo realocados conforme são eliminados, até restarem apenas os finalistas.</p>
+</div>
+
+<div class="termo">
+  <h3>Muck</h3>
+  <p>Ação de descartar suas cartas sem mostrá-las aos oponentes, equivalente a desistir da mão sem revelar seu conteúdo.</p>
+</div>
+
+<h2 id="N">N</h2>
+
+<div class="termo">
+  <h3>No Limit</h3>
+  <p>Variante de poker onde os jogadores podem apostar qualquer quantidade de fichas que possuam à sua frente em qualquer momento, sem restrições de valor máximo de aposta.</p>
+</div>
+
+<div class="termo">
+  <h3>NLHE (No Limit Hold'em)</h3>
+  <p>Abreviação para No Limit Texas Hold'em, a variante mais popular de poker onde os jogadores podem apostar todas as suas fichas a qualquer momento.</p>
+</div>
+
+<div class="termo">
+  <h3>Nosebleeds</h3>
+  <p>Termo utilizado para descrever as mesas de cash game com os limites mais altos disponíveis, geralmente envolvendo apostas muito elevadas que podem causar grande tensão nos jogadores.</p>
+</div>
+
+<div class="termo">
+  <h3>Nuts</h3>
+  <p>A melhor mão possível em determinado momento do jogo. Ter "the nuts" significa que nenhum outro jogador pode ter uma mão superior com as cartas comunitárias disponíveis.</p>
+</div>
+
+<h2 id="O">O</h2>
+
+<div class="termo">
+  <h3>Odds</h3>
+  <p>Probabilidade matemática de completar uma mão de poker, calculada com base no número de cartas restantes no baralho que podem melhorar sua mão.</p>
+</div>
+
+<div class="termo">
+  <h3>Offsuit</h3>
+  <p>Termo que descreve duas cartas iniciais de naipes diferentes, como Ás de copas e Rei de espadas.</p>
+</div>
+
+<div class="termo">
+  <h3>Omaha</h3>
+  <p>Variante do poker onde cada jogador recebe quatro cartas fechadas e deve usar exatamente duas delas em combinação com três cartas comunitárias para formar a melhor mão de cinco cartas.</p>
+</div>
+
+<div class="termo">
+  <h3>One Gap</h3>
+  <p>Mão inicial onde há uma lacuna de valor entre as duas cartas, como 7-9, Q-10 ou 3-5, onde falta uma carta no meio para formar uma sequência consecutiva.</p>
+</div>
+
+<div class="termo">
+  <h3>Open Ended Straight Draw</h3>
+  <p>Situação em que um jogador precisa de uma carta em qualquer extremidade para completar um straight. Exemplo: ter 8-9 com um flop 6-7-K, onde um 5 ou um 10 completariam a sequência.</p>
+</div>
+
+<div class="termo">
+  <h3>Out</h3>
+  <p>Carta restante no baralho que pode melhorar sua mão para uma provável mão vencedora. O número de outs determina as chances de sucesso.</p>
+</div>
+
+<div class="termo">
+  <h3>Overbet</h3>
+  <p>Aposta que excede significativamente o tamanho atual do pote, geralmente utilizada como estratégia agressiva para pressionar os oponentes.</p>
+</div>
+
+<div class="termo">
+  <h3>Overcard</h3>
+  <p>Carta na mão de um jogador que é mais alta do que qualquer carta no board. Exemplo: ter Ás e Rainha quando o flop mostra J-7-3.</p>
+</div>
+
+<div class="termo">
+  <h3>Overpair</h3>
+  <p>Par de cartas na mão que é maior do que a carta mais alta no board. Exemplo: ter par de Damas (QQ) quando o flop vem 8-9-4.</p>
+</div>
+
+<h2 id="P">P</h2>
+
+<div class="termo">
+  <h3>Pocket Pair</h3>
+  <p>Quando um jogador recebe um par de cartas do mesmo valor como mão inicial, como dois Valetes (JJ) ou dois Oitos (88).</p>
+</div>
+
+<div class="termo">
+  <h3>Pot Limit</h3>
+  <p>Variante de poker onde o valor máximo que um jogador pode apostar ou aumentar é limitado ao tamanho total do pote naquele momento.</p>
+</div>
+
+<div class="termo">
+  <h3>PLO (Pot Limit Omaha)</h3>
+  <p>Abreviação para Pot Limit Omaha, uma variante popular do poker Omaha onde as apostas são limitadas ao tamanho do pote.</p>
+</div>
+
+<div class="termo">
+  <h3>Position</h3>
+  <p>Refere-se à ordem de ação de um jogador em relação ao dealer button. Posições tardias são geralmente mais vantajosas pois permitem observar as ações dos oponentes antes de tomar decisões.</p>
+</div>
+
+<div class="termo">
+  <h3>Pot Control</h3>
+  <p>Estratégia de gerenciar o tamanho do pote através de apostas e checks calculados, geralmente utilizada quando se tem uma mão boa mas vulnerável.</p>
+</div>
+
+<div class="termo">
+  <h3>Pot Odds</h3>
+  <p>Relação entre o tamanho atual do pote e o valor que se deve pagar para continuar na mão, utilizada para determinar a viabilidade matemática de uma call.</p>
+</div>
+
+<div class="termo">
+  <h3>Prize Pool</h3>
+  <p>Valor total em prêmios disponível em um torneio, distribuído entre os jogadores de acordo com sua colocação final.</p>
+</div>
+
+<div class="termo">
+  <h3>Push</h3>
+  <p>Ação de apostar todas as suas fichas (all-in), geralmente utilizada em situações de torneio onde se tem poucas fichas ou se busca pressionar os oponentes.</p>
+</div>
+
+<h2 id="Q">Q</h2>
+
+<div class="termo">
+  <h3>Quads</h3>
+  <p>Mão de poker composta por quatro cartas do mesmo valor, também conhecida como quadra. Exemplo: quatro Ases (AAAA) ou quatro Setes (7777).</p>
+</div>
+
+<h2 id="R">R</h2>
+
+<div class="termo">
+  <h3>Rainbow</h3>
+  <p>Board (cartas comunitárias) onde todas as cartas são de naipes diferentes, tornando impossível a formação de um flush apenas com as cartas da mesa.</p>
+</div>
+
+<div class="termo">
+  <h3>Range</h3>
+  <p>Conjunto de todas as mãos possíveis que um jogador pode ter em uma determinada situação, baseado em suas ações e posição na mesa.</p>
+</div>
+
+<div class="termo">
+  <h3>Raise</h3>
+  <p>Ação de aumentar o valor da aposta atual, forçando os outros jogadores a pagarem mais para continuar na mão.</p>
+</div>
+
+<div class="termo">
+  <h3>Rake</h3>
+  <p>Pequena porcentagem que a casa ou site de poker retém de cada pote como forma de remuneração pelo serviço oferecido.</p>
+</div>
+
+<div class="termo">
+  <h3>Rakeback</h3>
+  <p>Porcentagem do rake cobrado que é devolvida ao jogador, geralmente como parte de um programa de fidelidade ou acordo especial.</p>
+</div>
+
+<div class="termo">
+  <h3>Re-raise</h3>
+  <p>Ação de aumentar novamente uma aposta que já havia sido aumentada anteriormente por outro jogador.</p>
+</div>
+
+<div class="termo">
+  <h3>Re-steal</h3>
+  <p>Estratégia de aumentar a aposta contra um jogador que se acredita estar tentando roubar os blinds, com a intenção de contra-roubar o pote.</p>
+</div>
+
+<div class="termo">
+  <h3>Represent</h3>
+  <p>Ato de fazer apostas que sugerem ter uma mão específica, mesmo quando não se possui essa mão, como forma de blefar.</p>
+</div>
+
+<div class="termo">
+  <h3>Ring Game</h3>
+  <p>Mesas de cash game onde as fichas representam dinheiro real e os jogadores podem entrar e sair a qualquer momento.</p>
+</div>
+
+<div class="termo">
+  <h3>River</h3>
+  <p>Quinta e última carta comunitária distribuída no Texas Hold'em e Omaha, seguida pela rodada final de apostas.</p>
+</div>
+
+<div class="termo">
+  <h3>ROI (Return on Investment)</h3>
+  <p>Métrica que calcula o retorno financeiro sobre o investimento feito em torneios de poker, expresso em porcentagem.</p>
+</div>
+
+<div class="termo">
+  <h3>Royal Flush</h3>
+  <p>A melhor mão possível no poker, consistindo em uma sequência de Ás, Rei, Dama, Valete e Dez, todos do mesmo naipe.</p>
+</div>
+
+<div class="termo">
+  <h3>Running Hot</h3>
+  <p>Expressão que descreve um período de sorte incomum onde um jogador está vencendo consistentemente várias mãos consecutivas.</p>
+</div>
+
+<div class="termo">
+  <h3>Runner Runner</h3>
+  <p>Situação em que um jogador completa uma mão forte precisando acertar duas cartas consecutivas, geralmente considerada improvável.</p>
+</div>
+
+<h2 id="S">S</h2>
+
+<div class="termo">
+  <h3>Satélite</h3>
+  <p>Torneio especial onde o prêmio principal é uma entrada para um torneio de maior valor, permitindo que jogadores com orçamento limitado possam competir por vagas em eventos mais caros.</p>
+</div>
+
+<div class="termo">
+  <h3>Second Pair</h3>
+  <p>Situação em que um jogador forma um par com a segunda carta mais alta do board. Exemplo: ter A-10 com um flop K-10-6, formando par de dez quando o par de reis seria superior.</p>
+</div>
+
+<div class="termo">
+  <h3>Semi Bluff</h3>
+  <p>Estratégia de apostar com uma mão que ainda não está formada mas tem potencial para melhorar nas rodadas futuras, combinando possibilidade de vencer no momento com chance de melhorar.</p>
+</div>
+
+<div class="termo">
+  <h3>Set</h3>
+  <p>Trinca formada quando um jogador tem um par na mão e acerta uma terceira carta do mesmo valor no board, resultando em três cartas iguais.</p>
+</div>
+
+<div class="termo">
+  <h3>Short Stack</h3>
+  <p>Jogador que possui uma quantidade relativamente pequena de fichas em comparação com os blinds atuais, geralmente considerado com 20 big blinds ou menos.</p>
+</div>
+
+<div class="termo">
+  <h3>Shove</h3>
+  <p>Ação de apostar todas as fichas restantes (all-in), pressionando os oponentes a tomar uma decisão crítica sobre continuar ou desistir da mão.</p>
+</div>
+
+<div class="termo">
+  <h3>Showdown</h3>
+  <p>Fase final da mão onde os jogadores ainda envolvidos revelam suas cartas para determinar quem possui a mão vencedora e leva o pote.</p>
+</div>
+
+<div class="termo">
+  <h3>Side Pot</h3>
+  <p>Pote secundário formado quando um jogador vai all-in e outros jogadores continuam apostando entre si, criando um pote adicional além do máximo que o jogador all-in pode disputar.</p>
+</div>
+
+<div class="termo">
+  <h3>Sit and Go (SNG)</h3>
+  <p>Modalidade de torneio que começa imediatamente quando o número predeterminado de jogadores se inscreve, sem horário de início fixo como nos torneios agendados.</p>
+</div>
+
+<div class="termo">
+  <h3>Slow Play</h3>
+  <p>Estratégia de jogar uma mão forte de forma passiva (checking ou calling) para induzir os oponentes a apostarem mais e aumentar o tamanho do pote.</p>
+</div>
+
+<div class="termo">
+  <h3>Slow Roll</h3>
+  <p>Comportamento considerado antidesportivo onde um jogador demora intencionalmente para revelar uma mão vencedora, geralmente para provocar ou irritar o oponente.</p>
+</div>
+
+<div class="termo">
+  <h3>Small Blind</h3>
+  <p>Aposta obrigatória equivalente à metade do valor da big blind, postada pelo jogador imediatamente à esquerda do dealer button.</p>
+</div>
+
+<div class="termo">
+  <h3>Snap Call</h3>
+  <p>Decisão instantânea de pagar uma aposta, sem hesitação, normalmente indicando que o jogador possui uma mão muito forte.</p>
+</div>
+
+<div class="termo">
+  <h3>Split Pot</h3>
+  <p>Situação em que dois ou mais jogadores têm mãos de igual valor, resultando na divisão do pote entre os participantes empatados.</p>
+</div>
+
+<div class="termo">
+  <h3>Squeeze</h3>
+  <p>Estratégia agressiva de dar re-raise contra vários jogadores que já entraram no pote, com objetivo de forçar folds e ganhar o pote imediatamente.</p>
+</div>
+
+<div class="termo">
+  <h3>Stack Efetivo</h3>
+  <p>Refere-se à menor quantidade de fichas entre os jogadores envolvidos em uma mão, determinando o valor máximo que pode ser ganho ou perdido nessa situação específica.</p>
+</div>
+
+<div class="termo">
+  <h3>Steal</h3>
+  <p>Tentativa de roubar os blinds aumentando a aposta a partir de posição tardia, especialmente quando todos os jogadores anteriores foldaram.</p>
+</div>
+
+<div class="termo">
+  <h3>Straight</h3>
+  <p>Mão composta por cinco cartas em sequência numérica, independentemente do naipe. Exemplo: 4-5-6-7-8 de naipes diferentes.</p>
+</div>
+
+<div class="termo">
+  <h3>Straight Flush</h3>
+  <p>Mão extremamente forte composta por cinco cartas em sequência e do mesmo naipe, como 5-6-7-8-9 de copas.</p>
+</div>
+
+<div class="termo">
+  <h3>Suited</h3>
+  <p>Termo que descreve duas cartas iniciais do mesmo naipe, aumentando seu potencial de formar um flush.</p>
+</div>
+
+<div class="termo">
+  <h3>Suited Connectors</h3>
+  <p>Duas cartas consecutivas do mesmo naipe, como 7-8 de copas ou 10-J de espadas, que oferecem potencial para formar sequências e flushes.</p>
+</div>
+
+<h2 id="T">T</h2>
+
+<div class="termo">
+  <h3>Tell</h3>
+  <p>Comportamento inconsciente ou pista que um jogador demonstra, revelando informações sobre a força ou fraqueza de sua mão para oponentes atentos.</p>
+</div>
+
+<div class="termo">
+  <h3>Trap</h3>
+  <p>Estratégia de jogar uma mão muito forte de forma passiva, com intenção de induzir oponentes a apostar mais agressivamente e aumentar o tamanho do pote.</p>
+</div>
+
+<div class="termo">
+  <h3>Three of a Kind</h3>
+  <p>Mão formada por três cartas do mesmo valor, também conhecida como trinca. Exemplo: três Reis (KKK) ou três Setes (777).</p>
+</div>
+
+<div class="termo">
+  <h3>Tight</h3>
+  <p>Estilo de jogo conservador onde o jogador participa apenas de poucas mãos selecionadas, geralmente apenas com cartas premium.</p>
+</div>
+
+<div class="termo">
+  <h3>Tilt</h3>
+  <p>Estado emocional negativo que afeta o jogo após uma perda significativa ou bad beat, fazendo com que o jogador tome decisões irracionais e fora de sua estratégia normal.</p>
+</div>
+
+<div class="termo">
+  <h3>Time Bank</h3>
+  <p>Tempo adicional disponível para que um jogador tome decisões complexas, especialmente útil em situações críticas onde é necessário analisar cuidadosamente as opções.</p>
+</div>
+
+<div class="termo">
+  <h3>Top Pair</h3>
+  <p>Situação em que um jogador forma um par usando sua carta e a carta mais alta do board. Exemplo: ter A-9 com flop A-J-Q, formando par de Áses.</p>
+</div>
+
+<div class="termo">
+  <h3>Top Set</h3>
+  <p>Trinca formada quando um jogador tem um par na mão e acerta a terceira carta no board, resultando na trinca mais alta possível naquela mão.</p>
+</div>
+
+<div class="termo">
+  <h3>Top Two</h3>
+  <p>Mão onde o jogador forma dois pares com as duas cartas mais altas do board. Exemplo: ter J-10 com flop J-10-5, formando dois pares com as cartas topo do board.</p>
+</div>
+
+<div class="termo">
+  <h3>Turn</h3>
+  <p>Quarta carta comunitária distribuída no Texas Hold'em e Omaha, seguida pela terceira rodada de apostas.</p>
+</div>
+
+<h2 id="U">U</h2>
+
+<div class="termo">
+  <h3>Under the Gun (UTG)</h3>
+  <p>Posição imediatamente à esquerda do big blind, sendo o primeiro jogador a agir na rodada pré-flop. Considerada a posição mais desvantajosa por ter que tomar decisões sem conhecer as ações dos outros jogadores.</p>
+</div>
+
+<h2 id="V">V</h2>
+
+<div class="termo">
+  <h3>Value</h3>
+  <p>Refere-se ao valor esperado de uma jogada ou mão. "Value bet" é uma aposta feita com uma mão forte para extrair o máximo de valor dos oponentes.</p>
+</div>
+
+<div class="termo">
+  <h3>Variance</h3>
+  <p>Termo estatístico que descreve as flutuações naturais de resultados no poker a curto prazo, muitas vezes atribuída ao fator sorte entre sessões de jogo.</p>
+</div>
+
+<h2 id="W">W</h2>
+
+<div class="termo">
+  <h3>Walk</h3>
+  <p>Situação em que todos os jogadores foldam até chegar ao big blind, que automaticamente ganha o pote sem precisar disputar uma mão.</p>
+</div>
+
+<div class="termo">
+  <h3>WSOP (World Series of Poker)</h3>
+  <p>A mais prestigiada e antiga série de torneios de poker do mundo, realizada anualmente em Las Vegas desde 1970, considerada o campeonato mundial da modalidade.</p>
+</div>
+    <!-- ... -->
+    
+  </section>
+
+  <footer>
+    <p class="direitos">&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+    <div class="aviso18">
+      <span class="icone18">18+</span>
+      <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+    </div>
+    <div style="margin-top: 15px; text-align: center;">
+      <a href="politica.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Política de Privacidade</a>
+      <span style="color: #666;">|</span>
+      <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
+    </div>
+  </footer>
+
+  <script>
+    // JavaScript para controlar o menu hamburger
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menuToggle');
+      const mainNav = document.getElementById('mainNav');
+      
+      menuToggle.addEventListener('click', function() {
+        mainNav.classList.toggle('active');
+        
+        // Animação do botão hamburger para X
+        const spans = menuToggle.querySelectorAll('span');
+        if (mainNav.classList.contains('active')) {
+          spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+          spans[1].style.opacity = '0';
+          spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+        } else {
+          spans[0].style.transform = 'none';
+          spans[1].style.opacity = '1';
+          spans[2].style.transform = 'none';
+        }
+      });
+      
+      // Fechar o menu ao clicar em um link (em dispositivos móveis)
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 768) {
+            mainNav.classList.remove('active');
+            const spans = menuToggle.querySelectorAll('span');
+            spans[0].style.transform = 'none';
+            spans[1].style.opacity = '1';
+            spans[2].style.transform = 'none';
+          }
+        });
+      });
+      
+      // Fechar o menu ao clicar fora dele
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 768 && 
+            mainNav.classList.contains('active') &&
+            !mainNav.contains(event.target) &&
+            !menuToggle.contains(event.target)) {
+          mainNav.classList.remove('active');
+          const spans = menuToggle.querySelectorAll('span');
+          spans[0].style.transform = 'none';
+          spans[1].style.opacity = '1';
+          spans[2].style.transform = 'none';
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

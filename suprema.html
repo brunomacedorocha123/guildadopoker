@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suprema Poker - Guilda do Poker</title>
+  <style>
+    :root{
+      --bg:#121212;
+      --bg-2:#1c1c1c;
+      --bg-3:#2c2c2c;
+      --gold:#ffcc00;
+      --text:#f5f5f5;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header{
+      background: var(--bg-2);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+    }
+    header img{ max-width: 200px; height: auto; }
+
+    /* Menu Hamburguer */
+    .menu-toggle {
+      display: none;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30px;
+      height: 21px;
+      z-index: 1001;
+    }
+
+    .menu-toggle span {
+      height: 3px;
+      width: 100%;
+      background-color: var(--gold);
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    nav{
+      background: var(--bg-3);
+      padding: 10px 0;
+      text-align: center;
+    }
+    nav a{
+      color: var(--gold);
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+    }
+    nav a:hover, nav a.active{ color:#ffffff; }
+
+    /* ===== BANNER DE TOPO ===== */
+    .banner-topo {
+      width: 100%;
+      background-color: #2a2a2a;
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid var(--gold);
+    }
+    
+    .ad-placeholder {
+      background-color: #2a2a2a;
+      border: 2px dashed #666;
+      border-radius: 8px;
+      color: #999;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    
+    .ad-topo {
+      width: 728px;
+      height: 90px;
+      margin: 0 auto;
+    }
+    
+    .ad-rodape {
+      width: 728px;
+      height: 90px;
+      margin: 0 auto;
+    }
+    
+    .ad-placeholder p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    section{
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    section h1{ color: var(--gold); margin-bottom: 16px; text-align:center; }
+    section h2{ color: var(--gold); margin: 20px 0 10px; }
+    section p{
+      color:#e6e6e6;
+      margin: 8px auto;
+      text-align:justify;
+      width: 90%;
+    }
+
+    .logos{
+      display:flex;
+      justify-content:center;
+      flex-direction: column;
+      align-items:center;
+      margin:30px 0;
+      gap:15px;
+    }
+    .logos img{
+      width:160px;
+      height:auto;
+      border-radius:8px;
+      box-shadow:0 4px 8px rgba(0,0,0,.5);
+    }
+    .logos p{
+      margin-top:10px;
+      font-weight:bold;
+      color: var(--gold);
+      line-height:1.4;
+      text-align:center;
+    }
+    .logos span{
+      display:block; /* cada info em linha separada */
+    }
+
+    .mesa{
+      display:block;
+      max-width: 320px;
+      width: 100%;
+      height: auto;
+      margin: 25px auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,.5);
+    }
+
+    .btn{
+      display:inline-block;
+      margin: 30px auto;
+      padding: 12px 24px;
+      background: var(--gold);
+      color: #121212;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: .2s;
+      text-align:center;
+      white-space: nowrap;
+    }
+    .btn:hover{ transform: scale(1.04); }
+
+    /* ===== BANNER DE RODAPÉ ===== */
+    .banner-rodape {
+      width: 100%;
+      background-color: #2a2a2a;
+      padding: 15px;
+      text-align: center;
+      border-top: 1px solid var(--gold);
+      border-bottom: 1px solid var(--gold);
+      margin-top: 30px;
+    }
+
+    footer {
+      background: var(--bg-2);
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #ccc;
+      border-top: 2px solid var(--gold);
+    }
+
+    .aviso18 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .icone18 {
+      background: red;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
+
+    .aviso18 p {
+      margin: 0;
+      color: #ccc;
+    }
+
+    /* Responsividade */
+    @media(max-width:900px){
+      section p{ width: 95%; }
+      .btn{ width: 80%; max-width: 300px; display:block; margin:20px auto; }
+      .mesa{ max-width: 90%; }
+      
+      .ad-topo, .ad-rodape {
+        width: 100%;
+        height: auto;
+        min-height: 90px;
+      }
+    }
+
+    @media(max-width:768px){
+      .menu-toggle {
+        display: flex;
+      }
+      
+      nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--bg-3);
+        z-index: 1000;
+        padding: 70px 0 20px;
+        overflow-y: auto;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      }
+      
+      nav.active {
+        display: block;
+        animation: slideIn 0.3s ease-out;
+      }
+      
+      nav a{ 
+        display: block; 
+        margin: 15px 0; 
+        padding: 15px;
+        font-size: 18px;
+        border-bottom: 1px solid rgba(255, 204, 0, 0.2);
+      }
+      
+      /* Animação para o menu */
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* Estilo para o botão de fechar */
+      .close-menu {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: var(--gold);
+        font-size: 24px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        z-index: 1002;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="logosupremapoker.png" alt="Logo Suprema Poker">
+    <div class="menu-toggle" id="mobile-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </header>
+
+  <nav id="nav">
+    <button class="close-menu" id="close-menu" style="display: none;">X</button>
+    <a href="index.html">Home</a>
+    <a href="pppoker.html">PPPoker</a>
+    <a href="suprema.html" class="active">Suprema Poker</a>
+    <a href="torneios.html">Torneios</a>
+    <a href="regrasdopoker.html">Regras do Poker</a>
+    <a href="divulgacao.html">Divulgação</a>
+    <a href="divulgacao.html">Dicionário</a>
+    <a href="contato.html">Contato</a>
+  </nav>
+
+  <!-- ===== BANNER DE TOPO ===== -->
+  <div class="banner-topo">
+    <div class="ad-placeholder ad-topo">
+      <p>Espaço reservado para banner (728x90)</p>
+    </div>
+  </div>
+
+  <section>
+    <h1>Suprema Poker</h1>
+
+    <p>O <strong>Suprema Poker</strong> é um clube de poker online que oferece uma experiência diferenciada, unindo entretenimento e competição em um ambiente seguro и confiável. Com foco em torneios em cash games de qualidade, o Suprema Poker se consolidou como referência entre jogadores brasileiros.</p>
+
+    <h2>Diferenciais do Suprema Poker</h2>
+    <p>Entre os recursos e vantagens do Suprema Poker, destacam-se:</p>
+    <p>• Criação de mesas privadas para torneios e partidas entre amigos ou convidados.</p>
+    <p>• Sistema de rankings e estatísticas detalhadas, permitindo acompanhar desempenho e evolução.</p>
+    <p>• Interface intuitiva e adaptável para dispositivos móveis e desktops.</p>
+    <p>• Suporte dedicado e comunidade ativa, garantindo segurança e experiência completa.</p>
+
+    <h2>Como Participar</h2>
+    <p>Para jogar no Suprema Poker, basta se cadastrar, entrar no clube e participar de cash games ou torneios programados. O clube mantém eventos regulares para todos os níveis de jogadores, desde iniciantes até profissionais.</p>
+
+    <div class="logos">
+      <img src="logocaveirapoker.png" alt="Logo Caveira Poker Club">
+      <p>
+        <span>Caveira Poker Club</span>
+        <span>ID Clube: <strong>29446</strong></span>
+        <span>ID Agente: <strong>1422946</strong></span>
+      </p>
+    </div>
+
+    <img class="mesa" src="mesasuprema.jpg" alt="Mesa de jogo no Suprema Poker">
+
+    <div style="text-align:center;">
+      <a class="btn" href="https://supremapoker.net/download/supremapoker.exe" target="_blank" rel="noopener">Baixar App do Suprema Poker</a>
+    </div>
+  </section>
+
+  <!-- ===== BANNER DE RODAPÉ ===== -->
+  <div class="banner-rodape">
+    <div class="ad-placeholder ad-rodape">
+      <p>Espaço reservado para banner (728x90)</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+    <div class="aviso18">
+      <span class="icone18">18+</span>
+      <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+    </div>
+    <!-- Links para Política de Privacidade e Termos e Condições -->
+    <div style="margin-top: 15px; text-align: center;">
+      <a href="politica.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Política de Privacidade</a>
+      <span style="color: #666;">|</span>
+      <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
+    </div>
+  </footer>
+
+  <script>
+    // Menu mobile toggle
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeMenu = document.getElementById('close-menu');
+    const nav = document.getElementById('nav');
+    
+    mobileMenu.addEventListener('click', function() {
+      nav.classList.add('active');
+      closeMenu.style.display = 'block';
+      document.body.style.overflow = 'hidden'; // Impede scroll quando menu está aberto
+    });
+    
+    closeMenu.addEventListener('click', function() {
+      nav.classList.remove('active');
+      closeMenu.style.display = 'none';
+      document.body.style.overflow = 'auto'; // Permite scroll novamente
+    });
+    
+    // Fechar menu ao clicar em um link (apenas em mobile)
+    const navLinks = document.querySelectorAll('nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          nav.classList.remove('active');
+          closeMenu.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }
+      });
+    });
+    
+    // Fechar menu ao redimensionar a janela para tamanho maior
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        nav.classList.remove('active');
+        closeMenu.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Divulgação - Guilda do Poker</title>
+  <style>
+    :root{
+      --bg:#121212;
+      --bg-2:#1c1c1c;
+      --bg-3:#2c2c2c;
+      --gold:#ffcc00;
+      --text:#f5f5f5;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header{
+      background: var(--bg-2);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80px;
+    }
+
+    /* Menu de navegação responsivo - MODIFICADO */
+    nav {
+      background: var(--bg-3);
+      padding: 15px 0;
+      position: relative;
+      width: 100%;
+    }
+
+    .menu-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .menu li {
+      margin: 0;
+    }
+
+    .menu a {
+      color: var(--gold);
+      padding: 14px 22px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+      display: block;
+      text-align: center;
+      font-size: 1.05rem;
+    }
+
+    .menu a:hover, .menu a.active {
+      color: #ffffff;
+      text-decoration: underline;
+      background-color: rgba(255, 204, 0, 0.15);
+      border-radius: 6px;
+    }
+
+    /* Botão hambúrguer - MODIFICADO */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 42px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      position: absolute;
+      right: 25px;
+      top: 20px;
+      z-index: 1001;
+    }
+
+    .hamburger span {
+      width: 100%;
+      height: 4px;
+      background-color: var(--gold);
+      border-radius: 3px;
+      transition: all 0.3s linear;
+    }
+
+    /* Efeito ao clicar no hamburger */
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    @media (max-width: 992px) {
+      .menu a {
+        padding: 12px 18px;
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        justify-content: center;
+        padding: 15px;
+        position: relative;
+      }
+      
+      nav {
+        padding: 0;
+        background: transparent;
+      }
+      
+      .hamburger {
+        display: flex;
+        width: 40px;
+        height: 34px;
+        right: 20px;
+        top: 20px;
+      }
+
+      .menu {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--bg-3);
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        padding: 15px 0;
+        border-top: 2px solid var(--gold);
+      }
+
+      .menu.active {
+        display: flex;
+      }
+
+      .menu li {
+        width: 100%;
+        text-align: center;
+      }
+
+      .menu a {
+        padding: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 1.1rem;
+      }
+      
+      .menu a:last-child {
+        border-bottom: none;
+      }
+      
+      .menu-container {
+        padding: 0;
+      }
+    }
+
+    main{
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    main h1, main h2{ text-align:center; color:var(--gold); margin-bottom:20px; }
+    main p{ color:#e6e6e6; margin:8px 0; text-align:justify; }
+
+    /* Estilo para a seção de ID do clube */
+    .clube-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin: 20px auto;
+      padding: 15px;
+      background-color: var(--bg-3);
+      border-radius: 10px;
+      max-width: 500px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    
+    .clube-info img {
+      width: 60px;
+      height: auto;
+      border-radius: 8px;
+    }
+    
+    .clube-id {
+      font-size: 1.2rem;
+      color: var(--gold);
+      font-weight: bold;
+    }
+
+    .eventos{
+      background: var(--bg-3);
+      padding:20px;
+      border-radius:10px;
+      margin:20px 0;
+      box-shadow: 0 4px 8px rgba(0,0,0,.5);
+    }
+    .eventos h3{ color: var(--gold); margin-bottom:10px; text-align:center; }
+    .eventos p{ margin:6px 0; }
+    .eventos img{
+      width: 90%;
+      max-width: 600px;
+      display: block;
+      margin: 15px auto;
+      border-radius:8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,.5);
+    }
+
+    .btn{
+      display:inline-block;
+      margin:30px auto;
+      padding:12px 24px;
+      background: var(--gold);
+      color: #121212;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius:8px;
+      transition:.2s;
+      text-align:center;
+    }
+    .btn:hover{ transform: scale(1.04); }
+
+    footer{
+      text-align:center;
+      padding:20px;
+      background: var(--bg-2);
+      margin-top:40px;
+      border-top: 2px solid var(--gold);
+      font-size:14px;
+      color:#bbb;
+    }
+    footer div{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+    footer img{ max-height:40px; height:auto; }
+
+    .aviso18{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin-top:10px;
+    }
+    .icone18{
+      background:red;
+      color:white;
+      font-weight:bold;
+      font-size:14px;
+      padding:4px 8px;
+      border-radius:5px;
+    }
+    .aviso18 p{ margin:0; color:#ccc; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <!-- Logos removidas conforme solicitado -->
+    <button class="hamburger" aria-label="Abrir menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <nav>
+    <div class="menu-container">
+      <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="pppoker.html">PPPoker</a></li>
+        <li><a href="suprema.html">Suprema Poker</a></li>
+        <li><a href="torneios.html">Torneios</a></li>
+        <li><a href="regrasdopoker.html">Regras do Poker</a></li>
+        <li><a href="divulgacao.html" class="active">Divulgação</a></li>
+        <li><a href="dicionario.html">Dicionário</a></li> <!-- Removida a classe active -->
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Divulgação de Torneios - Clube L.P.I</h1>
+    
+    <!-- Seção adicionada com ID do clube e logo -->
+    <div class="clube-info">
+      <img src="logolpi.png" alt="Logo L.P.I">
+      <div class="clube-id">ID do Clube: 4190995</div>
+    </div>
+
+    <div class="eventos">
+      <h3>📢 Atenção Poker Players!</h3>
+      <p>🗓 <strong>26 a 28 de Setembro</strong></p>
+      <p>É com muita honra que a <strong>Liga de Poker Ilheense (LPI)</strong> anuncia sua 5ª Etapa 2025 em <strong>Itacaré</strong>!</p>
+      <p>📍 <strong>Local:</strong> Hotel Resende Imperial – palco de lindas coroações! 👑🏆🤑</p>
+      <p>💰 Serão <strong>R$ 67.000 GTD</strong> com 5 torneios, incluindo o <strong>Ladies 5K GTD</strong> 💃</p>
+      <p>🖥 Satélites online começam <strong>17/08</strong>, com pacote hospedagem + Buy-in Main Event</p>
+      <p>🏨 Jogadores LPI têm <strong>30% OFF</strong> na hospedagem nos hotéis do Grupo Aguilar Lima.</p>
+      <p>👨‍💻 Dois dias de classificatórios online do Main Event 30K GTD.</p>
+
+      <img src="gradeeventos.jpg" alt="Grade de Torneios">
+      <img src="eventoprincipal.jpg" alt="Evento Principal">
+      <img src="eventosatelite.jpg" alt="Satélites Online">
+    </div>
+
+    <div style="text-align:center;">
+      <a class="btn" href="https://www.pppoker.net/" target="_blank" rel="noopener">Inscreva-se e Saiba Mais</a>
+    </div>
+  </main>
+
+  <footer>
+  <p>&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+  <div>
+    <img src="logoguildapoker.png" alt="Logo Guilda do Poker">
+    <img src="logopppoker.png" alt="Logo PPPoker">
+    <img src="logosupremapoker.png" alt="Logo Suprema Poker">
+    <img src="logolpi.png" alt="Logo LPI">
+    <img src="logocaveirapoker.png" alt="Logo Caveira Poker">
+  </div>
+  <div class="aviso18">
+    <span class="icone18">18+</span>
+    <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+  </div>
+  <!-- Links para Política de Privacidade e Termos e Condições -->
+  <div style="margin-top: 15px; text-align: center;">
+    <a href="politica.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Política de Privacidade</a>
+    <span style="color: #666;">|</span>
+    <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
+  </div>
+</footer>
+
+  <script>
+    // JavaScript para controlar o menu hamburger
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.querySelector('.hamburger');
+      const menu = document.querySelector('.menu');
+      
+      hamburger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menu.classList.toggle('active');
+        hamburger.classList.toggle('active');
+      });
+      
+      // Fechar o menu ao clicar em um link (útil para dispositivos móveis)
+      const menuLinks = document.querySelectorAll('.menu a');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 768) {
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+          }
+        });
+      });
+      
+      // Fechar o menu ao clicar fora dele
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 768 && menu.classList.contains('active')) {
+          if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

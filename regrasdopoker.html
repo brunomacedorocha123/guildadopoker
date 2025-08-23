@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guilda do Poker - Regras do Poker</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --bg-2: #1c1c1c;
+      --bg-3: #2c2c2c;
+      --gold: #ffcc00;
+      --text: #f5f5f5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--bg-2);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    header img {
+      max-width: 200px;
+      height: auto;
+    }
+
+    /* Menu Hamburguer */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 25px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      position: absolute;
+      right: 20px;
+    }
+
+    .menu-toggle span {
+      width: 100%;
+      height: 3px;
+      background-color: var(--gold);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    nav {
+      background: var(--bg-3);
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: var(--gold);
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    /* ===== BANNER DE TOPO ===== */
+    .banner-topo {
+      width: 100%;
+      background-color: #2a2a2a;
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid var(--gold);
+    }
+    
+    .ad-placeholder {
+      background-color: #2a2a2a;
+      border: 2px dashed #666;
+      border-radius: 8px;
+      color: #999;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    
+    .ad-topo {
+      width: 728px;
+      height: 90px;
+      margin: 0 auto;
+    }
+    
+    .ad-placeholder p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    section {
+      padding: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    section h1 {
+      color: var(--gold);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    section h2 {
+      color: var(--gold);
+      margin: 30px 0 10px;
+    }
+
+    section h3 {
+      color: var(--gold);
+      margin: 16px 0 8px;
+    }
+
+    section p {
+      color: #e6e6e6;
+      margin: 8px 0;
+      text-align: justify;
+    }
+
+    .mesa {
+      display: block;
+      max-width: 400px;
+      width: 100%;
+      height: auto;
+      margin: 25px auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, .5);
+    }
+
+    .mao {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 15px 0;
+    }
+
+    .mao img {
+      width: 60px;
+      height: auto;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .5);
+    }
+
+    footer {
+      background: var(--bg-2);
+      text-align: center;
+      padding: 20px 10px;
+      margin-top: 40px;
+      border-top: 2px solid var(--gold);
+      font-size: 14px;
+      color: #bbb;
+    }
+
+    footer .direitos {
+      text-align: center;
+      margin: 0;
+    }
+
+    .aviso18 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .icone18 {
+      background: red;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
+
+    .aviso18 p {
+      margin: 0;
+      color: #ccc;
+    }
+
+    /* Media Queries para Responsividade */
+    @media (max-width: 900px) {
+      .ad-topo {
+        width: 100%;
+        height: auto;
+        min-height: 90px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+
+      nav {
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--bg-3);
+        z-index: 1000;
+        padding: 60px 0 0 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        overflow-y: auto;
+      }
+
+      nav.active {
+        display: flex;
+      }
+
+      nav a {
+        display: block;
+        padding: 18px;
+        margin: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 18px;
+      }
+
+      header {
+        padding: 15px;
+        justify-content: center;
+      }
+
+      header img {
+        max-width: 150px;
+      }
+      
+      section {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .mao img {
+        width: 50px;
+      }
+      
+      .mesa {
+        max-width: 100%;
+        margin: 15px auto;
+      }
+      
+      section h1 {
+        font-size: 1.8rem;
+      }
+      
+      section h2 {
+        font-size: 1.5rem;
+      }
+      
+      section h3 {
+        font-size: 1.2rem;
+      }
+      
+      nav a {
+        padding: 16px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
+    <button class="menu-toggle" id="menuToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <nav id="mainNav">
+    <a href="index.html">Home</a>
+    <a href="pppoker.html">PPPoker</a>
+    <a href="suprema.html">Suprema Poker</a>
+    <a href="torneios.html">Torneios</a>
+    <a href="regrasdopoker.html" class="active">Regras do Poker</a>
+    <a href="divulgacao.html">Divulgação</a>
+    <a href="dicionario.html">Dicionário</a> <!-- Removida a classe active -->
+    <a href="contato.html">Contato</a>
+  </nav>
+
+  <!-- ===== BANNER DE TOPO ===== -->
+  <div class="banner-topo">
+    <div class="ad-placeholder ad-topo">
+      <p>Espaço reservado para banner (728x90)</p>
+    </div>
+  </div>
+
+  <section>
+    <h1>Regras do Poker</h1>
+
+    <img class="mesa" src="mesaregra.jpg" alt="Mesa de Poker - Regras">
+
+    <p>O poker é um jogo de cartas que mistura <strong>estratégia, habilidade matemática, leitura de adversários e sorte</strong>. Apesar de existirem várias modalidades, todas seguem a mesma lógica: formar a melhor mão possível de cinco cartas. O jogador pode vencer mostrando a melhor combinação no <em>showdown</em> ou fazendo todos os oponentes desistirem durante as apostas.</p>
+
+    <h2>Hierarquia das Mãos</h2>
+    <p>A força das combinações vai da mais poderosa para a mais simples:</p>
+
+    <h3>Royal Straight Flush</h3>
+    <p>Sequência de 10 até Ás, todas do mesmo naipe.</p>
+    <div class="mao">
+      <img src="asouro.jpg" alt="10 de Ouro">
+      <img src="kouro.jpg" alt="Valete de Ouro">
+      <img src="qouro.jpg" alt="Dama de Ouro">
+      <img src="jouro.jpg" alt="Rei de Ouro">
+      <img src="10ouro.jpg" alt="Ás de Ouro">
+    </div>
+
+    <h3>Straight Flush</h3>
+    <p>Sequência de cinco cartas do mesmo naipe.</p>
+    <div class="mao">
+      <img src="kouro.jpg" alt="9 de Ouro">
+      <img src="qouro.jpg" alt="10 de Ouro">
+      <img src="jouro.jpg" alt="Valete de Ouro">
+      <img src="10ouro.jpg" alt="Dama de Ouro">
+      <img src="9ouro.jpg" alt="Rei de Ouro">
+    </div>
+
+    <h3>Quadra</h3>
+    <p>Quatro cartas de mesmo valor.</p>
+    <div class="mao">
+      <img src="asouro.jpg" alt="Ás de Ouro">
+      <img src="aspaus.jpg" alt="Ás de Paus">
+      <img src="asespada.jpg" alt="Ás de Espadas">
+      <img src="ascopas.jpg" alt="Ás de Copas">
+      <img src="9ouro.jpg" alt="9 de Ouro">
+    </div>
+
+    <h3>Full House</h3>
+    <p>Três cartas iguais + um par.</p>
+    <div class="mao">
+      <img src="asouro.jpg" alt="Ás de Ouro">
+      <img src="ascopas.jpg" alt="Ás de Copas">
+      <img src="asespada.jpg" alt="Ás de Espadas">
+      <img src="kouro.jpg" alt="Rei de Ouro">
+      <img src="kpaus.jpg" alt="Rei de Paus">
+    </div>
+
+    <h3>Flush</h3>
+    <p>Cinco cartas do mesmo naipe, sem sequência.</p>
+    <div class="mao">
+      <img src="asouro.jpg" alt="Ás de Ouro">
+      <img src="kouro.jpg" alt="Rei de Ouro">
+      <img src="jouro.jpg" alt="Valete de Ouro">
+      <img src="10ouro.jpg" alt="10 de Ouro">
+      <img src="9ouro.jpg" alt="9 de Ouro">
+    </div>
+
+    <h3>Straight</h3>
+    <p>Cinco cartas em ordem, de naipes diferentes.</p>
+    <div class="mao">
+      <img src="asouro.jpg" alt="Ás de Ouro">
+      <img src="kpaus.jpg" alt="Rei de Paus">
+      <img src="qouro.jpg" alt="Dama de Ouro">
+      <img src="jouro.jpg" alt="Valete de Ouro">
+      <img src="10ouro.jpg" alt="10 de Ouro">
+    </div>
+
+    <h3>Trinca</h3>
+    <p>Três cartas iguais.</p>
+    <div class="mao">
+      <img src="asouro.jpg" alt="Ás de Ouro">
+      <img src="ascopas.jpg" alt="Ás de Copas">
+      <img src="asespada.jpg" alt="Ás de Espadas">
+      <img src="kpaus.jpg" alt="Rei de Paus">
+      <img src="10ouro.jpg" alt="10 de Ouro">
+    </div>
+
+    <h3>Dois Pares</h3>
+    <p>Dois pares diferentes.</p>
+    <div class="mao">
+      <img src="asouro.jpg" alt="Ás de Ouro">
+      <img src="ascopas.jpg" alt="Ás de Copas">
+      <img src="kouro.jpg" alt="Rei de Ouro">
+      <img src="kpaus.jpg" alt="Rei de Paus">
+      <img src="9ouro.jpg" alt="9 de Ouro">
+    </div>
+
+    <h3>Um Par</h3>
+    <p>Duas cartas iguais.</p>
+    <div class="mao">
+      <img src="asouro.jpg" alt="Ás de Ouro">
+      <img src="ascopas.jpg" alt="Ás de Copas">
+      <img src="kouro.jpg" alt="Rei de Ouro">
+      <img src="qouro.jpg" alt="Dama de Ouro">
+      <img src="9ouro.jpg" alt="9 de Ouro">
+    </div>
+
+    <h3>Carta Alta</h3>
+    <p>Quando nenhuma combinação é formada, vale a carta mais alta.</p>
+    <div class="mao">
+      <img src="asespada.jpg" alt="Ás de Espadas">
+      <img src="kpaus.jpg" alt="Rei de Paus">
+      <img src="qouro.jpg" alt="Dama de Ouro">
+      <img src="jouro.jpg" alt="Valete de Ouro">
+      <img src="9ouro.jpg" alt="9 de Ouro">
+    </div>
+
+    
+    <h2>Estrutura das Rodadas</h2>
+    <p>O poker se divide em quatro fases de apostas, seguidas do showdown, onde a melhor mão vence o pote. Cada fase exiga análise estratégica, atenção à posição e leitura dos adversários.</p>
+
+    <section id="pre-flop">
+      <h3>1. Pré-Flop</h3>
+      <p><strong>Descrição:</strong> Cada jogador recebe duas cartas fechadas. Momento inicial de decisão: apostar, aumentar ou desistir.</p>
+      <p><strong>Objetivo:</strong> Avaliar a força da mão inicial e definir estratégia conforme posição e estilo dos adversários.</p>
+      <ul>
+        <li><strong>Posição inicial:</strong> Jogue apenas mãos forte: pares altos (A-A, K-K, Q-Q) e ases combinados com cartas altas do mesmo naipe (A-K, A-Q).</li>
+        <li><strong>Posição intermediária:</strong> Mãos especulativas como pares médios e conectores do mesmo naipe podem ser jogadas.</li>
+        <li><strong>Posição tardia:</strong> Maior liberdade para blefar ou arriscar mãos especulativas.</li>
+        <li><strong>Agressividade:</strong> Raise inicial reduz o número de oponentes e aumenta o pote com mãos fortes.</li>
+        <li><strong>Observação:</strong> Preste atenção aos padrões de apostas para identificar blefes e mãos fortes.</li>
+      </ul>
+    </section>
+
+    <section id="flop">
+      <h3>2. Flop</h3>
+      <p><strong>Descrição:</strong> Três cartas comunitárias são reveladas. Cada jogador has cinco cartas para formar combinações.</p>
+      <p><strong>Objetivo:</strong> Avaliar se a mão se fortaleceu e decidir se continua apostando, faz check ou desiste.</p>
+      <ul>
+        <li><strong>Combinações potenciais:</strong> Pares, trincas, sequências e flush draws podem surgir.</li>
+        <li><strong>Posição:</strong> Jogadores em posições tardias podem blefar mais com segurança.</li>
+        <li><strong>Pot odds:</strong> Compare o valor do pote com o custo da aposta para decidir se vale continuar.</li>
+        <li><strong>Observação:</strong> Analise se os adversários demonstram força ou fraqueza.</li>
+        <li><strong>Controle do pote:</strong> Aposte com mãos fortes e jogue defensivamente com mãos fracas.</li>
+      </ul>
+    </section>
+
+    <section id="turn">
+      <h3>3. Turn</h3>
+      <p><strong>Descrição:</strong> A quarta carta comunitária é revelada. Cada decisão tem maior impacto no tamanho do pote.</p>
+      <p><strong>Objetivo:</strong> Reavaliar a mão, definir apostas, preparar blefes ou controlar perdas.</p>
+      <ul>
+        <li><strong>Reforço de mão:</strong> Trinca, sequência ou flush parcial podem virar vencedoras.</li>
+        <li><strong>Blefes estratégicos:</strong> Momento ideal para blefes calculados.</li>
+        <li><strong>Gestão do pote:</strong> Evite apostas grandes com mãos marginais.</li>
+        <li><strong>Leitura de adversários:</strong> Observe padrões de aposta e possíveis draws.</li>
+      </ul>
+    </section>
+
+    <section id="river">
+      <h3>4. River</h3>
+      <p><strong>Descrição:</strong> Quinta e última carta comunitária. Última rodada de apostas antes do showdown.</p>
+      <p><strong>Objetivo:</strong> Tomar a decisão final: apostar, pagar, aumentar ou desistir.</p>
+      <ul>
+        <li><strong>Última chance de blefe:</strong> Use apenas se tiver confiança ou estratégia clara.</li>
+        <li><strong>Análise completa:</strong> Compare sua mão com possíveis mãos dos adversários.</li>
+        <li><strong>Controle emocional:</strong> Evite decisões impulsivas.</li>
+        <li><strong>Gestão de all-in:</strong> Faça apenas com alta probabilidade de sucesso.</li>
+      </ul>
+    </section>
+
+    <section id="showdown">
+      <h3>Showdown</h3>
+      <p><strong>Descrição:</strong> Se ainda houver jogadores, todos revelam suas mãos. Quem tiver a melhor combinação de cinco cartas vence o pote.</p>
+      <ul>
+        <li>Observe padrões de apostas anteriores para identificar força das mãos.</li>
+        <li>Não subestime cartas altas ou combinações inesperadas.</li>
+        <li>Blefes podem ser eficazes se bem planejados durante as rodadas.</li>
+      </ul>
+    </section>
+
+    <section id="acoes-possiveis">
+      <h2>Ações Possíveis</h2>
+      <p>Durante cada rodada de apostas, o jogador pode escolher diferentes ações. Cada escolha influencia o rumo da mão e deve ser tomada considerando a força da mão, a posição na mesa e o comportamento dos adversários.</p>
+
+      <section id="check">
+        <h3>1. Check (Mesa)</h3>
+        <p><strong>Descrição:</strong> Passar a vez sem apostar, disponível apenas se ainda não houve aposta na rodada.</p>
+        <p><strong>Objetivo:</strong> Controlar o tamanho do pote ou induzir os adversários a apostarem.</p>
+        <ul>
+          <li><strong>Vantagem:</strong> Permite ver a próxima carta não investir fichas.</li>
+          <li><strong>Estratégia:</strong> Usado como armadilha (slow play) quando se tem uma mão forte.</li>
+          <li><strong>Risco:</strong> Dá chance aos oponentes de ver cartas grátis que podem melhorar suas mãos.</li>
+        </ul>
+      </section>
+
+      <section id="call">
+        <h3>2. Call (Pagar)</h3>
+        <p><strong>Descrição:</strong> Igualar o valor da aposta feita por outro jogador para continuar na mão.</p>
+        <p><strong>Objetivo:</strong> Permanecer no jogo sem aumentar o tamanho do pote.</p>
+        <ul>
+          <li><strong>Vantagem:</strong> Permite avaliar a força dos adversários and ver mais cartas.</li>
+          <li><strong>Estratégia:</strong> Útil em mãos em desenvolvimento, como projetos de sequência ou flush.</li>
+          <li><strong>Risco:</strong> Excesso de calls pode indicar passividade e reduzir o controle da mão.</li>
+        </ul>
+      </section>
+
+      <section id="raise">
+        <h3>3. Raise (Aumentar)</h3>
+        <p><strong>Descrição:</strong> Elevar o valor da aposta já feita por outro jogador.</p>
+        <p><strong>Objetivo:</strong> Pressionar adversários, proteger mãos fortes e aumentar the pot.</p>
+        <ul>
+          <li><strong>Vantagem:</strong> Isola jogadores e maximiza ganhos quando se tem boas mãos.</li>
+          <li><strong>Estratégia:</strong> Raise consistente mostra força and pode forçar folds de mãos fracas.</li>
+          <li><strong>Risco:</strong> Se mal calculado, pode expor fichas contra mãos mais fortes.</li>
+        </ul>
+      </section>
+
+      <section id="fold">
+        <h3>4. Fold (Desistir)</h3>
+        <p><strong>Descrição:</strong> Abandonar a mão e não investir mais fichas no pote.</p>
+        <p><strong>Objetivo:</strong> Evitar perdas quando a mão não tem boas chances de vitória.</p>
+        <ul>
+          <li><strong>Vantagem:</strong> Preserva fichas para oportunidades melhores.</li>
+          <li><strong>Estratégia:</strong> Parte essencial do jogo; saber desistir é tão importante quanto apostar.</li>
+          <li><strong>Risco:</strong> Excesso de folds pode tornar o jogador previsível e explorável.</li>
+        </ul>
+      </section>
+
+      <section id="all-in">
+        <h3>5. All-in</h3>
+        <p><strong>Descrição:</strong> Apostar todas as fichas disponíveis em uma única jogada.</p>
+        <p><strong>Objetivo:</strong> Maximizar ganhos com mãos muito fortes ou aplicar pressão máxima sobre adversários.</p>
+        <ul>
+          <li><strong>Vantagem:</strong> Força os oponentes a tomarem decisões decisivas.</li>
+          <li><strong>Estratégia:</strong> Ideal quando se tem confiança na mão ou em blefes bem planejados.</li>
+          <li><strong>Risco:</strong> Se perder, o jogador pode be eliminado da partida.</li>
+        </ul>
+      </section>
+
+      <h2>Tipos de Estrutura de Aposta</h2>
+      <p><strong>Limit:</strong> Apostas em valores fixos.</p>
+      <p><strong>Pot-Limit:</strong> É permitido apostar até o valor do pote.</p>
+      <p><strong>No-Limit:</strong> O jogador pode apostar qualquer valor, até todas as fichas (All-in).</p>
+
+      <h2>Modalidades de Poker</h2>
+      <p>O poker possui diversas variações, cada uma com suas próprias regras e particularidades estratégicas. Conhecer as modalidades é essencial para adaptar o estilo de jogo e explorar diferentes oportunidades.</p>
+
+      <section id="texas-holdem">
+        <h3>1. Texas Hold'em</h3>
+        <p><strong>Descrição:</strong> Cada jogador recebe 2 cartas fechadas e pode formar a melhor mão final com qualquer combinação das 5 cartas comunitárias.</p>
+        <p><strong>Objetivo:</strong> Montar a melhor mão de cinco cartas ou vencer através de apostas estratégicas.</p>
+        <ul>
+          <li><strong>Popularidade:</strong> É a modalidade mais jogada no mundo e usada em torneios oficiais como a WSOP.</li>
+          <li><strong>Estratégia:</strong> Grande ênfase em leitura de adversários and post-flop play.</li>
+          <li><strong>Dificuldade:</strong> Fácil de aprender, mas difícil de dominar.</li>
+        </ul>
+      </section>
+
+      <section id="omaha">
+        <h3>2. Omaha</h3>
+        <p><strong>Descrição:</strong> No Omaha tradicional, cada jogador recebe 4 cartas fechadas e precisa obrigatoriamente usar exatamente 2 delas em combinação com 3 cartas comunitárias. Já em modalidades alternativas, como o Omaha de 5 ou 6 cartas, a lógica é a mesma: o jogador deve sempre utilizar 2 de suas cartas particulares junto com 3 da mesa para formar a melhor mão.</p>
+        <p><strong>Objetivo:</strong> Formar combinações fortes explorando as maiores possibilidades de draws.</p>
+        <ul>
+          <li><strong>Variações:</strong> Pot-Limit Omaha (PLO) é a forma mais popular.</li>
+          <li><strong>Estratégia:</strong> Mãos iniciais têm maior importância, pois aumentam as chances de combinações fortes.</li>
+          <li><strong>Dificuldade:</strong> Mais complexo que o Texas Hold'em devido ao número maior de combinações possíveis.</li>
+        </ul>
+      </section>
+
+      <section id="omaha-hi-lo">
+        <h3>3. Omaha Hi-Lo</h3>
+        <p><strong>Descrição:</strong> Versão do Omaha em que o pote é dividido entre a melhor mão alta and a melhor mão baixa (low), caso exista.</p>
+        <p><strong>Objetivo:</strong> Ganhar tanto o pote alto quanto o pote baixo, maximizando lucros.</p>
+        <ul>
+          <li><strong>Mão baixa válida:</strong> Cinco cartas diferentes de valor 8 ou menor.</li>
+          <li><strong>Estratégia:</strong> Jogadores buscam "scoopar" (levar os dois lados do pote).</li>
+          <li><strong>Dificuldade:</strong> Exige atenção dobrada, pois há duas disputas no mesmo pote.</li>
+        </ul>
+      </section>
+
+      <section id="five-card-draw">
+        <h3>4. Five Card Draw</h3>
+        <p><strong>Descrição:</strong> Cada jogador recebe 5 cartas fechadas and pode trocar algumas delas em uma única rodada de compra.</p>
+        <p><strong>Objetivo:</strong> Formar a melhor mão após a troca de cartas.</p>
+        <ul>
+          <li><strong>Popularidade:</strong> Muito jogado em partidas caseiras.</li>
+          <li><strong>Estratégia:</strong> Observação de quantas cartas os adversários trocam é fundamental.</li>
+          <li><strong>Dificuldade:</strong> Fácil de aprender, ideal para iniciantes.</li>
+        </ul>
+      </section>
+
+      <section id="mixed-games">
+        <h3>5. Mixed Games (H.O.R.S.E. e outros)</h3>
+        <p><strong>Descrição:</strong> Modalidades mistas que alternar entre diferentes variantes (ex.: Hold'em, Omaha, Stud e Eight-or-Better).</p>
+        <p><strong>Objetivo:</strong> Ser consistente em múltiplas modalidades e se adaptar rapidamente às trocas.</p>
+        <ul>
+          <li><strong>Popularidade:</strong> Muito usado in mesas de high stakes.</li>
+          <li><strong>Estratégia:</strong> Jogadores completos levam vantagem por dominar vários estilos.</li>
+          <li><strong>Dificuldade:</strong> Alta, exige conhecimento avançado de várias regras.</li>
+        </ul>
+      </section>
+    </section>
+  </section>
+
+    <footer>
+  <p class="direitos">&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+  <div class="aviso18">
+    <span class="icone18">18+</span>
+    <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+  </div>
+  <!-- Links para Política de Privacidade e Termos e Condições -->
+  <div style="margin-top: 15px; text-align: center;">
+    <a href="politica.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Política de Privacidade</a>
+    <span style="color: #666;">|</span>
+    <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
+  </div>
+</footer>
+
+  <script>
+    // JavaScript para controlar o menu hamburger
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menuToggle');
+      const mainNav = document.getElementById('mainNav');
+      
+      menuToggle.addEventListener('click', function() {
+        mainNav.classList.toggle('active');
+        
+        // Animação do botão hamburger para X
+        const spans = menuToggle.querySelectorAll('span');
+        if (mainNav.classList.contains('active')) {
+          spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+          spans[1].style.opacity = '0';
+          spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+        } else {
+          spans[0].style.transform = 'none';
+          spans[1].style.opacity = '1';
+          spans[2].style.transform = 'none';
+        }
+      });
+      
+      // Fechar o menu ao clicar em um link (em dispositivos móveis)
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 768) {
+            mainNav.classList.remove('active');
+            const spans = menuToggle.querySelectorAll('span');
+            spans[0].style.transform = 'none';
+            spans[1].style.opacity = '1';
+            spans[2].style.transform = 'none';
+          }
+        });
+      });
+      
+      // Fechar o menu ao clicar fora dele
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 768 && 
+            mainNav.classList.contains('active') &&
+            !mainNav.contains(event.target) &&
+            !menuToggle.contains(event.target)) {
+          mainNav.classList.remove('active');
+          const spans = menuToggle.querySelectorAll('span');
+          spans[0].style.transform = 'none';
+          spans[1].style.opacity = '1';
+          spans[2].style.transform = 'none';
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

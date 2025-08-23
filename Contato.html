@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contato - Guilda do Poker</title>
+  <style>
+    :root{
+      --bg:#121212;
+      --bg-2:#1c1c1c;
+      --bg-3:#2c2c2c;
+      --gold:#ffcc00;
+      --text:#f5f5f5;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header{
+      background: var(--bg-2);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+      min-height: 80px;
+    }
+
+    nav{
+      background: var(--bg-3);
+      padding: 10px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .nav-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .menu {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      list-style: none;
+    }
+    
+    .menu li {
+      margin: 0;
+    }
+    
+    nav a{
+      color: var(--gold);
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+      display: block;
+      padding: 10px 0;
+    }
+    nav a:hover, nav a.active{ color:#ffffff; text-decoration: underline; }
+
+    /* Menu Mobile - MODIFICADO */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 42px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      position: absolute;
+      right: 25px;
+      top: 20px;
+      z-index: 1001;
+    }
+    
+    .menu-toggle span {
+      width: 100%;
+      height: 4px;
+      background-color: var(--gold);
+      border-radius: 3px;
+      transition: all 0.3s linear;
+    }
+
+    /* Efeito ao clicar no hamburger */
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    main{
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    main h1, main h2{ text-align:center; color:var(--gold); margin-bottom:20px; }
+    main p{ text-align:center; color:#e6e6e6; margin-bottom:20px; }
+
+    .contact-info{
+      background: var(--bg-2);
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow:0 0 10px #000;
+      margin-bottom:30px;
+      text-align:center;
+    }
+    .contact-info p{ margin:10px 0; }
+    .contact-info strong{ color: var(--gold); }
+    .contact-info a{ color: var(--gold); text-decoration:none; }
+    .contact-info a:hover{ text-decoration:underline; }
+
+    form{
+      background: var(--bg-2);
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow:0 0 10px #000;
+    }
+    form label{ display:block; margin:12px 0 6px; font-weight:bold; }
+    form input, form textarea{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:6px;
+      margin-bottom:15px;
+      background:#1e1e1e;
+      color:#f5f5f5;
+    }
+    form input::placeholder, form textarea::placeholder{ color:#999; }
+    form button{
+      background: var(--gold);
+      color: #121212;
+      padding:12px 20px;
+      border:none;
+      border-radius:6px;
+      font-size:16px;
+      cursor:pointer;
+      transition:.3s;
+    }
+    form button:hover{ background:#e6b800; }
+
+    footer{
+      text-align:center;
+      padding:20px;
+      background: var(--bg-2);
+      margin-top:40px;
+      border-top: 2px solid var(--gold);
+      font-size:14px;
+      color:#bbb;
+    }
+    footer div{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+    footer img{ max-height:40px; height:auto; }
+
+    .aviso18{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin-top:10px;
+    }
+    .icone18{
+      background:red;
+      color:white;
+      font-weight:bold;
+      font-size:14px;
+      padding:4px 8px;
+      border-radius:5px;
+    }
+    .aviso18 p{ margin:0; color:#ccc; }
+    
+    /* Media Queries para Responsividade - MODIFICADO */
+    @media (max-width: 768px) {
+      header {
+        justify-content: center;
+        padding: 15px;
+        position: relative;
+      }
+      
+      nav {
+        padding: 0;
+        background: transparent;
+      }
+      
+      .menu-toggle {
+        display: flex;
+        width: 40px;
+        height: 34px;
+        right: 20px;
+        top: 20px;
+      }
+
+      .menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--bg-3);
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        padding: 15px 0;
+        border-top: 2px solid var(--gold);
+      }
+
+      .menu.active {
+        display: flex;
+      }
+
+      .menu li {
+        width: 100%;
+        text-align: center;
+      }
+
+      nav a {
+        margin: 0;
+        padding: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 1.1rem;
+      }
+      
+      nav a:last-child {
+        border-bottom: none;
+      }
+      
+      .nav-container {
+        padding: 0;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <!-- Logos removidas conforme solicitado -->
+    <button class="menu-toggle" aria-label="Abrir menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <nav>
+    <div class="nav-container">
+      <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="pppoker.html">PPPoker</a></li>
+        <li><a href="suprema.html">Suprema Poker</a></li>
+        <li><a href="torneios.html">Torneios</a></li>
+        <li><a href="regrasdopoker.html">Regras do Poker</a></li>
+        <li><a href="divulgacao.html">Divulgação</a></li>
+        <li><a href="dicionario.html">Dicionário</a></li>
+        <li><a href="contato.html" class="active">Contato</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Contato</h1>
+    <p>Entre em contato conosco. Estamos prontos para atender você!</p>
+
+    <div class="contact-info">
+      <p><strong>E-mail:</strong> <a href="mailto:guildadopoker@gmail.com">guildadopoker@gmail.com</a></p>
+      <p><strong>WhatsApp (Bruno - 09h às 22h):</strong> <a href="https://wa.me/5573988945407" target="_blank">73988-945407</a></p>
+      <p><strong>WhatsApp (007 - 24h):</strong> <a href="https://wa.me/5564992555115" target="_blank">64992-555115</a></p>
+      <p><strong>Instagram:</strong> <a href="https://instagram.com/guilda.do.poker" target="_blank">@guilda.do.poker</a></p>
+    </div>
+
+    <h2>Deixe sua mensagem</h2>
+    <form id="formContato">
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" placeholder="Seu e-mail" required>
+
+      <label for="mensagem">Mensagem</label>
+      <textarea id="mensagem" name="mensagem" rows="5" placeholder="Escreva sua mensagem..." required></textarea>
+
+      <button type="submit">Enviar</button>
+    </form>
+  </main>
+
+  <footer>
+  <p>&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+  <div>
+    <img src="logoguildapoker.png" alt="Logo Guilda do Poker">
+    <img src="logopppoker.png" alt="Logo PPPoker">
+    <img src="logosupremapoker.png" alt="Logo Suprema Poker">
+    <img src="logolpi.png" alt="Logo LPI">
+    <img src="logocaveirapoker.png" alt="Logo Caveira Poker">
+  </div>
+  <div class="aviso18">
+    <span class="icone18">18+</span>
+    <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+  </div>
+  <!-- Links para Política de Privacidade e Termos e Condições -->
+  <div style="margin-top: 15px; text-align: center;">
+    <a href="politica.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Política de Privacidade</a>
+    <span style="color: #666;">|</span>
+    <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
+  </div>
+</footer>
+
+  <script>
+    // Menu mobile toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const menu = document.querySelector('.menu');
+    
+    menuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      menu.classList.toggle('active');
+      menuToggle.classList.toggle('active');
+    });
+    
+    // Fechar menu ao clicar em um link (em dispositivos móveis)
+    const menuLinks = document.querySelectorAll('.menu a');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          menu.classList.remove('active');
+          menuToggle.classList.remove('active');
+        }
+      });
+    });
+
+    // Fechar o menu ao clicar fora dele
+    document.addEventListener('click', function(event) {
+      if (window.innerWidth <= 768 && menu.classList.contains('active')) {
+        if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
+          menu.classList.remove('active');
+          menuToggle.classList.remove('active');
+        }
+      }
+    });
+
+    // Form submission
+    const form = document.getElementById('formContato');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // previne envio padrão
+      const formData = new FormData(form);
+
+      fetch('https://formspree.io/f/mqalvnpk', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      }).then(response => {
+        if (response.ok) {
+          window.location.href = 'obrigado.html'; // redireciona para página de obrigado
+        } else {
+          alert('Ocorreu um erro ao enviar, tente novamente.');
+        }
+      }).catch(error => {
+        alert('Ocorreu um erro ao enviar, tente novamente.');
+      });
+    });
+  </script>
+
+</body>
+</html>

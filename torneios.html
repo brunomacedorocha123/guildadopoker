@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Torneios - Guilda do Poker</title>
+  <style>
+    :root{
+      --bg:#121212;
+      --bg-2:#1c1c1c;
+      --bg-3:#2c2c2c;
+      --gold:#ffcc00;
+      --text:#f5f5f5;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header{
+      background: var(--bg-2);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    header img{ max-width: 200px; height: auto; }
+
+    /* Menu / Navegação */
+    nav{
+      background: var(--bg-3);
+      padding: 10px 0;
+      text-align: center;
+      position: relative;
+    }
+    
+    .nav-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .menu {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      list-style: none;
+    }
+    
+    .menu li {
+      margin: 0;
+    }
+    
+    nav a{
+      color: var(--gold);
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+      display: block;
+      padding: 10px 0;
+    }
+    nav a:hover,
+    nav a.active{ color:#ffffff; }
+
+    /* Botão hambúrguer - MODIFICADO */
+    .menu-toggle{
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30px;
+      height: 22px;
+      cursor: pointer;
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      z-index: 1000;
+    }
+    .menu-toggle span{
+      display: block;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    /* Responsivo - menu hambúrguer - MODIFICADO */
+    @media screen and (max-width: 768px){
+      header {
+        justify-content: space-between;
+        padding: 15px;
+      }
+      
+      .nav-container {
+        justify-content: flex-start;
+        padding: 0;
+      }
+      
+      .menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--bg-3);
+        z-index: 1000;
+        padding: 10px 0;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+      }
+      
+      .menu.active {
+        display: flex;
+      }
+      
+      .menu li {
+        width: 100%;
+        text-align: center;
+      }
+      
+      nav a {
+        margin: 0;
+        padding: 15px;
+        font-size: 1.2em;
+      }
+      
+      .menu-toggle{ 
+        display: flex;
+        position: absolute;
+        right: 15px;
+        top: 20px;
+      }
+      
+      /* Remover a zona cinzenta abaixo da linha amarela */
+      nav {
+        background: transparent;
+        padding: 0;
+      }
+    }
+
+    /* Seções */
+    section{
+      padding: 40px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    section h1{ color: var(--gold); margin-bottom: 16px; text-align:center; }
+    section h2{ color: var(--gold); margin: 30px 0 10px; }
+    section p{ color:#e6e6e6; margin: 8px 0; text-align:justify; }
+
+    /* Contêiner responsivo para tabelas - MODIFICADO */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 20px 0;
+    }
+
+    table {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: collapse;
+      background: var(--bg-3);
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: var(--bg-2);
+      color: var(--gold);
+    }
+    tr:nth-child(even) {
+      background: #2c2c2c;
+    }
+    
+    /* Ajustes para as colunas Buy-in e Add-on */
+    th:nth-child(3), td:nth-child(3), /* Buy-in */
+    th:nth-child(6), td:nth-child(6) { /* Add-on */
+      min-width: 90px;
+      width: 12%;
+    }
+
+    .btn{
+      display:inline-block;
+      margin: 20px auto;
+      padding: 12px 24px;
+      background: var(--gold);
+      color: #121212;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: .2s;
+      text-align:center;
+    }
+    .btn:hover{ transform: scale(1.04); }
+
+    /* Rodapé */
+    footer{
+      background: var(--bg-2);
+      text-align: center;
+      padding: 15px;
+      margin-top: 24px;
+      border-top: 2px solid var(--gold);
+      font-size: 14px;
+      color:#bbb;
+    }
+    .aviso18 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .icone18 {
+      background: red;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
+    .aviso18 p { margin: 0; }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="logosupremapoker.png" alt="Logo Guilda do Poker">
+    <div class="menu-toggle" id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </header>
+
+  <nav>
+    <div class="nav-container">
+      <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="pppoker.html">PPPoker</a></li>
+        <li><a href="suprema.html">Suprema</a></li>
+        <li><a href="torneios.html" class="active">Torneios</a></li>
+        <li><a href="regrasdopoker.html">Regras do Poker</a></li>
+        <li><a href="divulgacao.html">Divulgação</a></li>
+        <li><a href="dicionario.html">Dicionário</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section>
+    <h1>Torneios</h1>
+
+    <h2>Torneios da Guilda do Poker</h2>
+    <div class="table-container">
+      <table>
+        <tr>
+          <th>Nome do Torneio</th>
+          <th>Data/Horário</th>
+          <th>Buy-in</th>
+          <th>Rebuy</th>
+          <th>Valor do Rebuy</th>
+          <th>Add-on</th>
+          <th>Premiação</th>
+        </tr>
+        <tr>
+          <td>Torneio Diário da Guilda</td>
+          <td>20/08 - 21h</td>
+          <td>R$10</td>
+          <td>Sim</td>
+          <td>R$10</td>
+          <td>Não</td>
+          <td>Garantido R$200</td>
+        </tr>
+        <tr>
+          <td>Torneio Semanal da Guilda</td>
+          <td>24/08 - 20h</td>
+          <td>R$20</td>
+          <td>Não</td>
+          <td>-</td>
+          <td>Sim</td>
+          <td>Garantido R$500</td>
+        </tr>
+        <tr>
+          <td>Torneio Especial de Sexta</td>
+          <td>26/08 - 22h</td>
+          <td>R$15</td>
+          <td>Sim</td>
+          <td>R$15</td>
+          <td>Sim</td>
+          <td>Garantido R$300</td>
+        </tr>
+        <tr>
+          <td>Torneio High Roller</td>
+          <td>28/08 - 21h</td>
+          <td>R$50</td>
+          <td>Não</td>
+          <td>-</td>
+          <td>Não</td>
+          <td>Garantido R$1000</td>
+        </tr>
+        <tr>
+          <td>Torneio de Aniversário</td>
+          <td>30/08 - 20h</td>
+          <td>R$25</td>
+          <td>Sim</td>
+          <td>R$25</td>
+          <td>Sim</td>
+          <td>Garantido R$750</td>
+        </tr>
+      </table>
+    </div>
+
+    <h2>Satélites do Suprema Poker</h2>
+    <div class="table-container">
+      <table>
+        <tr>
+          <th>Nome do Satélite</th>
+          <th>Data/Horário</th>
+          <th>Buy-in</th>
+          <th>Rebuy</th>
+          <th>Valor do Rebuy</th>
+          <th>Add-on</th>
+          <th>Vaga Garantida</th>
+        </tr>
+        <tr>
+          <td>Satélite Diário Suprema</td>
+          <td>20/08 - 19h</td>
+          <td>R$5</td>
+          <td>Sim</td>
+          <td>R$5</td>
+          <td>Não</td>
+          <td>2 Vagas Main Event</td>
+        </tr>
+        <tr>
+          <td>Satélite Especial</td>
+          <td>25/08 - 18h</td>
+          <td>R$10</td>
+          <td>Não</td>
+          <td>-</td>
+          <td>Sim</td>
+          <td>5 Vagas Torneio 50K GTD</td>
+        </tr>
+        <tr>
+          <td>Satélite Turbo</td>
+          <td>27/08 - 20h</td>
+          <td>R$8</td>
+          <td>Sim</td>
+          <td>R$8</td>
+          <td>Não</td>
+          <td>3 Vagas High Roller</td>
+        </tr>
+        <tr>
+          <td>Satélite Semanal</td>
+          <td>29/08 - 19h</td>
+          <td>R$15</td>
+          <td>Não</td>
+          <td>-</td>
+          <td>Sim</td>
+          <td>4 Vagas Championship</td>
+        </tr>
+        <tr>
+          <td>Satélite Mensal</td>
+          <td>31/08 - 18h</td>
+          <td>R$20</td>
+          <td>Sim</td>
+          <td>R$20</td>
+          <td>Sim</td>
+          <td>6 Vagas Main Event</td>
+        </tr>
+      </table>
+    </div>
+
+    <h2>Torneios Principais do Suprema Poker</h2>
+    <div class="table-container">
+      <table>
+        <tr>
+          <th>Nome do Torneio</th>
+          <th>Data/Horário</th>
+          <th>Buy-in</th>
+          <th>Rebuy</th>
+          <th>Valor do Rebuy</th>
+          <th>Add-on</th>
+          <th>Premiação</th>
+        </tr>
+        <tr>
+          <td>Suprema 50K GTD</td>
+          <td>30/08 - 21h</td>
+          <td>R$55</td>
+          <td>Sim</td>
+          <td>R$55</td>
+          <td>Sim</td>
+          <td>Garantido R$50.000</td>
+        </tr>
+        <tr>
+          <td>Suprema High Roller</td>
+          <td>01/09 - 20h</td>
+          <td>R$220</td>
+          <td>Não</td>
+          <td>-</td>
+          <td>Não</td>
+          <td>Garantido R$100.000</td>
+        </tr>
+        <tr>
+          <td>Suprema Championship</td>
+          <td>03/09 - 19h</td>
+          <td>R$110</td>
+          <td>Sim</td>
+          <td>R$110</td>
+          <td>Sim</td>
+          <td>Garantido R$75.000</td>
+        </tr>
+        <tr>
+          <td>Suprema Main Event</td>
+          <td>05/09 - 20h</td>
+          <td>R$330</td>
+          <td>Não</td>
+          <td>-</td>
+          <td>Não</td>
+          <td>Garantido R$150.000</td>
+        </tr>
+        <tr>
+          <td>Suprema Turbo</td>
+          <td>07/09 - 22h</td>
+          <td>R$35</td>
+          <td>Sim</td>
+          <td>R$35</td>
+          <td>Não</td>
+          <td>Garantido R$25.000</td>
+        </tr>
+      </table>
+    </div>
+
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+    <div class="aviso18">
+      <span class="icone18">18+</span>
+      <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+    </div>
+    <!-- Links para Política de Privacidade e Termos e Condições -->
+    <div style="margin-top: 15px; text-align: center;">
+      <a href="politica.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Política de Privacidade</a>
+      <span style="color: #666;">|</span>
+      <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.querySelector('.menu');
+
+    toggle.addEventListener('click', () => {
+      menu.classList.toggle('active');
+    });
+    
+    // Fechar menu ao clicar em um link (em dispositivos móveis)
+    const menuLinks = document.querySelectorAll('.menu a');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          menu.classList.remove('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
