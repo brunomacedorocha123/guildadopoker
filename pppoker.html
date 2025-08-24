@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico?v=3" type="image/x-icon">
   <title>PPPoker - Guilda do Poker</title>
   <style>
     :root{
@@ -212,6 +215,34 @@
       margin-top: 30px;
     }
 
+    /* Novo estilo para o texto chamativo */
+    .chamada-guilda {
+      text-align: center;
+      margin: 30px 0;
+      padding: 20px;
+      background: var(--bg-2);
+      border-radius: 10px;
+      border: 1px solid var(--gold);
+    }
+    
+    .chamada-guilda h2 {
+      color: var(--gold);
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+    
+    .chamada-guilda p {
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    
+    .destaque {
+      color: var(--gold);
+      font-weight: bold;
+    }
+
     footer{
       background: var(--bg-2);
       text-align: center;
@@ -254,6 +285,10 @@
         width: 100%;
         height: auto;
         min-height: 90px;
+      }
+      
+      .chamada-guilda p {
+        font-size: 16px;
       }
     }
 
@@ -361,11 +396,19 @@
       <iframe src="https://www.youtube.com/embed/-q3fognfG-w" title="Como baixar o App PPPoker" allowfullscreen></iframe>
     </div>
 
+    <!-- Texto chamativo para entrar na Guilda -->
+    <div class="chamada-guilda">
+      <h2>JUNTE-SE À NOSSA COMUNIDADE!</h2>
+      <p>Na <span class="destaque">Guilda do Poker</span>, você encontra:</p>
+      <p>• Torneios diários com premiações incríveis</p>
+      <p>• Mesas de cash game</p>
+      <p>• Ambiente amigável e competitivo</p>
+      <p>• Bônus de boas-vindas para novos membros</p>
+      <p>• Aprenda com os melhores jogadores</p>
+      <p class="destaque">Use nosso ID: 4583211 para entrar no clube!</p>
+    </div>
+
     <div class="logos">
-      <div>
-        <img src="logolpi.png" alt="Logo L.P.I">
-        <p>Agente do Clube L.P.I - ID: 4190995</p>
-      </div>
       <div>
         <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
         <p>Guilda do Poker - ID: 4583211</p>
