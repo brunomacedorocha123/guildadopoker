@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Como Ler seus Oponentes no Poker - Guilda do Poker</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --bg: #121212;
+            --bg-2: #1c1c1c;
+            --bg-3: #2c2c2c;
+            --gold: #ffcc00;
+            --text: #f5f5f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--bg-2);
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 160px;
+        }
+        
+        .logo {
+            max-height: 150px;
+            width: auto;
+        }
+
+        /* Article Page */
+        .article-content {
+            padding: 30px;
+            background-color: var(--bg-3);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 40px auto;
+            max-width: 1100px;
+        }
+        
+        .article-header {
+            margin-bottom: 25px;
+        }
+        
+        .article-header h2 {
+            font-size: 32px;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .article-meta {
+            color: #cccccc;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .image-container {
+            width: 70%;
+            max-width: 500px;
+            margin: 0 auto 25px;
+            display: block;
+            background-color: var(--bg-2);
+            border-radius: 8px;
+            padding: 0;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .article-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            border-radius: 8px;
+        }
+        
+        .article-text h3 {
+            color: var(--gold);
+            margin: 25px 0 15px;
+            font-size: 24px;
+        }
+        
+        .article-text p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #e6e6e6;
+        }
+        
+        .tips-list {
+            background-color: var(--bg-2);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        
+        .tips-list h4 {
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 15px;
+            margin-left: 20px;
+            color: #e6e6e6;
+        }
+        
+        .quote {
+            border-left: 4px solid var(--gold);
+            padding-left: 20px;
+            margin: 25px 0;
+            font-style: italic;
+            color: #e6e6e6;
+        }
+        
+        .back-to-blog {
+            display: inline-block;
+            background-color: var(--bg-2);
+            color: var(--gold);
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        
+        .back-to-blog:hover {
+            background-color: #0a291f;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-2);
+            margin-top: 40px;
+            border-top: 2px solid var(--gold);
+            font-size: 14px;
+            color: #bbb;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 40px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 20px;
+            padding: 0 15px;
+        }
+        
+        .footer-section h3 {
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .footer-section p, .footer-section a {
+            color: #cccccc;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: var(--gold);
+        }
+        
+        .social-icons a {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            color: #cccccc;
+            font-size: 16px;
+        }
+        
+        .aviso18 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .icone18 {
+            background: red;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+        
+        .aviso18 p {
+            margin: 0;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logoguilda.jpeg" alt="Guilda do Poker" class="logo">
+    </header>
+
+    <div class="article-content">
+        <div class="article-header">
+            <h2>Como Ler seus Oponentes no Poker: A Arte de Decifrar Comportamentos</h2>
+            <div class="article-meta">
+                <span>Publicado em: 18 de Janeiro de 2025</span> | 
+                <span>Autor: Maria "Shark" Santos</span> | 
+                <span>Categoria: Estratégia Avançada</span>
+            </div>
+        </div>
+        
+        <div class="image-container">
+            <img src="lermente.jpg" alt="Como Ler seus Oponentes no Poker" class="article-image">
+        </div>
+        
+        <div class="article-text">
+            <p>Enquanto muitos jogadores focam apenas em suas próprias cartas, os verdadeiros mestres do poker dedicam grande parte de sua atenção à leitura dos oponentes. A capacidade de decifrar comportamentos, identificar padrões e detectar tells (sinais involuntários) pode transformar um jogador mediano em um temível adversário. Neste guia completo, exploraremos as técnicas mais eficazes para ler seus oponentes como um profissional, aumentando significativamente sua vantagem na mesa.</p>
+            
+            <h3>1. Observe os Padrões de Aposta</h3>
+            <p>A forma como um jogador aposta revela mais sobre sua mão do que qualquer outro indicador. Iniciantes geralmente focam apenas no tamanho das apostas, mas jogadores experientes analisam o timing, a consistência e as variações nos padrões de aposta.</p>
+            
+            <p>Um oponente que sempre faz apostas do mesmo tamanho, independentemente da força de sua mão, está se tornando previsível. Já um jogador que varia seus tamanhos de aposta sem uma razão óbvia pode estar tentando camuflar sua estratégia. Preste atenção em como cada oponente age em diferentes situações: como apostam com draws, como valoram suas mãos fortes e como protegem suas mãos médias.</p>
+            
+            <div class="tips-list">
+                <h4>O que observar:</h4>
+                <ul>
+                    <li>O tempo que levam para tomar decisões (instantâneo vs. longas pausas)</li>
+                    <li>Consistência nos tamanhos de aposta em situações similares</li>
+                    <li>Como reagem a apostas dos adversários (rapidez ou hesitação)</li>
+                    <li>Mudanças súbitas no padrão habitual de apostas</li>
+                    <li>Como apostam em diferentes estágios do jogo (pré-flop, flop, turn, river)</li>
+                </ul>
+            </div>
+            
+            <h3>2. Identifique Tells Físicos e Comportamentais</h3>
+            <p>Tells são comportamentos involuntários que revelam informações sobre a força da mão de um jogador. Embora mais comuns em jogadores recreativos, até profissionais experientes podem exibir tells sutis em momentos de tensão.</p>
+            
+            <div class="quote">
+                "Os tells mais valiosos não são aqueles óbvios e dramáticos que vemos em filmes, mas as microexpressões e mudanças sutis no comportamento que ocorrem quando um jogador está diante de uma decisão difícil."
+            </div>
+            
+            <p>Alguns tells comuns incluem: mudanças no padrão respiratório, tremor nas mãos ao colocar fichas, contato visual excessivo ou evitado, e mudanças na postura. É crucial lembrar que os tells variam de pessoa para pessoa - o que indica força em um jogador pode indicar fraqueza em outro.</p>
+            
+            <h3>3. Classifique seus Oponentes em Perfis</h3>
+            <p>Uma das técnicas mais eficazes é categorizar os oponentes em perfis específicos. Esta categorização permite antecipar suas ações com maior precisão. Os perfis mais comuns incluem:</p>
+            
+            <div class="tips-list">
+                <h4>Tipos de jogadores:</h4>
+                <ul>
+                    <li><strong>TAG (Tight-Aggressive):</strong> Joga poucas mãos, mas é agressivo quando entra. Geralmente sólido e difícil de ler.</li>
+                    <li><strong>LAG (Loose-Aggressive):</strong> Joga muitas mãos de forma agressiva. Imprevisível, mas explorável.</li>
+                    <li><strong>Calling Station:</strong> Paga apostas com frequência, raramente blefa. Excelente para extrair valor com mãos fortes.</li>
+                    <li><strong>Nit:</strong> Extremamente conservador, só joga com mãos premium. Fácil de ler e evitar.</li>
+                    <li><strong>Maniaco:</strong> Aposta e aumenta constantemente. Requer paciência para esperar uma mão forte.</li>
+                </ul>
+            </div>
+            
+            <p>Ao identificar em qual categoria cada oponente se encaixa, você pode adaptar sua estratégia especificamente para explorar suas fraquezas.</p>
+            
+            <h3>4. Analise o Contexto da Mão</h3>
+            <p>A leitura de oponentes não ocorre no vácuo. O contexto da mão atual, o histórico recente e a dinâmica da mesa são fatores cruciais. Um jogador que acaba de sofrer uma bad beat pode estar tiltado e propenso a decisões irracionais. Outro que acumulou muitas fichas pode estar se sentindo confiante e disposto a assumir mais riscos.</p>
+            
+            <p>Considere também como a imagem de mesa afeta as decisões. Se você tem jogado de forma conservadora nas últumas mãos, os oponentes podem dar mais crédito às suas apostas. Se tem blefado frequentemente, podem começar a pagar você mais vezes.</p>
+            
+            <h3>5. Use a Tecnologia a seu Favor (em jogos online)</h3>
+            <p>Em mesas online, onde não podemos observar tells físicos, a leitura de oponentes depende quase exclusivamente de estatísticas e padrões de jogo. Ferramentas como trackers (Hold'em Manager, PokerTracker) fornecem dados valiosos sobre como cada jogador age em diferentes situações.</p>
+            
+            <div class="tips-list">
+                <h4>Estatísticas-chave para analisar:</h4>
+                <ul>
+                    <li><strong>VPIP (Voluntarily Put $ In Pot):</strong> Percentual de mãos que o jogador entra voluntariamente no pote.</li>
+                    <li><strong>PFR (Pre-Flop Raise):</strong> Percentual de mãos que o jogador aumenta pré-flop.</li>
+                    <li><strong>AF (Aggression Factor):</strong> Mede a agressividade do jogador (apostas+aumentos / calls).</li>
+                    <li><strong>3Bet%:</strong> Frequência com que o jogador faz re-raise pré-flop.</li>
+                    <li><strong>WTSD (Went to Showdown):</strong> Percentual de mãos que o jogador leva até o showdown.</li>
+                </ul>
+            </div>
+            
+            <h3>6. Desenvolva sua Percepção e Intuição</h3>
+            <p>A leitura de oponentes não é uma ciência exata - envolve uma combinação de análise racional e intuição desenvolvida através da experiência. Os melhores leitores de oponentes são aqueles que conseguem sintetizar todas as informações disponíveis (padrões de aposta, tells, estatísticas, contexto) para formar uma imagem coerente do que o adversário pode ter.</p>
+            
+            <p>Pratique a observação ativa mesmo quando não está envolvido em uma mão. Anote comportamentos interessantes e revise mãos após as sessões para identificar padrões que podem ter passado despercebidos durante o jogo.</p>
+            
+            <h3>Conclusão</h3>
+            <p>A arte de ler oponentes é uma habilidade que se desenvolve ao longo de milhares de mãos e com atenção consciente aos detalhes. Comece focando em um ou dois aspectos de cada vez - talvez primeiro os padrões de aposta, depois os tells físicos - e gradualmente expanda seu repertório de observação.</p>
+            
+            <p>Lembre-se que a leitura de oponentes é apenas uma parte da equação do sucesso no poker. Combine esta habilidade com um sólido conhecimento de estratégia, gestão de banca adequada e controle emocional para se tornar um jogador completo e temido em qualquer mesa.</p>
+            
+            <p>Na próxima sessão, escolha um oponente específico para estudar em detalhes. Anote suas observações e veja como sua capacidade de prever suas ações melhora com o tempo. O poker é um jogo de pessoas jogado com cartas, não o contrário.</p>
+            
+            <p>Quer mergulhar mais fundo neste tema? Deixe nos comentários que aspectos da leitura de oponentes você gostaria que explorássemos em detalhes!</p>
+            
+            <a href="blog.html" class="back-to-blog">Voltar para o Blog</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Guilda do Poker</h3>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2025 Guilda do Poker. Todos os direitos reservados.</p>
+        </div>
+        
+        <div class="aviso18">
+            <span class="icone18">18+</span>
+            <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
