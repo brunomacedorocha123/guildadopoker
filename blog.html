@@ -6,7 +6,6 @@
     <title>Blog - Guilda do Poker</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <title>Blog - Guilda do Poker</title>
     <style>
         :root {
             --bg: #121212;
@@ -31,14 +30,19 @@
 
         header {
             background: var(--bg-2);
-            padding: 20px;
+            padding: 25px 20px;
             text-align: center;
             border-bottom: 2px solid var(--gold);
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 80px;
+            min-height: 160px;
+        }
+        
+        .logo {
+            max-height: 150px;
+            width: auto;
         }
 
         /* Menu de navegação responsivo */
@@ -286,43 +290,27 @@
         
         .footer-content {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             flex-wrap: wrap;
             max-width: 1200px;
             margin: 0 auto;
+            gap: 40px;
         }
         
         .footer-section {
             flex: 1;
-            min-width: 300px;
+            min-width: 250px;
             margin-bottom: 20px;
             padding: 0 15px;
         }
         
         .footer-section h3 {
             color: var(--gold);
-            margin-bottom: 20px;
-        }
-        
-        .footer-section p, .footer-section a {
-            color: #cccccc;
-            margin-bottom: 10px;
-            display: block;
-            text-decoration: none;
-        }
-        
-        .footer-section a:hover {
-            color: var(--gold);
-        }
-        
-        .social-icons a {
-            display: inline-block;
-            margin-right: 15px;
-            font-size: 20px;
+            margin-bottom: 15px;
         }
         
         .copyright {
-            margin-top: 30px;
+            margin-top: 20px;
             color: #cccccc;
             font-size: 16px;
         }
@@ -332,7 +320,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         
         .icone18 {
@@ -353,7 +341,7 @@
 <body>
 
     <header>
-        <h1>Guilda do Poker</h1>
+        <img src="logoguilda.jpeg" alt="Guilda do Poker" class="logo">
         <button class="hamburger" aria-label="Abrir menu">
             <span></span>
             <span></span>
@@ -407,7 +395,7 @@
             <img src="https://placehold.co/600x400/2c2c2c/ffcc00?text=Estratégia+para+Torneios" alt="Estratégia Básica para Torneios">
             <div class="card-content">
                 <h3>Estratégia Básica para Torneios</h3>
-                <p>Conheça as estratégias fundamentais para ter sucesso em torneios de poker e aumentar suas chances de chegar à mesa final.</p>
+                <p>Conheça as estratégias fundamentais para ter sucesso em torneios de poker and aumentar suas chances de chegar à mesa final.</p>
                 <a href="#" class="read-more">Ler Artigo</a>
             </div>
         </div>
@@ -444,21 +432,6 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h3>Guilda do Poker</h3>
-                <p>Elevando o jogo de poker desde 2023</p>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Links Rápidos</h3>
-                <a href="index.html">Home</a>
-                <a href="torneios.html">Torneios</a>
-                <a href="blog.html">Blog</a>
-                <a href="contato.html">Contato</a>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contato</h3>
-                <p>Email: contato@guildadopoker.com</p>
-                <p>Telefone: (11) 99999-9999</p>
             </div>
         </div>
         
