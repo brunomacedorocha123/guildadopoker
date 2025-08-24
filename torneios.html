@@ -166,7 +166,7 @@
 
     table {
       width: 100%;
-      min-width: 700px;
+      min-width: 800px;
       border-collapse: collapse;
       background: var(--bg-3);
     }
@@ -174,6 +174,7 @@
       border: 1px solid #444;
       padding: 10px;
       text-align: center;
+      font-size: 0.9em;
     }
     th {
       background: var(--bg-2);
@@ -185,9 +186,9 @@
     
     /* Ajustes para as colunas Buy-in e Add-on */
     th:nth-child(3), td:nth-child(3), /* Buy-in */
-    th:nth-child(6), td:nth-child(6) { /* Add-on */
-      min-width: 90px;
-      width: 12%;
+    th:nth-child(7), td:nth-child(7) { /* Valor do Add-on */
+      min-width: 80px;
+      width: 10%;
     }
 
     .btn{
@@ -273,51 +274,57 @@
           <th>Rebuy</th>
           <th>Valor do Rebuy</th>
           <th>Add-on</th>
+          <th>Valor do Add-on</th>
           <th>Premiação</th>
         </tr>
         <tr>
-          <td>Torneio Diário da Guilda</td>
-          <td>20/08 - 21h</td>
-          <td>R$10</td>
-          <td>Sim</td>
-          <td>R$10</td>
-          <td>Não</td>
-          <td>Garantido R$200</td>
-        </tr>
-        <tr>
-          <td>Torneio Semanal da Guilda</td>
-          <td>24/08 - 20h</td>
+          <td>Torneio do Escudeiro</td>
+          <td>25/08 - 19h30</td>
           <td>R$20</td>
-          <td>Não</td>
-          <td>-</td>
           <td>Sim</td>
-          <td>Garantido R$500</td>
-        </tr>
-        <tr>
-          <td>Torneio Especial de Sexta</td>
-          <td>26/08 - 22h</td>
-          <td>R$15</td>
+          <td>R$20</td>
           <td>Sim</td>
-          <td>R$15</td>
-          <td>Sim</td>
+          <td>R$20</td>
           <td>Garantido R$300</td>
         </tr>
         <tr>
-          <td>Torneio High Roller</td>
-          <td>28/08 - 21h</td>
+          <td>Torneio Jogo do Arqueiro</td>
+          <td>26/08 - 20h</td>
+          <td>R$25</td>
+          <td>Sim</td>
+          <td>R$25</td>
+          <td>Sim</td>
+          <td>R$25</td>
+          <td>Garantido R$300</td>
+        </tr>
+        <tr>
+          <td> Torneio Duelo dos Cavaleiros (PLO5)</td>
+          <td>27/08 - 22h</td>
+          <td>R$20</td>
+          <td>Sim</td>
+          <td>R$10</td>
+          <td>Sim</td>
+          <td>R$20</td>
+          <td>Garantido R$200</td>
+        </tr>
+        <tr>
+          <td>Torneio Conselho dos Magos</td>
+          <td>28/08 - 20h</td>
+          <td>R$50</td>
+          <td>Sim</td>
           <td>R$50</td>
           <td>Não</td>
           <td>-</td>
-          <td>Não</td>
-          <td>Garantido R$1000</td>
+          <td>Garantido R$500</td>
         </tr>
         <tr>
-          <td>Torneio de Aniversário</td>
-          <td>30/08 - 20h</td>
-          <td>R$25</td>
+          <td>Torneio do Dragão</td>
+          <td>31/08 - 19h30</td>
+          <td>R$80</td>
           <td>Sim</td>
-          <td>R$25</td>
+          <td>R$40</td>
           <td>Sim</td>
+          <td>R$40</td>
           <td>Garantido R$750</td>
         </tr>
       </table>
@@ -333,6 +340,7 @@
           <th>Rebuy</th>
           <th>Valor do Rebuy</th>
           <th>Add-on</th>
+          <th>Valor do Add-on</th>
           <th>Premiação</th>
         </tr>
         <tr>
@@ -342,6 +350,7 @@
           <td>Não</td>
           <td>-</td>
           <td>Não</td>
+          <td>-</td>
           <td>R$100 em Tickets</td>
         </tr>
         <tr>
@@ -351,6 +360,7 @@
           <td>Não</td>
           <td>-</td>
           <td>Não</td>
+          <td>-</td>
           <td>R$250 em Prêmios</td>
         </tr>
         <tr>
@@ -360,6 +370,7 @@
           <td>Não</td>
           <td>-</td>
           <td>Não</td>
+          <td>-</td>
           <td>Ingressos para Torneios</td>
         </tr>
       </table>
@@ -375,6 +386,7 @@
           <th>Rebuy</th>
           <th>Valor do Rebuy</th>
           <th>Add-on</th>
+          <th>Valor do Add-on</th>
           <th>Vaga Garantida</th>
         </tr>
         <tr>
@@ -384,6 +396,7 @@
           <td>Sim</td>
           <td>R$5</td>
           <td>Não</td>
+          <td>-</td>
           <td>2 Vagas Main Event</td>
         </tr>
         <tr>
@@ -393,6 +406,7 @@
           <td>Não</td>
           <td>-</td>
           <td>Sim</td>
+          <td>R$10</td>
           <td>5 Vagas Torneio 50K GTD</td>
         </tr>
         <tr>
@@ -402,6 +416,7 @@
           <td>Sim</td>
           <td>R$8</td>
           <td>Não</td>
+          <td>-</td>
           <td>3 Vagas High Roller</td>
         </tr>
         <tr>
@@ -411,6 +426,7 @@
           <td>Não</td>
           <td>-</td>
           <td>Sim</td>
+          <td>R$15</td>
           <td>4 Vagas Championship</td>
         </tr>
         <tr>
@@ -420,6 +436,7 @@
           <td>Sim</td>
           <td>R$20</td>
           <td>Sim</td>
+          <td>R$20</td>
           <td>6 Vagas Main Event</td>
         </tr>
       </table>
@@ -435,6 +452,7 @@
           <th>Rebuy</th>
           <th>Valor do Rebuy</th>
           <th>Add-on</th>
+          <th>Valor do Add-on</th>
           <th>Premiação</th>
         </tr>
         <tr>
@@ -444,6 +462,7 @@
           <td>Sim</td>
           <td>R$55</td>
           <td>Sim</td>
+          <td>R$55</td>
           <td>Garantido R$50.000</td>
         </tr>
         <tr>
@@ -453,6 +472,7 @@
           <td>Não</td>
           <td>-</td>
           <td>Não</td>
+          <td>-</td>
           <td>Garantido R$100.000</td>
         </tr>
         <tr>
@@ -462,6 +482,7 @@
           <td>Sim</td>
           <td>R$110</td>
           <td>Sim</td>
+          <td>R$110</td>
           <td>Garantido R$75.000</td>
         </tr>
         <tr>
@@ -471,6 +492,7 @@
           <td>Não</td>
           <td>-</td>
           <td>Não</td>
+          <td>-</td>
           <td>Garantido R$150.000</td>
         </tr>
         <tr>
@@ -480,6 +502,7 @@
           <td>Sim</td>
           <td>R$35</td>
           <td>Não</td>
+          <td>-</td>
           <td>Garantido R$25.000</td>
         </tr>
       </table>
