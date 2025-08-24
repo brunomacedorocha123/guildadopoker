@@ -66,13 +66,24 @@
             margin-bottom: 20px;
         }
         
-        .article-image {
-            width: 60%;
-            max-width: 500px;
-            height: auto;
-            border-radius: 10px;
+        .image-container {
+            width: 80%; /* Aumentei a largura para preencher mais espaço */
+            max-width: 600px; /* Aumentei a largura máxima */
             margin: 0 auto 25px;
             display: block;
+            background-color: var(--bg-2);
+            border-radius: 10px;
+            padding: 0; /* Removi completamente o padding */
+            text-align: center;
+            overflow: hidden; /* Garante que a imagem não ultrapasse o container */
+        }
+        
+        .article-image {
+            width: 100%; /* Faz a imagem preencher toda a largura do container */
+            height: auto;
+            display: block;
+            margin: 0;
+            border-radius: 10px; /* Bordas arredondadas na própria imagem */
         }
         
         .article-text h3 {
@@ -222,13 +233,15 @@
             </div>
         </div>
         
-        <img src="5erroscomuns.jpg" alt="5 Erros Comuns de Iniciantes no Poker" class="article-image">
+        <div class="image-container">
+            <img src="img5errospoker.jpg" alt="5 Erros Comuns de Iniciantes no Poker" class="article-image">
+        </div>
         
         <div class="article-text">
             <p>Todo jogador de poker, em algum momento, foi iniciante e cometeu erros que parecem óbvios em retrospecto. A jornada no poker é repleta de aprendizados, e entender os equívocos mais comuns desde o início pode poupar você de muitas perdas desnecessárias. Neste artigo, vamos explorar em detalhes os cinco erros mais comuns que vejo jogadores novatos cometendo e, o mais importante, como evitá-los para melhorar seu jogo imediatamente e construir uma base sólida para seu desenvolvimento como jogador.</p>
             
             <h3>1. Jogar Muitas Mãos</h3>
-            <p>O erro mais comum entre iniciantes é jogar muitas mãos. A empolgação de participar do jogo pode levar a decisões pobres sobre quando entrar em uma mão. Muitos iniciantes acham que precisam estar envolvidos em cada hand para se divertirem ou para recuperarem as perdas rapidamente, mas essa abordagem é uma das principais causas de bankrolls esgotados.</p>
+            <p>O erro mais comum entre iniciantes é jogar muitas mãos. A empolgação de participar do jogo pode levar a decisões pobres sobre quando entrar em uma mão. Muitos iniciantes acham que precisam estar envolvidos em cada hand para se divertirem ou para recuperarem as perdas rapidamente, mais essa abordagem é uma das principais causas de bankrolls esgotados.</p>
             
             <p>Estatisticamente, mesmo os jogadores profissionais têm mãos premium em apenas cerca de 20-25% das situações. Jogar muitas mãos marginais ou ruins coloca você em situações difíceis após o flop, onde sua falta de experiência será explorada por oponentes mais experientes. A paciência é uma virtude no poker, e saber esperar pelas mãos certas é uma habilidade que separa os jogadores consistentes dos perdedores crônicos.</p>
             
@@ -266,7 +279,7 @@
             <h3>4. Jogar de Forma Muito Previsível</h3>
             <p>Se você sempre apostar forte com boas mãos e desistir com mãos ruins, os jogadores experientes rapidamente perceberão seu padrão e explorarão isso. A previsibilidade é um dos maiores aproveitamentos no poker, e jogadores que não variam seu jogo se tornam alvos fáceis.</p>
             
-            <p>Jogadores previsíveis sofrem porque seus oponentes sempre sabem onde estão. Se você só bet quando tem uma hand forte, os oponentes vão fugir. Se você só check quando está fraco, vão bet contra você agressivamente. Desenvolver um jogo balanceado é essencial para o sucesso a longo prazo.</p>
+            <p>Jogadores previsíveis sofrem porque seus oponentes sempre sabem onde estão. If você só bet quando tem uma hand forte, os oponentes vão fugir. Se você só check quando está fraco, vão bet contra você agressivamente. Desenvolver um jogo balanceado é essencial para o sucesso a longo prazo.</p>
             
             <div class="tips-list">
                 <h4>Dica de ouro:</h4>
@@ -293,7 +306,7 @@
             
             <p>Os melhores jogadores não são necessariamente aqueles que conhecem as estratégias mais complexas, mas aqueles que cometem menos erros fundamentais. Trabalhe consistentemente nestes aspectos do seu jogo, e você verá melhorias significativas em seus resultados a longo prazo.</p>
             
-            <p>Na próxima vez que se sentar à mesa, mantenha esses pontos em mente e observe como suas decisões melhoram. Anote suas sessões, revise mãos difíceis e sempre busque feedback de jogadores mais experientes. O caminho para a maestria no poker é longo, mas evitando esses erros comuns, você estará acelerando significativamente sua jornada.</p>
+            <p>Na próxima vez que se sentar à mesa, mantenha esses pontos em mente e observe como suas decisões melhoram. Anote suas sessões, revise mãos difíceis e sempre busque feedback de jogadores mais experientes. O caminho para a maestria no poker é longo, mas evitando esses erros comus, você estará acelerando significativamente sua jornada.</p>
             
             <p>Quer mais dicas? Deixe nos comentários que tópico você gostaria que abordássemos no próximo artigo!</p>
             
@@ -313,13 +326,7 @@
                 <a href="index.html">Home</a>
                 <a href="torneios.html">Torneios</a>
                 <a href="blog.html">Blog</a>
-                <a href="contato.html">Contato</a>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contato</h3>
-                <p>Email: contato@guildadopoker.com</p>
-                <p>Telefone: (11) 99999-9999</p>
+                <!-- Removida a seção de contato conforme solicitado -->
             </div>
         </div>
         
