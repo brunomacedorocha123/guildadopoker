@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Guilda do Poker</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <title>Blog - Guilda do Poker</title>
+    <style>
+        :root {
+            --bg: #121212;
+            --bg-2: #1c1c1c;
+            --bg-3: #2c2c2c;
+            --gold: #ffcc00;
+            --text: #f5f5f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--bg-2);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+        }
+
+        /* Menu de navegação responsivo */
+        nav {
+            background: var(--bg-3);
+            padding: 15px 0;
+            position: relative;
+            width: 100%;
+        }
+
+        .menu-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .menu li {
+            margin: 0;
+        }
+
+        .menu a {
+            color: var(--gold);
+            padding: 14px 22px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: .2s;
+            display: block;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+
+        .menu a:hover, .menu a.active {
+            color: #ffffff;
+            text-decoration: underline;
+            background-color: rgba(255, 204, 0, 0.15);
+            border-radius: 6px;
+        }
+
+        /* Botão hambúrguer */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 42px;
+            height: 36px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            position: absolute;
+            right: 25px;
+            top: 20px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 100%;
+            height: 4px;
+            background-color: var(--gold);
+            border-radius: 3px;
+            transition: all 0.3s linear;
+        }
+
+        /* Efeito ao clicar no hamburger */
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        @media (max-width: 992px) {
+            .menu a {
+                padding: 12px 18px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                justify-content: center;
+                padding: 15px;
+                position: relative;
+            }
+            
+            nav {
+                padding: 0;
+                background: transparent;
+            }
+            
+            .hamburger {
+                display: flex;
+                width: 40px;
+                height: 34px;
+                right: 20px;
+                top: 20px;
+            }
+
+            .menu {
+                flex-direction: column;
+                width: 100%;
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: var(--bg-3);
+                z-index: 1000;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+                padding: 15px 0;
+                border-top: 2px solid var(--gold);
+            }
+
+            .menu.active {
+                display: flex;
+            }
+
+            .menu li {
+                width: 100%;
+                text-align: center;
+            }
+
+            .menu a {
+                padding: 16px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                font-size: 1.1rem;
+            }
+            
+            .menu a:last-child {
+                border-bottom: none;
+            }
+            
+            .menu-container {
+                padding: 0;
+            }
+        }
+
+        /* Blog Intro */
+        .blog-intro {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+            background-size: cover;
+            margin-bottom: 30px;
+        }
+        
+        .blog-intro h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--gold);
+        }
+        
+        .blog-intro p {
+            font-size: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #e6e6e6;
+        }
+        
+        /* Blog Grid */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px auto;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+        
+        .blog-card {
+            background-color: var(--bg-3);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .blog-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .card-content {
+            padding: 20px;
+        }
+        
+        .card-content h3 {
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        
+        .card-content p {
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+        
+        .read-more {
+            display: inline-block;
+            background-color: var(--gold);
+            color: #121212;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .read-more:hover {
+            background-color: #ffd633;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-2);
+            margin-top: 40px;
+            border-top: 2px solid var(--gold);
+            font-size: 14px;
+            color: #bbb;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 300px;
+            margin-bottom: 20px;
+            padding: 0 15px;
+        }
+        
+        .footer-section h3 {
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        
+        .footer-section p, .footer-section a {
+            color: #cccccc;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: var(--gold);
+        }
+        
+        .social-icons a {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .copyright {
+            margin-top: 30px;
+            color: #cccccc;
+            font-size: 16px;
+        }
+        
+        .aviso18 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .icone18 {
+            background: red;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+        
+        .aviso18 p {
+            margin: 0;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Guilda do Poker</h1>
+        <button class="hamburger" aria-label="Abrir menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <nav>
+        <div class="menu-container">
+            <ul class="menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="pppoker.html">PPPoker</a></li>
+                <li><a href="suprema.html">Suprema Poker</a></li>
+                <li><a href="torneios.html">Torneios</a></li>
+                <li><a href="regrasdopoker.html">Regras do Poker</a></li>
+                <li><a href="blog.html" class="active">Blog</a></li>
+                <li><a href="divulgacao.html">Divulgação</a></li>
+                <li><a href="dicionario.html">Dicionário</a></li>
+                <li><a href="contato.html">Contato</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="blog-intro">
+        <div class="container">
+            <h2>Blog de Poker</h2>
+            <p>Estratégias, dicas e análises para elevar seu jogo</p>
+        </div>
+    </section>
+
+    <div class="blog-grid">
+        <div class="blog-card">
+            <img src="5erroscomuns.jpg" alt="5 Erros Comuns de Iniciantes no Poker">
+            <div class="card-content">
+                <h3>5 Erros Comuns de Iniciantes no Poker</h3>
+                <p>Descubra os erros mais frequentes que jogadores novatos cometem e aprenda como evitá-los para melhorar seu jogo imediatamente.</p>
+                <a href="5erroscomuns.html" class="read-more">Ler Artigo</a>
+            </div>
+        </div>
+        
+        <div class="blog-card">
+            <img src="https://placehold.co/600x400/2c2c2c/ffcc00?text=Como+Ler+Oponentes" alt="Como Ler seus Oponentes">
+            <div class="card-content">
+                <h3>Como Ler seus Oponentes</h3>
+                <p>Aprenda a identificar os sinais reveladores que seus adversários dão e use isso a seu favor nas mesas de poker.</p>
+                <a href="#" class="read-more">Ler Artigo</a>
+            </div>
+        </div>
+        
+        <div class="blog-card">
+            <img src="https://placehold.co/600x400/2c2c2c/ffcc00?text=Estratégia+para+Torneios" alt="Estratégia Básica para Torneios">
+            <div class="card-content">
+                <h3>Estratégia Básica para Torneios</h3>
+                <p>Conheça as estratégias fundamentais para ter sucesso em torneios de poker e aumentar suas chances de chegar à mesa final.</p>
+                <a href="#" class="read-more">Ler Artigo</a>
+            </div>
+        </div>
+        
+        <div class="blog-card">
+            <img src="https://placehold.co/600x400/2c2c2c/ffcc00?text=Gerenciamento+de+Banca" alt="Gerenciamento de Banca">
+            <div class="card-content">
+                <h3>Gerenciamento de Banca</h3>
+                <p>Descubra como administrar seu bankroll de forma eficiente para evitar que más sequências acabem com sua banca.</p>
+                <a href="#" class="read-more">Ler Artigo</a>
+            </div>
+        </div>
+        
+        <div class="blog-card">
+            <img src="https://placehold.co/600x400/2c2c2c/ffcc00?text=Bluff+Eficiente" alt="Como Fazer Bluff Eficiente">
+            <div class="card-content">
+                <h3>Como Fazer Bluff Eficiente</h3>
+                <p>Aprenda a arte do bluff no momento certo e aumente seus lucros nas mesas de poker.</p>
+                <a href="#" class="read-more">Ler Artigo</a>
+            </div>
+        </div>
+        
+        <div class="blog-card">
+            <img src="https://placehold.co/600x400/2c2c2c/ffcc00?text=Psicologia+do+Poker" alt="Psicologia do Poker">
+            <div class="card-content">
+                <h3>Psicologia do Poker</h3>
+                <p>Entenda os aspectos psicológicos do poker e como manter o controle emocional durante longas sessões.</p>
+                <a href="#" class="read-more">Ler Artigo</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Guilda do Poker</h3>
+                <p>Elevando o jogo de poker desde 2023</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Links Rápidos</h3>
+                <a href="index.html">Home</a>
+                <a href="torneios.html">Torneios</a>
+                <a href="blog.html">Blog</a>
+                <a href="contato.html">Contato</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <p>Email: contato@guildadopoker.com</p>
+                <p>Telefone: (11) 99999-9999</p>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 Guilda do Poker. Todos os direitos reservados.</p>
+        </div>
+        
+        <div class="aviso18">
+            <span class="icone18">18+</span>
+            <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript para controlar o menu hamburger
+        const hamburger = document.querySelector('.hamburger');
+        const menu = document.querySelector('.menu');
+        
+        hamburger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            menu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+        
+        // Fechar o menu ao clicar em um link (útil para dispositivos móveis)
+        const menuLinks = document.querySelectorAll('.menu a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    menu.classList.remove('active');
+                    hamburger.classList.remove('active');
+                }
+            });
+        });
+        
+        // Fechar o menu ao clicar fora dele
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth <= 768 && menu.classList.contains('active')) {
+                if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                    menu.classList.remove('active');
+                    hamburger.classList.remove('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
