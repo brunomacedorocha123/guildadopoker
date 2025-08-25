@@ -196,6 +196,28 @@
             }
         }
 
+        /* Container para banner */
+        .banner-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            background-color: var(--bg-2);
+        }
+        
+        .banner {
+            width: 728px;
+            height: 90px;
+            background-color: var(--bg-3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+
         /* Blog Intro */
         .blog-intro {
             text-align: center;
@@ -331,6 +353,21 @@
             margin: 0;
             color: #ccc;
         }
+
+        /* Responsividade para o banner */
+        @media (max-width: 768px) {
+            .banner {
+                width: 100%;
+                max-width: 728px;
+                height: auto;
+                min-height: 90px;
+                aspect-ratio: 728/90;
+            }
+            
+            .banner-container {
+                padding: 15px 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -359,6 +396,13 @@
             </ul>
         </div>
     </nav>
+
+    <!-- Espaço para banner -->
+    <div class="banner-container">
+        <div class="banner">
+            Espaço para Banner (728x90)
+        </div>
+    </div>
 
     <section class="blog-intro">
         <div class="container">
@@ -390,7 +434,7 @@
             <img src="https://placehold.co/600x400/2c2c2c/ffcc00?text=Estratégia+para+Torneios" alt="Estratégia Básica para Torneios">
             <div class="card-content">
                 <h3>Estratégia Básica para Torneios</h3>
-                <p>Conheça as estratégias fundamentais para ter sucesso em torneios de poker e aumentar suas chances de chegar à mesa final.</p>
+                <p>Conneça as estratégias fundamentais para ter sucesso em torneios de poker e aumentar suas chances de chegar à mesa final.</p>
                 <a href="#" class="read-more">Ler Artigo</a>
             </div>
         </div>
