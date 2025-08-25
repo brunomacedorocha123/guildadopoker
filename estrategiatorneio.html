@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estratégia Básica para Torneios de Poker</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --bg: #121212;
+            --bg-2: #1c1c1c;
+            --bg-3: #2c2c2c;
+            --gold: #ffcc00;
+            --text: #f5f5f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--bg-2);
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 160px;
+        }
+        
+        .logo {
+            max-height: 150px;
+            width: auto;
+        }
+
+        /* Article Page */
+        .article-content {
+            padding: 30px;
+            background-color: var(--bg-3);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 40px auto;
+            max-width: 1100px;
+        }
+        
+        .article-header {
+            margin-bottom: 25px;
+        }
+        
+        .article-header h2 {
+            font-size: 32px;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .article-meta {
+            color: #cccccc;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .image-container {
+            width: 70%;
+            max-width: 500px;
+            margin: 0 auto 25px;
+            display: block;
+            background-color: var(--bg-2);
+            border-radius: 8px;
+            padding: 0;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .article-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            border-radius: 8px;
+        }
+        
+        .article-text h3 {
+            color: var(--gold);
+            margin: 25px 0 15px;
+            font-size: 24px;
+        }
+        
+        .article-text p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #e6e6e6;
+        }
+        
+        .tips-list {
+            background-color: var(--bg-2);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        
+        .tips-list h4 {
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 15px;
+            margin-left: 20px;
+            color: #e6e6e6;
+        }
+        
+        .quote {
+            border-left: 4px solid var(--gold);
+            padding-left: 20px;
+            margin: 25px 0;
+            font-style: italic;
+            color: #e6e6e6;
+        }
+        
+        .back-to-blog {
+            display: inline-block;
+            background-color: var(--bg-2);
+            color: var(--gold);
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        
+        .back-to-blog:hover {
+            background-color: #0a291f;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-2);
+            margin-top: 40px;
+            border-top: 2px solid var(--gold);
+            font-size: 14px;
+            color: #bbb;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            color: #cccccc;
+            font-size: 16px;
+        }
+        
+        .aviso18 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .icone18 {
+            background: red;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+        
+        .aviso18 p {
+            margin: 0;
+            color: #ccc;
+        }
+        
+        .authors {
+            color: var(--gold);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logoguilda.jpeg" alt="Logo" class="logo">
+    </header>
+
+    <div class="article-content">
+        <div class="article-header">
+            <h2>Estratégia Básica para Torneios de Poker</h2>
+            <div class="article-meta">
+                <span>Publicado em: 25 de Agosto de 2025</span> | 
+                <span class="authors">Autor: Eric Lynch, Jon Turner e Jon Van Fleet</span> | 
+                <span>Categoria: Estratégia Básica</span> |
+                <span>Baseado em obra publicada em: 2013</span>
+            </div>
+        </div>
+        
+        <div class="image-container">
+            <img src="estrategiatorneio.jpg" alt="Estratégia Básica para Torneios de Poker" class="article-image">
+        </div>
+        
+        <div class="article-text">
+            <p>Entrar em um torneio de poker exige muito mais do que saber as regras do jogo. Diferente do cash game, onde as fichas representam dinheiro diretamente, nos torneios cada ficha é "vida" — e perder todas significa eliminação. Por isso, a forma de jogar precisa se ajustar ao contexto, ao tamanho do stack e ao estágio do torneio. Abaixo, estão os fundamentos que todo jogador precisa dominar antes de buscar táticas mais avançadas.</p>
+            
+            <h3>1. Escolha de mãos iniciais: disciplina é chave</h3>
+            <p>No início dos torneios, blinds são baixos e há pouco valor em se arriscar com mãos marginais. Jogadores iniciantes costumam cair na armadilha de querer "ver flops demais", mas isso só leva a perder fichas preciosas.</p>
+            
+            <div class="tips-list">
+                <h4>Regra de ouro:</h4>
+                <ul>
+                    <li>Jogue mãos fortes (pares médios a altos, Ás com bons kickers, broadways conectadas)</li>
+                    <li>Evite se envolver fora de posição com cartas fracas</li>
+                </ul>
+            </div>
+            
+            <p>Essa seleção cuidadosa aumenta suas chances de entrar nos potes já em vantagem.</p>
+            
+            <h3>2. Agressividade inteligente: faça valer suas boas mãos</h3>
+            <p>Nos torneios, esperar apenas por "monstros" não é sustentável. Quando tiver uma mão sólida, jogue de forma agressiva: abra com aumentos, pressione adversários e construa o pote. Ser passivo só permite que os oponentes comprem cartas grátis e virem o jogo contra você.</p>
+            
+            <div class="quote">
+                "A agressividade ainda tem um bônus: ela gera fold equity. Muitas vezes, você ganha potes sem precisar ir até o showdown."
+            </div>
+            
+            <h3>3. Cada fase do torneio exige uma estratégia</h3>
+            <p>Um erro comum é jogar da mesma maneira o torneio inteiro. Mas o cenário muda conforme os blinds aumentam e o número de jogadores diminui:</p>
+            
+            <div class="tips-list">
+                <h4>Fases do torneio:</h4>
+                <ul>
+                    <li><strong>Fase inicial:</strong> jogue tight e valorize a preservação do stack.</li>
+                    <li><strong>Fase intermediária:</strong> comece a roubar blinds e identificar jogadores que cedem pressão.</li>
+                    <li><strong>Bolha (quando falta pouco para o ITM):</strong> use a ansiedade dos adversários a seu favor, aumentando sua agressividade contra os mais cautelosos.</li>
+                    <li><strong>Mesa final:</strong> cada decisão pesa mais; adapte-se ao ICM e ao estilo dos oponentes.</li>
+                </ul>
+            </div>
+            
+            <h3>4. Gerenciamento de stack: sobrevivência em primeiro lugar</h3>
+            <p>Seu stack determina o tipo de movimento que pode fazer. Ter fichas é poder; perder muitas cedo significa perder espaço para manobrar.</p>
+            
+            <div class="tips-list">
+                <h4>Estratégias por tamanho de stack:</h4>
+                <ul>
+                    <li><strong>Stack grande:</strong> use para pressionar stacks médios e pequenos.</li>
+                    <li><strong>Stack médio:</strong> jogue seletivamente, evite confrontos desnecessários contra big stacks.</li>
+                    <li><strong>Stack curto:</strong> aproveite spots claros para all-in, sem medo — esperar demais costuma ser fatal.</li>
+                </ul>
+            </div>
+            
+            <h3>5. Observação constante dos adversários</h3>
+            <p>Poker de torneio não é só sobre suas cartas. É sobre as pessoas à sua volta. Preste atenção em padrões: quem defende muito os blinds, quem desiste rápido sob pressão, quem não ajusta ranges de acordo com posição. Ler essas tendências dá a você a chance de explorar os pontos fracos de cada oponente.</p>
+            
+            <h3>Conclusão</h3>
+            <p>Uma boa estratégia básica para torneios é construída sobre três pilares: disciplina, agressividade inteligente e adaptação constante. Isso não garante vitórias imediatas, mas coloca você em uma posição de vantagem frente à maioria dos iniciantes, que se perdem em mãos desnecessárias e não ajustam seu jogo.</p>
+            
+            <p>Dominar esses fundamentos é o primeiro passo para depois mergulhar em conceitos avançados como ICM, ranges balanceados e exploit play. Mas tudo começa aqui: entender que cada ficha é vida e cada decisão deve ser tomada com propósito.</p>
+            
+            <a href="blog.html" class="back-to-blog">Voltar para o Blog</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2025. Todos os direitos reservados.</p>
+        </div>
+        
+        <div class="aviso18">
+            <span class="icone18">18+</span>
+            <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
