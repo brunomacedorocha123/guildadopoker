@@ -335,10 +335,46 @@
         padding: 0 5px;
       }
     }
+        /* Botão Voltar ao Topo */
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: var(--gold);
+      color: var(--bg);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
+
+    .back-to-top:hover {
+      background-color: #ffdd33;
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 768px) {
+      .back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+      }
+    }
   </style>
 </head>
 
 <body>
+    <!-- Botão Voltar ao Topo -->
+  <button class="back-to-top" id="backToTop" title="Voltar ao topo">↑</button>
 
   <header>
     <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
@@ -1169,11 +1205,51 @@
 
     <h2 id="T">T</h2>
     
+<div class="termo">
+      <h3>Tell</h3>
+      <p>Sinal ou comportamento involuntário de um jogador que pode revelar informações sobre a força ou fraqueza de sua mão.</p>
+    </div>
+
+    <div class="termo">
+      <h3>Trap</h3>
+      <p>Estratégia em que o jogador disfarça a força de sua mão, jogando de forma passiva para induzir os adversários a apostar mais.</p>
+    </div>
+
+    <div class="termo">
+      <h3>Tree of a kind (Trinca)</h3>
+      <p>Mão formada por três cartas do mesmo valor, como 9♠9♦9♣.</p>
+    </div>
+
+    <div class="termo">
+      <h3>Tight</h3>
+      <p>Estilo de jogo em que o jogador é seletivo nas mãos que joga, participando apenas com cartas fortes ou de bom potencial.</p>
+    </div>
+
     <div class="termo">
       <h3>Tilt</h3>
       <p>Estado emocional negativo que afeta o jogo, geralmente após uma sequência de más jogadas ou bad beats.</p>
     </div>
     
+    <div class="termo">
+      <h3>Time Bank</h3>
+      <p>Tempo extra que o jogador recebe em plataformas online ou em torneios ao vivo para tomar decisões quando o relógio principal está prestes a acabar.</p>
+    </div>
+
+     <div class="termo">
+      <h3>Top Pair</h3>
+      <p>Situação em que o jogador acerta um par utilizando uma de suas cartas da mão combinada com a carta mais alta do flop.</p>
+    </div>
+
+     <div class="termo">
+      <h3>Top Set</h3>
+      <p>Quando um jogador forma uma trinca utilizando um par de mão (pocket pair) e acerta a carta mais alta do flop correspondente ao seu par.</p>
+    </div>
+
+     <div class="termo">
+      <h3>Top Two</h3>
+      <p>Situação em que o jogador acerta dois pares usando as duas cartas mais altas do flop junto com suas cartas da mão.</p>
+    </div>
+
     <div class="termo">
       <h3>Turn</h3>
       <p>A quarta carta comunitária.</p>
@@ -1193,11 +1269,26 @@
       <p>Aposta feita com uma mão forte para extrair valor de mãos mais fracas.</p>
     </div>
 
+     <div class="termo">
+      <h3>Variance</h3>
+      <p>Termo usado no poker para descrever as oscilações naturais nos resultados a curto prazo, causadas pelo fator sorte. Mesmo jogando corretamente, um jogador pode ter períodos de perdas ou ganhos acima do esperado devido à variância.</p>
+    </div>
+
     <h2 id="W">W</h2>
+
+    <div class="termo">
+      <h3>Walk</h3>
+      <p>Situação em que todos os jogadores desistem antes do small blind agir, fazendo com que o big blind ganhe o pote sem precisar jogar a mão.</p>
+    </div>
     
     <div class="termo">
       <h3>Wet Board</h3>
       <p>Board que conecta bem, oferecendo muitas possibilidades de sequências e flushes.</p>
+    </div>
+
+    <div class="termo">
+      <h3>WSOP (World Series of Poker)</h3>
+      <p>Maior e mais prestigiado evento de poker do mundo, realizado anualmente nos Estados Unidos. Reúne torneios de diversas modalidades, oferecendo grandes premiações e o cobiçado bracelete de campeão aos vencedores.</p>
     </div>
     
     <!-- Espaço para mais termos no futuro -->
@@ -1283,7 +1374,25 @@
         });
       });
     });
+    // Botão Voltar ao Topo
+    const backToTopButton = document.getElementById('backToTop');
+    
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 300) {
+        backToTopButton.style.display = 'flex';
+      } else {
+        backToTopButton.style.display = 'none';
+      }
+    });
+    
+    backToTopButton.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
   </script>
 
 </body>
 </html>
+    
