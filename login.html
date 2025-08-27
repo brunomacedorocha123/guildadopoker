@@ -130,23 +130,6 @@
             color: #dc3545;
             border: 1px solid #dc3545;
         }
-        
-        .esqueci-senha {
-            text-align: right;
-            margin-top: -10px;
-            margin-bottom: 20px;
-        }
-        
-        .esqueci-senha a {
-            color: #bbb;
-            font-size: 0.9rem;
-            text-decoration: none;
-        }
-        
-        .esqueci-senha a:hover {
-            color: var(--gold);
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -165,10 +148,6 @@
             <div class="form-group">
                 <label for="password">Senha</label>
                 <input type="password" id="password" required>
-                
-                <div class="esqueci-senha">
-                    <a href="recuperar-senha.html">Esqueci minha senha</a>
-                </div>
             </div>
             
             <button type="submit">Entrar</button>
@@ -205,6 +184,7 @@
                 
                 if (error) {
                     showMessage('Erro no login: ' + error.message, 'error');
+                    console.error('Erro detalhado:', error);
                     return;
                 }
                 
@@ -213,6 +193,7 @@
                 
             } catch (error) {
                 showMessage('Erro inesperado: ' + error.message, 'error');
+                console.error('Erro inesperado:', error);
             }
         });
         
@@ -222,6 +203,13 @@
             messageElement.className = 'message ' + type;
             messageElement.style.display = 'block';
         }
+
+        // Verificar se já está logado
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                window.location.href = 'index.html';
+            }
+        });
     </script>
 </body>
 </html>
