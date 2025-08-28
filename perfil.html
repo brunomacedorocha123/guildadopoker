@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <title>Meu Perfil - Guilda do Poker</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{
+      --bg:#121212;
+      --bg-2:#1c1c1c;
+      --bg-3:#2c2c2c;
+      --gold:#ffcc00;
+      --text:#f5f5f5;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ===== CABEÇALHO COM BOTÕES ===== */
+    header {
+      background: var(--bg-2);
+      padding: 15px 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 70px;
+    }
+    
+    header img { 
+      max-width: 160px;
+      height: auto; 
+    }
+
+    /* ===== BOTÕES DE PERFIL E SAIR ===== */
+    .auth-buttons {
+      position: absolute;
+      right: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 10px;
+    }
+    
+    .auth-btn {
+      padding: 7px 14px;
+      border-radius: 5px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    
+    .profile-btn {
+      background-color: transparent;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+    }
+    
+    .profile-btn:hover {
+      background-color: rgba(255, 204, 0, 0.1);
+    }
+    
+    .logout-btn {
+      background-color: var(--gold);
+      color: var(--bg);
+      border: 1px solid var(--gold);
+      padding: 7px 16px !important;
+      cursor: pointer;
+    }
+    
+    .logout-btn:hover {
+      background-color: #e6b800;
+      border-color: #e6b800;
+    }
+
+    /* ===== MENU DE NAVEGAÇÃO ===== */
+    nav {
+      background: var(--bg-3);
+      padding: 15px 0;
+      position: relative;
+      width: 100%;
+    }
+
+    .menu-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .menu li {
+      margin: 0;
+    }
+
+    .menu a {
+      color: var(--gold);
+      padding: 14px 22px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+      display: block;
+      text-align: center;
+      font-size: 1.05rem;
+    }
+
+    .menu a:hover, .menu a.active {
+      color: #ffffff;
+      text-decoration: underline;
+      background-color: rgba(255, 204, 0, 0.15);
+      border-radius: 6px;
+    }
+
+    /* ===== BOTÃO HAMBÚRGUER ===== */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 42px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      position: absolute;
+      right: 25px;
+      top: 20px;
+      z-index: 1001;
+    }
+
+    .hamburger span {
+      width: 100%;
+      height: 4px;
+      background-color: var(--gold);
+      border-radius: 3px;
+      transition: all 0.3s linear;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    /* ===== BANNER DE TOPO ===== */
+    .banner-topo {
+      width: 100%;
+      background-color: #2a2a2a;
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid var(--gold);
+    }
+    
+    .ad-placeholder {
+      background-color: #2a2a2a;
+      border: 2px dashed #666;
+      border-radius: 8px;
+      color: #999;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    
+    .ad-topo {
+      width: 728px;
+      height: 90px;
+      margin: 0 auto;
+    }
+    
+    .ad-lateral {
+      width: 300px;
+      height: 600px;
+      margin-left: 20px;
+    }
+    
+    .ad-placeholder p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .conteudo-principal {
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      width: 100%;
+      flex: 1;
+    }
+    
+    .conteudo {
+      flex: 1;
+    }
+
+    /* ===== ESTILOS DA PÁGINA DE PERFIL ===== */
+    .perfil-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: var(--bg-2);
+      border-radius: 8px;
+      border: 1px solid var(--gold);
+    }
+    
+    .perfil-header h1 {
+      color: var(--gold);
+      margin-bottom: 15px;
+    }
+    
+    .foto-perfil {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      border: 3px solid var(--gold);
+      overflow: hidden;
+      background-color: var(--bg-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .foto-perfil img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .info-usuario {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .info-usuario p {
+      margin: 5px 0;
+      font-size: 1.1em;
+    }
+    
+    .info-usuario .destaque {
+      color: var(--gold);
+      font-weight: bold;
+    }
+    
+    .secao-perfil {
+      background-color: var(--bg-2);
+      padding: 25px;
+      margin-bottom: 25px;
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+    
+    .secao-perfil h2 {
+      color: var(--gold);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #333;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-weight: bold;
+    }
+    
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background-color: var(--bg-3);
+      color: var(--text);
+      font-size: 1em;
+    }
+    
+    .form-group input:disabled, .form-group select:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .botoes-acao {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 12px 25px;
+      border-radius: 5px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1em;
+    }
+    
+    .btn-primary {
+      background-color: var(--gold);
+      color: var(--bg);
+    }
+    
+    .btn-primary:hover {
+      background-color: #e6b800;
+    }
+    
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+    }
+    
+    .btn-secondary:hover {
+      background-color: rgba(255, 204, 0, 0.1);
+    }
+    
+    .btn-danger {
+      background-color: #d9534f;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background-color: #c9302c;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-conteudo {
+      background-color: var(--bg-2);
+      padding: 30px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      border: 2px solid var(--gold);
+    }
+    
+    .modal h2 {
+      color: var(--gold);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .modal p {
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    
+    .modal-botoes {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    /* Barra lateral para banner */
+    .sidebar {
+      width: 340px;
+      padding: 10px;
+      flex-shrink: 0;
+    }
+
+    footer{
+      background: var(--bg-2);
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+      border-top: 2px solid var(--gold);
+      font-size: 14px;
+      color:#bbb;
+    }
+
+    .aviso18{
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .icone18{
+      background: red;
+      color: white;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    /* ===== RESPONSIVIDADE ===== */
+    @media (max-width: 992px) {
+      .menu a {
+        padding: 12px 18px;
+        font-size: 1rem;
+      }
+      
+      .auth-buttons {
+        right: 50px;
+      }
+      
+      .auth-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+      
+      .logout-btn {
+        padding: 6px 14px !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 12px 15px;
+        min-height: 60px;
+      }
+      
+      header img {
+        max-width: 140px;
+      }
+      
+      .auth-buttons {
+        position: static;
+        transform: none;
+        justify-content: center;
+        margin-top: 12px;
+        width: 100%;
+        gap: 8px;
+      }
+      
+      .auth-btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        width: auto;
+      }
+      
+      .logout-btn {
+        padding: 8px 18px !important;
+      }
+      
+      nav {
+        padding: 0;
+        background: transparent;
+      }
+      
+      .hamburger {
+        display: flex;
+        width: 40px;
+        height: 34px;
+        right: 20px;
+        top: 20px;
+      }
+
+      .menu {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--bg-3);
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        padding: 15px 0;
+        border-top: 2px solid var(--gold);
+      }
+
+      .menu.active {
+        display: flex;
+      }
+
+      .menu li {
+        width: 100%;
+        text-align: center;
+      }
+
+      .menu a {
+        padding: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 1.1rem;
+      }
+      
+      .menu a:last-child {
+        border-bottom: none;
+      }
+      
+      .menu-container {
+        padding: 0;
+      }
+      
+      .conteudo-principal {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        order: 3;
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+      }
+      
+      .ad-lateral {
+        margin-left: 0;
+        height: 250px;
+        width: 100%;
+        max-width: 728px;
+      }
+      
+      .botoes-acao {
+        flex-direction: column;
+      }
+      
+      .botoes-acao .btn {
+        width: 100%;
+        text-align: center;
+      }
+      
+      .aviso18{ 
+        flex-direction: column; 
+        text-align:center; 
+      }
+      
+      .ad-topo {
+        width: 100%;
+        height: auto;
+        min-height: 90px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho com botões de autenticação -->
+  <header>
+    <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
+    
+    <!-- Botões de Perfil e Sair -->
+    <div class="auth-buttons" id="auth-buttons">
+      <a href="perfil.html" class="auth-btn profile-btn">Meu Perfil</a>
+      <button onclick="logout()" class="auth-btn logout-btn">Sair</button>
+    </div>
+    
+    <button class="hamburger" aria-label="Abrir menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Navegação -->
+  <nav>
+    <div class="menu-container">
+      <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="pppoker.html">PPPoker</a></li>
+        <li><a href="suprema.html">Suprema Poker</a></li>
+        <li><a href="torneios.html">Torneios</a></li>
+        <li><a href="regrasdopoker.html">Regras do Poker</a></li>
+        <li><a href="divulgacao.html">Divulgação</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="dicionario.html">Dicionário</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Banner de Topo -->
+  <div class="banner-topo">
+    <div class="ad-placeholder ad-topo">
+      <p>Espaço reservado para banner (728x90)</p>
+    </div>
+  </div>
+
+  <div class="conteudo-principal">
+    <div class="conteudo">
+      <!-- Cabeçalho do Perfil -->
+      <div class="perfil-header">
+        <div class="foto-perfil">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCIgeT0iODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0MCIgZmlsbD0iI2ZmY2MwMCI+VXNlcjwvdGV4dD48L3N2Zz4=" alt="Foto de perfil">
+        </div>
+        <h1>Meu Perfil</h1>
+        <div class="info-usuario">
+          <p>Nome: <span class="destaque" id="user-name">Carregando...</span></p>
+          <p>Email: <span class="destaque" id="user-email">Carregando...</span></p>
+          <p>Membro desde: <span class="destaque" id="member-since">Carregando...</span></p>
+        </div>
+      </div>
+
+      <!-- Informações Pessoais -->
+      <div class="secao-perfil">
+        <h2>Informações Pessoais</h2>
+        <form id="form-perfil">
+          <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" disabled>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" disabled>
+          </div>
+          
+          <div class="form-group">
+            <label for="telefone">Telefone</label>
+            <input type="tel" id="telefone" name="telefone" disabled>
+          </div>
+          
+          <div class="form-group">
+            <label for="apelido">Apelido no Poker</label>
+            <input type="text" id="apelido" name="apelido" disabled>
+          </div>
+          
+          <div class="botoes-acao">
+            <button type="button" id="btn-editar" class="btn btn-secondary">Editar Informações</button>
+            <button type="button" id="btn-salvar" class="btn btn-primary" style="display: none;">Salvar Alterações</button>
+            <button type="button" id="btn-cancelar" class="btn btn-secondary" style="display: none;">Cancelar</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Preferências -->
+      <div class="secao-perfil">
+        <h2>Preferências</h2>
+        <form id="form-preferencias">
+          <div class="form-group">
+            <label for="notificacoes">Receber Notificações</label>
+            <select id="notificacoes" name="notificacoes" disabled>
+              <option value="sim">Sim</option>
+              <option value="nao">Não</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="plataforma">Plataforma Preferida</label>
+            <select id="plataforma" name="plataforma" disabled>
+              <option value="pppoker">PPPoker</option>
+              <option value="suprema">Suprema Poker</option>
+              <option value="ambas">Ambas</option>
+            </select>
+          </div>
+          
+          <div class="botoes-acao">
+            <button type="button" id="btn-editar-pref" class="btn btn-secondary">Editar Preferências</button>
+            <button type="button" id="btn-salvar-pref" class="btn btn-primary" style="display: none;">Salvar Preferências</button>
+            <button type="button" id="btn-cancelar-pref" class="btn btn-secondary" style="display: none;">Cancelar</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Excluir Conta -->
+      <div class="secao-perfil">
+        <h2>Zona de Perigo</h2>
+        <p>Esta ação não pode ser desfeita. Isto excluirá permanentemente sua conta e removerá todos os dados associados.</p>
+        <div class="botoes-acao">
+          <button type="button" id="btn-excluir-conta" class="btn btn-danger">Excluir Minha Conta</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Banner Lateral -->
+    <div class="sidebar">
+      <div class="ad-placeholder ad-lateral">
+        <p>Espaço reservado para banner (300x600)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmação para Excluir Conta -->
+  <div id="modal-excluir" class="modal">
+    <div class="modal-conteudo">
+      <h2>Confirmar Exclusão de Conta</h2>
+      <p>Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita e todos os seus dados serão permanentemente removidos.</p>
+      <div class="modal-botoes">
+        <button id="btn-cancelar-exclusao" class="btn btn-secondary">Cancelar</button>
+        <button id="btn-confirmar-exclusao" class="btn btn-danger">Excluir Conta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  <footer>
+    <p>© 2025 Guilda do Poker - Todos os direitos reservados</p>
+    <div class="aviso18">
+      <span class="icone18">18+</span>
+      <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+    </div>
+    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+      <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
+      <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
+    </div>
+  </footer>
+
+  <!-- Script do menu mobile -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.querySelector('.hamburger');
+      const menu = document.querySelector('.menu');
+      
+      hamburger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menu.classList.toggle('active');
+        hamburger.classList.toggle('active');
+      });
+      
+      const menuLinks = document.querySelectorAll('.menu a');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 768) {
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+          }
+        });
+      });
+      
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 768 && menu.classList.contains('active')) {
+          if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+          }
+        }
+      });
+    });
+  </script>
+
+  <!-- Script de autenticação Supabase -->
+  <script>
+    const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Elementos DOM
+    const userNameElement = document.getElementById('user-name');
+    const userEmailElement = document.getElementById('user-email');
+    const memberSinceElement = document.getElementById('member-since');
+    const nomeInput = document.getElementById('nome');
+    const emailInput = document.getElementById('email');
+    const telefoneInput = document.getElementById('telefone');
+    const apelidoInput = document.getElementById('apelido');
+    const notificacoesSelect = document.getElementById('notificacoes');
+    const plataformaSelect = document.getElementById('plataforma');
+    
+    const btnEditar = document.getElementById('btn-editar');
+    const btnSalvar = document.getElementById('btn-salvar');
+    const btnCancelar = document.getElementById('btn-cancelar');
+    
+    const btnEditarPref = document.getElementById('btn-editar-pref');
+    const btnSalvarPref = document.getElementById('btn-salvar-pref');
+    const btnCancelarPref = document.getElementById('btn-cancelar-pref');
+    
+    const btnExcluirConta = document.getElementById('btn-excluir-conta');
+    const modalExcluir = document.getElementById('modal-excluir');
+    const btnCancelarExclusao = document.getElementById('btn-cancelar-exclusao');
+    const btnConfirmarExclusao = document.getElementById('btn-confirmar-exclusao');
+
+    // Estado de edição
+    let editMode = false;
+    let editPrefMode = false;
+    let originalValues = {};
+
+    async function checkAuthState() {
+      const { data: { session } } = await supabase.auth.getSession();
+      const authButtons = document.getElementById('auth-buttons');
+      
+      if (!authButtons) return;
+      
+      if (session) {
+        authButtons.innerHTML = `
+          <a href="perfil.html" class="auth-btn profile-btn">Meu Perfil</a>
+          <button onclick="logout()" class="auth-btn logout-btn">Sair</button>
+        `;
+        
+        // Carregar dados do usuário
+        await loadUserData(session.user);
+      } else {
+        // Se não estiver logado, redirecionar para login
+        window.location.href = 'login.html';
+      }
+    }
+
+    async function loadUserData(user) {
+      try {
+        // Carregar dados do perfil do usuário
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        
+        if (error) {
+          console.error('Erro ao carregar perfil:', error);
+          // Se não encontrar perfil, criar um básico
+          await createUserProfile(user);
+          await loadUserData(user); // Recarregar dados
+          return;
+        }
+        
+        // Preencher dados do usuário
+        userNameElement.textContent = data.nome_completo || user.user_metadata.full_name || 'Usuário';
+        userEmailElement.textContent = user.email;
+        
+        // Formatar data de criação
+        const createdDate = new Date(user.created_at);
+        memberSinceElement.textContent = createdDate.toLocaleDateString('pt-BR', {
+          year: 'numeric',
+          month: 'long'
+        });
+        
+        // Preencher formulário
+        nomeInput.value = data.nome_completo || user.user_metadata.full_name || '';
+        emailInput.value = user.email;
+        telefoneInput.value = data.telefone || '';
+        apelidoInput.value = data.apelido || '';
+        notificacoesSelect.value = data.receber_notificacoes ? 'sim' : 'nao';
+        plataformaSelect.value = data.plataforma_preferida || 'pppoker';
+        
+        // Salvar valores originais
+        originalValues = {
+          nome: nomeInput.value,
+          telefone: telefoneInput.value,
+          apelido: apelidoInput.value,
+          notificacoes: notificacoesSelect.value,
+          plataforma: plataformaSelect.value
+        };
+        
+      } catch (error) {
+        console.error('Erro ao carregar dados do usuário:', error);
+      }
+    }
+    
+    async function createUserProfile(user) {
+      const { error } = await supabase
+        .from('profiles')
+        .insert([
+          { 
+            id: user.id, 
+            nome_completo: user.user_metadata.full_name || '',
+            email: user.email,
+            created_at: new Date().toISOString()
+          }
+        ]);
+      
+      if (error) {
+        console.error('Erro ao criar perfil:', error);
+      }
+    }
+    
+    async function updateUserProfile() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      
+      const updates = {
+        nome_completo: nomeInput.value,
+        telefone: telefoneInput.value,
+        apelido: apelidoInput.value,
+        receber_notificacoes: notificacoesSelect.value === 'sim',
+        plataforma_preferida: plataformaSelect.value,
+        updated_at: new Date().toISOString()
+      };
+      
+      const { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', session.user.id);
+      
+      if (error) {
+        console.error('Erro ao atualizar perfil:', error);
+        alert('Erro ao salvar alterações. Tente novamente.');
+      } else {
+        alert('Perfil atualizado com sucesso!');
+        originalValues = {
+          nome: nomeInput.value,
+          telefone: telefoneInput.value,
+          apelido: apelidoInput.value,
+          notificacoes: notificacoesSelect.value,
+          plataforma: plataformaSelect.value
+        };
+      }
+    }
+    
+    async function deleteUserAccount() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      
+      // Primeiro excluir o perfil
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', session.user.id);
+      
+      if (profileError) {
+        console.error('Erro ao excluir perfil:', profileError);
+      }
+      
+      // Depois excluir o usuário
+      const { error } = await supabase.auth.admin.deleteUser(session.user.id);
+      
+      if (error) {
+        console.error('Erro ao excluir conta:', error);
+        alert('Erro ao excluir conta. Tente novamente.');
+      } else {
+        alert('Sua conta foi excluída com sucesso.');
+        await logout();
+      }
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = 'index.html';
+    }
+
+    // Event Listeners
+    btnEditar.addEventListener('click', () => {
+      editMode = true;
+      nomeInput.disabled = false;
+      telefoneInput.disabled = false;
+      apelidoInput.disabled = false;
+      btnEditar.style.display = 'none';
+      btnSalvar.style.display = 'inline-block';
+      btnCancelar.style.display = 'inline-block';
+    });
+    
+    btnCancelar.addEventListener('click', () => {
+      editMode = false;
+      nomeInput.disabled = true;
+      telefoneInput.disabled = true;
+      apelidoInput.disabled = true;
+      nomeInput.value = originalValues.nome;
+      telefoneInput.value = originalValues.telefone;
+      apelidoInput.value = originalValues.apelido;
+      btnEditar.style.display = 'inline-block';
+      btnSalvar.style.display = 'none';
+      btnCancelar.style.display = 'none';
+    });
+    
+    btnSalvar.addEventListener('click', async () => {
+      await updateUserProfile();
+      editMode = false;
+      nomeInput.disabled = true;
+      telefoneInput.disabled = true;
+      apelidoInput.disabled = true;
+      btnEditar.style.display = 'inline-block';
+      btnSalvar.style.display = 'none';
+      btnCancelar.style.display = 'none';
+    });
+    
+    btnEditarPref.addEventListener('click', () => {
+      editPrefMode = true;
+      notificacoesSelect.disabled = false;
+      plataformaSelect.disabled = false;
+      btnEditarPref.style.display = 'none';
+      btnSalvarPref.style.display = 'inline-block';
+      btnCancelarPref.style.display = 'inline-block';
+    });
+    
+    btnCancelarPref.addEventListener('click', () => {
+      editPrefMode = false;
+      notificacoesSelect.disabled = true;
+      plataformaSelect.disabled = true;
+      notificacoesSelect.value = originalValues.notificacoes;
+      plataformaSelect.value = originalValues.plataforma;
+      btnEditarPref.style.display = 'inline-block';
+      btnSalvarPref.style.display = 'none';
+      btnCancelarPref.style.display = 'none';
+    });
+    
+    btnSalvarPref.addEventListener('click', async () => {
+      await updateUserProfile();
+      editPrefMode = false;
+      notificacoesSelect.disabled = true;
+      plataformaSelect.disabled = true;
+      btnEditarPref.style.display = 'inline-block';
+      btnSalvarPref.style.display = 'none';
+      btnCancelarPref.style.display = 'none';
+    });
+    
+    btnExcluirConta.addEventListener('click', () => {
+      modalExcluir.style.display = 'flex';
+    });
+    
+    btnCancelarExclusao.addEventListener('click', () => {
+      modalExcluir.style.display = 'none';
+    });
+    
+    btnConfirmarExclusao.addEventListener('click', async () => {
+      modalExcluir.style.display = 'none';
+      await deleteUserAccount();
+    });
+    
+    // Fechar modal clicando fora
+    window.addEventListener('click', (event) => {
+      if (event.target === modalExcluir) {
+        modalExcluir.style.display = 'none';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAuthState();
+    });
+
+    supabase.auth.onAuthStateChange((event, session) => {
+      checkAuthState();
+    });
+  </script>
+
+</body>
+</html>
