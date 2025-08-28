@@ -191,18 +191,22 @@
       margin-bottom: 15px;
     }
     
+    .foto-container {
+      position: relative;
+      margin: 0 auto 20px;
+      width: 150px;
+    }
+    
     .foto-perfil {
       width: 150px;
       height: 150px;
       border-radius: 50%;
-      margin: 0 auto 20px;
       border: 3px solid var(--gold);
       overflow: hidden;
       background-color: var(--bg-3);
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
       cursor: pointer;
       transition: all 0.3s ease;
     }
@@ -217,16 +221,12 @@
       object-fit: cover;
     }
     
-    .foto-perfil .upload-text {
-      position: absolute;
-      bottom: 5px;
-      left: 0;
-      right: 0;
-      background-color: rgba(0, 0, 0, 0.7);
+    .upload-text {
+      margin-top: 10px;
       color: var(--gold);
-      padding: 5px;
-      font-size: 12px;
+      font-size: 14px;
       text-align: center;
+      cursor: pointer;
     }
     
     .info-usuario {
@@ -562,9 +562,11 @@
     <div class="conteudo">
       <!-- Cabeçalho do Perfil -->
       <div class="perfil-header">
-        <div class="foto-perfil" id="upload-foto">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGgPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjMzMzIi8+PC9zdmc+" alt="Foto de perfil">
-          <div class="upload-text">Clique para alterar</div>
+        <div class="foto-container">
+          <div class="foto-perfil" id="upload-foto">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48L3N2Zz4=" alt="Foto de perfil">
+          </div>
+          <div class="upload-text" id="upload-text">Alterar</div>
         </div>
         <h1>Meu Perfil</h1>
         <div class="info-usuario">
@@ -630,7 +632,7 @@
   <div id="modal-excluir" class="modal">
     <div class="modal-conteudo">
       <h2>Confirmar Exclusão de Conta</h2>
-      <p>Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita e todos os seus dados serão permanentemente removidos.</p>
+      <p>Tem certeza que deseja excluir sua conta? Esta action não pode ser desfeita e todos os seus dados serão permanentemente removidos.</p>
       <div class="modal-botoes">
         <button id="btn-cancelar-exclusao" class="btn btn-secondary">Cancelar</button>
         <button id="btn-confirmar-exclusao" class="btn btn-danger">Excluir Conta</button>
@@ -700,6 +702,7 @@
     const apelidoInput = document.getElementById('apelido');
     const plataformaSelect = document.getElementById('plataforma');
     const uploadFoto = document.getElementById('upload-foto');
+    const uploadText = document.getElementById('upload-text');
     
     const btnEditar = document.getElementById('btn-editar');
     const btnSalvar = document.getElementById('btn-salvar');
@@ -913,6 +916,10 @@
     });
     
     uploadFoto.addEventListener('click', () => {
+      alert('Funcionalidade de upload de imagem será implementada em breve!');
+    });
+    
+    uploadText.addEventListener('click', () => {
       alert('Funcionalidade de upload de imagem será implementada em breve!');
     });
     
