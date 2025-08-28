@@ -48,7 +48,7 @@
     /* ===== BOTÕES DE PERFIL E SAIR ===== */
     .auth-buttons {
       position: absolute;
-      right: 20px;
+      right: 70px;
       top: 50%;
       transform: translateY(-50%);
       display: flex;
@@ -132,7 +132,7 @@
 
     /* ===== BOTÃO HAMBÚRGUER ===== */
     .hamburger {
-      display: none;
+      display: flex;
       flex-direction: column;
       justify-content: space-around;
       width: 42px;
@@ -142,8 +142,9 @@
       cursor: pointer;
       padding: 0;
       position: absolute;
-      right: 25px;
-      top: 20px;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
       z-index: 1001;
     }
 
@@ -165,45 +166,6 @@
 
     .hamburger.active span:nth-child(3) {
       transform: rotate(-45deg) translate(7px, -7px);
-    }
-
-    /* ===== BANNER DE TOPO ===== */
-    .banner-topo {
-      width: 100%;
-      background-color: #2a2a2a;
-      padding: 15px;
-      text-align: center;
-      border-bottom: 1px solid var(--gold);
-    }
-    
-    .ad-placeholder {
-      background-color: #2a2a2a;
-      border: 2px dashed #666;
-      border-radius: 8px;
-      color: #999;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-      box-sizing: border-box;
-    }
-    
-    .ad-topo {
-      width: 728px;
-      height: 90px;
-      margin: 0 auto;
-    }
-    
-    .ad-lateral {
-      width: 300px;
-      height: 600px;
-      margin-left: 20px;
-    }
-    
-    .ad-placeholder p {
-      margin: 0;
-      font-size: 14px;
     }
 
     .conteudo-principal {
@@ -247,6 +209,12 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .foto-perfil:hover {
+      opacity: 0.8;
     }
     
     .foto-perfil img {
@@ -255,21 +223,16 @@
       object-fit: cover;
     }
     
-    .foto-perfil .user-badge {
+    .foto-perfil .upload-text {
       position: absolute;
       bottom: 5px;
-      right: 5px;
-      background-color: var(--gold);
-      color: var(--bg);
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 14px;
-      border: 2px solid var(--bg-2);
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: var(--gold);
+      padding: 5px;
+      font-size: 12px;
+      text-align: center;
     }
     
     .info-usuario {
@@ -413,11 +376,6 @@
       gap: 15px;
     }
 
-    /* Barra lateral para banner - REMOVIDA */
-    .sidebar {
-      display: none; /* Removendo a barra lateral com publicidade */
-    }
-
     footer{
       background: var(--bg-2);
       text-align: center;
@@ -454,7 +412,7 @@
       }
       
       .auth-buttons {
-        right: 50px;
+        right: 60px;
       }
       
       .auth-btn {
@@ -502,11 +460,10 @@
       }
       
       .hamburger {
-        display: flex;
         width: 40px;
         height: 34px;
-        right: 20px;
-        top: 20px;
+        right: 15px;
+        top: 50%;
       }
 
       .menu {
@@ -550,21 +507,6 @@
         flex-direction: column;
       }
       
-      .sidebar {
-        width: 100%;
-        order: 3;
-        margin-top: 30px;
-        display: flex;
-        justify-content: center;
-      }
-      
-      .ad-lateral {
-        margin-left: 0;
-        height: 250px;
-        width: 100%;
-        max-width: 728px;
-      }
-      
       .botoes-acao {
         flex-direction: column;
       }
@@ -577,12 +519,6 @@
       .aviso18{ 
         flex-direction: column; 
         text-align:center; 
-      }
-      
-      .ad-topo {
-        width: 100%;
-        height: auto;
-        min-height: 90px;
       }
     }
   </style>
@@ -622,20 +558,13 @@
     </div>
   </nav>
 
-  <!-- Banner de Topo - REMOVIDO -->
-  <!-- <div class="banner-topo">
-    <div class="ad-placeholder ad-topo">
-      <p>Espaço reservado para banner (728x90)</p>
-    </div>
-  </div> -->
-
   <div class="conteudo-principal">
     <div class="conteudo">
       <!-- Cabeçalho do Perfil -->
       <div class="perfil-header">
-        <div class="foto-perfil">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCIgeT0iODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0MCIgZmlsbD0iI2ZmY2MwMCI+VXNlcjwvdGV4dD48L3N2Zz4=" alt="Foto de perfil">
-          <div class="user-badge">U</div>
+        <div class="foto-perfil" id="upload-foto">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48L3N2Zz4=" alt="Foto de perfil">
+          <div class="upload-text">Clique para alterar</div>
         </div>
         <h1>Meu Perfil</h1>
         <div class="info-usuario">
@@ -669,18 +598,6 @@
             <input type="text" id="apelido" name="apelido" disabled>
           </div>
           
-          <div class="botoes-acao">
-            <button type="button" id="btn-editar" class="btn btn-secondary">Editar Informações</button>
-            <button type="button" id="btn-salvar" class="btn btn-primary" style="display: none;">Salvar Alterações</button>
-            <button type="button" id="btn-cancelar" class="btn btn-secondary" style="display: none;">Cancelar</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Preferências - REMOVIDA A SEÇÃO DE NOTIFICAÇÕES -->
-      <div class="secao-perfil">
-        <h2>Preferências</h2>
-        <form id="form-preferencias">
           <div class="form-group">
             <label for="plataforma">Plataforma Preferida</label>
             <select id="plataforma" name="plataforma" disabled>
@@ -691,9 +608,9 @@
           </div>
           
           <div class="botoes-acao">
-            <button type="button" id="btn-editar-pref" class="btn btn-secondary">Editar Preferências</button>
-            <button type="button" id="btn-salvar-pref" class="btn btn-primary" style="display: none;">Salvar Preferências</button>
-            <button type="button" id="btn-cancelar-pref" class="btn btn-secondary" style="display: none;">Cancelar</button>
+            <button type="button" id="btn-editar" class="btn btn-secondary">Editar Informações</button>
+            <button type="button" id="btn-salvar" class="btn btn-primary" style="display: none;">Salvar Alterações</button>
+            <button type="button" id="btn-cancelar" class="btn btn-secondary" style="display: none;">Cancelar</button>
           </div>
         </form>
       </div>
@@ -701,19 +618,12 @@
       <!-- Excluir Conta -->
       <div class="secao-perfil">
         <h2>Zona de Perigo</h2>
-        <p>Esta ação não pode ser desfeita. Isto excluirá permanentemente sua conta e removerá todos os dados associados.</p>
+        <p>Esta ação não pode be desfeita. Isto excluirá permanentemente sua conta e removerá todos os dados associados.</p>
         <div class="botoes-acao">
           <button type="button" id="btn-excluir-conta" class="btn btn-danger">Excluir Minha Conta</button>
         </div>
       </div>
     </div>
-    
-    <!-- Banner Lateral - REMOVIDO -->
-    <!-- <div class="sidebar">
-      <div class="ad-placeholder ad-lateral">
-        <p>Espaço reservado para banner (300x600)</p>
-      </div>
-    </div> -->
   </div>
 
   <!-- Modal de Confirmação para Excluir Conta -->
@@ -777,7 +687,7 @@
   <!-- Script de autenticação Supabase -->
   <script>
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     // Elementos DOM
@@ -789,14 +699,11 @@
     const telefoneInput = document.getElementById('telefone');
     const apelidoInput = document.getElementById('apelido');
     const plataformaSelect = document.getElementById('plataforma');
+    const uploadFoto = document.getElementById('upload-foto');
     
     const btnEditar = document.getElementById('btn-editar');
     const btnSalvar = document.getElementById('btn-salvar');
     const btnCancelar = document.getElementById('btn-cancelar');
-    
-    const btnEditarPref = document.getElementById('btn-editar-pref');
-    const btnSalvarPref = document.getElementById('btn-salvar-pref');
-    const btnCancelarPref = document.getElementById('btn-cancelar-pref');
     
     const btnExcluirConta = document.getElementById('btn-excluir-conta');
     const modalExcluir = document.getElementById('modal-excluir');
@@ -805,7 +712,6 @@
 
     // Estado de edição
     let editMode = false;
-    let editPrefMode = false;
     let originalValues = {};
 
     async function checkAuthState() {
@@ -861,6 +767,12 @@
         telefoneInput.value = data.telefone || '';
         apelidoInput.value = data.apelido || '';
         plataformaSelect.value = data.plataforma_preferida || 'pppoker';
+        
+        // Carregar foto de perfil se existir
+        if (data.foto_url) {
+          const img = uploadFoto.querySelector('img');
+          img.src = data.foto_url;
+        }
         
         // Salvar valores originais
         originalValues = {
@@ -960,6 +872,7 @@
       nomeInput.disabled = false;
       telefoneInput.disabled = false;
       apelidoInput.disabled = false;
+      plataformaSelect.disabled = false;
       btnEditar.style.display = 'none';
       btnSalvar.style.display = 'inline-block';
       btnCancelar.style.display = 'inline-block';
@@ -970,9 +883,11 @@
       nomeInput.disabled = true;
       telefoneInput.disabled = true;
       apelidoInput.disabled = true;
+      plataformaSelect.disabled = true;
       nomeInput.value = originalValues.nome;
       telefoneInput.value = originalValues.telefone;
       apelidoInput.value = originalValues.apelido;
+      plataformaSelect.value = originalValues.plataforma;
       btnEditar.style.display = 'inline-block';
       btnSalvar.style.display = 'none';
       btnCancelar.style.display = 'none';
@@ -984,35 +899,14 @@
       nomeInput.disabled = true;
       telefoneInput.disabled = true;
       apelidoInput.disabled = true;
+      plataformaSelect.disabled = true;
       btnEditar.style.display = 'inline-block';
       btnSalvar.style.display = 'none';
       btnCancelar.style.display = 'none';
     });
     
-    btnEditarPref.addEventListener('click', () => {
-      editPrefMode = true;
-      plataformaSelect.disabled = false;
-      btnEditarPref.style.display = 'none';
-      btnSalvarPref.style.display = 'inline-block';
-      btnCancelarPref.style.display = 'inline-block';
-    });
-    
-    btnCancelarPref.addEventListener('click', () => {
-      editPrefMode = false;
-      plataformaSelect.disabled = true;
-      plataformaSelect.value = originalValues.plataforma;
-      btnEditarPref.style.display = 'inline-block';
-      btnSalvarPref.style.display = 'none';
-      btnCancelarPref.style.display = 'none';
-    });
-    
-    btnSalvarPref.addEventListener('click', async () => {
-      await updateUserProfile();
-      editPrefMode = false;
-      plataformaSelect.disabled = true;
-      btnEditarPref.style.display = 'inline-block';
-      btnSalvarPref.style.display = 'none';
-      btnCancelarPref.style.display = 'none';
+    uploadFoto.addEventListener('click', () => {
+      alert('Funcionalidade de upload de imagem será implementada em breve!');
     });
     
     btnExcluirConta.addEventListener('click', () => {
