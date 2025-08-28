@@ -7,42 +7,155 @@
   <title>Meu Perfil - Guilda do Poker</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* ... (todo o CSS permanece igual) ... */
+    /* [COLE AQUI SEU CSS COMPLETO MAIS TARDE] */
+    
+    /* Estilos para mensagens de erro e loading */
+    .error-message {
+      background-color: #d9534f;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px;
+      text-align: center;
+      display: none;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--gold);
+    }
   </style>
 </head>
+  
 <body>
-  <!-- ... (todo o HTML permanece igual) ... -->
+  <!-- Mensagem de erro -->
+  <div id="error-message" class="error-message"></div>
+  
+  <!-- Loading -->
+  <div id="loading" class="loading">
+    <h2>Carregando perfil...</h2>
+  </div>
 
-  <!-- Script de autenticação Supabase -->
-  <script>
-    const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-    // Elementos DOM
-    const userNameElement = document.getElementById('user-name');
-    const userEmailElement = document.getElementById('user-email');
-    const memberSinceElement = document.getElementById('member-since');
-    const nomeCompletoInput = document.getElementById('nome_completo');
-    const emailInput = document.getElementById('email');
-    const telefoneInput = document.getElementById('telefone');
-    const apelidoPokerInput = document.getElementById('apelido_poker');
-    const plataformaSelect = document.getElementById('plataforma_preferida');
-    const uploadFoto = document.getElementById('upload-foto');
-    const uploadText = document.getElementById('upload-text');
+  <!-- Conteúdo principal (inicialmente oculto) -->
+  <div id="main-content" style="display: none;">
+        <!-- COLE TODO O SEU HTML AQUI! -->
+    <!-- Header, navegação, formulários, etc -->
+    <!-- TODO O CONTEÚDO DA SUA PÁGINA -->
     
-    const btnEditar = document.getElementById('btn-editar');
-    const btnSalvar = document.getElementById('btn-salvar');
-    const btnCancelar = document.getElementById('btn-cancelar');
-    
-    const btnExcluirConta = document.getElementById('btn-excluir-conta');
-    const modalExcluir = document.getElementById('modal-excluir');
-    const btnCancelarExclusao = document.getElementById('btn-cancelar-exclusao');
-    const btnConfirmarExclusao = document.getElementById('btn-confirmar-exclusao');
+  </div> <!-- Fecha a div#main-content -->
+    <script>
+    // Função para mostrar erro
+    function showError(message) {
+      console.error('Erro:', message);
+      const errorDiv = document.getElementById('error-message');
+      if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+      }
+      const loading = document.getElementById('loading');
+      if (loading) loading.style.display = 'none';
+    }
 
-    // Estado de edição
+    // Função para mostrar conteúdo principal
+    function showMainContent() {
+      const loading = document.getElementById('loading');
+      const mainContent = document.getElementById('main-content');
+      if (loading) loading.style.display = 'none';
+      if (mainContent) mainContent.style.display = 'block';
+    }
+
+    // Variáveis globais
+    let supabase;
+    let userNameElement, userEmailElement, memberSinceElement;
+    let nomeCompletoInput, emailInput, telefoneInput, apelidoPokerInput, plataformaSelect;
+    let btnEditar, btnSalvar, btnCancelar, btnExcluirConta;
+    let modalExcluir, btnCancelarExclusao, btnConfirmarExclusao;
+    let uploadFoto, uploadText;
     let editMode = false;
     let originalValues = {};
+
+    // Inicialização com tratamento de erro
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZEIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+        
+        if (!supabaseUrl || !supabaseKey) {
+          throw new Error('Configuração do Supabase não encontrada');
+        }
+        
+        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // Testar conexão com Supabase
+        const { data: testData, error: testError } = await supabase.from('perfis').select('count').limit(1);
+        if (testError) {
+          if (testError.code === '42P01') {
+            throw new Error('Tabela "perfis" não existe no banco de dados');
+          }
+          throw new Error('Erro de conexão: ' + testError.message);
+        }
+
+        // Inicializar elementos DOM
+        initElements();
+        
+        // Configurar event listeners
+        setupEventListeners();
+        
+        // Verificar autenticação
+        await checkAuthState();
+        
+        // Ouvir mudanças de autenticação
+        supabase.auth.onAuthStateChange((event, session) => {
+          checkAuthState();
+        });
+
+      } catch (error) {
+        showError('Erro crítico: ' + error.message);
+      }
+    });
+
+    // Inicializar elementos DOM
+    function initElements() {
+      userNameElement = document.getElementById('user-name');
+      userEmailElement = document.getElementById('user-email');
+      memberSinceElement = document.getElementById('member-since');
+      nomeCompletoInput = document.getElementById('nome_completo');
+      emailInput = document.getElementById('email');
+      telefoneInput = document.getElementById('telefone');
+      apelidoPokerInput = document.getElementById('apelido_poker');
+      plataformaSelect = document.getElementById('plataforma_preferida');
+      uploadFoto = document.getElementById('upload-foto');
+      uploadText = document.getElementById('upload-text');
+      
+      btnEditar = document.getElementById('btn-editar');
+      btnSalvar = document.getElementById('btn-salvar');
+      btnCancelar = document.getElementById('btn-cancelar');
+      
+      btnExcluirConta = document.getElementById('btn-excluir-conta');
+      modalExcluir = document.getElementById('modal-excluir');
+      btnCancelarExclusao = document.getElementById('btn-cancelar-exclusao');
+      btnConfirmarExclusao = document.getElementById('btn-confirmar-exclusao');
+    }
+
+    // Configurar event listeners
+    function setupEventListeners() {
+      if (btnEditar) btnEditar.addEventListener('click', enterEditMode);
+      if (btnCancelar) btnCancelar.addEventListener('click', cancelEdit);
+      if (btnSalvar) btnSalvar.addEventListener('click', saveProfile);
+      if (uploadFoto) uploadFoto.addEventListener('click', handlePhotoUpload);
+      if (uploadText) uploadText.addEventListener('click', handlePhotoUpload);
+      if (btnExcluirConta) btnExcluirConta.addEventListener('click', showDeleteModal);
+      if (btnCancelarExclusao) btnCancelarExclusao.addEventListener('click', hideDeleteModal);
+      if (btnConfirmarExclusao) btnConfirmarExclusao.addEventListener('click', confirmDeleteAccount);
+      
+      // Fechar modal clicando fora
+      window.addEventListener('click', (event) => {
+        if (modalExcluir && event.target === modalExcluir) {
+          hideDeleteModal();
+        }
+      });
+    }
 
     async function checkAuthState() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -57,6 +170,7 @@
         
         // Carregar dados do usuário
         await loadUserData(session.user);
+        showMainContent();
       } else {
         // Se não estiver logado, redirecionar para login
         window.location.href = 'login.html';
@@ -65,7 +179,7 @@
 
     async function loadUserData(user) {
       try {
-        // Carregar apenas os campos necessários para otimizar a consulta
+        // Carregar apenas os campos necessários
         const { data, error } = await supabase
           .from('perfis')
           .select('nome_completo, telefone, apelido_poker, plataforma_preferida, url_avatar, data_criacao')
@@ -81,52 +195,55 @@
           return;
         } else if (error) {
           console.error('Erro ao carregar perfil:', error);
+          showError('Erro ao carregar perfil: ' + error.message);
           return;
         }
         
         // Preencher dados do usuário
-        userNameElement.textContent = data.nome_completo || user.user_metadata.full_name || 'Usuário';
-        userEmailElement.textContent = user.email;
+        if (userNameElement) userNameElement.textContent = data.nome_completo || user.user_metadata.full_name || 'Usuário';
+        if (userEmailElement) userEmailElement.textContent = user.email;
         
         // Formatar data de criação
         const createdDate = new Date(user.created_at);
-        memberSinceElement.textContent = createdDate.toLocaleDateString('pt-BR', {
+        if (memberSinceElement) memberSinceElement.textContent = createdDate.toLocaleDateString('pt-BR', {
           year: 'numeric',
           month: 'long',
           day: 'numeric'
         });
         
         // Preencher formulário
-        nomeCompletoInput.value = data.nome_completo || user.user_metadata.full_name || '';
-        emailInput.value = user.email;
-        telefoneInput.value = data.telefone || '';
-        apelidoPokerInput.value = data.apelido_poker || '';
-        plataformaSelect.value = data.plataforma_preferida || '';
+        if (nomeCompletoInput) nomeCompletoInput.value = data.nome_completo || user.user_metadata.full_name || '';
+        if (emailInput) emailInput.value = user.email;
+        if (telefoneInput) telefoneInput.value = data.telefone || '';
+        if (apelidoPokerInput) apelidoPokerInput.value = data.apelido_poker || '';
+        if (plataformaSelect) plataformaSelect.value = data.plataforma_preferida || '';
         
         // Carregar foto de perfil se existir
-        if (data.url_avatar) {
+        if (data.url_avatar && uploadFoto) {
           const img = uploadFoto.querySelector('img');
-          img.src = data.url_avatar;
-          img.onerror = function() {
-            this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48L3N2Zz4=";
-          };
+          if (img) {
+            img.src = data.url_avatar;
+            img.onerror = function() {
+              this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48L3N2Zz4=";
+            };
+          }
         }
         
         // Salvar valores originais
         originalValues = {
-          nome_completo: nomeCompletoInput.value,
-          email: emailInput.value,
-          telefone: telefoneInput.value,
-          apelido_poker: apelidoPokerInput.value,
-          plataforma_preferida: plataformaSelect.value
+          nome_completo: nomeCompletoInput ? nomeCompletoInput.value : '',
+          email: emailInput ? emailInput.value : '',
+          telefone: telefoneInput ? telefoneInput.value : '',
+          apelido_poker: apelidoPokerInput ? apelidoPokerInput.value : '',
+          plataforma_preferida: plataformaSelect ? plataformaSelect.value : ''
         };
         
       } catch (error) {
         console.error('Erro ao carregar dados do usuário:', error);
+        showError('Erro ao carregar dados: ' + error.message);
       }
     }
-    
-    async function createUserProfile(user) {
+        async function createUserProfile(user) {
       const { error } = await supabase
         .from('perfis')
         .insert([
@@ -140,15 +257,15 @@
       
       if (error) {
         console.error('Erro ao criar perfil:', error);
+        throw error;
       }
     }
-    
+
     async function updateUserProfile() {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
+      if (!session) return false;
       
-      // ATUALIZAÇÃO: Remover o email dos campos a serem atualizados
-      // pois o email é gerenciado pelo sistema de autenticação do Supabase
+      // CORREÇÃO: Remover o email que causa erro
       const updates = {
         nome_completo: nomeCompletoInput.value,
         telefone: telefoneInput.value,
@@ -168,12 +285,11 @@
         return false;
       } else {
         alert('Perfil atualizado com sucesso!');
-        // Atualizar o nome exibido no cabeçalho
-        userNameElement.textContent = nomeCompletoInput.value;
+        if (userNameElement) userNameElement.textContent = nomeCompletoInput.value;
         return true;
       }
     }
-    
+
     async function deleteUserAccount() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
@@ -210,103 +326,82 @@
       window.location.href = 'index.html';
     }
 
-    // Event Listeners
-    btnEditar.addEventListener('click', () => {
+    // Funções de controle da interface
+    function enterEditMode() {
       editMode = true;
-      nomeCompletoInput.disabled = false;
-      // ATUALIZAÇÃO: Manter o email sempre editável ou sempre desabilitado
-      // Vou deixar editável para consistência com a interface
-      emailInput.disabled = false;
-      telefoneInput.disabled = false;
-      apelidoPokerInput.disabled = false;
-      plataformaSelect.disabled = false;
-      btnEditar.style.display = 'none';
-      btnSalvar.style.display = 'inline-block';
-      btnCancelar.style.display = 'inline-block';
-    });
-    
-    btnCancelar.addEventListener('click', () => {
+      if (nomeCompletoInput) nomeCompletoInput.disabled = false;
+      if (telefoneInput) telefoneInput.disabled = false;
+      if (apelidoPokerInput) apelidoPokerInput.disabled = false;
+      if (plataformaSelect) plataformaSelect.disabled = false;
+      if (btnEditar) btnEditar.style.display = 'none';
+      if (btnSalvar) btnSalvar.style.display = 'inline-block';
+      if (btnCancelar) btnCancelar.style.display = 'inline-block';
+    }
+
+    function cancelEdit() {
       editMode = false;
-      nomeCompletoInput.disabled = true;
-      // ATUALIZAÇÃO: Manter o email sempre editável ou sempre desabilitado
-      // Vou deixar editável para consistência
-      emailInput.disabled = false;
-      telefoneInput.disabled = true;
-      apelidoPokerInput.disabled = true;
-      plataformaSelect.disabled = true;
-      nomeCompletoInput.value = originalValues.nome_completo;
-      emailInput.value = originalValues.email;
-      telefoneInput.value = originalValues.telefone;
-      apelidoPokerInput.value = originalValues.apelido_poker;
-      plataformaSelect.value = originalValues.plataforma_preferida;
-      btnEditar.style.display = 'inline-block';
-      btnSalvar.style.display = 'none';
-      btnCancelar.style.display = 'none';
-    });
-    
-    btnSalvar.addEventListener('click', async () => {
+      if (nomeCompletoInput) {
+        nomeCompletoInput.disabled = true;
+        nomeCompletoInput.value = originalValues.nome_completo;
+      }
+      if (emailInput) emailInput.value = originalValues.email;
+      if (telefoneInput) {
+        telefoneInput.disabled = true;
+        telefoneInput.value = originalValues.telefone;
+      }
+      if (apelidoPokerInput) {
+        apelidoPokerInput.disabled = true;
+        apelidoPokerInput.value = originalValues.apelido_poker;
+      }
+      if (plataformaSelect) {
+        plataformaSelect.disabled = true;
+        plataformaSelect.value = originalValues.plataforma_preferida;
+      }
+      if (btnEditar) btnEditar.style.display = 'inline-block';
+      if (btnSalvar) btnSalvar.style.display = 'none';
+      if (btnCancelar) btnCancelar.style.display = 'none';
+    }
+
+    async function saveProfile() {
       const success = await updateUserProfile();
       if (success) {
         editMode = false;
-        nomeCompletoInput.disabled = true;
-        // ATUALIZAÇÃO: Manter o email sempre editável
-        emailInput.disabled = false;
-        telefoneInput.disabled = true;
-        apelidoPokerInput.disabled = true;
-        plataformaSelect.disabled = true;
+        if (nomeCompletoInput) nomeCompletoInput.disabled = true;
+        if (telefoneInput) telefoneInput.disabled = true;
+        if (apelidoPokerInput) apelidoPokerInput.disabled = true;
+        if (plataformaSelect) plataformaSelect.disabled = true;
         
         // Atualizar valores originais
         originalValues = {
-          nome_completo: nomeCompletoInput.value,
-          email: emailInput.value,
-          telefone: telefoneInput.value,
-          apelido_poker: apelidoPokerInput.value,
-          plataforma_preferida: plataformaSelect.value
+          nome_completo: nomeCompletoInput ? nomeCompletoInput.value : '',
+          email: emailInput ? emailInput.value : '',
+          telefone: telefoneInput ? telefoneInput.value : '',
+          apelido_poker: apelidoPokerInput ? apelidoPokerInput.value : '',
+          plataforma_preferida: plataformaSelect ? plataformaSelect.value : ''
         };
         
-        btnEditar.style.display = 'inline-block';
-        btnSalvar.style.display = 'none';
-        btnCancelar.style.display = 'none';
+        if (btnEditar) btnEditar.style.display = 'inline-block';
+        if (btnSalvar) btnSalvar.style.display = 'none';
+        if (btnCancelar) btnCancelar.style.display = 'none';
       }
-    });
-    
-    uploadFoto.addEventListener('click', () => {
+    }
+
+    function handlePhotoUpload() {
       alert('Funcionalidade de upload de imagem será implementada em breve!');
-    });
-    
-    uploadText.addEventListener('click', () => {
-      alert('Funcionalidade de upload de imagem será implementada em breve!');
-    });
-    
-    btnExcluirConta.addEventListener('click', () => {
-      modalExcluir.style.display = 'flex';
-    });
-    
-    btnCancelarExclusao.addEventListener('click', () => {
-      modalExcluir.style.display = 'none';
-    });
-    
-    btnConfirmarExclusao.addEventListener('click', async () => {
-      modalExcluir.style.display = 'none';
+    }
+
+    function showDeleteModal() {
+      if (modalExcluir) modalExcluir.style.display = 'flex';
+    }
+
+    function hideDeleteModal() {
+      if (modalExcluir) modalExcluir.style.display = 'none';
+    }
+
+    async function confirmDeleteAccount() {
+      hideDeleteModal();
       await deleteUserAccount();
-    });
-    
-    // Fechar modal clicando fora
-    window.addEventListener('click', (event) => {
-      if (event.target === modalExcluir) {
-        modalExcluir.style.display = 'none';
-      }
-    });
-
-    // Inicialização
-    document.addEventListener('DOMContentLoaded', function() {
-      checkAuthState();
-    });
-
-    supabase.auth.onAuthStateChange((event, session) => {
-      checkAuthState();
-    });
+    }
   </script>
-
 </body>
 </html>
