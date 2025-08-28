@@ -358,6 +358,7 @@
       header {
         padding: 12px 15px;
         min-height: 60px;
+        justify-content: space-between;
       }
       
       header img {
@@ -367,20 +368,20 @@
       .auth-buttons {
         position: static;
         transform: none;
-        justify-content: center;
-        margin-top: 12px;
-        width: 100%;
+        margin-top: 0;
+        width: auto;
         gap: 8px;
+        margin-right: 55px; /* Espaço para o hamburger */
       }
       
       .auth-btn {
-        padding: 8px 16px;
-        font-size: 0.85rem;
+        padding: 6px 12px;
+        font-size: 0.75rem;
         width: auto;
       }
       
       .signup-btn {
-        padding: 8px 18px !important;
+        padding: 6px 12px !important;
       }
       
       nav {
@@ -390,10 +391,15 @@
       
       .hamburger {
         display: flex;
-        width: 40px;
-        height: 34px;
-        right: 20px;
-        top: 20px;
+        width: 36px;
+        height: 30px;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .hamburger span {
+        height: 3px;
       }
 
       .menu {
@@ -475,6 +481,32 @@
         width: 100%;
         height: auto;
         min-height: 90px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 10px 12px;
+      }
+      
+      header img {
+        max-width: 120px;
+      }
+      
+      .auth-buttons {
+        gap: 6px;
+        margin-right: 45px;
+      }
+      
+      .auth-btn {
+        padding: 5px 10px;
+        font-size: 0.7rem;
+      }
+      
+      .hamburger {
+        width: 32px;
+        height: 28px;
+        right: 12px;
       }
     }
   </style>
@@ -562,7 +594,7 @@
         </p>
         <p>
           Meu nome adalah Bruno Macedo, e tenho sebagai missão pessoal fortalecer cada vez mais nossa comunidade, criando laços duradouros 
-          entre jogadores e estabelecendo a Guilda do Poker sebagai referência em ambientes virtuais de poker. Estou comprometido em 
+          entre jogadores e estabelecendo a Guilda do Poker como referência em ambientes virtuais de poker. Estou comprometido em 
           evoluir nosso clube continuamente, ouvindo sugestões e implementando melhorias que elevem a experiência de jogo para todos.
         </p>
         <p>
@@ -628,44 +660,43 @@
   </script>
 
   <!-- Script de autenticação Supabase -->
-  // Script de autenticação Supabase - Parte modificada
-<script>
-  const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+  <script>
+    const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-  async function checkAuthState() {
-    const { data: { session } } = await supabase.auth.getSession();
-    const authButtons = document.getElementById('auth-buttons');
-    
-    if (!authButtons) return;
-    
-    if (session) {
-      authButtons.innerHTML = `
-        <a href="perfil.html" class="auth-btn login-btn">Meu Perfil</a>
-        <a href="#" onclick="logout()" class="auth-btn signup-btn">Sair</a>
-      `;
-    } else {
-      authButtons.innerHTML = `
-        <a href="login.html" class="auth-btn login-btn">Login</a>
-        <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
-      `;
+    async function checkAuthState() {
+      const { data: { session } } = await supabase.auth.getSession();
+      const authButtons = document.getElementById('auth-buttons');
+      
+      if (!authButtons) return;
+      
+      if (session) {
+        authButtons.innerHTML = `
+          <a href="perfil.html" class="auth-btn login-btn">Meu Perfil</a>
+          <a href="#" onclick="logout()" class="auth-btn signup-btn">Sair</a>
+        `;
+      } else {
+        authButtons.innerHTML = `
+          <a href="login.html" class="auth-btn login-btn">Login</a>
+          <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
+        `;
+      }
     }
-  }
 
-  async function logout() {
-    await supabase.auth.signOut();
-    window.location.reload();
-  }
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.reload();
+    }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    checkAuthState();
-  });
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAuthState();
+    });
 
-  supabase.auth.onAuthStateChange((event, session) => {
-    checkAuthState();
-  });
-</script>
+    supabase.auth.onAuthStateChange((event, session) => {
+      checkAuthState();
+    });
+  </script>
 
 </body>
 </html>
