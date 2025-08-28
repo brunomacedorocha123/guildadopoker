@@ -581,8 +581,8 @@
         <h2>Informações Pessoais</h2>
         <form id="form-perfil">
           <div class="form-group">
-            <label for="nome">Nome Completo</label>
-            <input type="text" id="nome" name="nome" disabled>
+            <label for="nome_completo">Nome Completo</label>
+            <input type="text" id="nome_completo" name="nome_completo" disabled>
           </div>
           
           <div class="form-group">
@@ -596,16 +596,16 @@
           </div>
           
           <div class="form-group">
-            <label for="apelido">Apelido no Poker</label>
-            <input type="text" id="apelido" name="apelido" disabled>
+            <label for="apelido_poker">Apelido no Poker</label>
+            <input type="text" id="apelido_poker" name="apelido_poker" disabled>
           </div>
           
           <div class="form-group">
-            <label for="plataforma">Plataforma Preferida</label>
-            <select id="plataforma" name="plataforma" disabled>
-              <option value="pppoker">PPPoker</option>
-              <option value="suprema">Suprema Poker</option>
-              <option value="ambas">Ambas</option>
+            <label for="plataforma_preferida">Plataforma Preferida</label>
+            <select id="plataforma_preferida" name="plataforma_preferida" disabled>
+              <option value="">Selecione uma plataforma</option>
+              <option value="PPPoker">PPPoker</option>
+              <option value="Suprema Poker">Suprema Poker</option>
             </select>
           </div>
           
@@ -620,7 +620,7 @@
       <!-- Excluir Conta -->
       <div class="secao-perfil">
         <h2>Zona de Perigo</h2>
-        <p>Esta ação não pode be desfeita. Isto excluirá permanentemente sua conta e removerá todos os dados associados.</p>
+        <p>Esta ação não pode ser desfeita. Isto excluirá permanentemente sua conta e removerá todos os dados associados.</p>
         <div class="botoes-acao">
           <button type="button" id="btn-excluir-conta" class="btn btn-danger">Excluir Minha Conta</button>
         </div>
@@ -632,7 +632,7 @@
   <div id="modal-excluir" class="modal">
     <div class="modal-conteudo">
       <h2>Confirmar Exclusão de Conta</h2>
-      <p>Tem certeza que deseja excluir sua conta? Esta action não pode ser desfeita e todos os seus dados serão permanentemente removidos.</p>
+      <p>Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita e todos os seus dados serão permanentemente removidos.</p>
       <div class="modal-botoes">
         <button id="btn-cancelar-exclusao" class="btn btn-secondary">Cancelar</button>
         <button id="btn-confirmar-exclusao" class="btn btn-danger">Excluir Conta</button>
@@ -696,11 +696,11 @@
     const userNameElement = document.getElementById('user-name');
     const userEmailElement = document.getElementById('user-email');
     const memberSinceElement = document.getElementById('member-since');
-    const nomeInput = document.getElementById('nome');
+    const nomeCompletoInput = document.getElementById('nome_completo');
     const emailInput = document.getElementById('email');
     const telefoneInput = document.getElementById('telefone');
-    const apelidoInput = document.getElementById('apelido');
-    const plataformaSelect = document.getElementById('plataforma');
+    const apelidoPokerInput = document.getElementById('apelido_poker');
+    const plataformaSelect = document.getElementById('plataforma_preferida');
     const uploadFoto = document.getElementById('upload-foto');
     const uploadText = document.getElementById('upload-text');
     
@@ -738,18 +738,22 @@
 
     async function loadUserData(user) {
       try {
-        // Carregar dados do perfil do usuário
+        // Carregar dados do perfil do usuário da tabela 'perfis'
         const { data, error } = await supabase
-          .from('profiles')
+          .from('perfis')
           .select('*')
           .eq('id', user.id)
           .single();
         
-        if (error) {
-          console.error('Erro ao carregar perfil:', error);
+        if (error && error.code === 'PGRST116') {
           // Se não encontrar perfil, criar um básico
+          console.log('Perfil não encontrado, criando novo...');
           await createUserProfile(user);
-          await loadUserData(user); // Recarregar dados
+          // Recarregar dados após criar
+          await loadUserData(user);
+          return;
+        } else if (error) {
+          console.error('Erro ao carregar perfil:', error);
           return;
         }
         
@@ -761,29 +765,30 @@
         const createdDate = new Date(user.created_at);
         memberSinceElement.textContent = createdDate.toLocaleDateString('pt-BR', {
           year: 'numeric',
-          month: 'long'
+          month: 'long',
+          day: 'numeric'
         });
         
         // Preencher formulário
-        nomeInput.value = data.nome_completo || user.user_metadata.full_name || '';
+        nomeCompletoInput.value = data.nome_completo || user.user_metadata.full_name || '';
         emailInput.value = user.email;
         telefoneInput.value = data.telefone || '';
-        apelidoInput.value = data.apelido || '';
-        plataformaSelect.value = data.plataforma_preferida || 'pppoker';
+        apelidoPokerInput.value = data.apelido_poker || '';
+        plataformaSelect.value = data.plataforma_preferida || '';
         
         // Carregar foto de perfil se existir
-        if (data.foto_url) {
+        if (data.url_avatar) {
           const img = uploadFoto.querySelector('img');
-          img.src = data.foto_url;
+          img.src = data.url_avatar;
         }
         
         // Salvar valores originais
         originalValues = {
-          nome: nomeInput.value,
+          nome_completo: nomeCompletoInput.value,
           email: emailInput.value,
           telefone: telefoneInput.value,
-          apelido: apelidoInput.value,
-          plataforma: plataformaSelect.value
+          apelido_poker: apelidoPokerInput.value,
+          plataforma_preferida: plataformaSelect.value
         };
         
       } catch (error) {
@@ -793,13 +798,13 @@
     
     async function createUserProfile(user) {
       const { error } = await supabase
-        .from('profiles')
+        .from('perfis')
         .insert([
           { 
             id: user.id, 
             nome_completo: user.user_metadata.full_name || '',
             email: user.email,
-            created_at: new Date().toISOString()
+            data_criacao: new Date().toISOString()
           }
         ]);
       
@@ -813,31 +818,28 @@
       if (!session) return;
       
       const updates = {
-        nome_completo: nomeInput.value,
+        nome_completo: nomeCompletoInput.value,
         email: emailInput.value,
         telefone: telefoneInput.value,
-        apelido: apelidoInput.value,
+        apelido_poker: apelidoPokerInput.value,
         plataforma_preferida: plataformaSelect.value,
-        updated_at: new Date().toISOString()
+        data_atualizacao: new Date().toISOString()
       };
       
       const { error } = await supabase
-        .from('profiles')
+        .from('perfis')
         .update(updates)
         .eq('id', session.user.id);
       
       if (error) {
         console.error('Erro ao atualizar perfil:', error);
         alert('Erro ao salvar alterações. Tente novamente.');
+        return false;
       } else {
         alert('Perfil atualizado com sucesso!');
-        originalValues = {
-          nome: nomeInput.value,
-          email: emailInput.value,
-          telefone: telefoneInput.value,
-          apelido: apelidoInput.value,
-          plataforma: plataformaSelect.value
-        };
+        // Atualizar o nome exibido no cabeçalho
+        userNameElement.textContent = nomeCompletoInput.value;
+        return true;
       }
     }
     
@@ -845,25 +847,30 @@
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
       
-      // Primeiro excluir o perfil
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', session.user.id);
-      
-      if (profileError) {
-        console.error('Erro ao excluir perfil:', profileError);
-      }
-      
-      // Depois excluir o usuário
-      const { error } = await supabase.auth.admin.deleteUser(session.user.id);
-      
-      if (error) {
+      try {
+        // Primeiro excluir o perfil da tabela 'perfis'
+        const { error: profileError } = await supabase
+          .from('perfis')
+          .delete()
+          .eq('id', session.user.id);
+        
+        if (profileError) {
+          console.error('Erro ao excluir perfil:', profileError);
+        }
+        
+        // Depois excluir o usuário do auth
+        const { error } = await supabase.auth.admin.deleteUser(session.user.id);
+        
+        if (error) {
+          console.error('Erro ao excluir conta:', error);
+          alert('Erro ao excluir conta. Tente novamente.');
+        } else {
+          alert('Sua conta foi excluída com sucesso.');
+          await logout();
+        }
+      } catch (error) {
         console.error('Erro ao excluir conta:', error);
         alert('Erro ao excluir conta. Tente novamente.');
-      } else {
-        alert('Sua conta foi excluída com sucesso.');
-        await logout();
       }
     }
 
@@ -875,10 +882,9 @@
     // Event Listeners
     btnEditar.addEventListener('click', () => {
       editMode = true;
-      nomeInput.disabled = false;
-      emailInput.disabled = false; // Habilita o campo de e-mail
+      nomeCompletoInput.disabled = false;
       telefoneInput.disabled = false;
-      apelidoInput.disabled = false;
+      apelidoPokerInput.disabled = false;
       plataformaSelect.disabled = false;
       btnEditar.style.display = 'none';
       btnSalvar.style.display = 'inline-block';
@@ -887,32 +893,41 @@
     
     btnCancelar.addEventListener('click', () => {
       editMode = false;
-      nomeInput.disabled = true;
-      emailInput.disabled = true; // Desabilita o campo de e-mail novamente
+      nomeCompletoInput.disabled = true;
       telefoneInput.disabled = true;
-      apelidoInput.disabled = true;
+      apelidoPokerInput.disabled = true;
       plataformaSelect.disabled = true;
-      nomeInput.value = originalValues.nome;
-      emailInput.value = originalValues.email; // Restaura o valor original do e-mail
+      nomeCompletoInput.value = originalValues.nome_completo;
       telefoneInput.value = originalValues.telefone;
-      apelidoInput.value = originalValues.apelido;
-      plataformaSelect.value = originalValues.plataforma;
+      apelidoPokerInput.value = originalValues.apelido_poker;
+      plataformaSelect.value = originalValues.plataforma_preferida;
       btnEditar.style.display = 'inline-block';
       btnSalvar.style.display = 'none';
       btnCancelar.style.display = 'none';
     });
     
     btnSalvar.addEventListener('click', async () => {
-      await updateUserProfile();
-      editMode = false;
-      nomeInput.disabled = true;
-      emailInput.disabled = true; // Desabilita o campo de e-mail após salvar
-      telefoneInput.disabled = true;
-      apelidoInput.disabled = true;
-      plataformaSelect.disabled = true;
-      btnEditar.style.display = 'inline-block';
-      btnSalvar.style.display = 'none';
-      btnCancelar.style.display = 'none';
+      const success = await updateUserProfile();
+      if (success) {
+        editMode = false;
+        nomeCompletoInput.disabled = true;
+        telefoneInput.disabled = true;
+        apelidoPokerInput.disabled = true;
+        plataformaSelect.disabled = true;
+        
+        // Atualizar valores originais
+        originalValues = {
+          nome_completo: nomeCompletoInput.value,
+          email: emailInput.value,
+          telefone: telefoneInput.value,
+          apelido_poker: apelidoPokerInput.value,
+          plataforma_preferida: plataformaSelect.value
+        };
+        
+        btnEditar.style.display = 'inline-block';
+        btnSalvar.style.display = 'none';
+        btnCancelar.style.display = 'none';
+      }
     });
     
     uploadFoto.addEventListener('click', () => {
@@ -943,6 +958,7 @@
       }
     });
 
+    // Inicialização
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthState();
     });
