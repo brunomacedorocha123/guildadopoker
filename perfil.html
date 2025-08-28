@@ -587,7 +587,7 @@
           
           <div class="form-group">
             <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" disabled>
+            <input type="email" id="email" name="email">
           </div>
           
           <div class="form-group">
@@ -620,7 +620,7 @@
       <!-- Excluir Conta -->
       <div class="secao-perfil">
         <h2>Zona de Perigo</h2>
-        <p>Esta ação não pode ser desfeita. Isto excluirá permanentemente sua conta e removerá todos os dados associados.</p>
+        <p>Esta ação não pode be desfeita. Isto excluirá permanentemente sua conta e removerá todos os dados associados.</p>
         <div class="botoes-acao">
           <button type="button" id="btn-excluir-conta" class="btn btn-danger">Excluir Minha Conta</button>
         </div>
@@ -738,10 +738,10 @@
 
     async function loadUserData(user) {
       try {
-        // Carregar dados do perfil do usuário da tabela 'perfis'
+        // Carregar apenas os campos necessários para otimizar a consulta
         const { data, error } = await supabase
           .from('perfis')
-          .select('*')
+          .select('nome_completo, telefone, apelido_poker, plataforma_preferida, url_avatar, data_criacao')
           .eq('id', user.id)
           .single();
         
@@ -780,6 +780,9 @@
         if (data.url_avatar) {
           const img = uploadFoto.querySelector('img');
           img.src = data.url_avatar;
+          img.onerror = function() {
+            this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48L3N2Zz4=";
+          };
         }
         
         // Salvar valores originais
@@ -839,6 +842,7 @@
         alert('Perfil atualizado com sucesso!');
         // Atualizar o nome exibido no cabeçalho
         userNameElement.textContent = nomeCompletoInput.value;
+        userEmailElement.textContent = emailInput.value;
         return true;
       }
     }
@@ -898,6 +902,7 @@
       apelidoPokerInput.disabled = true;
       plataformaSelect.disabled = true;
       nomeCompletoInput.value = originalValues.nome_completo;
+      emailInput.value = originalValues.email;
       telefoneInput.value = originalValues.telefone;
       apelidoPokerInput.value = originalValues.apelido_poker;
       plataformaSelect.value = originalValues.plataforma_preferida;
