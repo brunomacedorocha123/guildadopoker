@@ -116,19 +116,16 @@
             border-radius: 5px;
             margin-bottom: 15px;
             text-align: center;
-            display: none;
-        }
-        
-        .success {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: #28a745;
-            border: 1px solid #28a745;
         }
         
         .error {
             background-color: rgba(220, 53, 69, 0.1);
             color: #dc3545;
             border: 1px solid #dc3545;
+        }
+        
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -137,7 +134,7 @@
         <div class="logo">♠️♥️♣️♦️</div>
         <h1>Login</h1>
         
-        <div id="message" class="message"></div>
+        <div id="message" class="message hidden"></div>
         
         <form id="login-form">
             <div class="form-group">
@@ -164,46 +161,53 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         
+        // Elementos da interface
+        const loginForm = document.getElementById('login-form');
+        const messageElement = document.getElementById('message');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        
         // Processar o formulário de login
-        document.getElementById('login-form').addEventListener('submit', async function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const messageElement = document.getElementById('message');
-            
             // Resetar mensagem
-            messageElement.style.display = 'none';
+            messageElement.classList.add('hidden');
+            
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            
+            if (!email || !password) {
+                showMessage('Preencha todos os campos.', 'error');
+                return;
+            }
             
             try {
                 // Tentar fazer login
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const { error } = await supabase.auth.signInWithPassword({
                     email: email,
-                    password: password,
+                    password: password
                 });
                 
                 if (error) {
                     showMessage('Erro no login: ' + error.message, 'error');
-                    console.error('Erro detalhado:', error);
                     return;
                 }
                 
-                // Sucesso - redirecionar para callback
+                // Login bem-sucedido - redirecionar
                 window.location.href = 'callback.html?status=success&message=Login realizado com sucesso!';
                 
             } catch (error) {
                 showMessage('Erro inesperado: ' + error.message, 'error');
-                console.error('Erro inesperado:', error);
             }
         });
         
         function showMessage(text, type) {
-            const messageElement = document.getElementById('message');
             messageElement.textContent = text;
-            messageElement.className = 'message ' + type;
-            messageElement.style.display = 'block';
+            messageElement.className = `message ${type}`;
+            messageElement.classList.remove('hidden');
         }
-
+        
         // Verificar se já está logado
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session) {
