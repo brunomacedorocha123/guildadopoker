@@ -48,7 +48,7 @@
     /* ===== BOTÕES DE PERFIL E SAIR ===== */
     .auth-buttons {
       position: absolute;
-      right: 60px;
+      right: 20px;
       top: 50%;
       transform: translateY(-50%);
       display: flex;
@@ -66,13 +66,7 @@
     }
     
     .profile-btn {
-      background-color: transparent;
-      color: var(--gold);
-      border: 1px solid var(--gold);
-    }
-    
-    .profile-btn:hover {
-      background-color: rgba(255, 204, 0, 0.1);
+      display: none; /* Escondendo o botão Meu Perfil */
     }
     
     .logout-btn {
@@ -233,6 +227,7 @@
       background-color: var(--bg-2);
       border-radius: 8px;
       border: 1px solid var(--gold);
+      position: relative;
     }
     
     .perfil-header h1 {
@@ -251,12 +246,30 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
     
     .foto-perfil img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+    
+    .foto-perfil .user-badge {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      background-color: var(--gold);
+      color: var(--bg);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      border: 2px solid var(--bg-2);
     }
     
     .info-usuario {
@@ -400,11 +413,9 @@
       gap: 15px;
     }
 
-    /* Barra lateral para banner */
+    /* Barra lateral para banner - REMOVIDA */
     .sidebar {
-      width: 340px;
-      padding: 10px;
-      flex-shrink: 0;
+      display: none; /* Removendo a barra lateral com publicidade */
     }
 
     footer{
@@ -584,7 +595,6 @@
     
     <!-- Botões de Perfil e Sair -->
     <div class="auth-buttons" id="auth-buttons">
-      <a href="perfil.html" class="auth-btn profile-btn">Meu Perfil</a>
       <button onclick="logout()" class="auth-btn logout-btn">Sair</button>
     </div>
     
@@ -612,12 +622,12 @@
     </div>
   </nav>
 
-  <!-- Banner de Topo -->
-  <div class="banner-topo">
+  <!-- Banner de Topo - REMOVIDO -->
+  <!-- <div class="banner-topo">
     <div class="ad-placeholder ad-topo">
       <p>Espaço reservado para banner (728x90)</p>
     </div>
-  </div>
+  </div> -->
 
   <div class="conteudo-principal">
     <div class="conteudo">
@@ -625,6 +635,7 @@
       <div class="perfil-header">
         <div class="foto-perfil">
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCIgeT0iODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0MCIgZmlsbD0iI2ZmY2MwMCI+VXNlcjwvdGV4dD48L3N2Zz4=" alt="Foto de perfil">
+          <div class="user-badge">U</div>
         </div>
         <h1>Meu Perfil</h1>
         <div class="info-usuario">
@@ -666,18 +677,10 @@
         </form>
       </div>
 
-      <!-- Preferências -->
+      <!-- Preferências - REMOVIDA A SEÇÃO DE NOTIFICAÇÕES -->
       <div class="secao-perfil">
         <h2>Preferências</h2>
         <form id="form-preferencias">
-          <div class="form-group">
-            <label for="notificacoes">Receber Notificações</label>
-            <select id="notificacoes" name="notificacoes" disabled>
-              <option value="sim">Sim</option>
-              <option value="nao">Não</option>
-            </select>
-          </div>
-          
           <div class="form-group">
             <label for="plataforma">Plataforma Preferida</label>
             <select id="plataforma" name="plataforma" disabled>
@@ -705,12 +708,12 @@
       </div>
     </div>
     
-    <!-- Banner Lateral -->
-    <div class="sidebar">
+    <!-- Banner Lateral - REMOVIDO -->
+    <!-- <div class="sidebar">
       <div class="ad-placeholder ad-lateral">
         <p>Espaço reservado para banner (300x600)</p>
       </div>
-    </div>
+    </div> -->
   </div>
 
   <!-- Modal de Confirmação para Excluir Conta -->
@@ -785,7 +788,6 @@
     const emailInput = document.getElementById('email');
     const telefoneInput = document.getElementById('telefone');
     const apelidoInput = document.getElementById('apelido');
-    const notificacoesSelect = document.getElementById('notificacoes');
     const plataformaSelect = document.getElementById('plataforma');
     
     const btnEditar = document.getElementById('btn-editar');
@@ -814,7 +816,6 @@
       
       if (session) {
         authButtons.innerHTML = `
-          <a href="perfil.html" class="auth-btn profile-btn">Meu Perfil</a>
           <button onclick="logout()" class="auth-btn logout-btn">Sair</button>
         `;
         
@@ -859,7 +860,6 @@
         emailInput.value = user.email;
         telefoneInput.value = data.telefone || '';
         apelidoInput.value = data.apelido || '';
-        notificacoesSelect.value = data.receber_notificacoes ? 'sim' : 'nao';
         plataformaSelect.value = data.plataforma_preferida || 'pppoker';
         
         // Salvar valores originais
@@ -867,7 +867,6 @@
           nome: nomeInput.value,
           telefone: telefoneInput.value,
           apelido: apelidoInput.value,
-          notificacoes: notificacoesSelect.value,
           plataforma: plataformaSelect.value
         };
         
@@ -901,7 +900,6 @@
         nome_completo: nomeInput.value,
         telefone: telefoneInput.value,
         apelido: apelidoInput.value,
-        receber_notificacoes: notificacoesSelect.value === 'sim',
         plataforma_preferida: plataformaSelect.value,
         updated_at: new Date().toISOString()
       };
@@ -920,7 +918,6 @@
           nome: nomeInput.value,
           telefone: telefoneInput.value,
           apelido: apelidoInput.value,
-          notificacoes: notificacoesSelect.value,
           plataforma: plataformaSelect.value
         };
       }
@@ -994,7 +991,6 @@
     
     btnEditarPref.addEventListener('click', () => {
       editPrefMode = true;
-      notificacoesSelect.disabled = false;
       plataformaSelect.disabled = false;
       btnEditarPref.style.display = 'none';
       btnSalvarPref.style.display = 'inline-block';
@@ -1003,9 +999,7 @@
     
     btnCancelarPref.addEventListener('click', () => {
       editPrefMode = false;
-      notificacoesSelect.disabled = true;
       plataformaSelect.disabled = true;
-      notificacoesSelect.value = originalValues.notificacoes;
       plataformaSelect.value = originalValues.plataforma;
       btnEditarPref.style.display = 'inline-block';
       btnSalvarPref.style.display = 'none';
@@ -1015,7 +1009,6 @@
     btnSalvarPref.addEventListener('click', async () => {
       await updateUserProfile();
       editPrefMode = false;
-      notificacoesSelect.disabled = true;
       plataformaSelect.disabled = true;
       btnEditarPref.style.display = 'inline-block';
       btnSalvarPref.style.display = 'none';
