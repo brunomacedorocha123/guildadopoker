@@ -46,12 +46,14 @@
     }
 
     /* ===== BOTÕES DE PERFIL E SAIR ===== */
-    .auth-buttons {
+    .header-controls {
       position: absolute;
-      right: 70px;
+      right: 20px;
       top: 50%;
       transform: translateY(-50%);
       display: flex;
+      flex-direction: column;
+      align-items: flex-end;
       gap: 10px;
     }
     
@@ -63,10 +65,6 @@
       font-size: 0.85rem;
       transition: all 0.3s ease;
       white-space: nowrap;
-    }
-    
-    .profile-btn {
-      display: none; /* Escondendo o botão Meu Perfil */
     }
     
     .logout-btn {
@@ -141,10 +139,6 @@
       border: none;
       cursor: pointer;
       padding: 0;
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
       z-index: 1001;
     }
 
@@ -411,8 +405,8 @@
         font-size: 1rem;
       }
       
-      .auth-buttons {
-        right: 60px;
+      .header-controls {
+        right: 15px;
       }
       
       .auth-btn {
@@ -429,19 +423,22 @@
       header {
         padding: 12px 15px;
         min-height: 60px;
+        flex-wrap: wrap;
       }
       
       header img {
         max-width: 140px;
       }
       
-      .auth-buttons {
+      .header-controls {
         position: static;
         transform: none;
+        flex-direction: row;
         justify-content: center;
         margin-top: 12px;
         width: 100%;
         gap: 8px;
+        order: 3;
       }
       
       .auth-btn {
@@ -462,8 +459,10 @@
       .hamburger {
         width: 40px;
         height: 34px;
+        position: absolute;
         right: 15px;
         top: 50%;
+        transform: translateY(-50%);
       }
 
       .menu {
@@ -529,16 +528,17 @@
   <header>
     <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
     
-    <!-- Botões de Perfil e Sair -->
-    <div class="auth-buttons" id="auth-buttons">
-      <button onclick="logout()" class="auth-btn logout-btn">Sair</button>
-    </div>
-    
+    <!-- Botão hamburguer -->
     <button class="hamburger" aria-label="Abrir menu">
       <span></span>
       <span></span>
       <span></span>
     </button>
+    
+    <!-- Botões de Perfil e Sair -->
+    <div class="header-controls" id="auth-buttons">
+      <button onclick="logout()" class="auth-btn logout-btn">Sair</button>
+    </div>
   </header>
 
   <!-- Navegação -->
@@ -563,7 +563,7 @@
       <!-- Cabeçalho do Perfil -->
       <div class="perfil-header">
         <div class="foto-perfil" id="upload-foto">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48L3N2Zz4=" alt="Foto de perfil">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGgPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjMzMzIi8+PC9zdmc+" alt="Foto de perfil">
           <div class="upload-text">Clique para alterar</div>
         </div>
         <h1>Meu Perfil</h1>
@@ -777,6 +777,7 @@
         // Salvar valores originais
         originalValues = {
           nome: nomeInput.value,
+          email: emailInput.value,
           telefone: telefoneInput.value,
           apelido: apelidoInput.value,
           plataforma: plataformaSelect.value
@@ -810,6 +811,7 @@
       
       const updates = {
         nome_completo: nomeInput.value,
+        email: emailInput.value,
         telefone: telefoneInput.value,
         apelido: apelidoInput.value,
         plataforma_preferida: plataformaSelect.value,
@@ -828,6 +830,7 @@
         alert('Perfil atualizado com sucesso!');
         originalValues = {
           nome: nomeInput.value,
+          email: emailInput.value,
           telefone: telefoneInput.value,
           apelido: apelidoInput.value,
           plataforma: plataformaSelect.value
@@ -870,6 +873,7 @@
     btnEditar.addEventListener('click', () => {
       editMode = true;
       nomeInput.disabled = false;
+      emailInput.disabled = false; // Habilita o campo de e-mail
       telefoneInput.disabled = false;
       apelidoInput.disabled = false;
       plataformaSelect.disabled = false;
@@ -881,10 +885,12 @@
     btnCancelar.addEventListener('click', () => {
       editMode = false;
       nomeInput.disabled = true;
+      emailInput.disabled = true; // Desabilita o campo de e-mail novamente
       telefoneInput.disabled = true;
       apelidoInput.disabled = true;
       plataformaSelect.disabled = true;
       nomeInput.value = originalValues.nome;
+      emailInput.value = originalValues.email; // Restaura o valor original do e-mail
       telefoneInput.value = originalValues.telefone;
       apelidoInput.value = originalValues.apelido;
       plataformaSelect.value = originalValues.plataforma;
@@ -897,6 +903,7 @@
       await updateUserProfile();
       editMode = false;
       nomeInput.disabled = true;
+      emailInput.disabled = true; // Desabilita o campo de e-mail após salvar
       telefoneInput.disabled = true;
       apelidoInput.disabled = true;
       plataformaSelect.disabled = true;
