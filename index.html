@@ -27,36 +27,42 @@
       min-height: 100vh;
     }
 
-    header{
+    /* ===== CABEÇALHO COM BOTÕES ===== */
+    header {
       background: var(--bg-2);
-      padding: 20px;
+      padding: 15px 20px;
       text-align: center;
       border-bottom: 2px solid var(--gold);
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 80px;
+      min-height: 70px;
     }
-    header img{ max-width: 200px; height: auto; }
+    
+    header img { 
+      max-width: 160px;
+      height: auto; 
+    }
 
-    /* ===== BOTÕES DE LOGIN E CADASTRO NO TOPO ===== */
+    /* ===== BOTÕES DE LOGIN E CADASTRO ===== */
     .auth-buttons {
       position: absolute;
-      right: 80px;
+      right: 60px;
       top: 50%;
       transform: translateY(-50%);
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
     
     .auth-btn {
-      padding: 8px 16px;
+      padding: 7px 14px;
       border-radius: 5px;
       font-weight: bold;
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       transition: all 0.3s ease;
+      white-space: nowrap;
     }
     
     .login-btn {
@@ -73,6 +79,7 @@
       background-color: var(--gold);
       color: var(--bg);
       border: 1px solid var(--gold);
+      padding: 7px 16px !important;
     }
     
     .signup-btn:hover {
@@ -80,7 +87,7 @@
       border-color: #e6b800;
     }
 
-    /* ===== MENU DE NAVEGAÇÃO RESPONSIVO - NOVO ESTILO ===== */
+    /* ===== MENU DE NAVEGAÇÃO ===== */
     nav {
       background: var(--bg-3);
       padding: 15px 0;
@@ -128,7 +135,7 @@
       border-radius: 6px;
     }
 
-    /* ===== BOTÃO HAMBÚRGUER - NOVO ESTILO ===== */
+    /* ===== BOTÃO HAMBÚRGUER ===== */
     .hamburger {
       display: none;
       flex-direction: column;
@@ -153,7 +160,6 @@
       transition: all 0.3s linear;
     }
 
-    /* Efeito ao clicar no hamburger */
     .hamburger.active span:nth-child(1) {
       transform: rotate(45deg) translate(8px, 8px);
     }
@@ -267,7 +273,7 @@
       flex-shrink: 0;
     }
 
-    /* Nova seção Sobre Nós */
+    /* Seção Sobre Nós */
     .sobre-nos {
       background-color: var(--bg-2);
       padding: 60px 20px;
@@ -327,7 +333,7 @@
       font-size: 13px;
     }
 
-    /* ===== MEDIA QUERIES - NOVO ESTILO ===== */
+    /* ===== RESPONSIVIDADE ===== */
     @media (max-width: 992px) {
       .menu a {
         padding: 12px 18px;
@@ -335,28 +341,46 @@
       }
       
       .auth-buttons {
-        right: 70px;
+        right: 50px;
       }
       
       .auth-btn {
-        padding: 7px 14px;
-        font-size: 0.85rem;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+      
+      .signup-btn {
+        padding: 6px 14px !important;
       }
     }
 
     @media (max-width: 768px) {
       header {
-        justify-content: center;
-        padding: 15px;
-        position: relative;
+        padding: 12px 15px;
+        min-height: 60px;
+      }
+      
+      header img {
+        max-width: 140px;
       }
       
       .auth-buttons {
         position: static;
         transform: none;
         justify-content: center;
-        margin-top: 15px;
+        margin-top: 12px;
         width: 100%;
+        gap: 8px;
+      }
+      
+      .auth-btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        width: auto;
+      }
+      
+      .signup-btn {
+        padding: 8px 18px !important;
       }
       
       nav {
@@ -409,7 +433,6 @@
         padding: 0;
       }
       
-      /* Responsividade geral */
       .conteudo-principal {
         flex-direction: column;
       }
@@ -475,7 +498,7 @@
     </button>
   </header>
 
-  <!-- Navegação - NOVO MENU -->
+  <!-- Navegação -->
   <nav>
     <div class="menu-container">
       <ul class="menu">
@@ -492,7 +515,7 @@
     </div>
   </nav>
 
-  <!-- ===== BANNER DE TOPO ===== -->
+  <!-- Banner de Topo -->
   <div class="banner-topo">
     <div class="ad-placeholder ad-topo">
       <p>Espaço reservado para banner (728x90)</p>
@@ -550,7 +573,7 @@
       </div>
     </div>
     
-    <!-- ===== BANNER LATERAL ===== -->
+    <!-- Banner Lateral -->
     <div class="sidebar">
       <div class="ad-placeholder ad-lateral">
         <p>Espaço reservado para banner (300x600)</p>
@@ -565,7 +588,6 @@
       <span class="icone18">18+</span>
       <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
     </div>
-    <!-- Links para Política de Privacidade e Termos e Condições -->
     <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
       <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
       <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
@@ -574,7 +596,6 @@
 
   <!-- Script do menu mobile -->
   <script>
-    // JavaScript para controlar o menu hamburger
     document.addEventListener('DOMContentLoaded', function() {
       const hamburger = document.querySelector('.hamburger');
       const menu = document.querySelector('.menu');
@@ -585,7 +606,6 @@
         hamburger.classList.toggle('active');
       });
       
-      // Fechar o menu ao clicar em um link (útil para dispositivos móveis)
       const menuLinks = document.querySelectorAll('.menu a');
       menuLinks.forEach(link => {
         link.addEventListener('click', function() {
@@ -596,7 +616,6 @@
         });
       });
       
-      // Fechar o menu ao clicar fora dele
       document.addEventListener('click', function(event) {
         if (window.innerWidth <= 768 && menu.classList.contains('active')) {
           if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
@@ -610,12 +629,10 @@
 
   <!-- Script de autenticação Supabase -->
   <script>
-    // Inicialização do Supabase
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Verificar estado de autenticação
     async function checkAuthState() {
       const { data: { session } } = await supabase.auth.getSession();
       const authButtons = document.getElementById('auth-buttons');
@@ -623,13 +640,11 @@
       if (!authButtons) return;
       
       if (session) {
-        // Usuário está logado - mostrar "Meu Perfil" e "Sair"
         authButtons.innerHTML = `
           <a href="perfil.html" class="auth-btn login-btn">Meu Perfil</a>
           <a href="#" onclick="logout()" class="auth-btn signup-btn">Sair</a>
         `;
       } else {
-        // Usuário não está logado - mostrar "Login" e "Cadastre-se"
         authButtons.innerHTML = `
           <a href="login.html" class="auth-btn login-btn">Login</a>
           <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
@@ -637,18 +652,15 @@
       }
     }
 
-    // Função de logout
     async function logout() {
       await supabase.auth.signOut();
       window.location.reload();
     }
 
-    // Verificar auth quando a página carrega
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthState();
     });
 
-    // Ouvir mudanças de estado de autenticação
     supabase.auth.onAuthStateChange((event, session) => {
       checkAuthState();
     });
