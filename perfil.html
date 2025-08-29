@@ -153,24 +153,6 @@
       margin-bottom: 5px;
     }
 
-    .chip-count {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 10px;
-      background-color: var(--bg-3);
-      padding: 8px 15px;
-      border-radius: 20px;
-      width: fit-content;
-      margin: 10px auto 0;
-    }
-
-    .chip-count span {
-      color: var(--gold);
-      margin-left: 5px;
-      font-weight: bold;
-    }
-
     .profile-content {
       display: grid;
       grid-template-columns: 1fr;
@@ -464,9 +446,6 @@
         <h1 id="user-name">Usuário</h1>
         <p id="user-email">usuario@exemplo.com</p>
         <p>Membro desde: <span id="member-since">01/01/2023</span></p>
-        <div class="chip-count">
-          🪙<span id="chip-count">10.000</span>fichas
-        </div>
       </div>
     </div>
     
@@ -493,11 +472,11 @@
             <label for="plataforma_preferida">Plataforma Preferida</label>
             <select id="plataforma_preferida" name="plataforma_preferida" disabled>
               <option value="">Selecione uma plataforma</option>
-              <option value="pokerstars">PokerStars</option>
-              <option value="ggpoker">GGPoker</option>
-              <option value="partypoker">PartyPoker</option>
+              <option value="PokerStars">PokerStars</option>
+              <option value="GGPoker">GGPoker</option>
+              <option value="PartyPoker">PartyPoker</option>
               <option value="888poker">888poker</option>
-              <option value="outras">Outras</option>
+              <option value="Outras">Outras</option>
             </select>
           </div>
           
@@ -733,6 +712,14 @@
           return false;
         }
         
+        // Validação específica para plataforma (para evitar erro de constraint)
+        const plataformaValida = ["PokerStars", "GGPoker", "PartyPoker", "888poker", "Outras"];
+        if (!plataformaValida.includes(plataformaSelect.value)) {
+          alert('Por favor, selecione uma plataforma válida da lista.');
+          plataformaSelect.focus();
+          return false;
+        }
+        
         const updates = {
           nome_completo: nomeCompletoInput.value.trim(),
           telefone: telefoneInput.value.trim(),
@@ -750,8 +737,12 @@
         if (error) {
           console.error('Erro ao atualizar perfil:', error);
           
+          // Verifica se é erro de constraint
+          if (error.message.includes('check constraint')) {
+            alert('Erro: Valor inválido para plataforma. Selecione uma opção válida da lista.');
+          } 
           // Verifica se é erro de política RLS
-          if (error.message.includes('row-level security') || error.code === '42501') {
+          else if (error.message.includes('row-level security') || error.code === '42501') {
             alert('Erro de permissão. Entre em contato com o administrador para verificar as políticas de segurança.');
           } else {
             alert('Erro ao salvar alterações: ' + error.message);
