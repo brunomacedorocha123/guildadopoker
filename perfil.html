@@ -269,9 +269,9 @@
       background-color: #a52a2a;
     }
 
-    .btn-hidden {
-      display: none;
-    }
+   .btn-hidden {
+  display: none !important;
+}
 
     .modal {
       display: none;
@@ -812,15 +812,17 @@ async function updateUserProfile() {
 
     // Event Listeners para os botões do perfil
     btnEditar.addEventListener('click', () => {
-      editMode = true;
-      nomeCompletoInput.disabled = false;
-      telefoneInput.disabled = false;
-      apelidoPokerInput.disabled = false;
-      plataformaSelect.disabled = false;
-      btnEditar.style.display = 'none';
-      btnSalvar.style.display = 'inline-block';
-      btnCancelar.style.display = 'inline-block';
-    });
+  editMode = true;
+  nomeCompletoInput.disabled = false;
+  telefoneInput.disabled = false;
+  apelidoPokerInput.disabled = false;
+  plataformaSelect.disabled = false;
+  
+  // ALTERAÇÃO AQUI: Usar classes em vez de style.display
+  btnEditar.classList.add('btn-hidden');
+  btnSalvar.classList.remove('btn-hidden');
+  btnCancelar.classList.remove('btn-hidden');
+});
     
     btnCancelar.addEventListener('click', () => {
       editMode = false;
@@ -832,10 +834,10 @@ async function updateUserProfile() {
       telefoneInput.value = originalValues.telefone;
       apelidoPokerInput.value = originalValues.apelido_poker;
       plataformaSelect.value = originalValues.plataforma_preferida;
-      btnEditar.style.display = 'inline-block';
-      btnSalvar.style.display = 'none';
-      btnCancelar.style.display = 'none';
-    });
+      btnEditar.classList.remove('btn-hidden');    
+      btnSalvar.classList.add('btn-hidden');        
+      btnCancelar.classList.add('btn-hidden');     
+});
     
     btnSalvar.addEventListener('click', async () => {
   const success = await updateUserProfile();
@@ -846,9 +848,9 @@ async function updateUserProfile() {
     apelidoPokerInput.disabled = true;
     plataformaSelect.disabled = true;
     
-    btnEditar.style.display = 'inline-block';
-    btnSalvar.style.display = 'none';
-    btnCancelar.style.display = 'none';
+    btnEditar.classList.remove('btn-hidden');
+    btnSalvar.classList.add('btn-hidden');
+    btnCancelar.classList.add('btn-hidden');
   }
 });
         
