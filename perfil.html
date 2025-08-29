@@ -128,9 +128,9 @@
       border-radius: 6px;
     }
 
-    /* ===== BOTÃO HAMBÚRGUER ===== */
+    /* ===== BOTÃO HAMBÚRGUER (OCULTAR EM DESKTOP) ===== */
     .hamburger {
-      display: flex;
+      display: none; /* Oculto por padrão */
       flex-direction: column;
       justify-content: space-around;
       width: 42px;
@@ -456,7 +456,9 @@
         background: transparent;
       }
       
+      /* Mostrar hamburger apenas em mobile */
       .hamburger {
+        display: flex;
         width: 40px;
         height: 34px;
         position: absolute;
@@ -528,7 +530,7 @@
   <header>
     <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
     
-    <!-- Botão hamburguer -->
+    <!-- Botão hamburguer (agora oculto em desktop) -->
     <button class="hamburger" aria-label="Abrir menu">
       <span></span>
       <span></span>
@@ -537,7 +539,7 @@
     
     <!-- Botões de Perfil e Sair -->
     <div class="header-controls" id="auth-buttons">
-      <button onclick="logout()" class="auth-btn logout-btn">Sair</button>
+      <button id="logout-btn" class="auth-btn logout-btn">Sair</button>
     </div>
   </header>
 
@@ -620,7 +622,7 @@
       <!-- Excluir Conta -->
       <div class="secao-perfil">
         <h2>Zona de Perigo</h2>
-        <p>Esta ação não pode ser desfeita. Isto excluirá permanentemente sua conta e removerá todos os dados associados.</p>
+        <p>Esta ação não pode ser desfeita. Isto excluirá permanentemente sua conta и removerá todos os dados associados.</p>
         <div class="botoes-acao">
           <button type="button" id="btn-excluir-conta" class="btn btn-danger">Excluir Minha Conta</button>
         </div>
@@ -712,6 +714,7 @@
     const modalExcluir = document.getElementById('modal-excluir');
     const btnCancelarExclusao = document.getElementById('btn-cancelar-exclusao');
     const btnConfirmarExclusao = document.getElementById('btn-confirmar-exclusao');
+    const logoutBtn = document.getElementById('logout-btn');
 
     // Estado de edição
     let editMode = false;
@@ -725,8 +728,11 @@
       
       if (session) {
         authButtons.innerHTML = `
-          <button onclick="logout()" class="auth-btn logout-btn">Sair</button>
+          <button id="logout-btn" class="auth-btn logout-btn">Sair</button>
         `;
+        
+        // Reatribuir o event listener ao botão de logout
+        document.getElementById('logout-btn').addEventListener('click', logout);
         
         // Carregar dados do usuário
         await loadUserData(session.user);
@@ -956,6 +962,11 @@
       await deleteUserAccount();
     });
     
+    // Adicionar event listener para o botão de logout
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', logout);
+    }
+    
     // Fechar modal clicando fora
     window.addEventListener('click', (event) => {
       if (event.target === modalExcluir) {
@@ -968,7 +979,6 @@
       checkAuthState();
     });
 
-    // CORREÇÃO: Esta era a linha com erro de sintaxe
     supabase.auth.onAuthStateChange((event, session) => {
       checkAuthState();
     });
