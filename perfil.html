@@ -222,10 +222,19 @@
     }
 
     .form-group input:disabled,
-    .form-group select:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
+.form-group select:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background-color: var(--bg-3);
+}
+
+.form-group input:not(:disabled),
+.form-group select:not(:disabled) {
+  opacity: 1;
+  cursor: text;
+  background-color: var(--bg-2);
+  border: 1px solid var(--gold);
+}
 
     .action-buttons {
       display: flex;
