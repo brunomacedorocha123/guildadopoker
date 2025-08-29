@@ -7,7 +7,6 @@
   <title>Meu Perfil - Guilda do Poker</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* SEU CSS PERMANECE EXATAMENTE O MESMO */
     :root{
       --bg:#121212;
       --bg-2:#1c1c1c;
@@ -25,7 +24,407 @@
       line-height: 1.6;
     }
 
-    /* ... (todo o restante do CSS permanece igual) ... */
+    header{
+      background: var(--bg-2);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+      min-height: 80px;
+    }
+
+    nav{
+      background: var(--bg-3);
+      padding: 10px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .nav-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .menu {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      list-style: none;
+    }
+    
+    .menu li {
+      margin: 0;
+    }
+    
+    nav a{
+      color: var(--gold);
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+      display: block;
+      padding: 10px 0;
+    }
+    nav a:hover, nav a.active{ color:#ffffff; text-decoration: underline; }
+
+    /* Menu Mobile */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 42px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      position: absolute;
+      right: 25px;
+      top: 20px;
+      z-index: 1001;
+    }
+    
+    .menu-toggle span {
+      width: 100%;
+      height: 4px;
+      background-color: var(--gold);
+      border-radius: 3px;
+      transition: all 0.3s linear;
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    main{
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    /* Estilos específicos do perfil */
+    .profile-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .profile-picture {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: var(--bg-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      overflow: hidden;
+      border: 3px solid var(--gold);
+      cursor: pointer;
+    }
+
+    .profile-picture img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-info h1 {
+      color: var(--gold);
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .profile-info p {
+      color: #e6e6e6;
+      margin-bottom: 5px;
+    }
+
+    .chip-count {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      background-color: var(--bg-3);
+      padding: 8px 15px;
+      border-radius: 20px;
+      width: fit-content;
+      margin: 10px auto 0;
+    }
+
+    .chip-count span {
+      color: var(--gold);
+      margin-left: 5px;
+      font-weight: bold;
+    }
+
+    .profile-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    @media (min-width: 768px) {
+      .profile-content {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .info-section {
+      background: var(--bg-2);
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #000;
+      margin-bottom: 30px;
+    }
+
+    .info-section h2 {
+      color: var(--gold);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--bg-3);
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--bg-3);
+      border-radius: 5px;
+      background-color: var(--bg-3);
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .form-group input:disabled,
+    .form-group select:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      background-color: var(--bg-3);
+    }
+
+    .form-group input:not(:disabled),
+    .form-group select:not(:disabled) {
+      opacity: 1;
+      cursor: text;
+      background-color: var(--bg-2);
+      border: 1px solid var(--gold);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--gold);
+      color: #121212;
+    }
+
+    .btn-primary:hover {
+      background-color: #e6b800;
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-3);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background-color: #3a3a3a;
+    }
+
+    .btn-danger {
+      background-color: #8b0000;
+      color: var(--text);
+    }
+
+    .btn-danger:hover {
+      background-color: #a52a2a;
+    }
+
+    .btn-hidden {
+      display: none !important;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: var(--bg-2);
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal h3 {
+      color: var(--gold);
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .modal p {
+      margin-bottom: 25px;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    footer{
+      text-align:center;
+      padding:20px;
+      background: var(--bg-2);
+      margin-top:40px;
+      border-top: 2px solid var(--gold);
+      font-size:14px;
+      color:#bbb;
+    }
+    footer div{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+    footer img{ max-height:40px; height:auto; }
+
+    .aviso18{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin-top:10px;
+    }
+    .icone18{
+      background:red;
+      color:white;
+      font-weight:bold;
+      font-size:14px;
+      padding:4px 8px;
+      border-radius:5px;
+    }
+    .aviso18 p{ margin:0; color:#ccc; }
+    
+    /* Media Queries para Responsividade */
+    @media (max-width: 768px) {
+      header {
+        justify-content: center;
+        padding: 15px;
+        position: relative;
+      }
+      
+      nav {
+        padding: 0;
+        background: transparent;
+      }
+      
+      .menu-toggle {
+        display: flex;
+        width: 40px;
+        height: 34px;
+        right: 20px;
+        top: 20px;
+      }
+
+      .menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--bg-3);
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        padding: 15px 0;
+        border-top: 2px solid var(--gold);
+      }
+
+      .menu.active {
+        display: flex;
+      }
+
+      .menu li {
+        width: 100%;
+        text-align: center;
+      }
+
+      nav a {
+        margin: 0;
+        padding: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 1.1rem;
+      }
+      
+      nav a:last-child {
+        border-bottom: none;
+      }
+      
+      .nav-container {
+        padding: 0;
+        justify-content: flex-start;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -317,7 +716,7 @@
       }
     }
     
-    // Atualizar perfil do usuário
+    // Atualizar perfil do usuário - FUNÇÃO CORRIGIDA
     async function updateUserProfile() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -346,7 +745,7 @@
           .from('perfis')
           .update(updates)
           .eq('id', session.user.id)
-          .select();
+          .select(); // Adicionado .select() para retornar os dados atualizados
         
         if (error) {
           console.error('Erro ao atualizar perfil:', error);
@@ -428,6 +827,7 @@
       apelidoPokerInput.disabled = false;
       plataformaSelect.disabled = false;
       
+      // ALTERAÇÃO AQUI: Usar classes em vez de style.display
       btnEditar.classList.add('btn-hidden');
       btnSalvar.classList.remove('btn-hidden');
       btnCancelar.classList.remove('btn-hidden');
@@ -443,10 +843,9 @@
       telefoneInput.value = originalValues.telefone;
       apelidoPokerInput.value = originalValues.apelido_poker;
       plataformaSelect.value = originalValues.plataforma_preferida;
-      
-      btnEditar.classList.remove('btn-hidden');
-      btnSalvar.classList.add('btn-hidden');
-      btnCancelar.classList.add('btn-hidden');
+      btnEditar.classList.remove('btn-hidden');    
+      btnSalvar.classList.add('btn-hidden');        
+      btnCancelar.classList.add('btn-hidden');     
     });
     
     btnSalvar.addEventListener('click', async () => {
