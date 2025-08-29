@@ -707,52 +707,65 @@
       }
     }
     
-    // Atualizar perfil do usuário
-    async function updateUserProfile() {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          alert('Sessão expirada. Faça login novamente.');
-          window.location.href = 'index.html';
-          return false;
-        }
-        
-        // Validação básica dos campos (sem validação de e-mail)
-        if (!nomeCompletoInput.value.trim()) {
-          alert('Por favor, informe seu nome completo.');
-          nomeCompletoInput.focus();
-          return false;
-        }
-        
-        const updates = {
-          nome_completo: nomeCompletoInput.value.trim(),
-          telefone: telefoneInput.value.trim(),
-          apelido_poker: apelidoPokerInput.value.trim(),
-          plataforma_preferida: plataformaSelect.value,
-          data_atualizacao: new Date().toISOString()
-        };
-        
-        const { error } = await supabase
-          .from('perfis')
-          .update(updates)
-          .eq('id', session.user.id);
-        
-        if (error) {
-          console.error('Erro ao atualizar perfil:', error);
-          alert('Erro ao salvar alterações. Tente novamente.');
-          return false;
-        } else {
-          alert('Perfil atualizado com sucesso!');
-          // Atualizar o nome exibido no cabeçalho
-          userNameElement.textContent = nomeCompletoInput.value;
-          return true;
-        }
-      } catch (error) {
-        console.error('Erro inesperado ao atualizar perfil:', error);
-        alert('Erro inesperado. Tente novamente.');
-        return false;
-      }
+    // Atualizar perfil do usuário - FUNÇÃO CORRIGIDA
+async function updateUserProfile() {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      alert('Sessão expirada. Faça login novamente.');
+      window.location.href = 'index.html';
+      return false;
     }
+    
+    // Validação básica dos campos
+    if (!nomeCompletoInput.value.trim()) {
+      alert('Por favor, informe seu nome completo.');
+      nomeCompletoInput.focus();
+      return false;
+    }
+    
+    const updates = {
+      nome_completo: nomeCompletoInput.value.trim(),
+      telefone: telefoneInput.value.trim(),
+      apelido_poker: apelidoPokerInput.value.trim(),
+      plataforma_preferida: plataformaSelect.value,
+      data_atualizacao: new Date().toISOString()
+    };
+    
+    const { data, error } = await supabase
+      .from('perfis')
+      .update(updates)
+      .eq('id', session.user.id)
+      .select(); // Adicionado .select() para retornar os dados atualizados
+    
+    if (error) {
+      console.error('Erro ao atualizar perfil:', error);
+      
+      // Verifica se é erro de política RLS
+      if (error.message.includes('row-level security') || error.code === '42501') {
+        alert('Erro de permissão. Entre em contato com o administrador para verificar as políticas de segurança.');
+      } else {
+        alert('Erro ao salvar alterações: ' + error.message);
+      }
+      
+      return false;
+    } else {
+      alert('Perfil atualizado com sucesso!');
+      
+      // Atualizar o nome exibido no cabeçalho
+      userNameElement.textContent = nomeCompletoInput.value;
+      
+      // Atualizar valores originais
+      originalValues = { ...updates };
+      
+      return true;
+    }
+  } catch (error) {
+    console.error('Erro inesperado ao atualizar perfil:', error);
+    alert('Erro inesperado. Tente novamente.');
+    return false;
+  }
+}
     
     // Excluir conta do usuário
     async function deleteUserAccount() {
@@ -825,21 +838,19 @@
     });
     
     btnSalvar.addEventListener('click', async () => {
-      const success = await updateUserProfile();
-      if (success) {
-        editMode = false;
-        nomeCompletoInput.disabled = true;
-        telefoneInput.disabled = true;
-        apelidoPokerInput.disabled = true;
-        plataformaSelect.disabled = true;
-        
-        // Atualizar valores originais (sem o e-mail)
-        originalValues = {
-          nome_completo: nomeCompletoInput.value,
-          telefone: telefoneInput.value,
-          apelido_poker: apelidoPokerInput.value,
-          plataforma_preferida: plataformaSelect.value
-        };
+  const success = await updateUserProfile();
+  if (success) {
+    editMode = false;
+    nomeCompletoInput.disabled = true;
+    telefoneInput.disabled = true;
+    apelidoPokerInput.disabled = true;
+    plataformaSelect.disabled = true;
+    
+    btnEditar.style.display = 'inline-block';
+    btnSalvar.style.display = 'none';
+    btnCancelar.style.display = 'none';
+  }
+});
         
         btnEditar.style.display = 'inline-block';
         btnSalvar.style.display = 'none';
