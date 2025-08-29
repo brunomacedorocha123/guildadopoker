@@ -7,22 +7,318 @@
   <title>Meu Perfil - Guilda do Poker</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* ... (todo o CSS permanece igual) ... */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #0d2818;
+      color: #f4f4f4;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: #133a1b;
+      padding: 15px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #c8b653;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo i {
+      margin-right: 10px;
+    }
+    
+    .auth-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .auth-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .login-btn {
+      background-color: transparent;
+      color: #c8b653;
+      border: 1px solid #c8b653;
+    }
+    
+    .login-btn:hover {
+      background-color: #c8b653;
+      color: #0d2818;
+    }
+    
+    .logout-btn {
+      background-color: #c8b653;
+      color: #0d2818;
+    }
+    
+    .logout-btn:hover {
+      background-color: #b3a347;
+    }
+    
+    .profile-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 30px 0;
+      text-align: center;
+    }
+    
+    .profile-picture {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: #1c4c29;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      overflow: hidden;
+      border: 3px solid #c8b653;
+    }
+    
+    .profile-picture img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .profile-picture i {
+      font-size: 40px;
+      color: #c8b653;
+    }
+    
+    .profile-info h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+      color: #c8b653;
+    }
+    
+    .profile-info p {
+      color: #a7c4a9;
+      margin-bottom: 5px;
+    }
+    
+    .profile-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    
+    @media (min-width: 768px) {
+      .profile-content {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .info-section {
+      background-color: #1c4c29;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-section h2 {
+      color: #c8b653;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2d6b3e;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #c8b653;
+      font-weight: 600;
+    }
+    
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #2d6b3e;
+      border-radius: 5px;
+      background-color: #133a1b;
+      color: #f4f4f4;
+      font-size: 16px;
+    }
+    
+    .form-group input:disabled,
+    .form-group select:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background-color: #c8b653;
+      color: #0d2818;
+    }
+    
+    .btn-primary:hover {
+      background-color: #b3a347;
+    }
+    
+    .btn-secondary {
+      background-color: #2d6b3e;
+      color: #f4f4f4;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #3a7c4e;
+    }
+    
+    .btn-danger {
+      background-color: #8b0000;
+      color: #f4f4f4;
+    }
+    
+    .btn-danger:hover {
+      background-color: #a52a2a;
+    }
+    
+    .btn-hidden {
+      display: none;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background-color: #1c4c29;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .modal h3 {
+      color: #c8b653;
+      margin-bottom: 15px;
+    }
+    
+    .modal p {
+      margin-bottom: 25px;
+      color: #f4f4f4;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+    }
+    
+    .chip-count {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      background-color: #133a1b;
+      padding: 10px 15px;
+      border-radius: 20px;
+      width: fit-content;
+      margin: 10px auto 0;
+    }
+    
+    .chip-count i {
+      color: #c8b653;
+      margin-right: 8px;
+    }
   </style>
 </head>
 <body>
-  <!-- ... (cabeçalho e estrutura principal permanecem iguais) ... -->
-  
+  <header>
+    <div class="header-content">
+      <a href="#" class="logo">
+        <i>♠</i> Guilda do Poker
+      </a>
+      <div id="auth-buttons" class="auth-buttons">
+        <!-- Botões de autenticação serão inseridos aqui via JavaScript -->
+      </div>
+    </div>
+  </header>
+
   <div class="container">
     <div class="profile-header">
-      <!-- ... (informações do usuário permanecem) ... -->
+      <div class="profile-picture" id="upload-foto">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI2MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0iI2M4YjY1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=" alt="Foto de perfil">
+        <span id="upload-text" style="display:none;">Alterar Foto</span>
+      </div>
+      <div class="profile-info">
+        <h1 id="user-name">Usuário</h1>
+        <p id="user-email">usuario@exemplo.com</p>
+        <p>Membro desde: <span id="member-since">01/01/2023</span></p>
+        <div class="chip-count">
+          <i>🪙</i> <span id="chip-count">10.000</span> fichas
+        </div>
+      </div>
     </div>
     
     <div class="profile-content">
       <div class="info-section">
         <h2>Informações Pessoais</h2>
         <form id="profile-form">
-          <!-- REMOVER O CAMPO DE E-MAIl -->
           <div class="form-group">
             <label for="nome_completo">Nome Completo</label>
             <input type="text" id="nome_completo" name="nome_completo" disabled>
@@ -49,20 +345,44 @@
               <option value="outras">Outras</option>
             </select>
           </div>
+          
+          <div class="action-buttons">
+            <button type="button" id="btn-editar" class="btn btn-primary">Editar Perfil</button>
+            <button type="button" id="btn-salvar" class="btn btn-primary btn-hidden">Salvar</button>
+            <button type="button" id="btn-cancelar" class="btn btn-secondary btn-hidden">Cancelar</button>
+          </div>
         </form>
       </div>
       
-      <!-- ... (restante do HTML permanece igual) ... -->
+      <div class="info-section">
+        <h2>Estatísticas</h2>
+        <p>Em breve: estatísticas de jogo, histórico de torneios e desempenho.</p>
+        <div class="action-buttons">
+          <button type="button" id="btn-excluir-conta" class="btn btn-danger">Excluir Conta</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Script de autenticação Supabase -->
+  <!-- Modal de confirmação para exclusão de conta -->
+  <div id="modal-excluir" class="modal">
+    <div class="modal-content">
+      <h3>Confirmar Exclusão</h3>
+      <p>Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita e todos os seus dados serão perdidos.</p>
+      <div class="modal-buttons">
+        <button id="btn-cancelar-exclusao" class="btn btn-secondary">Cancelar</button>
+        <button id="btn-confirmar-exclusao" class="btn btn-danger">Excluir Conta</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // Configuração do Supabase
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Elementos DOM - REMOVER referência ao emailInput
+    // Elementos DOM
     const userNameElement = document.getElementById('user-name');
     const userEmailElement = document.getElementById('user-email');
     const memberSinceElement = document.getElementById('member-since');
@@ -81,12 +401,12 @@
     const modalExcluir = document.getElementById('modal-excluir');
     const btnCancelarExclusao = document.getElementById('btn-cancelar-exclusao');
     const btnConfirmarExclusao = document.getElementById('btn-confirmar-exclusao');
-    const logoutBtn = document.getElementById('logout-btn');
 
     // Estado de edição
     let editMode = false;
     let originalValues = {};
 
+    // Verificar estado de autenticação
     async function checkAuthState() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -105,7 +425,7 @@
           // Carregar dados do usuário
           await loadUserData(session.user);
         } else {
-          // Se não estiver logado, redirecionar para a página inicial (index.html)
+          // Se não estiver logado, redirecionar para a página inicial
           console.log('Usuário não autenticado, redirecionando para index.html');
           window.location.href = 'index.html';
         }
@@ -115,6 +435,7 @@
       }
     }
 
+    // Carregar dados do usuário
     async function loadUserData(user) {
       try {
         // Carregar dados do perfil do usuário da tabela 'perfis'
@@ -149,7 +470,7 @@
           day: 'numeric'
         });
         
-        // Preencher formulário - REMOVER preenchimento do email
+        // Preencher formulário (sem o campo de e-mail)
         nomeCompletoInput.value = data.nome_completo || user.user_metadata.full_name || '';
         telefoneInput.value = data.telefone || '';
         apelidoPokerInput.value = data.apelido_poker || '';
@@ -161,7 +482,7 @@
           img.src = data.url_avatar;
         }
         
-        // Salvar valores originais - REMOVER email dos valores originais
+        // Salvar valores originais (sem o e-mail)
         originalValues = {
           nome_completo: nomeCompletoInput.value,
           telefone: telefoneInput.value,
@@ -175,6 +496,7 @@
       }
     }
     
+    // Criar perfil de usuário
     async function createUserProfile(user) {
       try {
         const { error } = await supabase
@@ -190,13 +512,13 @@
         
         if (error) {
           console.error('Erro ao criar perfil:', error);
-          // Não alertar o usuário aqui para não ser intrusivo
         }
       } catch (error) {
         console.error('Erro inesperado ao criar perfil:', error);
       }
     }
     
+    // Atualizar perfil do usuário
     async function updateUserProfile() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -206,7 +528,7 @@
           return false;
         }
         
-        // Validação básica dos campos - REMOVER validação de email
+        // Validação básica dos campos (sem validação de e-mail)
         if (!nomeCompletoInput.value.trim()) {
           alert('Por favor, informe seu nome completo.');
           nomeCompletoInput.focus();
@@ -228,13 +550,7 @@
         
         if (error) {
           console.error('Erro ao atualizar perfil:', error);
-          
-          // Verificar se é erro de estrutura da tabela
-          if (error.message.includes('column') && error.message.includes('does not exist')) {
-            alert('Erro no servidor. Entre em contato com o suporte.');
-          } else {
-            alert('Erro ao salvar alterações. Tente novamente.');
-          }
+          alert('Erro ao salvar alterações. Tente novamente.');
           return false;
         } else {
           alert('Perfil atualizado com sucesso!');
@@ -249,6 +565,7 @@
       }
     }
     
+    // Excluir conta do usuário
     async function deleteUserAccount() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -280,17 +597,18 @@
       }
     }
 
+    // Logout
     async function logout() {
       try {
         await supabase.auth.signOut();
         window.location.href = 'index.html';
       } catch (error) {
         console.error('Erro ao fazer logout:', error);
-        window.location.href = 'index.html'; // Redirecionar mesmo com erro
+        window.location.href = 'index.html';
       }
     }
 
-    // Event Listeners - REMOVER manipulação do campo de email
+    // Event Listeners
     btnEditar.addEventListener('click', () => {
       editMode = true;
       nomeCompletoInput.disabled = false;
@@ -326,7 +644,7 @@
         apelidoPokerInput.disabled = true;
         plataformaSelect.disabled = true;
         
-        // Atualizar valores originais - REMOVER email
+        // Atualizar valores originais (sem o e-mail)
         originalValues = {
           nome_completo: nomeCompletoInput.value,
           telefone: telefoneInput.value,
@@ -344,10 +662,6 @@
       alert('Funcionalidade de upload de imagem será implementada em breve!');
     });
     
-    uploadText.addEventListener('click', () => {
-      alert('Funcionalidade de upload de imagem será implementada em breve!');
-    });
-    
     btnExcluirConta.addEventListener('click', () => {
       modalExcluir.style.display = 'flex';
     });
@@ -361,11 +675,6 @@
       await deleteUserAccount();
     });
     
-    // Adicionar event listener para o botão de logout
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', logout);
-    }
-    
     // Fechar modal clicando fora
     window.addEventListener('click', (event) => {
       if (event.target === modalExcluir) {
@@ -378,10 +687,10 @@
       checkAuthState();
     });
 
+    // Monitorar mudanças de autenticação
     supabase.auth.onAuthStateChange((event, session) => {
       checkAuthState();
     });
   </script>
-
 </body>
 </html>
