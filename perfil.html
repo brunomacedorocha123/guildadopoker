@@ -45,7 +45,7 @@
       height: auto; 
     }
 
-    /* ===== BOTÕES DE PERFIL E SAIR ===== */
+    /* ===== BOTÕES DE PERFIL AND SAIR ===== */
     .header-controls {
       position: absolute;
       right: 20px;
@@ -284,6 +284,15 @@
     .form-group input:disabled, .form-group select:disabled {
       opacity: 0.7;
       cursor: not-allowed;
+    }
+    
+    .email-info {
+      background-color: var(--bg-3);
+      padding: 12px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      color: var(--text);
+      font-size: 1em;
     }
     
     .botoes-acao {
@@ -564,7 +573,7 @@
       <div class="perfil-header">
         <div class="foto-container">
           <div class="foto-perfil" id="upload-foto">
-            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48L3N2Zz4=" alt="Foto de perfil">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg=" alt="Foto de perfil">
           </div>
           <div class="upload-text" id="upload-text">Alterar</div>
         </div>
@@ -587,7 +596,8 @@
           
           <div class="form-group">
             <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" disabled>
+            <div class="email-info" id="email-display"></div>
+            <input type="email" id="email" name="email" style="display: none;">
           </div>
           
           <div class="form-group">
@@ -620,7 +630,7 @@
       <!-- Excluir Conta -->
       <div class="secao-perfil">
         <h2>Zona de Perigo</h2>
-        <p>Esta ação não pode be desfeita. Isto excluirá permanentemente sua conta e removerá todos os dados associados.</p>
+        <p>Esta ação não pode ser desfeita. Isto excluirá permanentemente sua conta e removerá todos os dados associados.</p>
         <div class="botoes-acao">
           <button type="button" id="btn-excluir-conta" class="btn btn-danger">Excluir Minha Conta</button>
         </div>
@@ -697,6 +707,7 @@
     const userEmailElement = document.getElementById('user-email');
     const memberSinceElement = document.getElementById('member-since');
     const nomeCompletoInput = document.getElementById('nome_completo');
+    const emailDisplay = document.getElementById('email-display');
     const emailInput = document.getElementById('email');
     const telefoneInput = document.getElementById('telefone');
     const apelidoPokerInput = document.getElementById('apelido_poker');
@@ -771,6 +782,7 @@
         
         // Preencher formulário
         nomeCompletoInput.value = data.nome_completo || user.user_metadata.full_name || '';
+        emailDisplay.textContent = user.email;
         emailInput.value = user.email;
         telefoneInput.value = data.telefone || '';
         apelidoPokerInput.value = data.apelido_poker || '';
