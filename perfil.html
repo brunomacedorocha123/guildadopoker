@@ -11,20 +11,62 @@
   </style>
 </head>
 <body>
-  <!-- ... (todo o HTML permanece igual) ... -->
+  <!-- ... (cabeçalho e estrutura principal permanecem iguais) ... -->
+  
+  <div class="container">
+    <div class="profile-header">
+      <!-- ... (informações do usuário permanecem) ... -->
+    </div>
+    
+    <div class="profile-content">
+      <div class="info-section">
+        <h2>Informações Pessoais</h2>
+        <form id="profile-form">
+          <!-- REMOVER O CAMPO DE E-MAIl -->
+          <div class="form-group">
+            <label for="nome_completo">Nome Completo</label>
+            <input type="text" id="nome_completo" name="nome_completo" disabled>
+          </div>
+          
+          <div class="form-group">
+            <label for="telefone">Telefone</label>
+            <input type="tel" id="telefone" name="telefone" disabled>
+          </div>
+          
+          <div class="form-group">
+            <label for="apelido_poker">Apelido no Poker</label>
+            <input type="text" id="apelido_poker" name="apelido_poker" disabled>
+          </div>
+          
+          <div class="form-group">
+            <label for="plataforma_preferida">Plataforma Preferida</label>
+            <select id="plataforma_preferida" name="plataforma_preferida" disabled>
+              <option value="">Selecione uma plataforma</option>
+              <option value="pokerstars">PokerStars</option>
+              <option value="ggpoker">GGPoker</option>
+              <option value="partypoker">PartyPoker</option>
+              <option value="888poker">888poker</option>
+              <option value="outras">Outras</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      
+      <!-- ... (restante do HTML permanece igual) ... -->
+    </div>
+  </div>
 
   <!-- Script de autenticação Supabase -->
   <script>
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Elementos DOM (permanecem iguais)
+    // Elementos DOM - REMOVER referência ao emailInput
     const userNameElement = document.getElementById('user-name');
     const userEmailElement = document.getElementById('user-email');
     const memberSinceElement = document.getElementById('member-since');
     const nomeCompletoInput = document.getElementById('nome_completo');
-    const emailInput = document.getElementById('email');
     const telefoneInput = document.getElementById('telefone');
     const apelidoPokerInput = document.getElementById('apelido_poker');
     const plataformaSelect = document.getElementById('plataforma_preferida');
@@ -107,9 +149,8 @@
           day: 'numeric'
         });
         
-        // Preencher formulário
+        // Preencher formulário - REMOVER preenchimento do email
         nomeCompletoInput.value = data.nome_completo || user.user_metadata.full_name || '';
-        emailInput.value = user.email;
         telefoneInput.value = data.telefone || '';
         apelidoPokerInput.value = data.apelido_poker || '';
         plataformaSelect.value = data.plataforma_preferida || '';
@@ -120,10 +161,9 @@
           img.src = data.url_avatar;
         }
         
-        // Salvar valores originais
+        // Salvar valores originais - REMOVER email dos valores originais
         originalValues = {
           nome_completo: nomeCompletoInput.value,
-          email: emailInput.value,
           telefone: telefoneInput.value,
           apelido_poker: apelidoPokerInput.value,
           plataforma_preferida: plataformaSelect.value
@@ -166,22 +206,15 @@
           return false;
         }
         
-        // Validação básica dos campos
+        // Validação básica dos campos - REMOVER validação de email
         if (!nomeCompletoInput.value.trim()) {
           alert('Por favor, informe seu nome completo.');
           nomeCompletoInput.focus();
           return false;
         }
         
-        if (!emailInput.value.trim() || !emailInput.value.includes('@')) {
-          alert('Por favor, informe um e-mail válido.');
-          emailInput.focus();
-          return false;
-        }
-        
         const updates = {
           nome_completo: nomeCompletoInput.value.trim(),
-          email: emailInput.value.trim(),
           telefone: telefoneInput.value.trim(),
           apelido_poker: apelidoPokerInput.value.trim(),
           plataforma_preferida: plataformaSelect.value,
@@ -207,7 +240,6 @@
           alert('Perfil atualizado com sucesso!');
           // Atualizar o nome exibido no cabeçalho
           userNameElement.textContent = nomeCompletoInput.value;
-          userEmailElement.textContent = emailInput.value;
           return true;
         }
       } catch (error) {
@@ -258,11 +290,10 @@
       }
     }
 
-    // Event Listeners (permanecem iguais)
+    // Event Listeners - REMOVER manipulação do campo de email
     btnEditar.addEventListener('click', () => {
       editMode = true;
       nomeCompletoInput.disabled = false;
-      emailInput.disabled = false;
       telefoneInput.disabled = false;
       apelidoPokerInput.disabled = false;
       plataformaSelect.disabled = false;
@@ -274,12 +305,10 @@
     btnCancelar.addEventListener('click', () => {
       editMode = false;
       nomeCompletoInput.disabled = true;
-      emailInput.disabled = true;
       telefoneInput.disabled = true;
       apelidoPokerInput.disabled = true;
       plataformaSelect.disabled = true;
       nomeCompletoInput.value = originalValues.nome_completo;
-      emailInput.value = originalValues.email;
       telefoneInput.value = originalValues.telefone;
       apelidoPokerInput.value = originalValues.apelido_poker;
       plataformaSelect.value = originalValues.plataforma_preferida;
@@ -293,15 +322,13 @@
       if (success) {
         editMode = false;
         nomeCompletoInput.disabled = true;
-        emailInput.disabled = true;
         telefoneInput.disabled = true;
         apelidoPokerInput.disabled = true;
         plataformaSelect.disabled = true;
         
-        // Atualizar valores originais
+        // Atualizar valores originais - REMOVER email
         originalValues = {
           nome_completo: nomeCompletoInput.value,
-          email: emailInput.value,
           telefone: telefoneInput.value,
           apelido_poker: apelidoPokerInput.value,
           plataforma_preferida: plataformaSelect.value
