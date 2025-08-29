@@ -45,7 +45,7 @@
       height: auto; 
     }
 
-    /* ===== BOTÕES DE PERFIL AND SAIR ===== */
+    /* ===== BOTÕES DE PERFIL E SAIR ===== */
     .header-controls {
       position: absolute;
       right: 20px;
@@ -474,7 +474,7 @@
         left: 0;
         background-color: var(--bg-3);
         z-index: 1000;
-        box-shadow: 0 5px極端な例
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         padding: 15px 0;
         border-top: 2px solid var(--gold);
       }
@@ -564,7 +564,7 @@
       <div class="perfil-header">
         <div class="foto-container">
           <div class="foto-perfil" id="upload-foto">
-            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg=" alt="Foto de perfil">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHJlY3Qgd2lkdGg9IjE1MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiMzMzMiLz48L3N2Zz4=" alt="Foto de perfil">
           </div>
           <div class="upload-text" id="upload-text">Alterar</div>
         </div>
@@ -968,7 +968,8 @@
       checkAuthState();
     });
 
-    supabase.auth.onAuthStateChange((event, session) {
+    // CORREÇÃO: Esta era a linha com erro de sintaxe
+    supabase.auth.onAuthStateChange((event, session) => {
       checkAuthState();
     });
   </script>
