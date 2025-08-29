@@ -277,57 +277,8 @@
   background-color: #3a3a3a;
  }
 
- .btn-danger {
-  background-color: #8b0000;
-  color: var(--text);
- }
-
- .btn-danger:hover {
-  background-color: #a52a2a;
- }
-
  .btn-hidden {
   display: none !important;
- }
-
- .modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
- }
-
- .modal-content {
-  background-color: var(--bg-2);
-  padding: 30px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
- }
-
- .modal h3 {
-  color: var(--gold);
-  margin-bottom: 15px;
-  text-align: center;
- }
-
- .modal p {
-  margin-bottom: 25px;
-  color: var(--text);
-  text-align: center;
- }
-
- .modal-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
  }
 
  .notification {
@@ -546,24 +497,11 @@
    <button type="button" id="btn-editar" class="btn btn-primary">Editar Perfil</button>
    <button type="button" id="btn-salvar" class="btn btn-primary btn-hidden">Salvar</button>
    <button type="button" id="btn-cancelar" class="btn btn-secondary btn-hidden">Cancelar</button>
-   <button type="button" id="btn-excluir-conta" class="btn btn-danger">Excluir Conta</button>
    </div>
   </form>
   </div>
  </div>
  </main>
-
- <!-- Modal de confirmação para exclusão de conta -->
- <div id="modal-excluir" class="modal">
- <div class="modal-content">
-  <h3>Confirmar Exclusão</h3>
-  <p>Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita e todos os seus dados serão perdidos.</p>
-  <div class="modal-buttons">
-  <button id="btn-cancelar-exclusao" class="btn btn-secondary">Cancelar</button>
-  <button id="btn-confirmar-exclusao" class="btn btn-danger">Excluir Conta</button>
-  </div>
- </div>
- </div>
 
  <div id="notification" class="notification">
  <span class="notification-icon"></span>
@@ -609,11 +547,6 @@
  const btnEditar = document.getElementById('btn-editar');
  const btnSalvar = document.getElementById('btn-salvar');
  const btnCancelar = document.getElementById('btn-cancelar');
-
- const btnExcluirConta = document.getElementById('btn-excluir-conta');
- const modalExcluir = document.getElementById('modal-excluir');
- const btnCancelarExclusao = document.getElementById('btn-cancelar-exclusao');
- const btnConfirmarExclusao = document.getElementById('btn-confirmar-exclusao');
 
  const notification = document.getElementById('notification');
  const notificationMessage = document.getElementById('notification-message');
@@ -853,40 +786,6 @@
   }
  }
 
- // Excluir conta do usuário
- async function deleteUserAccount() {
-  try {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return;
-  
-  // Primeiro excluir o perfil da tabela 'perfis'
-  const { error: profileError } = await supabase
-   .from('perfis')
-   .delete()
-   .eq('id', session.user.id);
-  
-  if (profileError) {
-   console.error('Erro ao excluir perfil:', profileError);
-  }
-  
-  // Depois excluir o usuário do auth
-  const { error } = await supabase.auth.admin.deleteUser(session.user.id);
-  
-  if (error) {
-   console.error('Erro ao excluir conta:', error);
-   showNotification('Erro ao excluir conta. Tente novamente.', false);
-  } else {
-   showNotification('Sua conta foi excluída com sucesso.', true);
-   setTimeout(() => {
-   logout();
-   }, 1500);
-  }
-  } catch (error) {
-  console.error('Erro ao excluir conta:', error);
-  showNotification('Erro ao excluir conta. Tente novamente.', false);
-  }
- }
-
  // Logout
  async function logout() {
   try {
@@ -944,26 +843,6 @@
 
  uploadFoto.addEventListener('click', () => {
   showNotification('Funcionalidade de upload de imagem será implementada em breve!');
- });
-
- btnExcluirConta.addEventListener('click', () => {
-  modalExcluir.style.display = 'flex';
- });
-
- btnCancelarExclusao.addEventListener('click', () => {
-  modalExcluir.style.display = 'none';
- });
-
- btnConfirmarExclusao.addEventListener('click', async () => {
-  modalExcluir.style.display = 'none';
-  await deleteUserAccount();
- });
-
- // Fechar modal clicando fora
- window.addEventListener('click', function(event) {
-  if (event.target === modalExcluir) {
-  modalExcluir.style.display = 'none';
-  }
  });
 
  // Inicialização
