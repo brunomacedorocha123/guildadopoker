@@ -286,15 +286,6 @@
       cursor: not-allowed;
     }
     
-    .email-info {
-      background-color: var(--bg-3);
-      padding: 12px;
-      border-radius: 5px;
-      border: 1px solid #444;
-      color: var(--text);
-      font-size: 1em;
-    }
-    
     .botoes-acao {
       display: flex;
       gap: 15px;
@@ -483,7 +474,7 @@
         left: 0;
         background-color: var(--bg-3);
         z-index: 1000;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        box-shadow: 0 5px極端な例
         padding: 15px 0;
         border-top: 2px solid var(--gold);
       }
@@ -596,8 +587,7 @@
           
           <div class="form-group">
             <label for="email">E-mail</label>
-            <div class="email-info" id="email-display"></div>
-            <input type="email" id="email" name="email" style="display: none;">
+            <input type="email" id="email" name="email" disabled>
           </div>
           
           <div class="form-group">
@@ -707,7 +697,6 @@
     const userEmailElement = document.getElementById('user-email');
     const memberSinceElement = document.getElementById('member-since');
     const nomeCompletoInput = document.getElementById('nome_completo');
-    const emailDisplay = document.getElementById('email-display');
     const emailInput = document.getElementById('email');
     const telefoneInput = document.getElementById('telefone');
     const apelidoPokerInput = document.getElementById('apelido_poker');
@@ -782,7 +771,6 @@
         
         // Preencher formulário
         nomeCompletoInput.value = data.nome_completo || user.user_metadata.full_name || '';
-        emailDisplay.textContent = user.email;
         emailInput.value = user.email;
         telefoneInput.value = data.telefone || '';
         apelidoPokerInput.value = data.apelido_poker || '';
@@ -831,6 +819,7 @@
       
       const updates = {
         nome_completo: nomeCompletoInput.value,
+        email: emailInput.value,
         telefone: telefoneInput.value,
         apelido_poker: apelidoPokerInput.value,
         plataforma_preferida: plataformaSelect.value,
@@ -850,6 +839,7 @@
         alert('Perfil atualizado com sucesso!');
         // Atualizar o nome exibido no cabeçalho
         userNameElement.textContent = nomeCompletoInput.value;
+        userEmailElement.textContent = emailInput.value;
         return true;
       }
     }
@@ -894,6 +884,7 @@
     btnEditar.addEventListener('click', () => {
       editMode = true;
       nomeCompletoInput.disabled = false;
+      emailInput.disabled = false;
       telefoneInput.disabled = false;
       apelidoPokerInput.disabled = false;
       plataformaSelect.disabled = false;
@@ -905,10 +896,12 @@
     btnCancelar.addEventListener('click', () => {
       editMode = false;
       nomeCompletoInput.disabled = true;
+      emailInput.disabled = true;
       telefoneInput.disabled = true;
       apelidoPokerInput.disabled = true;
       plataformaSelect.disabled = true;
       nomeCompletoInput.value = originalValues.nome_completo;
+      emailInput.value = originalValues.email;
       telefoneInput.value = originalValues.telefone;
       apelidoPokerInput.value = originalValues.apelido_poker;
       plataformaSelect.value = originalValues.plataforma_preferida;
@@ -922,6 +915,7 @@
       if (success) {
         editMode = false;
         nomeCompletoInput.disabled = true;
+        emailInput.disabled = true;
         telefoneInput.disabled = true;
         apelidoPokerInput.disabled = true;
         plataformaSelect.disabled = true;
@@ -974,7 +968,7 @@
       checkAuthState();
     });
 
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.onAuthStateChange((event, session) {
       checkAuthState();
     });
   </script>
