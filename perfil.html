@@ -63,8 +63,9 @@
           // Carregar dados do usuário
           await loadUserData(session.user);
         } else {
-          // Se não estiver logado, redirecionar para login
-          window.location.href = 'login.html';
+          // Se não estiver logado, redirecionar para a página inicial (index.html)
+          console.log('Usuário não autenticado, redirecionando para index.html');
+          window.location.href = 'index.html';
         }
       } catch (error) {
         console.error('Erro ao verificar estado de autenticação:', error);
@@ -161,7 +162,7 @@
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           alert('Sessão expirada. Faça login novamente.');
-          window.location.href = 'login.html';
+          window.location.href = 'index.html';
           return false;
         }
         
