@@ -421,9 +421,101 @@
   padding: 20px 15px;
   }
  }
+
+/* Estilos para o seletor de avatares */
+.avatar-selector-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar-selector-modal.active {
+  display: flex;
+}
+
+.avatar-selector-content {
+  background: var(--bg-2);
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.avatar-selector-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.avatar-selector-title {
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.avatars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.avatar-item {
+  cursor: pointer;
+  border: 2px solid var(--bg-3);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.avatar-item:hover {
+  border-color: var(--gold);
+  transform: scale(1.05);
+}
+
+.avatar-item.selected {
+  border-color: var(--gold);
+  background-color: rgba(255, 204, 0, 0.1);
+}
+
+.avatar-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  display: block;
+}
+
  </style>
 </head>
 <body>
+
+    <!-- Modal de seleção de avatar -->
+<div id="avatar-selector-modal" class="avatar-selector-modal">
+  <div class="avatar-selector-content">
+    <button class="avatar-selector-close" id="avatar-selector-close">&times;</button>
+    <h2 class="avatar-selector-title">Escolha seu Avatar</h2>
+    <div class="avatars-grid" id="avatars-grid">
+      <!-- Os avatares serão carregados via JavaScript -->
+    </div>
+  </div>
+</div>
 
  <header>
  <button class="menu-toggle" aria-label="Abrir menu">
@@ -854,6 +946,180 @@
  supabase.auth.onAuthStateChange((event, session) => {
   checkAuthState();
  });
+
+// Elementos do modal de avatar
+const avatarModal = document.getElementById('avatar-selector-modal');
+const avatarClose = document.getElementById('avatar-selector-close');
+const avatarsGrid = document.getElementById('avatars-grid');
+const profilePicture = document.getElementById('upload-foto');
+const profileImg = profilePicture.querySelector('img');
+
+// Evento para abrir o modal de seleção de avatar
+profilePicture.addEventListener('click', () => {
+  openAvatarModal();
+});
+
+// Fechar modal ao clicar no botão X
+avatarClose.addEventListener('click', () => {
+  closeAvatarModal();
+});
+
+// Fechar modal ao clicar fora da área de conteúdo
+avatarModal.addEventListener('click', (e) => {
+  if (e.target === avatarModal) {
+    closeAvatarModal();
+  }
+});
+
+// Função para abrir o modal de avatar
+function openAvatarModal() {
+  avatarModal.classList.add('active');
+  loadAvatars();
+}
+
+// Função para fechar o modal de avatar
+function closeAvatarModal() {
+  avatarModal.classList.remove('active');
+}
+
+// Carregar avatares do Supabase
+async function loadAvatars() {
+  try {
+    // Limpar grid antes de carregar
+    avatarsGrid.innerHTML = '<p>Carregando avatares...</p>';
+    
+    // Buscar avatares na tabela
+    const { data: avatares, error } = await supabase
+      .from('avatares')
+      .select('*')
+      .eq('ativo', true)
+      .order('nome');
+    
+    if (error) {
+      console.error('Erro ao carregar avatares:', error);
+      avatarsGrid.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
+      return;
+    }
+    
+    // Verificar se há avatares
+    if (!avatares || avatares.length === 0) {
+      avatarsGrid.innerHTML = '<p>Nenhum avatar disponível no momento.</p>';
+      return;
+    }
+    
+    // Limpar mensagem de carregamento
+    avatarsGrid.innerHTML = '';
+    
+    // Buscar o avatar atual do usuário
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    
+    const { data: perfil } = await supabase
+      .from('perfis')
+      .select('avatar_id')
+      .eq('id', session.user.id)
+      .single();
+    
+    // Renderizar avatares
+    avatares.forEach(avatar => {
+      const avatarItem = document.createElement('div');
+      avatarItem.className = 'avatar-item';
+      avatarItem.dataset.id = avatar.id;
+      
+      // Marcar como selecionado se for o avatar atual do usuário
+      if (perfil && perfil.avatar_id === avatar.id) {
+        avatarItem.classList.add('selected');
+      }
+      
+      avatarItem.innerHTML = `
+        <img src="${avatar.url_imagem}" alt="${avatar.nome}">
+      `;
+      
+      avatarItem.addEventListener('click', () => selectAvatar(avatar));
+      avatarsGrid.appendChild(avatarItem);
+    });
+    
+  } catch (error) {
+    console.error('Erro inesperado ao carregar avatares:', error);
+    avatarsGrid.innerHTML = '<p>Erro inesperado. Tente novamente.</p>';
+  }
+}
+
+// Selecionar um avatar
+async function selectAvatar(avatar) {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      showNotification('Sessão expirada. Faça login novamente.', false);
+      return;
+    }
+    
+    // Atualizar o perfil com o novo avatar
+    const { error } = await supabase
+      .from('perfis')
+      .update({ 
+        avatar_id: avatar.id,
+        data_atualizacao: new Date().toISOString()
+      })
+      .eq('id', session.user.id);
+    
+    if (error) {
+      console.error('Erro ao atualizar avatar:', error);
+      showNotification('Erro ao selecionar avatar. Tente novamente.', false);
+      return;
+    }
+    
+    // Atualizar a imagem de perfil
+    profileImg.src = avatar.url_imagem;
+    
+    // Atualizar seleção visual no modal
+    document.querySelectorAll('.avatar-item').forEach(item => {
+      item.classList.remove('selected');
+    });
+    
+    document.querySelector(`.avatar-item[data-id="${avatar.id}"]`).classList.add('selected');
+    
+    showNotification('Avatar atualizado com sucesso!', true);
+    
+    // Fechar o modal após 1 segundo
+    setTimeout(() => {
+      closeAvatarModal();
+    }, 1000);
+    
+  } catch (error) {
+    console.error('Erro inesperado ao selecionar avatar:', error);
+    showNotification('Erro inesperado. Tente novamente.', false);
+  }
+}
+
+// Modificar a função loadUserData para carregar o avatar do usuário
+// Substitua a seção de "Carregar foto de perfil se existir" com:
+async function loadUserData(user) {
+  try {
+    // ... código existente ...
+    
+    // Carregar avatar do usuário
+    const { data: avatarData } = await supabase
+      .from('avatares')
+      .select('url_imagem')
+      .eq('id', data.avatar_id)
+      .maybeSingle();  // Use maybeSingle para evitar erro se não encontrar
+    
+    if (avatarData && avatarData.url_imagem) {
+      const img = uploadFoto.querySelector('img');
+      img.src = avatarData.url_imagem;
+    } else if (data.url_avatar) {
+      // Manter compatibilidade com o sistema antigo se existir
+      const img = uploadFoto.querySelector('img');
+      img.src = data.url_avatar;
+    }
+    
+    // ... resto do código existente ...
+  } catch (error) {
+    // ... tratamento de erro existente ...
+  }
+}
+
  </script>
 </body>
 </html>
