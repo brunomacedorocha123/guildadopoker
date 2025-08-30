@@ -30,18 +30,18 @@
 
         header {
             background: var(--bg-2);
-            padding: 25px 20px; /* Aumentei o padding vertical */
+            padding: 25px 20px;
             text-align: center;
             border-bottom: 2px solid var(--gold);
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 160px; /* Tripliquei a altura do cabeçalho */
+            min-height: 160px;
         }
         
         .logo {
-            max-height: 150px; /* Tripliquei o tamanho da logo (de 50px para 150px) */
+            max-height: 150px;
             width: auto;
         }
 
@@ -57,6 +57,7 @@
         
         .article-header {
             margin-bottom: 25px;
+            text-align: center;
         }
         
         .article-header h2 {
@@ -69,6 +70,7 @@
             color: #cccccc;
             font-size: 16px;
             margin-bottom: 20px;
+            text-align: center;
         }
         
         .image-container {
@@ -101,6 +103,9 @@
             margin-bottom: 20px;
             font-size: 18px;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado */
+            text-justify: inter-word; /* Melhora a justificação */
+            hyphens: auto; /* Hifenização automática para melhor quebra */
         }
         
         .tips-list {
@@ -119,6 +124,8 @@
             margin-bottom: 15px;
             margin-left: 20px;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado nas listas */
+            text-justify: inter-word;
         }
         
         .quote {
@@ -127,6 +134,8 @@
             margin: 25px 0;
             font-style: italic;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado nas citações */
+            text-justify: inter-word;
         }
         
         .back-to-blog {
@@ -139,6 +148,7 @@
             font-weight: bold;
             margin-top: 20px;
             transition: background 0.3s;
+            text-align: center;
         }
         
         .back-to-blog:hover {
@@ -220,6 +230,39 @@
         .aviso18 p {
             margin: 0;
             color: #ccc;
+        }
+
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 768px) {
+            .article-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .article-header h2 {
+                font-size: 26px;
+            }
+            
+            .image-container {
+                width: 100%;
+            }
+            
+            .article-text p {
+                font-size: 16px;
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+                hyphens: auto;
+            }
+            
+            .tips-list li {
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+            }
+            
+            .quote {
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+            }
         }
     </style>
 </head>
@@ -308,7 +351,7 @@
             <p>Além disso, estabeleça limites de perda e ganho para cada sessão. Isso ajuda a controlar o tilt após uma perda significativa e a proteger os lucros em dias bons. Lembre-se que o poker é uma maratona, não uma corrida de curta distância.</p>
             
             <h3>Conclusão</h3>
-            <p>Evitar esses cinco erros comuns já colocará você à frente da maioria dos jogadores recreativos. Lembre-se que o poker é um jogo de paciência, disciplina e aprendizado contínuo. Cada sessão é uma oportunidade para aprender e melhorar, não apenas para ganhar fichas.</p>
+            <p>Evitar esses cinco erros comuns já colocará você à frente da maioria dos jogadores recreativos. Lembre-se que o poker é um jogo de paciência, disciplina e aprendizado contínuo. Cada sessão é uma oportunidade para aprender và melhorar, não apenas para ganhar fichas.</p>
             
             <p>Os melhores jogadores não são necessariamente aqueles que conhecem as estratégias mais complexas, mas aqueles que cometem menos erros fundamentais. Trabalhe consistentemente nestes aspectos do seu jogo, e você verá melhorias significativas em seus resultados a longo prazo.</p>
             

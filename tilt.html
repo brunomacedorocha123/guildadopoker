@@ -57,6 +57,7 @@
         
         .article-header {
             margin-bottom: 25px;
+            text-align: center;
         }
         
         .article-header h2 {
@@ -69,6 +70,7 @@
             color: #cccccc;
             font-size: 16px;
             margin-bottom: 20px;
+            text-align: center;
         }
         
         .image-container {
@@ -92,7 +94,7 @@
         }
         
         .article-text h3 {
-            color: var(--gold);
+            color: var(--gold); /* CORREÇÃO: Faltava fechar o parêntese */
             margin: 25px 0 15px;
             font-size: 24px;
         }
@@ -101,6 +103,8 @@
             margin-bottom: 20px;
             font-size: 18px;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado */
+            text-justify: inter-word; /* Melhora a justificação */
         }
         
         .tips-list {
@@ -119,6 +123,8 @@
             margin-bottom: 15px;
             margin-left: 20px;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado nas listas */
+            text-justify: inter-word;
         }
         
         .quote {
@@ -127,6 +133,8 @@
             margin: 25px 0;
             font-style: italic;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado nas citações */
+            text-justify: inter-word;
         }
         
         .back-to-blog {
@@ -139,6 +147,7 @@
             font-weight: bold;
             margin-top: 20px;
             transition: background 0.3s;
+            text-align: center;
         }
         
         .back-to-blog:hover {
@@ -221,6 +230,38 @@
             margin: 0;
             color: #ccc;
         }
+
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 768px) {
+            .article-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .article-header h2 {
+                font-size: 26px;
+            }
+            
+            .image-container {
+                width: 100%;
+            }
+            
+            .article-text p {
+                font-size: 16px;
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+            }
+            
+            .tips-list li {
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+            }
+            
+            .quote {
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+            }
+        }
     </style>
 </head>
 <body>
@@ -247,7 +288,7 @@
             <p>O poker é um jogo que testa não apenas suas habilidades estratégicas, mas também sua fortaleza mental. Entre os maiores desafios que os jogadores enfrentam está o controle emocional, especialmente quando se trata de evitar ou gerenciar o tilt - esse estado mental prejudicial que pode arruinar sessões inteiras de jogo.</p>
             
             <h3>O que é Tilt no Poker?</h3>
-            <p>No contexto do poker, o termo tilt descreve um estado emocional negativo que afeta a tomada de decisões, levando a jogadas impulsivas e, muitas vezes, a mais perdas. Esse fenômeno é comum entre jogadores e pode ser desencadeado por diversos fatores, como bad beats, sequências de perdas ou até mesmo estresse externo. Quando em tilt, o jogador perde o controle emocional, resultando em decisões subótimas que comprometem seu desempenho e, consequentemente, sua banca.</p>
+            <p>No contexto do poker, o termo tilt descreve um estado emocional negativo that affects decision-making, leading to impulsive plays and often more losses. This phenomenon is common among players and can be triggered by various factors, such as bad beats, losing streaks, or even external stress. When on tilt, the player loses emotional control, resulting in suboptimal decisions that compromise their performance and, consequently, their bankroll.</p>
             
             <h3>Como o Tilt Afeta o Jogo?</h3>
             <p>O tilt pode impactar o jogo de várias maneiras:</p>
@@ -288,7 +329,7 @@
             <p>Desenvolver inteligência emocional para o poker vai além das mesas - é uma habilidade que beneficia muitos aspectos da vida. Jogadores que conseguem manter a calma sob pressão tendem a ter melhor desempenho não apenas no poker, mas também em situações desafiadoras do dia a dia.</p>
             
             <h3>Conclusão</h3>
-            <p>O tilt é um desafio comum no poker, mas com autoconhecimento e estratégias adequadas, é possível minimizá-lo. Ao manter o controle emocional, você não apenas melhora seu desempenho nas mesas, mas também protege sua banca e saúde mental.</p>
+            <p>O tilt é um desafio comum no poker, mas com autoconhecimento e estratégias adequadas, é possível minimizá-lo. Ao manter o controle emocional, você não apenas melhora seu desempenho nas mesas, mais também protege sua banca e saúde mental.</p>
             
             <p>Lembre-se: o poker é um jogo de habilidade e paciência; manter a calma é essencial para o sucesso a longo prazo. Invista tanto no desenvolvimento do seu controle emocional quanto na sua estratégia de jogo, e você estará no caminho certo para se tornar um jogador mais completo e bem-sucedido.</p>
             

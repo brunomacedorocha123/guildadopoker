@@ -57,6 +57,7 @@
         
         .article-header {
             margin-bottom: 25px;
+            text-align: center;
         }
         
         .article-header h2 {
@@ -69,6 +70,7 @@
             color: #cccccc;
             font-size: 16px;
             margin-bottom: 20px;
+            text-align: center;
         }
         
         .image-container {
@@ -101,6 +103,9 @@
             margin-bottom: 20px;
             font-size: 18px;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado */
+            text-justify: inter-word; /* Melhora a justificação */
+            hyphens: auto; /* Hifenização automática */
         }
         
         .tips-list {
@@ -119,6 +124,8 @@
             margin-bottom: 15px;
             margin-left: 20px;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado nas listas */
+            text-justify: inter-word;
         }
         
         .quote {
@@ -127,6 +134,8 @@
             margin: 25px 0;
             font-style: italic;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado nas citações */
+            text-justify: inter-word;
         }
         
         .back-to-blog {
@@ -139,6 +148,7 @@
             font-weight: bold;
             margin-top: 20px;
             transition: background 0.3s;
+            text-align: center;
         }
         
         .back-to-blog:hover {
@@ -188,6 +198,39 @@
             color: var(--gold);
             font-weight: bold;
         }
+
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 768px) {
+            .article-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .article-header h2 {
+                font-size: 26px;
+            }
+            
+            .image-container {
+                width: 100%;
+            }
+            
+            .article-text p {
+                font-size: 16px;
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+                hyphens: auto;
+            }
+            
+            .tips-list li {
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+            }
+            
+            .quote {
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+            }
+        }
     </style>
 </head>
 <body>
@@ -217,7 +260,7 @@
             <p>Segundo eles, blefar é um movimento calculado, que serve para manipular a percepção dos adversários e levá-los a tomar decisões equivocadas. Neste artigo, vamos explorar os principais pontos discutidos por Little e Hart e como aplicá-los nas mesas.</p>
             
             <h3>O blefe como parte essencial do jogo</h3>
-            <p>O poker é um jogo de informação incompleta, e o blefe é uma das ferramentas que transforma essa incerteza em lucro. Para os autores, jogadores vencedores não dependem apenas de mãos fortes — eles criam oportunidades ao aplicar pressão no momento certo.</p>
+            <p>O poker é um jogo de informação incompleta, e o blefe é uma das ferramentas que transforma essa incerteza em lucro. Para os autores, jogadores vencedores não dependem apenas de mãos fortes — eles creiam oportunidades ao aplicar pressão no momento certo.</p>
             
             <p>O segredo, porém, está na agressividade inteligente: apostar quando há razões sólidas para acreditar que o adversário não suportará a pressão.</p>
             
@@ -264,7 +307,7 @@
             <p>Por isso, os autores destacam que blefar é, acima de tudo, contar uma história crível: desde o flop até o river, sua sequência de ações deve fazer sentido como se você realmente tivesse uma mão forte.</p>
             
             <h3>Ajustando ao perfil do adversário</h3>
-            <p>Blefar não é uma estratégia fixa, mas adaptável:</p>
+            <p>Blefar não es una estratégia fixa, mas adaptável:</p>
             
             <div class="tips-list">
                 <h4>Estratégias de adaptação:</h4>

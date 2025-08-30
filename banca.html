@@ -57,6 +57,7 @@
         
         .article-header {
             margin-bottom: 25px;
+            text-align: center;
         }
         
         .article-header h2 {
@@ -69,6 +70,7 @@
             color: #cccccc;
             font-size: 16px;
             margin-bottom: 20px;
+            text-align: center;
         }
         
         .image-container {
@@ -101,6 +103,9 @@
             margin-bottom: 20px;
             font-size: 18px;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado */
+            text-justify: inter-word; /* Melhora a justificação */
+            hyphens: auto; /* Hifenização automática */
         }
         
         .tips-list {
@@ -119,6 +124,8 @@
             margin-bottom: 15px;
             margin-left: 20px;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado nas listas */
+            text-justify: inter-word;
         }
         
         .quote {
@@ -127,6 +134,8 @@
             margin: 25px 0;
             font-style: italic;
             color: #e6e6e6;
+            text-align: justify; /* Texto justificado nas citações */
+            text-justify: inter-word;
         }
         
         .back-to-blog {
@@ -139,6 +148,7 @@
             font-weight: bold;
             margin-top: 20px;
             transition: background 0.3s;
+            text-align: center;
         }
         
         .back-to-blog:hover {
@@ -188,6 +198,39 @@
             color: var(--gold);
             font-weight: bold;
         }
+
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 768px) {
+            .article-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .article-header h2 {
+                font-size: 26px;
+            }
+            
+            .image-container {
+                width: 100%;
+            }
+            
+            .article-text p {
+                font-size: 16px;
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+                hyphens: auto;
+            }
+            
+            .tips-list li {
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+            }
+            
+            .quote {
+                text-align: justify; /* Mantém justificado no mobile */
+                text-justify: inter-word;
+            }
+        }
     </style>
 </head>
 <body>
@@ -231,7 +274,7 @@
                 </ul>
             </div>
             
-            <p>Essa disciplina protege não só sua banca, mas também sua vida financeira fora do jogo.</p>
+            <p>Essa disciplina protege não só sua banca, mas também sua vida financiera fora do jogo.</p>
             
             <h3>3. Escolha limites adequados</h3>
             <p>Jogar acima do seu nível financeiro é um dos maiores riscos para a banca. É essencial ajustar o valor dos buy-ins e o limite das mesas de acordo com sua reserva.</p>
@@ -263,7 +306,7 @@
                 <h4>Práticas de avaliação:</h4>
                 <ul>
                     <li>Analise suas sessões e identifique padrões de perdas ou ganhos.</li>
-                    <li>Ajuste limites, buy-ins e estratégias com base nos resultados reais.</li>
+                    <li>Ajuste limites, buy-ins e estratégias com base nos resultados reales.</li>
                     <li>Aprenda com erros para prevenir prejuízos futuros.</li>
                 </ul>
             </div>
