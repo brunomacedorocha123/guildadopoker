@@ -63,6 +63,8 @@
       font-size: 0.85rem;
       transition: all 0.3s ease;
       white-space: nowrap;
+      cursor: pointer;
+      border: 1px solid transparent;
     }
     
     .login-btn {
@@ -666,27 +668,42 @@
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     async function checkAuthState() {
-      const { data: { session } } = await supabase.auth.getSession();
-      const authButtons = document.getElementById('auth-buttons');
-      
-      if (!authButtons) return;
-      
-      if (session) {
-        authButtons.innerHTML = `
-          <a href="perfil.html" class="auth-btn login-btn">Meu Perfil</a>
-          <a href="#" onclick="logout()" class="auth-btn signup-btn">Sair</a>
-        `;
-      } else {
-        authButtons.innerHTML = `
-          <a href="login.html" class="auth-btn login-btn">Login</a>
-          <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
-        `;
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const authButtons = document.getElementById('auth-buttons');
+        
+        if (!authButtons) return;
+        
+        if (session) {
+          authButtons.innerHTML = `
+            <a href="perfil.html" class="auth-btn login-btn">Meu Perfil</a>
+            <button onclick="logout()" class="auth-btn signup-btn">Sair</button>
+          `;
+        } else {
+          authButtons.innerHTML = `
+            <a href="login.html" class="auth-btn login-btn">Login</a>
+            <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
+          `;
+        }
+      } catch (error) {
+        console.error('Erro ao verificar estado de autenticação:', error);
       }
     }
 
     async function logout() {
-      await supabase.auth.signOut();
-      window.location.reload();
+      try {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          console.error('Erro ao fazer logout:', error);
+          alert('Erro ao fazer logout. Tente novamente.');
+        } else {
+          // Redirecionar para a página inicial após logout
+          window.location.href = 'index.html';
+        }
+      } catch (error) {
+        console.error('Erro inesperado ao fazer logout:', error);
+        window.location.href = 'index.html';
+      }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
