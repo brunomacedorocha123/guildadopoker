@@ -275,13 +275,20 @@
       flex-shrink: 0;
     }
 
-    /* Seção Sobre Nós */
+    /* Seção Sobre Nós - MODIFICADA PARA CENTRALIZAR NO PC */
     .sobre-nos {
       background-color: var(--bg-2);
       padding: 60px 20px;
       margin: 40px 0;
       border-top: 2px solid var(--gold);
       border-bottom: 2px solid var(--gold);
+      display: flex;
+      justify-content: center;
+    }
+    
+    .sobre-nos-container {
+      max-width: 800px; /* Largura máxima para o conteúdo */
+      width: 100%;
     }
     
     .sobre-nos h2 {
@@ -296,7 +303,6 @@
       font-size: 1.1em;
       line-height: 1.8;
       text-align: justify;
-      max-width: 900px;
       margin: 0 auto 20px;
     }
     
@@ -484,6 +490,15 @@
         height: auto;
         min-height: 90px;
       }
+      
+      /* Ajustes para mobile na seção Sobre Nós */
+      .sobre-nos {
+        padding: 40px 15px;
+      }
+      
+      .sobre-nos-container {
+        max-width: 100%;
+      }
     }
 
     @media (max-width: 480px) {
@@ -578,32 +593,34 @@
         </div>
       </section>
 
-      <!-- Seção Sobre Nós -->
+      <!-- Seção Sobre Nós - MODIFICADA PARA CENTRALIZAR NO PC -->
       <div class="sobre-nos">
-        <h2>Sobre Nós</h2>
-        <p>
-         A Guilda do Poker foi criada dengan tujuan reunir jogadores em uma comunidade acolhedora, aberta tanto a iniciantes quanto a experientes. 
-         Nosso propósito adalah proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
-        <p>
-          Estamos em constante crescimento e evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam 
-          nossa comunidade. Um dos nossos principais objetivos adalah introduzir formatos inovadores de torneios, trazendo variedade e 
-          dinamismo para nossas mesas, mantendo sempre a acessibilidade e o equilibrio competitivo.
-        </p>
-        <p>
-          Nosso trabalho adalah guiado por valores fundamentais: a responsabilidade no jogo, a diversão sebagai elemento central, 
-          a competitividade saudável e o respeito entre todos os membros. Acreditamos que o poker vai além das cartas e fichas - 
-          é uma experiência social que une pessoas em torno da estratégia, do raciocínio rápido e da emoção do jogo.
-        </p>
-        <p>
-          Meu nome adalah Bruno Macedo, e tenho sebagai missão pessoal fortalecer cada vez mais nossa comunidade, criando laços duradouros 
-          entre jogadores e estabelecendo a Guilda do Poker como referência em ambientes virtuais de poker. Estou comprometido em 
-          evoluir nosso clube continuamente, ouvindo sugestões e implementando melhorias que elevem a experiência de jogo para todos.
-        </p>
-        <p>
-          Junte-se a nós nessa jornada e faça parte de uma comunidade que valoriza cada jogador, onde sua presença contribui untuk 
-          tornar nosso clube ainda mais especial e acolhedor.
-        </p>
-        <p class="assinatura">Bruno Macedo<br>Fundador da Guilda do Poker</p>
+        <div class="sobre-nos-container">
+          <h2>Sobre Nós</h2>
+          <p>
+           A Guilda do Poker foi criada dengan tujuan reunir jogadores em uma comunidade acolhedora, aberta tanto a iniciantes quanto a experientes. 
+           Nosso propósito adalah proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
+          <p>
+            Estamos em constante crescimento e evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam 
+            nossa comunidade. Um dos nossos principais objetivos adalah introduzir formatos inovadores de torneios, trazendo variedade e 
+            dinamismo para nossas mesas, mantendo sempre a acessibilidade e o equilibrio competitivo.
+          </p>
+          <p>
+            Nosso trabalho adalah guiado por valores fundamentais: a responsabilidade no jogo, a diversão sebagai elemento central, 
+            a competitividade saudável e o respeito entre todos os membros. Acreditamos que o poker vai além das cartas e fichas - 
+            é uma experiência social que une pessoas em torno da estratégia, do raciocínio rápido e da emoção do jogo.
+          </p>
+          <p>
+            Meu nome adalah Bruno Macedo, e tenho sebagai missão pessoal fortalecer cada vez mais nossa comunidade, criando laços duradouros 
+            entre jogadores e estabelecendo a Guilda do Poker como referência em ambientes virtuais de poker. Estou comprometido em 
+            evoluir nosso clube continuamente, ouvindo sugestões e implementando melhorias que elevem a experiência de jogo para todos.
+          </p>
+          <p>
+            Junte-se a nós nessa jornada e faça parte de uma comunidade que valoriza cada jogador, onde sua presença contribui untuk 
+            tornar nosso clube ainda mais especial e acolhedor.
+          </p>
+          <p class="assinatura">Bruno Macedo<br>Fundador da Guilda do Poker</p>
+        </div>
       </div>
     </div>
     
