@@ -275,20 +275,13 @@
       flex-shrink: 0;
     }
 
-    /* Seção Sobre Nós - MODIFICADA PARA CENTRALIZAR NO PC */
+    /* Seção Sobre Nós */
     .sobre-nos {
       background-color: var(--bg-2);
       padding: 60px 20px;
       margin: 40px 0;
       border-top: 2px solid var(--gold);
       border-bottom: 2px solid var(--gold);
-      display: flex;
-      justify-content: center;
-    }
-    
-    .sobre-nos-container {
-      max-width: 800px; /* Largura máxima para o conteúdo */
-      width: 100%;
     }
     
     .sobre-nos h2 {
@@ -303,6 +296,7 @@
       font-size: 1.1em;
       line-height: 1.8;
       text-align: justify;
+      max-width: 900px;
       margin: 0 auto 20px;
     }
     
@@ -490,15 +484,6 @@
         height: auto;
         min-height: 90px;
       }
-      
-      /* Ajustes para mobile na seção Sobre Nós */
-      .sobre-nos {
-        padding: 40px 15px;
-      }
-      
-      .sobre-nos-container {
-        max-width: 100%;
-      }
     }
 
     @media (max-width: 480px) {
@@ -534,7 +519,7 @@
   <header>
     <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
     
-    <!-- Botões de Login and Cadastro -->
+    <!-- Botões de Login e Cadastro -->
     <div class="auth-buttons" id="auth-buttons">
       <a href="login.html" class="auth-btn login-btn">Login</a>
       <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
@@ -593,34 +578,32 @@
         </div>
       </section>
 
-      <!-- Seção Sobre Nós - MODIFICADA PARA CENTRALIZAR NO PC -->
+      <!-- Seção Sobre Nós -->
       <div class="sobre-nos">
-        <div class="sobre-nos-container">
-          <h2>Sobre Nós</h2>
-          <p>
-           A Guilda do Poker foi criada dengan tujuan reunir jogadores em uma comunidade acolhedora, aberta tanto a iniciantes quanto a experientes. 
-           Nosso propósito adalah proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
-          <p>
-            Estamos em constante crescimento e evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam 
-            nossa comunidade. Um dos nossos principais objetivos adalah introduzir formatos inovadores de torneios, trazendo variedade e 
-            dinamismo para nossas mesas, mantendo sempre a acessibilidade e o equilibrio competitivo.
-          </p>
-          <p>
-            Nosso trabalho adalah guiado por valores fundamentais: a responsabilidade no jogo, a diversão sebagai elemento central, 
-            a competitividade saudável e o respeito entre todos os membros. Acreditamos que o poker vai além das cartas e fichas - 
-            é uma experiência social que une pessoas em torno da estratégia, do raciocínio rápido e da emoção do jogo.
-          </p>
-          <p>
-            Meu nome adalah Bruno Macedo, e tenho sebagai missão pessoal fortalecer cada vez mais nossa comunidade, criando laços duradouros 
-            entre jogadores e estabelecendo a Guilda do Poker como referência em ambientes virtuais de poker. Estou comprometido em 
-            evoluir nosso clube continuamente, ouvindo sugestões e implementando melhorias que elevem a experiência de jogo para todos.
-          </p>
-          <p>
-            Junte-se a nós nessa jornada e faça parte de uma comunidade que valoriza cada jogador, onde sua presença contribui untuk 
-            tornar nosso clube ainda mais especial e acolhedor.
-          </p>
-          <p class="assinatura">Bruno Macedo<br>Fundador da Guilda do Poker</p>
-        </div>
+        <h2>Sobre Nós</h2>
+        <p>
+         A Guilda do Poker foi criada dengan tujuan reunir jogadores em uma comunidade acolhedora, aberta tanto a iniciantes quanto a experientes. 
+         Nosso propósito adalah proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
+        <p>
+          Estamos em constante crescimento e evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam 
+          nossa comunidade. Um dos nossos principais objetivos adalah introduzir formatos inovadores de torneios, trazendo variedade e 
+          dinamismo para nossas mesas, mantendo sempre a acessibilidade e o equilibrio competitivo.
+        </p>
+        <p>
+          Nosso trabalho adalah guiado por valores fundamentais: a responsabilidade no jogo, a diversão sebagai elemento central, 
+          a competitividade saudável e o respeito entre todos os membros. Acreditamos que o poker vai além das cartas e fichas - 
+          é uma experiência social que une pessoas em torno da estratégia, do raciocínio rápido e da emoção do jogo.
+        </p>
+        <p>
+          Meu nome adalah Bruno Macedo, e tenho sebagai missão pessoal fortalecer cada vez mais nossa comunidade, criando laços duradouros 
+          entre jogadores e estabelecendo a Guilda do Poker como referência em ambientes virtuais de poker. Estou comprometido em 
+          evoluir nosso clube continuamente, ouvindo sugestões e implementando melhorias que elevem a experiência de jogo para todos.
+        </p>
+        <p>
+          Junte-se a nós nessa jornada e faça parte de uma comunidade que valoriza cada jogador, onde sua presença contribui untuk 
+          tornar nosso clube ainda mais especial e acolhedor.
+        </p>
+        <p class="assinatura">Bruno Macedo<br>Fundador da Guilda do Poker</p>
       </div>
     </div>
     
@@ -678,16 +661,12 @@
     });
   </script>
 
-  <!-- Script de autenticação Supabase - CORRIGIDO -->
+  <!-- Script de autenticação Supabase -->
   <script>
-    // Substitua estas variáveis pelas suas credenciais reais do Supabase
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-    
-    // Inicializar o cliente Supabase
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Verificar estado de autenticação
     async function checkAuthState() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -696,13 +675,11 @@
         if (!authButtons) return;
         
         if (session) {
-          // Usuário está logado - mostrar botão de perfil e sair
           authButtons.innerHTML = `
             <a href="perfil.html" class="auth-btn login-btn">Meu Perfil</a>
             <button onclick="logout()" class="auth-btn signup-btn">Sair</button>
           `;
         } else {
-          // Usuário não está logado - mostrar botões de login e cadastro
           authButtons.innerHTML = `
             <a href="login.html" class="auth-btn login-btn">Login</a>
             <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
@@ -710,18 +687,9 @@
         }
       } catch (error) {
         console.error('Erro ao verificar estado de autenticação:', error);
-        // Em caso de erro, mostrar os botões padrão (login/cadastro)
-        const authButtons = document.getElementById('auth-buttons');
-        if (authButtons) {
-          authButtons.innerHTML = `
-            <a href="login.html" class="auth-btn login-btn">Login</a>
-            <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
-          `;
-        }
       }
     }
 
-    // Função de logout
     async function logout() {
       try {
         const { error } = await supabase.auth.signOut();
@@ -738,19 +706,14 @@
       }
     }
 
-    // Inicializar a verificação de autenticação quando a página carregar
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthState();
-      
-      // Adicionar listener para mudanças no estado de autenticação
-      supabase.auth.onAuthStateChange((event, session) => {
-        checkAuthState();
-      });
     });
 
-    // Garantir que a função logout esteja disponível globalmente
-    window.logout = logout;
+    supabase.auth.onAuthStateChange((event, session) => {
+      checkAuthState();
+    });
   </script>
 
 </body>
-</html>
+</html> 
