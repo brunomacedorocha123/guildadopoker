@@ -649,7 +649,7 @@
  </footer>
 
  <!-- Script do menu mobile -->
- <script>
+<script>
   // Menu hamburger
   const hamburger = document.querySelector('.hamburger');
   const menu = document.querySelector('.menu');
@@ -734,15 +734,16 @@
     document.getElementById('profile-button').style.display = 'block';
     document.getElementById('logout-button').style.display = 'block';
     
-    // Atualizar saudação com apelido
+    // Atualizar saudação COM apelido (em vez do email)
     const userGreeting = document.getElementById('user-greeting');
     if (apelido) {
-      userGreeting.textContent = `Olá, ${apelido}`;
+      userGreeting.textContent = `Olá, ${apelido}`; // MANTÉM "Olá," mas com APELIDO
       console.log('Saudação definida com apelido:', apelido);
     } else {
-      // Se não tiver apelido, usa o email
-      userGreeting.textContent = `Olá, ${user.email}`;
-      console.log('Saudação definida com email:', user.email);
+      // Se não tiver apelido, usa o nome completo ou primeira parte do email
+      const nome = user.user_metadata?.full_name || user.email.split('@')[0];
+      userGreeting.textContent = `Olá, ${nome}`;
+      console.log('Saudação definida com nome:', nome);
     }
     userGreeting.style.display = 'block';
   }
@@ -780,6 +781,6 @@
       alert('Erro inesperado. Tente novamente.');
     }
   }
- </script>
+</script>
 </body>
 </html>
