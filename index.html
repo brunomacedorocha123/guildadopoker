@@ -638,19 +638,28 @@
     window.logout = async function() {
       try {
         console.log('Iniciando logout...');
+        
+        // Verificar se há uma sessão ativa antes de tentar logout
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          console.log('Nenhuma sessão ativa, redirecionando...');
+          window.location.href = 'index.html';
+          return;
+        }
+        
         const { error } = await supabase.auth.signOut();
         
         if (error) {
           console.error('Erro no logout:', error);
-          alert('Erro ao fazer logout: ' + error.message);
+          // Mesmo com erro, redireciona para limpar o estado local
+          window.location.href = 'index.html';
         } else {
           console.log('Logout realizado com sucesso');
-          // Forçar recarregamento para garantir que o estado seja atualizado
           window.location.href = 'index.html';
         }
       } catch (error) {
         console.error('Erro inesperado no logout:', error);
-        alert('Erro inesperado ao fazer logout');
         window.location.href = 'index.html';
       }
     }
@@ -669,6 +678,14 @@
             <a href="perfil.html" class="auth-btn login-btn">Meu Perfil</a>
             <button onclick="logout()" class="auth-btn signup-btn">Sair</button>
           `;
+          
+          // Adicionar event listener para o botão de logout
+          setTimeout(() => {
+            const logoutBtn = document.querySelector('.signup-btn');
+            if (logoutBtn) {
+              logoutBtn.addEventListener('click', window.logout);
+            }
+          }, 100);
         } else {
           authButtons.innerHTML = `
             <a href="login.html" class="auth-btn login-btn">Login</a>
@@ -681,19 +698,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('Página carregada - verificando autenticação...');
       checkAuthState();
-      
-      // Adicionar event listener alternativo para evitar problemas de onclick
-      document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('signup-btn') && e.target.textContent === 'Sair') {
-          e.preventDefault();
-          window.logout();
-        }
-      });
     });
 
+    // Ouvir mudanças de estado de autenticação
     supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Mudança de estado de autenticação:', event);
+      console.log('Evento de autenticação:', event, session ? 'Sessão disponível' : 'Sem sessão');
       checkAuthState();
     });
 </script>
