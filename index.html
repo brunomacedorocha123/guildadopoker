@@ -689,7 +689,8 @@
       console.log('Usuário logado:', session.user.email);
       // Buscar dados COMPLETOS do perfil
       const userProfile = await getUserProfile(session.user.id);
-      console.log('Perfil encontrado:', userProfile);
+      console.log('Perfil encontrado (DEBUG):', userProfile);
+      console.log('Apelido específico:', userProfile ? userProfile.apelido_poker : 'não encontrado');
       updateUIForLoggedInUser(session.user, userProfile);
     } else {
       console.log('Usuário não logado');
@@ -700,31 +701,46 @@
     document.getElementById('logout-button').addEventListener('click', logout);
   });
 
-  // Buscar perfil COMPLETO do usuário
+  // Buscar perfil COMPLETO do usuário - VERSÃO CORRIGIDA
   async function getUserProfile(userId) {
     try {
       console.log('Buscando perfil completo para o usuário:', userId);
       
+      // Primeiro tenta buscar apelido_poker e nome_completo
       const { data, error } = await supabase
         .from('perfis')
-        .select('*')
+        .select('apelido_poker, nome_completo')
         .eq('id', userId)
         .single();
 
       if (error) {
-        console.error('Erro ao buscar perfil:', error);
-        return null;
+        console.error('Erro ao buscar perfil completo:', error);
+        
+        // Se der erro, tenta buscar apenas o apelido
+        const { data: simpleData, error: simpleError } = await supabase
+          .from('perfis')
+          .select('apelido_poker')
+          .eq('id', userId)
+          .single();
+        
+        if (simpleError) {
+          console.error('Erro ao buscar apelido:', simpleError);
+          return null;
+        }
+        
+        console.log('Dados simples do perfil:', simpleData);
+        return simpleData;
       }
 
       console.log('Dados completos do perfil:', data);
       return data;
     } catch (error) {
-      console.error('Erro ao buscar perfil:', error);
+      console.error('Erro inesperado ao buscar perfil:', error);
       return null;
     }
   }
 
-  // Atualizar UI para usuário logado
+  // Atualizar UI para usuário logado - VERSÃO CORRIGIDA
   function updateUIForLoggedInUser(user, userProfile) {
     // Esconder botões de login/cadastro
     document.getElementById('login-button').style.display = 'none';
@@ -792,6 +808,6 @@
       alert('Erro inesperado. Tente novamente.');
     }
   }
-</script>>
+</script>
 </body>
 </html>
