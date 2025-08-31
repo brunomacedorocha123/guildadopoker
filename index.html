@@ -530,27 +530,73 @@
     right: 12px;
    }
   }
+  /* ===== JANELA DO USUÁRIO NO LADO ESQUERDO ===== */
+.user-window {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  display: none;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--gold);
+  background-color: var(--bg-2);
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-nickname {
+  color: var(--gold);
+  font-weight: bold;
+  font-size: 0.9rem;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
  </style>
 </head>
 <body>
 
- <!-- Cabeçalho com botões de autenticação -->
- <header>
-  <!-- Botões de Autenticação -->
+<!-- Cabeçalho com botões de autenticação -->
+<header>
+  <!-- Janela do usuário no lado esquerdo -->
+  <div class="user-window" id="user-window">
+    <div class="user-avatar">
+      <img id="header-avatar" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSIyMCIgeT0iMjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2M4YjY1MyIg极地战斧dGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=" alt="Avatar">
+    </div>
+    <div class="user-nickname" id="header-nickname"></div>
+  </div>
+
+  <!-- Botões de Autenticação (APENAS UMA VEZ) -->
   <div class="auth-buttons" id="auth-buttons">
-   <span class="user-greeting" id="user-greeting"></span>
-   <a href="login.html" class="auth-btn login-btn" id="login-button">Login</a>
-   <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastre-se</a>
-   <a href="perfil.html" class="auth-btn profile-btn" id="profile-button">Meu Perfil</a>
-   <button class="auth-btn logout-btn" id="logout-button">Sair</button>
+    <span class="user-greeting" id="user-greeting"></span>
+    <a href="login.html" class="auth-btn login-btn" id="login-button">Login</a>
+    <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastre-se</a>
+    <a href="perfil.html" class="auth-btn profile-btn" id="profile-button">Meu Perfil</a>
+    <button class="auth-btn logout-btn" id="logout-button">Sair</button>
   </div>
   
   <button class="hamburger" aria-label="Abrir menu">
-   <span></span>
-   <span></span>
-   <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
   </button>
- </header>
+</header>
+
+ 
 
  <!-- Navegação -->
  <nav>
@@ -687,7 +733,10 @@
     
     if (session) {
       console.log('Usuário logado:', session.user.email);
-      updateUIForLoggedInUser();
+      // Buscar dados COMPLETOS do perfil
+      const userProfile = await getUserProfile(session.user.id);
+      console.log('Perfil encontrado:', userProfile);
+      updateUIForLoggedInUser(session.user, userProfile);
     } else {
       console.log('Usuário não logado');
       updateUIForLoggedOutUser();
@@ -697,8 +746,32 @@
     document.getElementById('logout-button').addEventListener('click', logout);
   });
 
-  // Atualizar UI para usuário logado - SEM SAUDAÇÃO
-  function updateUIForLoggedInUser() {
+  // Buscar perfil COMPLETO do usuário
+  async function getUserProfile(userId) {
+    try {
+      console.log('Buscando perfil completo para o usuário:', userId);
+      
+      const { data, error } = await supabase
+        .from('perfis')
+        .select('apelido_poker, nome_completo, avatar_id')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error('Erro ao buscar perfil:', error);
+        return null;
+      }
+
+      console.log('Dados do perfil:', data);
+      return data;
+    } catch (error) {
+      console.error('Erro ao buscar perfil:', error);
+      return null;
+    }
+  }
+
+  // Atualizar UI para usuário logado - COM JANELA DO USUÁRIO
+  function updateUIForLoggedInUser(user, userProfile) {
     // Esconder botões de login/cadastro
     document.getElementById('login-button').style.display = 'none';
     document.getElementById('signup-button').style.display = 'none';
@@ -707,8 +780,26 @@
     document.getElementById('profile-button').style.display = 'block';
     document.getElementById('logout-button').style.display = 'block';
     
-    // ESCONDER COMPLETAMENTE A SAUDAÇÃO DO USUÁRIO
-    document.getElementById('user-greeting').style.display = 'none';
+    // Mostrar janela do usuário
+    const userWindow = document.getElementById('user-window');
+    userWindow.style.display = 'flex';
+    
+    // Atualizar avatar e apelido
+    const headerAvatar = document.getElementById('header-avatar');
+    const headerNickname = document.getElementById('header-nickname');
+    
+    if (userProfile && userProfile.apelido_poker) {
+      headerNickname.textContent = userProfile.apelido_poker;
+    } else if (userProfile && userProfile.nome_completo) {
+      headerNickname.textContent = userProfile.nome_completo;
+    } else {
+      headerNickname.textContent = user.email.split('@')[0];
+    }
+    
+    // Carregar avatar se existir
+    if (userProfile && userProfile.avatar_id) {
+      loadUserAvatar(userProfile.avatar_id, headerAvatar);
+    }
   }
 
   // Atualizar UI para usuário não logado
@@ -721,8 +812,28 @@
     document.getElementById('profile-button').style.display = 'none';
     document.getElementById('logout-button').style.display = 'none';
     
-    // Esconder saudação
-    document.getElementById('user-greeting').style.display = 'none';
+    // Esconder janela do usuário
+    document.getElementById('user-window').style.display = 'none';
+  }
+
+  // Carregar avatar do usuário
+  async function loadUserAvatar(avatarId, avatarElement) {
+    try {
+      const { data, error } = await supabase
+        .from('avatares')
+        .select('url_imagem')
+        .eq('id', avatarId)
+        .single();
+
+      if (error || !data) {
+        console.error('Erro ao buscar avatar:', error);
+        return;
+      }
+
+      avatarElement.src = data.url_imagem;
+    } catch (error) {
+      console.error('Erro ao carregar avatar:', error);
+    }
   }
 
   // Função de logout
