@@ -371,10 +371,11 @@
                     };
                     localStorage.setItem('guilda-poker-auth', JSON.stringify(sessionData));
                     
-                    // Aguardar um pouco para garantir persistência e redirecionar
-                    setTimeout(() => {
-                        window.location.href = 'index.html?login=success&t=' + Date.now();
-                    }, 1500);
+                    // Verificar se a sessão foi persistida corretamente antes de redirecionar
+                    await verifySessionPersistence();
+                    
+                    // Redirecionar com parâmetro de sucesso
+                    window.location.href = 'index.html?login=success&t=' + Date.now();
                 }
                 
             } catch (error) {
@@ -383,6 +384,31 @@
                 setLoading(false);
             }
         });
+        
+        // Função para verificar se a sessão foi persistida corretamente
+        async function verifySessionPersistence() {
+            return new Promise((resolve) => {
+                let attempts = 0;
+                const maxAttempts = 10;
+                
+                const checkSession = setInterval(async () => {
+                    attempts++;
+                    
+                    // Verificar se a sessão está disponível
+                    const { data: { session } } = await supabase.auth.getSession();
+                    
+                    if (session) {
+                        clearInterval(checkSession);
+                        console.log('Sessão persistida com sucesso após', attempts, 'tentativas');
+                        resolve(true);
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(checkSession);
+                        console.log('Sessão não persistida após', maxAttempts, 'tentativas - usando fallback');
+                        resolve(false);
+                    }
+                }, 300); // Verificar a cada 300ms
+            });
+        }
         
         function handleLoginError(error) {
             let errorMessage = 'Erro no login: ';
@@ -393,6 +419,8 @@
                 errorMessage = 'E-mail não confirmado. Verifique sua caixa de entrada.';
             } else if (error.message.includes('Failed to fetch')) {
                 errorMessage = 'Problema de conexão. Verifique sua internet.';
+            } else if (error.message.includes('Invalid API key')) {
+                errorMessage = 'Erro de configuração. Por favor, contate o suporte.';
             } else {
                 errorMessage += error.message;
             }
@@ -453,7 +481,40 @@
             if (message && messageType) {
                 showMessage(decodeURIComponent(message), messageType);
             }
+            
+            // Verificar se já está logado e redirecionar
+            checkIfAlreadyLoggedIn();
         });
+        
+        // Verificar se usuário já está logado
+        async function checkIfAlreadyLoggedIn() {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                // Verificar também sessão manual
+                const manualAuth = localStorage.getItem('guilda-poker-auth');
+                let manualSessionValid = false;
+                
+                if (manualAuth) {
+                    try {
+                        const authData = JSON.parse(manualAuth);
+                        const expiresAt = new Date(authData.expires_at);
+                        manualSessionValid = expiresAt > new Date();
+                    } catch (e) {
+                        console.log('Sessão manual inválida');
+                    }
+                }
+                
+                if (session || manualSessionValid) {
+                    showMessage('Você já está logado! Redirecionando...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                }
+            } catch (error) {
+                console.log('Erro ao verificar sessão existente:', error);
+            }
+        }
         
         // Prevenir duplo clique
         let isSubmitting = false;
@@ -475,6 +536,9 @@
                 loginForm.dispatchEvent(new Event('submit'));
             }
         });
+
+        // Debug: Expor supabase para console
+        window.supabaseClient = supabase;
     </script>
 </body>
 </html>
