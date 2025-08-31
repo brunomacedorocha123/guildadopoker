@@ -918,10 +918,18 @@ footer img {
  </footer>
 
 <script>
-// Configuração do Supabase
+// Configuração do Supabase - CORRIGIDA
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+    auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: localStorage
+    }
+});
 
 // Elementos DOM
 const userNameElement = document.getElementById('user-name');
@@ -946,29 +954,30 @@ let editMode = false;
 let originalValues = {};
 let currentAvatarId = null;
 let avataresCarregados = false;
+let authCheckInterval;
 
 // Função para mostrar notificações
 function showNotification(message, isSuccess = true) {
-  notificationMessage.textContent = message;
-  notification.className = isSuccess ? 'notification success' : 'notification error';
-  notification.classList.add('show');
+    notificationMessage.textContent = message;
+    notification.className = isSuccess ? 'notification success' : 'notification error';
+    notification.classList.add('show');
 
-  setTimeout(() => {
-    notification.classList.remove('show');
-  }, 3000);
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
 }
 
 // Adicionar evento para fechar o modal
 document.querySelector('.close-modal').addEventListener('click', function() {
-  document.getElementById('avatar-modal').style.display = 'none';
+    document.getElementById('avatar-modal').style.display = 'none';
 });
 
 // Fechar o modal ao clicar fora dele
 window.addEventListener('click', function(event) {
-  const modal = document.getElementById('avatar-modal');
-  if (event.target === modal) {
-    modal.style.display = 'none';
-  }
+    const modal = document.getElementById('avatar-modal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
 });
 
 // Menu mobile toggle
@@ -976,450 +985,522 @@ const menuToggle = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.menu');
 
 menuToggle.addEventListener('click', function(e) {
-  e.stopPropagation();
-  menu.classList.toggle('active');
-  menuToggle.classList.toggle('active');
+    e.stopPropagation();
+    menu.classList.toggle('active');
+    menuToggle.classList.toggle('active');
 });
 
 // Fechar menu ao clicar em um link (em dispositivos móveis)
 const menuLinks = document.querySelectorAll('.menu a');
 menuLinks.forEach(link => {
-  link.addEventListener('click', function() {
-    if (window.innerWidth <= 768) {
-      menu.classList.remove('active');
-      menuToggle.classList.remove('active');
-    }
-  });
+    link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+            menu.classList.remove('active');
+            menuToggle.classList.remove('active');
+        }
+    });
 });
 
 // Fechar o menu ao clicar fora dele
 document.addEventListener('click', function(event) {
-  if (window.innerWidth <= 768 && menu.classList.contains('active')) {
-    if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
-      menu.classList.remove('active');
-      menuToggle.classList.remove('active');
+    if (window.innerWidth <= 768 && menu.classList.contains('active')) {
+        if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
+            menu.classList.remove('active');
+            menuToggle.classList.remove('active');
+        }
     }
-  }
 });
+
+// Verificar conexão com Supabase
+async function checkSupabaseConnection() {
+    try {
+        const { data, error } = await supabase
+            .from('perfis')
+            .select('count')
+            .limit(1);
+        
+        if (error) {
+            console.error('Erro de conexão com Supabase:', error);
+            showNotification('Problema de conexão. Tente novamente.', false);
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Erro ao testar conexão:', error);
+        showNotification('Erro de conexão. Tente novamente.', false);
+        return false;
+    }
+}
 
 // Verificar estado de autenticação
 async function checkAuthState() {
-  try {
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+            console.error('Erro ao obter sessão:', sessionError);
+            showNotification('Erro de autenticação. Redirecionando...', false);
+            setTimeout(() => window.location.href = 'index.html', 2000);
+            return;
+        }
+
+        console.log('Sessão:', session ? 'Usuário autenticado' : 'Não autenticado');
+
+        if (!session) {
+            showNotification('Por favor, faça login primeiro', false);
+            setTimeout(() => window.location.href = 'index.html', 2000);
+            return;
+        }
+
+        await loadUserData(session.user);
+        
+        // Iniciar verificação periódica de autenticação
+        startAuthCheck();
+    } catch (error) {
+        console.error('Erro na autenticação:', error);
+        showNotification('Erro de conexão. Tente novamente.', false);
+    }
+}
+
+// Verificação de autenticação periódica
+function startAuthCheck() {
+    // Limpar intervalo anterior se existir
+    if (authCheckInterval) {
+        clearInterval(authCheckInterval);
+    }
     
-    if (sessionError) {
-      console.error('Erro ao obter sessão:', sessionError);
-      showNotification('Erro de autenticação. Redirecionando...', false);
-      setTimeout(() => window.location.href = 'index.html', 2000);
-      return;
-    }
-
-    console.log('Sessão:', session ? 'Usuário autenticado' : 'Não autenticado');
-
-    if (!session) {
-      showNotification('Por favor, faça login primeiro', false);
-      setTimeout(() => window.location.href = 'index.html', 2000);
-      return;
-    }
-
-    await loadUserData(session.user);
-  } catch (error) {
-    console.error('Erro na autenticação:', error);
-    showNotification('Erro de conexão. Tente novamente.', false);
-  }
+    authCheckInterval = setInterval(async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            showNotification('Sessão expirada. Redirecionando...', false);
+            setTimeout(() => window.location.href = 'index.html', 2000);
+        }
+    }, 5000);
 }
 
 // Criar perfil de usuário se não existir
 async function createUserProfile(user) {
-  try {
-    const { error } = await supabase
-      .from('perfis')
-      .insert([
-        {
-          id: user.id,
-          nome_completo: user.user_metadata.full_name || '',
-          email: user.email,
-          data_criacao: new Date().toISOString()
-        }
-      ]);
+    try {
+        const { error } = await supabase
+            .from('perfis')
+            .insert([
+                {
+                    id: user.id,
+                    nome_completo: user.user_metadata.full_name || '',
+                    email: user.email,
+                    data_criacao: new Date().toISOString()
+                }
+            ]);
 
-    if (error) {
-      // Ignorar erro de duplicidade (código 23505)
-      if (error.code === '23505') {
-        console.log('Perfil já existe, ignorando criação...');
+        if (error) {
+            // Ignorar erro de duplicidade (código 23505)
+            if (error.code === '23505') {
+                console.log('Perfil já existe, ignorando criação...');
+                return true;
+            }
+            console.error('Erro ao criar perfil:', error);
+            return false;
+        }
         return true;
-      }
-      console.error('Erro ao criar perfil:', error);
-      return false;
+    } catch (error) {
+        console.error('Erro inesperado ao criar perfil:', error);
+        return false;
     }
-    return true;
-  } catch (error) {
-    console.error('Erro inesperado ao criar perfil:', error);
-    return false;
-  }
 }
 
 // Carregar dados do usuário
 async function loadUserData(user) {
-  try {
-    console.log('Iniciando carregamento de dados para:', user.id);
-    
-    // Primeiro tenta buscar dados básicos
-    let { data: perfilData, error: perfilError } = await supabase
-      .from('perfis')
-      .select('*')
-      .eq('id', user.id)
-      .single();
+    try {
+        console.log('Iniciando carregamento de dados para:', user.id);
+        
+        // Verificar se user é válido
+        if (!user || !user.id) {
+            console.error('Usuário inválido:', user);
+            showNotification('Erro ao carregar dados do usuário.', false);
+            return;
+        }
+        
+        // Primeiro tenta buscar dados básicos
+        let { data: perfilData, error: perfilError } = await supabase
+            .from('perfis')
+            .select('*')
+            .eq('id', user.id)
+            .single();
 
-    // Se não encontrar perfil, cria um novo
-    if (perfilError && perfilError.code === 'PGRST116') {
-      console.log('Perfil não existe, criando novo...');
-      const criado = await createUserProfile(user);
-      if (criado) {
-        // Recarrega os dados após criar
-        const { data: newPerfilData } = await supabase
-          .from('perfis')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-        perfilData = newPerfilData;
-      } else {
-        showNotification('Erro ao criar perfil. Tente novamente.', false);
-        return;
-      }
+        // Se não encontrar perfil, cria um novo
+        if (perfilError && perfilError.code === 'PGRST116') {
+            console.log('Perfil não existe, criando novo...');
+            const criado = await createUserProfile(user);
+            if (criado) {
+                // Recarrega os dados após criar
+                const { data: newPerfilData } = await supabase
+                    .from('perfis')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+                perfilData = newPerfilData;
+            } else {
+                showNotification('Erro ao criar perfil. Tente novamente.', false);
+                return;
+            }
+        }
+        
+        if (perfilError && perfilError.code !== 'PGRST116') {
+            console.error('Erro ao carregar perfil:', perfilError);
+            showNotification('Erro ao carregar perfil.', false);
+            return;
+        }
+
+        // PREENCHER OS DADOS NA PÁGINA
+        userNameElement.textContent = perfilData?.nome_completo || user.user_metadata.full_name || 'Usuário';
+        userEmailElement.textContent = user.email;
+
+        if (perfilData?.apelido_poker) {
+            userPokerNicknameElement.textContent = '"' + perfilData.apelido_poker + '"';
+        } else {
+            userPokerNicknameElement.textContent = '';
+        }
+
+        const createdDate = new Date(user.created_at);
+        memberSinceElement.textContent = createdDate.toLocaleDateString('pt-BR');
+
+        nomeCompletoInput.value = perfilData?.nome_completo || '';
+        telefoneInput.value = perfilData?.telefone || '';
+        apelidoPokerInput.value = perfilData?.apelido_poker || '';
+        plataformaSelect.value = perfilData?.plataforma_preferida || '';
+
+        // Carregar avatar se existir
+        if (perfilData?.avatar_id) {
+            currentAvatarId = perfilData.avatar_id;
+            await updateAvatarDisplay(perfilData.avatar_id);
+        }
+
+        originalValues = {
+            nome_completo: nomeCompletoInput.value,
+            telefone: telefoneInput.value,
+            apelido_poker: apelidoPokerInput.value,
+            plataforma_preferida: plataformaSelect.value,
+            avatar_id: currentAvatarId
+        };
+
+        console.log('Dados carregados com sucesso!');
+        
+    } catch (error) {
+        console.error('Erro geral no carregamento:', error);
+        showNotification('Erro ao carregar dados do perfil.', false);
     }
-    
-    if (perfilError && perfilError.code !== 'PGRST116') {
-      console.error('Erro ao carregar perfil:', perfilError);
-      showNotification('Erro ao carregar perfil.', false);
-      return;
-    }
-
-    // PREENCHER OS DADOS NA PÁGINA
-    userNameElement.textContent = perfilData?.nome_completo || user.user_metadata.full_name || 'Usuário';
-    userEmailElement.textContent = user.email;
-
-    if (perfilData?.apelido_poker) {
-      userPokerNicknameElement.textContent = '"' + perfilData.apelido_poker + '"';
-    } else {
-      userPokerNicknameElement.textContent = '';
-    }
-
-    const createdDate = new Date(user.created_at);
-    memberSinceElement.textContent = createdDate.toLocaleDateString('pt-BR');
-
-    nomeCompletoInput.value = perfilData?.nome_completo || '';
-    telefoneInput.value = perfilData?.telefone || '';
-    apelidoPokerInput.value = perfilData?.apelido_poker || '';
-    plataformaSelect.value = perfilData?.plataforma_preferida || '';
-
-    // Carregar avatar se existir
-    if (perfilData?.avatar_id) {
-      currentAvatarId = perfilData.avatar_id;
-      await updateAvatarDisplay(perfilData.avatar_id);
-    }
-
-    originalValues = {
-      nome_completo: nomeCompletoInput.value,
-      telefone: telefoneInput.value,
-      apelido_poker: apelidoPokerInput.value,
-      plataforma_preferida: plataformaSelect.value,
-      avatar_id: currentAvatarId
-    };
-
-    console.log('Dados carregados com sucesso!');
-    
-  } catch (error) {
-    console.error('Erro geral no carregamento:', error);
-    showNotification('Erro ao carregar dados do perfil.', false);
-  }
 }
 
 // Atualizar perfil do usuário
 async function updateUserProfile() {
-  try {
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    if (sessionError || !session) {
-      showNotification('Sessão expirada. Faça login novamente.', false);
-      setTimeout(() => window.location.href = 'index.html', 2000);
-      return false;
-    }
+    try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError || !session) {
+            showNotification('Sessão expirada. Faça login novamente.', false);
+            setTimeout(() => window.location.href = 'index.html', 2000);
+            return false;
+        }
 
-    if (!nomeCompletoInput.value.trim()) {
-      showNotification('Por favor, informe seu nome completo.', false);
-      nomeCompletoInput.focus();
-      return false;
-    }
+        if (!nomeCompletoInput.value.trim()) {
+            showNotification('Por favor, informe seu nome completo.', false);
+            nomeCompletoInput.focus();
+            return false;
+        }
 
-    // Verificar se há um avatar selecionado
-    let avatarId = currentAvatarId;
-    const selectedAvatarModal = document.querySelector('#avatar-options-modal .avatar-option.selected');
-    if (selectedAvatarModal && selectedAvatarModal.dataset.id) {
-      avatarId = parseInt(selectedAvatarModal.dataset.id);
-    }
+        // Verificar se há um avatar selecionado
+        let avatarId = currentAvatarId;
+        const selectedAvatarModal = document.querySelector('#avatar-options-modal .avatar-option.selected');
+        if (selectedAvatarModal && selectedAvatarModal.dataset.id) {
+            avatarId = parseInt(selectedAvatarModal.dataset.id);
+        }
 
-    const updates = {
-      nome_completo: nomeCompletoInput.value.trim(),
-      telefone: telefoneInput.value.trim(),
-      apelido_poker: apelidoPokerInput.value.trim(),
-      plataforma_preferida: plataformaSelect.value,
-      data_atualizacao: new Date().toISOString()
-    };
+        const updates = {
+            nome_completo: nomeCompletoInput.value.trim(),
+            telefone: telefoneInput.value.trim(),
+            apelido_poker: apelidoPokerInput.value.trim(),
+            plataforma_preferida: plataformaSelect.value,
+            data_atualizacao: new Date().toISOString()
+        };
 
-    // Adicionar avatar_id apenas se foi selecionado um
-    if (avatarId) {
-      updates.avatar_id = avatarId;
-    } else {
-      updates.avatar_id = null;
-    }
+        // Adicionar avatar_id apenas se foi selecionado um
+        if (avatarId) {
+            updates.avatar_id = avatarId;
+        } else {
+            updates.avatar_id = null;
+        }
 
-    const { error } = await supabase
-      .from('perfis')
-      .update(updates)
-      .eq('id', session.user.id);
+        const { error } = await supabase
+            .from('perfis')
+            .update(updates)
+            .eq('id', session.user.id);
 
-    if (error) {
-      console.error('Erro ao atualizar perfil:', error);
-      
-      if (error.message.includes('Invalid API key') || error.message.includes('JWT')) {
-        showNotification('Erro de configuração. Entre em contato com o suporte.', false);
-      } else {
-        showNotification('Erro ao salvar alterações. Tente novamente.', false);
-      }
-      
-      return false;
-    }
+        if (error) {
+            console.error('Erro ao atualizar perfil:', error);
+            
+            if (error.message.includes('Invalid API key') || error.message.includes('JWT')) {
+                showNotification('Erro de configuração. Entre em contato com o suporte.', false);
+            } else {
+                showNotification('Erro ao salvar alterações. Tente novamente.', false);
+            }
+            
+            return false;
+        }
 
-    showNotification('Perfil atualizado com sucesso!', true);
+       showNotification('Perfil atualizado com sucesso!', true);
+
+// Atualizar a exibição
+userNameElement.textContent = nomeCompletoInput.value;
+
+if (apelidoPokerInput.value) {
+    userPokerNicknameElement.textContent = '"' + apelidoPokerInput.value + '"';
+} else {
+    userPokerNicknameElement.textContent = '';
+}
+
+if (avatarId) {
+    await updateAvatarDisplay(avatarId);
+} else {
+    // Reset para avatar padrão se nenhum avatar foi selecionado
+    // BASE64 COMPLETA CORRIGIDA:
+    const defaultAvatar = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI2MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0iI2M4YjY1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
     
-    // Atualizar a exibição
-    userNameElement.textContent = nomeCompletoInput.value;
-    
-    if (apelidoPokerInput.value) {
-      userPokerNicknameElement.textContent = '"' + apelidoPokerInput.value + '"';
-    } else {
-      userPokerNicknameElement.textContent = '';
+    // VERIFICAR SE O ELEMENTO EXISTE ANTES DE MODIFICAR
+    const profileImg = document.querySelector('.profile-picture img');
+    if (profileImg) {
+        profileImg.src = defaultAvatar;
     }
-    
-    if (avatarId) {
-      await updateAvatarDisplay(avatarId);
-    } else {
-      // Reset para avatar padrão se nenhum avatar foi selecionado
-      const defaultAvatar = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI2MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0iI2M4YjY1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
-      document.querySelector('.profile-picture img').src = defaultAvatar;
+}
+        
+        originalValues = { ...updates, avatar_id: avatarId };
+        currentAvatarId = avatarId;
+        
+        return true;
+    } catch (error) {
+        console.error('Erro inesperado ao atualizar perfil:', error);
+        showNotification('Erro inesperado. Tente novamente.', false);
+        return false;
     }
-    
-    originalValues = { ...updates, avatar_id: avatarId };
-    currentAvatarId = avatarId;
-    
-    return true;
-  } catch (error) {
-    console.error('Erro inesperado ao atualizar perfil:', error);
-    showNotification('Erro inesperado. Tente novamente.', false);
-    return false;
-  }
 }
 
 // Event Listeners para os botões do perfil
 btnEditar.addEventListener('click', () => {
-  entrarModoEdicao();
+    entrarModoEdicao();
 });
 
 btnCancelar.addEventListener('click', () => {
-  sairModoEdicao();
+    sairModoEdicao();
 });
 
 btnSalvar.addEventListener('click', async () => {
-  const success = await updateUserProfile();
-  if (success) {
-    sairModoEdicao();
-  }
+    const success = await updateUserProfile();
+    if (success) {
+        sairModoEdicao();
+    }
 });
 
 // Funções para entrar/sair do modo edição
 function entrarModoEdicao() {
-  editMode = true;
-  nomeCompletoInput.disabled = false;
-  telefoneInput.disabled = false;
-  apelidoPokerInput.disabled = false;
-  plataformaSelect.disabled = false;
+    editMode = true;
+    nomeCompletoInput.disabled = false;
+    telefoneInput.disabled = false;
+    apelidoPokerInput.disabled = false;
+    plataformaSelect.disabled = false;
 
-  btnEditar.classList.add('btn-hidden');
-  btnSalvar.classList.remove('btn-hidden');
-  btnCancelar.classList.remove('btn-hidden');
+    btnEditar.classList.add('btn-hidden');
+    btnSalvar.classList.remove('btn-hidden');
+    btnCancelar.classList.remove('btn-hidden');
 }
 
 function sairModoEdicao() {
-  editMode = false;
-  nomeCompletoInput.disabled = true;
-  telefoneInput.disabled = true;
-  apelidoPokerInput.disabled = true;
-  plataformaSelect.disabled = true;
-  
-  // Restaurar valores originais
-  nomeCompletoInput.value = originalValues.nome_completo;
-  telefoneInput.value = originalValues.telefone;
-  apelidoPokerInput.value = originalValues.apelido_poker;
-  plataformaSelect.value = originalValues.plataforma_preferida;
-  
-  // Restaurar avatar selecionado
-  document.querySelectorAll('.avatar-option').forEach(option => {
-    option.classList.remove('selected');
-  });
-  
-  if (originalValues.avatar_id) {
-    const originalAvatar = document.querySelector(`.avatar-option[data-id="${originalValues.avatar_id}"]`);
-    if (originalAvatar) {
-      originalAvatar.classList.add('selected');
+    editMode = false;
+    nomeCompletoInput.disabled = true;
+    telefoneInput.disabled = true;
+    apelidoPokerInput.disabled = true;
+    plataformaSelect.disabled = true;
+    
+    // Restaurar valores originais
+    nomeCompletoInput.value = originalValues.nome_completo;
+    telefoneInput.value = originalValues.telefone;
+    apelidoPokerInput.value = originalValues.apelido_poker;
+    plataformaSelect.value = originalValues.plataforma_preferida;
+    
+    // Restaurar avatar selecionado
+    document.querySelectorAll('.avatar-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    
+    if (originalValues.avatar_id) {
+        const originalAvatar = document.querySelector(`.avatar-option[data-id="${originalValues.avatar_id}"]`);
+        if (originalAvatar) {
+            originalAvatar.classList.add('selected');
+        }
     }
-  }
-  
-  btnEditar.classList.remove('btn-hidden');  
-  btnSalvar.classList.add('btn-hidden');  
-  btnCancelar.classList.add('btn-hidden');  
+    
+    btnEditar.classList.remove('btn-hidden');  
+    btnSalvar.classList.add('btn-hidden');  
+    btnCancelar.classList.add('btn-hidden');  
 }
 
 // Carregar avatares quando o modal é aberto
 uploadFoto.addEventListener('click', async () => {
-  document.getElementById('avatar-modal').style.display = 'block';
-  
-  // Se os avatares ainda não foram carregados, carregue-os
-  if (!avataresCarregados) {
-    await loadAvatares();
-  }
+    document.getElementById('avatar-modal').style.display = 'block';
+    
+    // Se os avatares ainda não foram carregados, carregue-os
+    if (!avataresCarregados) {
+        await loadAvatares();
+    }
 });
 
 // Inicialização
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('Página carregada - iniciando...');
-  checkAuthState();
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('Página carregada - iniciando...');
+    
+    // Verificar conexão primeiro
+    const connected = await checkSupabaseConnection();
+    if (!connected) {
+        showNotification('Sem conexão com o servidor.', false);
+        return;
+    }
+    
+    // Verificar autenticação
+    await checkAuthState();
 });
 
 // Carregar avatares disponíveis
 async function loadAvatares() {
-  try {
-    console.log('Carregando avatares...');
-    const { data, error } = await supabase
-      .from('avatares')
-      .select('*')
-      .eq('ativo', true)
-      .order('id');
+    try {
+        console.log('Carregando avatares...');
+        const { data, error } = await supabase
+            .from('avatares')
+            .select('*')
+            .eq('ativo', true)
+            .order('id');
 
-    if (error) {
-      console.error('Erro ao carregar avatares:', error);
-      showNotification('Erro ao carregar avatares.', false);
-      return;
+        if (error) {
+            console.error('Erro ao carregar avatares:', error);
+            showNotification('Erro ao carregar avatares.', false);
+            return;
+        }
+
+        console.log('Avatares encontrados:', data.length);
+        displayAvatares(data);
+        avataresCarregados = true;
+    } catch (error) {
+        console.error('Erro inesperado ao carregar avatares:', error);
+        showNotification('Erro ao carregar avatares.', false);
     }
-
-    console.log('Avatares encontrados:', data.length);
-    displayAvatares(data);
-    avataresCarregados = true;
-  } catch (error) {
-    console.error('Erro inesperado ao carregar avatares:', error);
-    showNotification('Erro ao carregar avatares.', false);
-  }
 }
 
 // Exibir avatares na interface
+// Exibir avatares na interface
 function displayAvatares(avatares) {
-  const avatarOptions = document.getElementById('avatar-options-modal');
-  avatarOptions.innerHTML = '';
+    const avatarOptions = document.getElementById('avatar-options-modal');
+    avatarOptions.innerHTML = '';
 
-  if (avatares.length === 0) {
-    avatarOptions.innerHTML = '<p style="color: #fff; text-align: center;">Nenhum avatar disponível</p>';
-    return;
-  }
-
-  avatares.forEach(avatar => {
-    const avatarElement = document.createElement('div');
-    avatarElement.className = 'avatar-option';
-    avatarElement.dataset.id = avatar.id;
-    avatarElement.innerHTML = `<img src="${avatar.url_imagem}" alt="${avatar.nome}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2M4YjY1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">`;
-    
-    avatarElement.addEventListener('click', () => {
-      selectAvatar(avatar.id);
-    });
-    
-    // Marcar como selecionado se for o avatar atual
-    if (avatar.id === currentAvatarId) {
-      avatarElement.classList.add('selected');
+    if (avatares.length === 0) {
+        avatarOptions.innerHTML = '<p style="color: #fff; text-align: center;">Nenhum avatar disponível</p>';
+        return;
     }
-    
-    avatarOptions.appendChild(avatarElement);
-  });
-}
 
+    avatares.forEach(avatar => {
+        const avatarElement = document.createElement('div');
+        avatarElement.className = 'avatar-option';
+        avatarElement.dataset.id = avatar.id;
+        avatarElement.innerHTML = `<img src="${avatar.url_imagem}" alt="${avatar.nome}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2M4YjY1MyIgd极地战斧dGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">`;
+        
+        avatarElement.addEventListener('click', () => {
+            selectAvatar(avatar.id);
+        });
+        
+        // Marcar como selecionado se for o avatar atual
+        if (avatar.id === currentAvatarId) {
+            avatarElement.classList.add('selected');
+        }
+        
+        avatarOptions.appendChild(avatarElement);
+    });
+}
 // Selecionar um avatar
 function selectAvatar(avatarId) {
-  document.querySelectorAll('.avatar-option').forEach(option => {
-    option.classList.remove('selected');
-  });
-  
-  const selectedAvatar = document.querySelector(`.avatar-option[data-id="${avatarId}"]`);
-  if (selectedAvatar) {
-    selectedAvatar.classList.add('selected');
-    currentAvatarId = avatarId;
-  }
+    document.querySelectorAll('.avatar-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    
+    const selectedAvatar = document.querySelector(`.avatar-option[data-id="${avatarId}"]`);
+    if (selectedAvatar) {
+        selectedAvatar.classList.add('selected');
+        currentAvatarId = avatarId;
+    }
 }
 
 // Atualizar a exibição do avatar
 async function updateAvatarDisplay(avatarId) {
-  try {
-    const { data, error } = await supabase
-      .from('avatares')
-      .select('url_imagem')
-      .eq('id', avatarId)
-      .single();
+    try {
+        const { data, error } = await supabase
+            .from('avatares')
+            .select('url_imagem')
+            .eq('id', avatarId)
+            .single();
 
-    if (error || !data) {
-      console.error('Erro ao buscar avatar:', error);
-      return;
+        if (error || !data) {
+            console.error('Erro ao buscar avatar:', error);
+            return;
+        }
+
+        const profileImg = document.querySelector('.profile-picture img');
+        profileImg.src = data.url_imagem;
+    } catch (error) {
+        console.error('Erro ao atualizar exibição do avatar:', error);
     }
-
-    const profileImg = document.querySelector('.profile-picture img');
-    profileImg.src = data.url_imagem;
-  } catch (error) {
-    console.error('Erro ao atualizar exibição do avatar:', error);
-  }
 }
 
 // Função de logout
 async function logout() {
-  try {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Erro ao fazer logout:', error);
+    try {
+        // Parar a verificação de autenticação
+        if (authCheckInterval) {
+            clearInterval(authCheckInterval);
+        }
+        
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.error('Erro ao fazer logout:', error);
+        }
+        
+        // Limpar todos os dados de autenticação
+        const keysToRemove = [
+            'sb-ffyectkjlwgqzjgwhexy-auth-token',
+            'guilda-poker-auth',
+            'supabase.auth.token'
+        ];
+        
+        keysToRemove.forEach(key => {
+            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
+        });
+        
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Erro inesperado no logout:', error);
+        window.location.href = 'index.html';
     }
-    window.location.href = 'index.html';
-  } catch (error) {
-    console.error('Erro inesperado no logout:', error);
-    window.location.href = 'index.html';
-  }
 }
 
 // Adicionar suporte para tecla Enter no formulário
 document.getElementById('profile-form').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter' && editMode) {
-    e.preventDefault();
-    btnSalvar.click();
-  }
+    if (e.key === 'Enter' && editMode) {
+        e.preventDefault();
+        btnSalvar.click();
+    }
 });
 
-// Verificar conexão com Supabase
-async function testSupabaseConnection() {
-  try {
-    const { data, error } = await supabase
-      .from('perfis')
-      .select('count')
-      .limit(1);
-    
-    return !error;
-  } catch (error) {
-    console.error('Erro ao testar conexão:', error);
-    return false;
-  }
-}
+// Limpar intervalo ao sair da página
+window.addEventListener('beforeunload', function() {
+    if (authCheckInterval) {
+        clearInterval(authCheckInterval);
+    }
+});
 </script>
 </body>
 </html>
-

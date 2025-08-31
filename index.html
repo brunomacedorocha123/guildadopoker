@@ -630,7 +630,7 @@
 
   <!-- Script do menu mobile -->
 <script>
-    // Configuração do Supabase - CHAVE CORRIGIDA
+    // Configuração do Supabase
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
@@ -643,7 +643,7 @@
         }
     });
 
-    // Variável global para controlar o estado de autenticação
+    // Variáveis de estado
     let authChecked = false;
     let authState = false;
 
@@ -670,6 +670,11 @@
                 sessionStorage.removeItem(key);
             });
             
+            // Atualizar estado
+            authChecked = true;
+            authState = false;
+            updateAuthUI(false);
+            
             // Recarregar a página
             window.location.href = 'index.html?logout=success';
             
@@ -679,7 +684,7 @@
         }
     }
 
-    // Verificação robusta de autenticação - VERSÃO CORRIGIDA
+    // Verificação robusta de autenticação
     async function checkAuthState() {
         if (authChecked) {
             console.log('Autenticação já verificada, estado:', authState);
@@ -695,9 +700,6 @@
                 console.log('Login bem-sucedido detectado via URL');
                 // Limpar o parâmetro da URL
                 window.history.replaceState({}, document.title, window.location.pathname);
-                
-                // Aguardar um pouco para garantir que a sessão foi persistida
-                await new Promise(resolve => setTimeout(resolve, 500));
             }
             
             // 2. Verificar logout
@@ -956,4 +958,4 @@
 </script>
 
 </body>
-</html> 
+</html>
