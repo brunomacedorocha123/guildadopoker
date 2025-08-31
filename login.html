@@ -319,25 +319,11 @@
         const buttonText = document.getElementById('button-text');
         const buttonLoading = document.getElementById('button-loading');
         
-        // Verificar se já está logado (com timeout para inicialização)
-        setTimeout(async () => {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session) {
-                    const expiresAt = new Date(session.expires_at);
-                    if (expiresAt > new Date()) {
-                        window.location.href = 'index.html';
-                    }
-                }
-            } catch (error) {
-                console.log('Erro ao verificar sessão:', error);
-            }
-        }, 1000);
-        
-        // Processar o formulário de login - SOLUÇÃO SIMPLIFICADA
+        // Processar o formulário de login
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // Resetar mensagem
             hideMessage();
             
             const email = emailInput.value.trim();
@@ -353,10 +339,11 @@
                 return;
             }
             
+            // Mostrar loading
             setLoading(true);
             
             try {
-                // 1. Fazer login
+                // Tentar fazer login
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
                     password: password
@@ -369,10 +356,10 @@
                 }
                 
                 if (data.session) {
-                    // 2. MOSTRAR SUCESSO E REDIRECIONAR DIRETAMENTE
+                    // Login bem-sucedido
                     showMessage('Login realizado com sucesso! Redirecionando...', 'success');
                     
-                    // 3. SALVAR MANUALMENTE NO LOCALSTORAGE (GARANTIA)
+                    // Salvar sessão manualmente como fallback
                     const sessionData = {
                         access_token: data.session.access_token,
                         refresh_token: data.session.refresh_token,
@@ -382,15 +369,12 @@
                             email: data.user.email
                         }
                     };
-                    
                     localStorage.setItem('guilda-poker-auth', JSON.stringify(sessionData));
                     
-                    // 4. AGUARDAR UM POUCO E REDIRECIONAR
+                    // Aguardar um pouco para garantir persistência e redirecionar
                     setTimeout(() => {
                         window.location.href = 'index.html?login=success&t=' + Date.now();
-                    }, 1500);
-                    
-                    return;
+                    }, 1000);
                 }
                 
             } catch (error) {
@@ -490,11 +474,6 @@
             if (e.key === 'Enter' && !loginButton.disabled) {
                 loginForm.dispatchEvent(new Event('submit'));
             }
-        });
-
-        // Debug: monitorar eventos de auth
-        supabase.auth.onAuthStateChange((event, session) => {
-            console.log('Auth event:', event, session ? 'Com sessão' : 'Sem sessão');
         });
     </script>
 </body>
