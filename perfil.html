@@ -745,8 +745,8 @@
  </div>
  </footer>
 
-<script>
- // Configuração do Supabase
+ <script>
+// Configuração do Supabase
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -820,7 +820,7 @@ menuLinks.forEach(link => {
   });
 });
 
-// Fechar o menu ao clicar fora dele
+// Fechar o menu ao clicar fuera dele
 document.addEventListener('click', function(event) {
   if (window.innerWidth <= 768 && menu.classList.contains('active')) {
     if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
@@ -862,7 +862,7 @@ async function createUserProfile(user) {
         }
       ]);
 
-    if (error) {
+    if (error && error.code !== '23505') { // Ignorar erro de duplicidade
       console.error('Erro ao criar perfil:', error);
       return false;
     }
@@ -873,20 +873,17 @@ async function createUserProfile(user) {
   }
 }
 
-// Carregar dados do usuário - VERSÃO SIMPLIFICADA
+// Carregar dados do usuário
 async function loadUserData(user) {
   try {
     console.log('Iniciando carregamento de dados para:', user.id);
     
-    // Primeiro tenta buscar dados básicos sem o join
+    // Primeiro tenta buscar dados básicos
     let { data: perfilData, error: perfilError } = await supabase
       .from('perfis')
       .select('*')
       .eq('id', user.id)
       .single();
-
-    console.log('Dados básicos do perfil:', perfilData);
-    console.log('Erro básico:', perfilError);
 
     // Se não encontrar perfil, cria um novo
     if (perfilError && perfilError.code === 'PGRST116') {
@@ -894,38 +891,26 @@ async function loadUserData(user) {
       const criado = await createUserProfile(user);
       if (criado) {
         // Recarrega os dados após criar
-        await loadUserData(user);
+        const { data: newPerfilData } = await supabase
+          .from('perfis')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        perfilData = newPerfilData;
       }
-      return;
     }
     
-    if (perfilError) {
+    if (perfilError && perfilError.code !== 'PGRST116') {
       console.error('Erro ao carregar perfil:', perfilError);
       showNotification('Erro ao carregar perfil.', false);
       return;
     }
 
-    // Agora tenta buscar com join para pegar o avatar
-    let avatarUrl = null;
-    if (perfilData.avatar_id) {
-      console.log('Buscando dados do avatar ID:', perfilData.avatar_id);
-      const { data: avatarData, error: avatarError } = await supabase
-        .from('avatares')
-        .select('url_imagem')
-        .eq('id', perfilData.avatar_id)
-        .single();
-      
-      if (!avatarError && avatarData) {
-        avatarUrl = avatarData.url_imagem;
-        console.log('Avatar encontrado:', avatarUrl);
-      }
-    }
-
     // PREENCHER OS DADOS NA PÁGINA
-    userNameElement.textContent = perfilData.nome_completo || user.user_metadata.full_name || 'Usuário';
+    userNameElement.textContent = perfilData?.nome_completo || user.user_metadata.full_name || 'Usuário';
     userEmailElement.textContent = user.email;
 
-    if (perfilData.apelido_poker) {
+    if (perfilData?.apelido_poker) {
       userPokerNicknameElement.textContent = '"' + perfilData.apelido_poker + '"';
     } else {
       userPokerNicknameElement.textContent = '';
@@ -934,19 +919,26 @@ async function loadUserData(user) {
     const createdDate = new Date(user.created_at);
     memberSinceElement.textContent = createdDate.toLocaleDateString('pt-BR');
 
-    nomeCompletoInput.value = perfilData.nome_completo || '';
-    telefoneInput.value = perfilData.telefone || '';
-    apelidoPokerInput.value = perfilData.apelido_poker || '';
-    plataformaSelect.value = perfilData.plataforma_preferida || '';
+    nomeCompletoInput.value = perfilData?.nome_completo || '';
+    telefoneInput.value = perfilData?.telefone || '';
+    apelidoPokerInput.value = perfilData?.apelido_poker || '';
+    plataformaSelect.value = perfilData?.plataforma_preferida || '';
 
     // Carregar avatar se existir
-    if (avatarUrl) {
-      const img = uploadFoto.querySelector('img');
-      img.src = avatarUrl;
+    if (perfilData?.avatar_id) {
+      currentAvatarId = perfilData.avatar_id;
+      const { data: avatarData } = await supabase
+        .from('avatares')
+        .select('url_imagem')
+        .eq('id', perfilData.avatar_id)
+        .single();
+      
+      if (avatarData) {
+        const img = uploadFoto.querySelector('img');
+        img.src = avatarData.url_imagem;
+      }
     }
 
-    currentAvatarId = perfilData.avatar_id || null;
-    
     originalValues = {
       nome_completo: nomeCompletoInput.value,
       telefone: telefoneInput.value,
@@ -956,9 +948,6 @@ async function loadUserData(user) {
     };
 
     console.log('Dados carregados com sucesso!');
-    
-    // Carregar avatares para o modal
-    await loadAvatares();
     
   } catch (error) {
     console.error('Erro geral no carregamento:', error);
@@ -982,7 +971,7 @@ async function updateUserProfile() {
       return false;
     }
 
-    // CORREÇÃO: Verificar se há um avatar selecionado no modal
+    // Verificar se há um avatar selecionado
     let avatarId = currentAvatarId;
     const selectedAvatarModal = document.querySelector('#avatar-options-modal .avatar-option.selected');
     if (selectedAvatarModal) {
@@ -1005,7 +994,7 @@ async function updateUserProfile() {
 
     if (error) {
       console.error('Erro ao atualizar perfil:', error);
-      showNotification('Erro ao salvar alterações.', false);
+      showNotification('Erro ao salvar alterações: ' + error.message, false);
       return false;
     }
 
@@ -1019,7 +1008,7 @@ async function updateUserProfile() {
     }
     
     if (avatarId) {
-      updateAvatarDisplay(avatarId);
+      await updateAvatarDisplay(avatarId);
     }
     
     originalValues = { ...updates };
@@ -1030,17 +1019,6 @@ async function updateUserProfile() {
     console.error('Erro inesperado ao atualizar perfil:', error);
     showNotification('Erro inesperado. Tente novamente.', false);
     return false;
-  }
-}
-
-// Logout
-async function logout() {
-  try {
-    await supabase.auth.signOut();
-    window.location.href = 'index.html';
-  } catch (error) {
-    console.error('Erro ao fazer logout:', error);
-    window.location.href = 'index.html';
   }
 }
 
@@ -1099,13 +1077,13 @@ btnSalvar.addEventListener('click', async () => {
   }
 });
 
-// CORREÇÃO: Carregar avatares quando o modal é aberto
-uploadFoto.addEventListener('click', () => {
+// Carregar avatares quando o modal é aberto
+uploadFoto.addEventListener('click', async () => {
   document.getElementById('avatar-modal').style.display = 'block';
   
   // Se os avatares ainda não foram carregados, carregue-os
   if (!avataresCarregados) {
-    loadAvatares();
+    await loadAvatares();
   }
 });
 
@@ -1127,6 +1105,7 @@ async function loadAvatares() {
 
     if (error) {
       console.error('Erro ao carregar avatares:', error);
+      showNotification('Erro ao carregar avatares.', false);
       return;
     }
 
@@ -1135,6 +1114,7 @@ async function loadAvatares() {
     avataresCarregados = true;
   } catch (error) {
     console.error('Erro inesperado ao carregar avatares:', error);
+    showNotification('Erro ao carregar avatares.', false);
   }
 }
 
@@ -1151,12 +1131,12 @@ function displayAvatares(avatares) {
     
     avatarElement.addEventListener('click', () => {
       selectAvatar(avatar.id);
-      document.getElementById('avatar-modal').style.display = 'none';
     });
     
     avatarOptions.appendChild(avatarElement);
   });
   
+  // Selecionar o avatar atual
   if (currentAvatarId) {
     const avatarOption = document.querySelector(`.avatar-option[data-id="${currentAvatarId}"]`);
     if (avatarOption) {
@@ -1175,6 +1155,9 @@ function selectAvatar(avatarId) {
   if (selectedAvatar) {
     selectedAvatar.classList.add('selected');
     currentAvatarId = avatarId;
+    
+    // Atualizar a imagem de perfil imediatamente
+    updateAvatarDisplay(avatarId);
   }
 }
 
