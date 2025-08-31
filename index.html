@@ -630,60 +630,58 @@
 
   <!-- Script do menu mobile -->
 <script>
-    // Configuração do Supabase - DEVE SER IDÊNTICA em todas as páginas
+    // Configuração do Supabase
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    // NO SEU index.html - Substitua esta linha:
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
-// Pela chave CORRETA do seu projeto Supabase
-    // Configuração IMPORTANTE para persistência de sessão
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: true
+        detectSessionInUrl: true,
+        storage: localStorage
       }
     });
 
-    // Função de logout global
     // Função de logout global CORRIGIDA
-window.logout = async function() {
-  try {
-    console.log('Iniciando logout...');
-    
-    // Tentar logout no Supabase primeiro
-    const { error } = await supabase.auth.signOut();
-    
-    if (error) {
-      console.warn('Erro no logout Supabase:', error.message);
-      // Mesmo com erro, continuamos com a limpeza local
+    window.logout = async function() {
+      try {
+        console.log('Iniciando logout...');
+        
+        // Limpar storage local primeiro
+        localStorage.removeItem('supabase.auth.token');
+        localStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
+        sessionStorage.removeItem('supabase.auth.token');
+        sessionStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
+        
+        // Tentar logout no Supabase
+        const { error } = await supabase.auth.signOut();
+        
+        if (error) {
+          console.warn('Erro no logout Supabase (pode ser normal):', error.message);
+        }
+        
+        // Forçar redirecionamento com timestamp para evitar cache
+        window.location.href = 'index.html?logout=' + Date.now();
+        
+      } catch (error) {
+        console.error('Erro inesperado no logout:', error);
+        window.location.href = 'index.html';
+      }
     }
-    
-    // Limpar storage local completamente
-    localStorage.removeItem('supabase.auth.token');
-    localStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
-    sessionStorage.removeItem('supabase.auth.token');
-    sessionStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
-    
-    // Forçar recarregamento completo da página
-    setTimeout(() => {
-      window.location.href = 'index.html?logout=' + Date.now();
-    }, 500);
-    
-  } catch (error) {
-    console.error('Erro inesperado no logout:', error);
-    // Forçar redirecionamento mesmo com erro
-    window.location.href = 'index.html?logout=' + Date.now();
-  }
-}
 
-    // Verificar estado de autenticação
+    // Verificar estado de autenticação - VERSÃO CORRIGIDA
     async function checkAuthState() {
       try {
+        // Aguardar um pouco para garantir que o Supabase restaurou a sessão
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
           console.warn('Erro ao obter sessão:', error.message);
+          // Limpar storage em caso de erro
+          localStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
         }
         
         const authButtons = document.getElementById('auth-buttons');
@@ -691,12 +689,33 @@ window.logout = async function() {
         
         console.log('Estado da sessão:', session ? 'Logado' : 'Deslogado');
         
+        // Verificar se a sessão é válida (não expirada)
+        let isSessionValid = false;
         if (session) {
+          const expiresAt = new Date(session.expires_at);
+          isSessionValid = expiresAt > new Date();
+          console.log('Sessão expira em:', expiresAt, 'Válida:', isSessionValid);
+        }
+        
+        if (session && isSessionValid) {
           authButtons.innerHTML = `
             <a href="perfil.html" class="auth-btn login-btn">Meu Perfil</a>
             <button onclick="logout()" class="auth-btn signup-btn">Sair</button>
           `;
         } else {
+          // Sessão inválida ou expirada - fazer limpeza
+          if (session) {
+            try {
+              await supabase.auth.signOut();
+            } catch (e) {
+              console.log('Não foi possível fazer logout da sessão inválida');
+            }
+          }
+          
+          // Limpar storage
+          localStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
+          sessionStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
+          
           authButtons.innerHTML = `
             <a href="login.html" class="auth-btn login-btn">Login</a>
             <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
@@ -704,21 +723,32 @@ window.logout = async function() {
         }
       } catch (error) {
         console.error('Erro ao verificar autenticação:', error);
+        const authButtons = document.getElementById('auth-buttons');
+        if (authButtons) {
+          authButtons.innerHTML = `
+            <a href="login.html" class="auth-btn login-btn">Login</a>
+            <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
+          `;
+        }
       }
     }
 
-    // Inicialização
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('Página index carregada');
+    // Inicialização CORRIGIDA
+    document.addEventListener('DOMContentLoaded', async function() {
+      console.log('Página index carregada - iniciando verificação de autenticação');
       
       // Verificar se é um redirecionamento de logout
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('logout') === 'true') {
+      if (urlParams.get('logout')) {
         // Limpar parâmetro da URL
         window.history.replaceState({}, document.title, window.location.pathname);
+        console.log('Redirecionamento de logout detectado');
       }
       
-      checkAuthState();
+      // Aguardar um pouco mais para o Supabase inicializar completamente
+      setTimeout(() => {
+        checkAuthState();
+      }, 200);
       
       // Configurar menu mobile
       const hamburger = document.querySelector('.hamburger');
@@ -752,11 +782,35 @@ window.logout = async function() {
       }
     });
 
-    // Ouvir mudanças de autenticação
-    supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Mudança de autenticação:', event);
-      checkAuthState();
+    // Ouvir mudanças de autenticação - VERSÃO MELHORADA
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Mudança de autenticação detectada:', event);
+      
+      // Aguardar um pouco para garantir que a mudança foi processada
+      setTimeout(() => {
+        checkAuthState();
+      }, 100);
+      
+      // Se for SIGNED_IN, verificar se é uma sessão válida
+      if (event === 'SIGNED_IN' && session) {
+        const expiresAt = new Date(session.expires_at);
+        const isValid = expiresAt > new Date();
+        console.log('Sessão após login - Expira em:', expiresAt, 'Válida:', isValid);
+        
+        if (!isValid) {
+          console.log('Sessão inválida após login, fazendo logout...');
+          setTimeout(() => {
+            logout();
+          }, 1000);
+        }
+      }
     });
+
+    // Função auxiliar para verificar token
+    function isTokenValid(expiresAt) {
+      if (!expiresAt) return false;
+      return new Date(expiresAt) > new Date();
+    }
 </script>
 
 </body>
