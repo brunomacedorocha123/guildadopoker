@@ -1,679 +1,383 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link rel="icon" href="/favicon.ico" type="image/x-icon">
- <title>Guilda do Poker</title>
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
- <style>
-  :root{
-   --bg:#121212;
-   --bg-2:#1c1c1c;
-   --bg-3:#2c2c2c;
-   --gold:#ffcc00;
-   --text:#f5f5f5;
-  }
-
-  *{box-sizing:border-box;margin:0;padding:0}
-
-  body{
-   font-family: Arial, sans-serif;
-   background-color: var(--bg);
-   color: var(--text);
-   line-height: 1.6;
-   display: flex;
-   flex-direction: column;
-   min-height: 100vh;
-  }
-
-  /* ===== CABEÇALHO COM BOTÕES ===== */
-  header {
-   background: var(--bg-2);
-   padding: 15px 20px;
-   text-align: center;
-   border-bottom: 2px solid var(--gold);
-   position: relative;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   min-height: 70px;
-  }
-
-  /* ===== BOTÕES DE AUTENTICAÇÃO ===== */
-  .auth-buttons {
-   position: absolute;
-   right: 60px;
-   top: 50%;
-   transform: translateY(-50%);
-   display: flex;
-   gap: 10px;
-   align-items: center;
-  }
-  
-  .user-greeting {
-   color: var(--gold);
-   margin-right: 10px;
-   font-size: 0.9rem;
-   display: none;
-  }
-  
-  .auth-btn {
-   padding: 7px 14px;
-   border-radius: 5px;
-   font-weight: bold;
-   text-decoration: none;
-   font-size: 0.85rem;
-   transition: all 0.3s ease;
-   white-space: nowrap;
-   cursor: pointer;
-   border: 1px solid var(--gold);
-   display: inline-block;
-   text-align: center;
-  }
-  
-  .login-btn {
-   background-color: transparent;
-   color: var(--gold);
-  }
-  
-  .login-btn:hover {
-   background-color: rgba(255, 204, 0, 0.1);
-  }
-  
-  .signup-btn {
-   background-color: var(--gold);
-   color: var(--bg);
-   padding: 7px 16px !important;
-  }
-  
-  .signup-btn:hover {
-   background-color: #e6b800;
-   border-color: #e6b800;
-  }
-  
-  .profile-btn {
-    background-color: var(--gold);
-    color: var(--bg);
-  }
-  
-  .profile-btn:hover {
-    background-color: #e6b800;
-    border-color: #e6b800;
-  }
-  
-  .logout-btn {
-    background-color: var(--bg);
-    color: var(--gold);
-  }
-  
-  .logout-btn:hover {
-    background-color: rgba(255, 204, 0, 0.1);
-  }
-
-  /* ===== MENU DE NAVEGAÇÃO ===== */
-  nav {
-   background: var(--bg-3);
-   padding: 15px 0;
-   position: relative;
-   width: 100%;
-  }
-
-  .menu-container {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   max-width: 1200px;
-   margin: 0 auto;
-   padding: 0 20px;
-  }
-
-  .menu {
-   display: flex;
-   list-style: none;
-   margin: 0;
-   padding: 0;
-   width: 100%;
-   justify-content: center;
-  }
-
-  .menu li {
-   margin: 0;
-  }
-
-  .menu a {
-   color: var(--gold);
-   padding: 14px 22px;
-   text-decoration: none;
-   font-weight: bold;
-   transition: .2s;
-   display: block;
-   text-align: center;
-   font-size: 1.05rem;
-  }
-
-  .menu a:hover, .menu a.active {
-   color: #ffffff;
-   text-decoration: underline;
-   background-color: rgba(255, 204, 0, 0.15);
-   border-radius: 6px;
-  }
-
-  /* ===== BOTÃO HAMBÚRGUER ===== */
-  .hamburger {
-   display: none;
-   flex-direction: column;
-   justify-content: space-around;
-   width: 42px;
-   height: 36px;
-   background: transparent;
-   border: none;
-   cursor: pointer;
-   padding: 0;
-   position: absolute;
-   right: 25px;
-   top: 20px;
-   z-index: 1001;
-  }
-
-  .hamburger span {
-   width: 100%;
-   height: 4px;
-   background-color: var(--gold);
-   border-radius: 3px;
-   transition: all 0.3s linear;
-  }
-
-  .hamburger.active span:nth-child(1) {
-   transform: rotate(45deg) translate(8px, 8px);
-  }
-
-  .hamburger.active span:nth-child(2) {
-   opacity: 0;
-  }
-
-  .hamburger.active span:nth-child(3) {
-   transform: rotate(-45deg) translate(7px, -7px);
-  }
-
-  /* ===== BANNER DE TOPO ===== */
-  .banner-topo {
-   width: 100%;
-   background-color: #2a2a2a;
-   padding: 15px;
-   text-align: center;
-   border-bottom: 1px solid var(--gold);
-  }
-  
-  .ad-placeholder {
-   background-color: #2a2a2a;
-   border: 2px dashed #666;
-   border-radius: 8px;
-   color: #999;
-   text-align: center;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   margin: 0 auto;
-   box-sizing: border-box;
-  }
-  
-  .ad-topo {
-   width: 728px;
-   height: 90px;
-   margin: 0 auto;
-  }
-  
-  .ad-lateral {
-   width: 300px;
-   height: 600px;
-   margin-left: 20px;
-  }
-  
-  .ad-placeholder p {
-   margin: 0;
-   font-size: 14px;
-  }
-
-  .conteudo-principal {
-   display: flex;
-   max-width: 1200px;
-   margin: 0 auto;
-   padding: 20px;
-   width: 100%;
-   flex: 1;
-  }
-  
-  .conteudo {
-   flex: 1;
-  }
-
-  section{
-   padding: 30px 0;
-   display: flex;
-   justify-content: space-between;
-   align-items: flex-start;
-   gap: 20px;
-   flex-wrap: wrap;
-   width: 100%;
-  }
-
-  section .texto{
-   flex: 1;
-   min-width: 300px;
-  }
-  
-  section .texto h1{
-   color: var(--gold);
-   margin-bottom: 20px;
-   font-size: 2.6em;
-   text-align: center;
-  }
-  
-  section .texto p{
-   color:#e6e6e6;
-   font-size: 1.1em;
-   text-align: justify;
-   margin-bottom: 20px;
-  }
-
-  .highlight{
-   color: var(--gold);
-   font-weight: bold;
-  }
-
-  section .imagem img{
-   max-width: 500px;
-   width: 100%;
-   border-radius: 12px;
-   border: 3px solid var(--gold);
-   box-shadow:0 4px 12px rgba(0,0,0,.6);
-  }
-
-  /* Barra lateral para banner */
-  .sidebar {
-   width: 340px;
-   padding: 10px;
-   flex-shrink: 0;
-  }
-
-  /* Seção Sobre Nós */
-  .sobre-nos {
-   background-color: var(--bg-2);
-   padding: 60px 20px;
-   margin: 40px 0;
-   border-top: 2px solid var(--gold);
-   border-bottom: 2px solid var(--gold);
-  }
-  
-  .sobre-nos h2 {
-   color: var(--gold);
-   text-align: center;
-   font-size: 2.2em;
-   margin-bottom: 30px;
-  }
-  
-  .sobre-nos p {
-   color: #e6e6e6;
-   font-size: 1.1em;
-   line-height: 1.8;
-   text-align: justify;
-   max-width: 900px;
-   margin: 0 auto 20px;
-  }
-  
-  .sobre-nos .assinatura {
-   text-align: right;
-   margin-top: 30px;
-   font-style: italic;
-   color: var(--gold);
-  }
-
-  footer{
-   background: var(--bg-2);
-   text-align: center;
-   padding: 15px;
-   margin-top: 40px;
-   border-top: 2px solid var(--gold);
-   font-size: 14px;
-   color:#bbb;
-  }
-
-  .aviso18{
-   margin-top: 10px;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   gap: 8px;
-   flex-wrap: wrap;
-  }
-  
-  .icone18{
-   background: red;
-   color: white;
-   font-weight: bold;
-   padding: 4px 8px;
-   border-radius: 6px;
-   font-size: 13px;
-  }
-
-  /* ===== JANELA DO USUÁRIO NO LADO ESQUERDO ===== */
-  .user-window {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    max-width: 200px;
-    background-color: rgba(28, 28, 28, 0.8);
-    padding: 8px 12px;
-    border-radius: 25px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-    display: none;
-  }
-
-  .user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid var(--gold);
-    background-color: var(--bg-2);
-    flex-shrink: 0;
-    transition: transform 0.3s ease;
-  }
-
-  .user-avatar:hover {
-    transform: scale(1.05);
-  }
-
-  .user-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .user-nickname {
-    color: var(--gold);
-    font-weight: bold;
-    font-size: 0.95rem;
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  }
-
-  /* Efeito de hover na janela do usuário */
-  .user-window:hover {
-    background-color: rgba(28, 28, 28, 0.95);
-    box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2);
-  }
-
-  /* ===== RESPONSIVIDADE ===== */
-  @media (max-width: 992px) {
-   .menu a {
-    padding: 12px 18px;
-    font-size: 1rem;
-   }
-   
-   .auth-buttons {
-    right: 50px;
-   }
-   
-   .auth-btn {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-   }
-   
-   .signup-btn {
-    padding: 6px 14px !important;
-   }
-   
-   .user-greeting {
-    display: none;
-   }
-   
-   /* Responsividade para a janela do usuário */
-   .user-window {
-     left: 15px;
-     max-width: 180px;
-     padding: 6px 10px;
-   }
-   
-   .user-avatar {
-     width: 36px;
-     height: 36px;
-   }
-   
-   .user-nickname {
-     font-size: 0.88rem;
-     max-width: 110px;
-   }
-  }
-
-  @media (max-width: 768px) {
-   header {
-    padding: 12px 15px;
-    min-height: 60px;
-    justify-content: space-between;
-    flex-wrap: wrap;
-   }
-   
-   .auth-buttons {
-    position: static;
-    transform: none;
-    margin-top: 15px;
-    width: 100%;
-    justify-content: center;
-    gap: 8px;
-    order: 3;
-   }
-   
-   .auth-btn {
-    padding: 8px 16px;
-    font-size: 0.85rem;
-   }
-   
-   .signup-btn {
-    padding: 8px 18px !important;
-   }
-   
-   nav {
-    padding: 0;
-    background: transparent;
-   }
-   
-   .hamburger {
-    display: flex;
-    width: 36px;
-    height: 30px;
-    right: 15px;
-    top: 15px;
-    transform: none;
-    position: absolute;
-   }
-
-   .hamburger span {
-    height: 3px;
-   }
-
-   .menu {
-    flex-direction: column;
-    width: 100%;
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: var(--bg-3);
-    z-index: 1000;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    padding: 15px 0;
-    border-top: 2px solid var(--gold);
-   }
-
-   .menu.active {
-    display: flex;
-   }
-
-   .menu li {
-    width: 100%;
-    text-align: center;
-   }
-
-   .menu a {
-    padding: 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    font-size: 1.1rem;
-   }
-   
-   .menu a:last-child {
-    border-bottom: none;
-   }
-   
-   .menu-container {
-    padding: 0;
-   }
-   
-   .conteudo-principal {
-    flex-direction: column;
-   }
-   
-   .sidebar {
-    width: 100%;
-    order: 3;
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-   }
-   
-   .ad-lateral {
-    margin-left: 0;
-    height: 250px;
-    width: 100%;
-    max-width: 728px;
-   }
-   
-   section{
-    flex-direction: column-reverse;
-    align-items: center;
-    text-align: center;
-   }
-   
-   section .texto, section .imagem{
-    width: 100%;
-   }
-   
-   .aviso18{
-    flex-direction: column;
-    text-align:center;
-   }
-   
-   .sobre-nos p {
-    width: 95%;
-   }
-   
-   .ad-topo {
-    width: 100%;
-    height: auto;
-    min-height: 90px;
-   }
-   
-   /* Responsividade para a janela do usuário */
-   .user-window {
-     position: static;
-     transform: none;
-     margin: 10px auto;
-     justify-content: center;
-     max-width: 250px;
-     width: auto;
-     order: 2;
-   }
-   
-   .user-nickname {
-     max-width: 150px;
-     font-size: 0.9rem;
-   }
-  }
-
-  @media (max-width: 480px) {
-   header {
-    padding: 10px 12px;
-   }
-   
-   .auth-buttons {
-    gap: 6px;
-   }
-   
-   .auth-btn {
-    padding: 7px 12px;
-    font-size: 0.8rem;
-   }
-   
-   .hamburger {
-    width: 32px;
-    height: 28px;
-    right: 12px;
-   }
-   
-   /* Responsividade para a janela do usuário */
-   .user-window {
-     padding: 6px 10px;
-     max-width: 220px;
-   }
-   
-   .user-avatar {
-     width: 32px;
-     height: 32px;
-   }
-   
-   .user-nickname {
-     font-size: 0.85rem;
-     max-width: 130px;
-   }
-  }
- </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Guilda do Poker</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg: #121212;
+            --bg-2: #1c1c1c;
+            --bg-3: #2c2c2c;
+            --gold: #ffcc00;
+            --text: #f5f5f5;
+            --success: #4caf50;
+            --error: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: var(--bg-2);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-text {
+            color: var(--gold);
+            font-size: 2.8rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        h1 {
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text);
+            font-weight: bold;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--bg-3);
+            border-radius: 8px;
+            background-color: var(--bg-3);
+            color: var(--text);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.2);
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--gold);
+            color: var(--bg);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background: #e6b800;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: var(--bg-3);
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .cadastro-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #bbb;
+            font-size: 14px;
+        }
+        
+        .cadastro-link a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .cadastro-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+            border: 2px solid var(--success);
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+            border: 2px solid var(--error);
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #bbb;
+            cursor: pointer;
+            width: auto;
+            padding: 0;
+        }
+        
+        .toggle-password:hover {
+            color: var(--gold);
+            background: none;
+            transform: translateY(-50%);
+            box-shadow: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--bg-3);
+            border-top: 4px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .logo-text {
+                font-size: 2.2rem;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            input, button {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-text">Guilda do Poker</div>
+        </div>
+        
+        <h1>Login</h1>
+        
+        <div id="message" class="message"></div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" required placeholder="Seu e-mail cadastrado">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" required placeholder="Sua senha">
+            </div>
+            
+            <button type="submit" id="login-btn">Entrar</button>
+        </form>
+        
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: 15px;">Conectando...</p>
+        </div>
+        
+        <div class="cadastro-link">
+            Não tem uma conta? <a href="cadastro.html">Cadastre-se aqui</a>
+        </div>
+    </div>
 <script>
-  // ... (código anterior)
+    // Configuração do Supabase
+    const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
-  // Atualizar UI para usuário logado - COM JANELA DO USUÁRIO (CORRIGIDA)
-  function updateUIForLoggedInUser(user, userProfile) {
-    // Esconder botões de login/cadastro
-    document.getElementById('login-button').style.display = 'none';
-    document.getElementById('signup-button').style.display = 'none';
-    
-    // Mostrar botões de perfil/logout
-    document.getElementById('profile-button').style.display = 'block';
-    document.getElementById('logout-button').style.display = 'block';
-    
-    // Mostrar janela do usuário
-    const userWindow = document.getElementById('user-window');
-    userWindow.style.display = 'flex';
-    
-    // Atualizar avatar e apelido - CORREÇÃO PRINCIPAL
-    const headerAvatar = document.getElementById('header-avatar');
-    const headerNickname = document.getElementById('header-nickname');
-    
-    // PRIORIDADE: apelido_poker > nome_completo > parte do email
-    if (userProfile && userProfile.apelido_poker) {
-      headerNickname.textContent = userProfile.apelido_poker;
-    } else if (userProfile && userProfile.nome_completo) {
-      headerNickname.textContent = userProfile.nome_completo;
-    } else {
-      // Usar apenas a parte antes do @ do email
-      headerNickname.textContent = user.email.split('@')[0];
-    }
-    
-    // Carregar avatar se existir
-    if (userProfile && userProfile.avatar_id) {
-      loadUserAvatar(userProfile.avatar_id, headerAvatar);
-    }
-  }
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true
+        }
+    });
 
-  // ... (restante do código)
+    // Elementos DOM
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('login-btn');
+    const messageDiv = document.getElementById('message');
+    const loadingDiv = document.getElementById('loading');
+
+    // Função para mostrar mensagens
+    function showMessage(message, isSuccess = true) {
+        messageDiv.textContent = message;
+        messageDiv.className = isSuccess ? 'message success' : 'message error';
+        messageDiv.style.display = 'block';
+        
+        // Esconder a mensagem após 5 segundos
+        setTimeout(() => {
+            messageDiv.style.display = 'none';
+        }, 5000);
+    }
+
+    // Função para mostrar/ocultar loading
+    function toggleLoading(show) {
+        if (show) {
+            loadingDiv.style.display = 'block';
+            loginBtn.disabled = true;
+        } else {
+            loadingDiv.style.display = 'none';
+            loginBtn.disabled = false;
+        }
+    }
+
+    // Verificar se já está logado
+    async function checkAlreadyLoggedIn() {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+            // Já está logado, redirecionar para index.html
+            window.location.href = 'index.html';
+        }
+    }
+
+    // Função de login
+    async function login(email, password) {
+        try {
+            toggleLoading(true);
+            
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                throw error;
+            }
+
+            if (data) {
+                // Login bem-sucedido
+                showMessage('Login realizado com sucesso! Redirecionando...', true);
+                
+                // Aguardar 2 segundos antes de redirecionar
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Erro no login:', error);
+            
+            // Mensagens de erro específicas
+            if (error.message.includes('Invalid login credentials')) {
+                showMessage('E-mail ou senha incorretos.', false);
+            } else if (error.message.includes('Email not confirmed')) {
+                showMessage('Por favor, confirme seu e-mail antes de fazer login.', false);
+            } else {
+                showMessage('Erro ao fazer login. Tente novamente.', false);
+            }
+        } finally {
+            toggleLoading(false);
+        }
+    }
+
+    // Event Listeners
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+        
+        if (!email || !password) {
+            showMessage('Por favor, preencha todos os campos.', false);
+            return;
+        }
+        
+        await login(email, password);
+    });
+
+    // Verificar se já está logado ao carregar a página
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAlreadyLoggedIn();
+    });
+
+    // Verificar se há erro de redirecionamento na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    
+    if (error) {
+        if (error === 'auth') {
+            showMessage('Erro de autenticação. Por favor, faça login novamente.', false);
+        }
+    }
 </script>
 </body>
 </html>
