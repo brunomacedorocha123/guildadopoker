@@ -6,64 +6,227 @@
     <title>Login - Guilda do Poker</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* ... (seu CSS permanece igual) ... */
+        :root {
+            --bg: #121212;
+            --bg-2: #1c1c1c;
+            --bg-3: #2c2c2c;
+            --gold: #ffcc00;
+            --text: #f5f5f5;
+            --success: #4caf50;
+            --error: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--bg), var(--bg-2));
+        }
+        
+        .container {
+            background-color: var(--bg-2);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border: 2px solid var(--gold);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-text {
+            color: var(--gold);
+            font-size: 2.8rem;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(255, 204, 0, 0.3);
+        }
+        
+        h1 {
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text);
+            font-weight: bold;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--bg-3);
+            border-radius: 8px;
+            background-color: var(--bg-3);
+            color: var(--text);
+            font-size: 16px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--gold), #e6b800);
+            color: var(--bg);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        button:disabled {
+            background: var(--bg-3);
+            color: #888;
+            cursor: not-allowed;
+        }
+        
+        .cadastro-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #bbb;
+            font-size: 14px;
+        }
+        
+        .cadastro-link a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+            border: 2px solid var(--success);
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+            border: 2px solid var(--error);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- ... (seu HTML permanece igual) ... -->
+        <div class="logo">
+            <div class="logo-text">♠️♥️ GUILDA DO POKER ♣️♦️</div>
+        </div>
+        <h1>Acesse sua conta</h1>
+        
+        <div id="message" class="message"></div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" required placeholder="seu@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <div class="password-container">
+                    <input type="password" id="password" required placeholder="Sua senha">
+                    <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>
+                </div>
+            </div>
+            
+            <button type="submit" id="login-button">
+                Entrar
+            </button>
+        </form>
+        
+        <div class="cadastro-link">
+            Não tem uma conta? <a href="cadastro.html">Cadastre-se agora</a>
+        </div>
     </div>
 
 <script>
-    // Configuração do Supabase - CHAVE CORRIGIDA
-    const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    
-    // SUA CHAVE ANON (PUBLIC) CORRETA - verifique no dashboard do Supabase
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    // Configuração SIMPLIFICADA do Supabase
+    const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
-    // Verifique se a chave está correta
-    console.log('Supabase Key:', supabaseKey);
-    
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true,
-            storage: localStorage
-        }
-    });
-
-    // Função para testar a conexão com Supabase
-    async function testSupabaseConnection() {
-        try {
-            const { data, error } = await supabase.auth.getSession();
-            
-            if (error && error.message.includes('Invalid API key')) {
-                console.error('ERRO: Chave API inválida');
-                showNotification('Erro de configuração. Entre em contato com o suporte.', false);
-                return false;
+    // Inicialização segura do Supabase
+    let supabase;
+    try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true
             }
-            
-            return true;
-        } catch (error) {
-            console.error('Erro ao testar conexão:', error);
-            return false;
-        }
+        });
+        console.log('Supabase inicializado com sucesso');
+    } catch (error) {
+        console.error('Erro ao inicializar Supabase:', error);
+        showMessage('Erro de configuração. Recarregue a página.', false);
     }
 
-    // Função para mostrar notificações
-    function showNotification(message, isSuccess = true) {
+    // Funções básicas
+    function showMessage(message, isSuccess) {
         const messageDiv = document.getElementById('message');
         messageDiv.textContent = message;
         messageDiv.className = isSuccess ? 'message success' : 'message error';
-        messageDiv.classList.remove('hidden');
-
+        messageDiv.style.display = 'block';
+        
         setTimeout(() => {
-            messageDiv.classList.add('hidden');
+            messageDiv.style.display = 'none';
         }, 3000);
     }
 
-    // Função para alternar visibilidade da senha
     function togglePassword() {
         const passwordInput = document.getElementById('password');
         const toggleButton = document.querySelector('.toggle-password');
@@ -77,19 +240,28 @@
         }
     }
 
-    // Função para lidar com o login
-    async function handleLogin(email, password) {
-        try {
-            // Testar conexão primeiro
-            const connectionOk = await testSupabaseConnection();
-            if (!connectionOk) {
-                return;
-            }
+    // Função principal de login
+    async function handleLogin(event) {
+        event.preventDefault();
+        
+        if (!supabase) {
+            showMessage('Sistema não inicializado. Recarregue a página.', false);
+            return;
+        }
 
-            // Mostrar estado de carregamento
-            document.getElementById('button-text').classList.add('hidden');
-            document.getElementById('button-loading').classList.remove('hidden');
-            document.getElementById('login-button').disabled = true;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const loginButton = document.getElementById('login-button');
+        
+        if (!email || !password) {
+            showMessage('Por favor, preencha todos os campos.', false);
+            return;
+        }
+
+        try {
+            // Desabilitar botão durante o login
+            loginButton.disabled = true;
+            loginButton.textContent = 'Entrando...';
 
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
@@ -97,70 +269,52 @@
             });
 
             if (error) {
-                let errorMessage = 'Erro no login: ';
+                let errorMsg = 'Erro no login: ';
                 
                 if (error.message.includes('Invalid login credentials')) {
-                    errorMessage = 'E-mail ou senha incorretos';
+                    errorMsg = 'E-mail ou senha incorretos';
                 } else if (error.message.includes('Email not confirmed')) {
-                    errorMessage = 'E-mail não confirmado. Verifique sua caixa de entrada.';
+                    errorMsg = 'E-mail não confirmado';
                 } else {
-                    errorMessage += error.message;
+                    errorMsg += error.message;
                 }
                 
-                showNotification(errorMessage, false);
-                
-                // Restaurar botão
-                document.getElementById('button-text').classList.remove('hidden');
-                document.getElementById('button-loading').classList.add('hidden');
-                document.getElementById('login-button').disabled = false;
-                
+                showMessage(errorMsg, false);
+                loginButton.disabled = false;
+                loginButton.textContent = 'Entrar';
                 return;
             }
 
             // Login bem-sucedido
-            showNotification('Login realizado com sucesso!', true);
+            showMessage('Login realizado com sucesso!', true);
             
-            // Redirecionar para a página principal após breve delay
+            // Redirecionar após breve delay
             setTimeout(() => {
                 window.location.href = 'index.html';
-            }, 1500);
+            }, 1000);
             
         } catch (error) {
             console.error('Erro inesperado:', error);
-            showNotification('Erro de conexão. Tente novamente.', false);
-            
-            // Restaurar botão
-            document.getElementById('button-text').classList.remove('hidden');
-            document.getElementById('button-loading').classList.add('hidden');
-            document.getElementById('login-button').disabled = false;
+            showMessage('Erro inesperado. Tente novamente.', false);
+            loginButton.disabled = false;
+            loginButton.textContent = 'Entrar';
         }
     }
 
-    // Adicionar evento de submit ao formulário
-    document.getElementById('login-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        
-        if (!email || !password) {
-            showNotification('Por favor, preencha todos os campos.', false);
-            return;
-        }
-        
-        await handleLogin(email, password);
-    });
+    // Event listeners
+    document.getElementById('login-form').addEventListener('submit', handleLogin);
 
     // Verificar se já está logado
-    async function checkIfAlreadyLoggedIn() {
+    async function checkExistingSession() {
+        if (!supabase) return;
+        
         try {
             const { data: { session } } = await supabase.auth.getSession();
-            
             if (session) {
-                showNotification('Você já está logado. Redirecionando...', true);
+                showMessage('Você já está logado. Redirecionando...', true);
                 setTimeout(() => {
                     window.location.href = 'index.html';
-                }, 2000);
+                }, 1000);
             }
         } catch (error) {
             console.log('Não foi possível verificar sessão existente');
@@ -170,8 +324,9 @@
     // Inicialização
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Página de login carregada');
-        testSupabaseConnection(); // Testar conexão ao carregar
-        checkIfAlreadyLoggedIn();
+        if (supabase) {
+            checkExistingSession();
+        }
     });
 </script>
 </body>
