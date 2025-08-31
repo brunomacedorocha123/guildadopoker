@@ -6,6 +6,7 @@
     <title>Blog - Guilda do Poker</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg: #121212;
@@ -26,18 +27,22 @@
             background-color: var(--bg);
             color: var(--text);
             line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
+        /* ===== CABEÇALHO COM BOTÕES ===== */
         header {
             background: var(--bg-2);
-            padding: 25px 20px;
+            padding: 15px 20px;
             text-align: center;
             border-bottom: 2px solid var(--gold);
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 160px;
+            min-height: 70px;
         }
         
         .logo {
@@ -45,7 +50,78 @@
             width: auto;
         }
 
-        /* Menu de navegação responsivo */
+        /* ===== BOTÕES DE AUTENTICAÇÃO ===== */
+        .auth-buttons {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .user-greeting {
+            color: var(--gold);
+            margin-right: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .auth-btn {
+            padding: 7px 14px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid var(--gold);
+            display: inline-block;
+            text-align: center;
+        }
+
+        .login-btn {
+            background-color: transparent;
+            color: var(--gold);
+        }
+
+        .login-btn:hover {
+            background-color: rgba(255, 204, 0, 0.1);
+        }
+
+        .signup-btn {
+            background-color: var(--gold);
+            color: var(--bg);
+            padding: 7px 16px !important;
+        }
+
+        .signup-btn:hover {
+            background-color: #e6b800;
+            border-color: #e6b800;
+        }
+
+        .profile-btn {
+            background-color: var(--gold);
+            color: var(--bg);
+        }
+
+        .profile-btn:hover {
+            background-color: #e6b800;
+            border-color: #e6b800;
+        }
+
+        .logout-btn {
+            background-color: var(--bg);
+            color: var(--gold);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 204, 0, 0.1);
+        }
+
+        /* ===== MENU DE NAVEGAÇÃO ===== */
         nav {
             background: var(--bg-3);
             padding: 15px 0;
@@ -93,7 +169,7 @@
             border-radius: 6px;
         }
 
-        /* Botão hambúrguer */
+        /* ===== BOTÃO HAMBÚRGUER ===== */
         .hamburger {
             display: none;
             flex-direction: column;
@@ -118,7 +194,6 @@
             transition: all 0.3s linear;
         }
 
-        /* Efeito ao clicar no hamburger */
         .hamburger.active span:nth-child(1) {
             transform: rotate(45deg) translate(8px, 8px);
         }
@@ -131,91 +206,43 @@
             transform: rotate(-45deg) translate(7px, -7px);
         }
 
-        @media (max-width: 992px) {
-            .menu a {
-                padding: 12px 18px;
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                justify-content: center;
-                padding: 15px;
-                position: relative;
-            }
-            
-            nav {
-                padding: 0;
-                background: transparent;
-            }
-            
-            .hamburger {
-                display: flex;
-                width: 40px;
-                height: 34px;
-                right: 20px;
-                top: 20px;
-            }
-
-            .menu {
-                flex-direction: column;
-                width: 100%;
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                background-color: var(--bg-3);
-                z-index: 1000;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-                padding: 15px 0;
-                border-top: 2px solid var(--gold);
-            }
-
-            .menu.active {
-                display: flex;
-            }
-
-            .menu li {
-                width: 100%;
-                text-align: center;
-            }
-
-            .menu a {
-                padding: 16px;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-                font-size: 1.1rem;
-            }
-            
-            .menu a:last-child {
-                border-bottom: none;
-            }
-            
-            .menu-container {
-                padding: 0;
-            }
-        }
-
-        /* Container para banner */
-        .banner-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* ===== BANNER DE TOPO ===== */
+        .banner-topo {
             width: 100%;
-            padding: 20px;
-            background-color: var(--bg-2);
+            background-color: #2a2a2a;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--gold);
         }
-        
-        .banner {
+
+        .ad-placeholder {
+            background-color: #2a2a2a;
+            border: 2px dashed #666;
+            border-radius: 8px;
+            color: #999;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .ad-topo {
             width: 728px;
             height: 90px;
-            background-color: var(--bg-3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #999;
-            font-size: 16px;
-            border-radius: 6px;
+            margin: 0 auto;
+        }
+
+        .ad-lateral {
+            width: 300px;
+            height: 600px;
+            margin-left: 20px;
+        }
+
+        .ad-placeholder p {
+            margin: 0;
+            font-size: 14px;
         }
 
         /* Blog Intro */
@@ -256,7 +283,7 @@
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s;
-            text-align: center; /* Centraliza todo o conteúdo do card */
+            text-align: center;
         }
         
         .blog-card:hover {
@@ -272,7 +299,7 @@
         
         .card-content {
             padding: 20px;
-            text-align: center; /* Centraliza o conteúdo do card */
+            text-align: center;
         }
         
         .card-content h3 {
@@ -284,7 +311,7 @@
         .card-content p {
             margin-bottom: 20px;
             color: #e0e0e0;
-            text-align: center; /* Centraliza os parágrafos */
+            text-align: center;
         }
         
         .read-more {
@@ -302,81 +329,195 @@
             background-color: #ffd633;
         }
         
-        /* Footer */
+        /* ===== RODAPÉ ===== */
         footer {
-            text-align: center;
-            padding: 20px;
             background: var(--bg-2);
+            text-align: center;
+            padding: 15px;
             margin-top: 40px;
             border-top: 2px solid var(--gold);
             font-size: 14px;
             color: #bbb;
         }
         
-        .footer-content {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            max-width: 1200px;
-            margin: 0 auto;
-            gap: 40px;
-        }
-        
-        .footer-section {
-            flex: 1;
-            min-width: 250px;
-            margin-bottom: 20px;
-            padding: 0 15px;
-        }
-        
-        .copyright {
-            margin-top: 20px;
-            color: #cccccc;
-            font-size: 16px;
-        }
-        
         .aviso18 {
+            margin-top: 10px;
             display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         
         .icone18 {
             background: red;
             color: white;
             font-weight: bold;
-            font-size: 14px;
             padding: 4px 8px;
-            border-radius: 5px;
-        }
-        
-        .aviso18 p {
-            margin: 0;
-            color: #ccc;
+            border-radius: 6px;
+            font-size: 13px;
         }
 
-        /* Responsividade para o banner */
-        @media (max-width: 768px) {
-            .banner {
-                width: 100%;
-                max-width: 728px;
-                height: auto;
-                min-height: 90px;
-                aspect-ratio: 728/90;
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 992px) {
+            .menu a {
+                padding: 12px 18px;
+                font-size: 1rem;
             }
             
-            .banner-container {
-                padding: 15px 10px;
+            .auth-buttons {
+                right: 50px;
+            }
+            
+            .auth-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .signup-btn {
+                padding: 6px 14px !important;
+            }
+            
+            .user-greeting {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 15px;
+                min-height: 60px;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            
+            .auth-buttons {
+                position: static;
+                transform: none;
+                margin-top: 15px;
+                width: 100%;
+                justify-content: center;
+                gap: 8px;
+                order: 3;
+            }
+            
+            .auth-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+            
+            .signup-btn {
+                padding: 8px 18px !important;
+            }
+            
+            nav {
+                padding: 0;
+                background: transparent;
+            }
+            
+            .hamburger {
+                display: flex;
+                width: 36px;
+                height: 30px;
+                right: 15px;
+                top: 15px;
+                transform: none;
+                position: absolute;
+            }
+
+            .hamburger span {
+                height: 3px;
+            }
+
+            .menu {
+                flex-direction: column;
+                width: 100%;
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: var(--bg-3);
+                z-index: 1000;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+                padding: 15px 0;
+                border-top: 2px solid var(--gold);
+            }
+
+            .menu.active {
+                display: flex;
+            }
+
+            .menu li {
+                width: 100%;
+                text-align: center;
+            }
+
+            .menu a {
+                padding: 16px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                font-size: 1.1rem;
+            }
+            
+            .menu a:last-child {
+                border-bottom: none;
+            }
+            
+            .menu-container {
+                padding: 0;
+            }
+            
+            .blog-grid {
+                grid-template-columns: 1fr;
+                padding: 0 15px;
+            }
+            
+            .aviso18 {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .ad-topo {
+                width: 100%;
+                height: auto;
+                min-height: 90px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 12px;
+            }
+            
+            .auth-buttons {
+                gap: 6px;
+            }
+            
+            .auth-btn {
+                padding: 7px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .hamburger {
+                width: 32px;
+                height: 28px;
+                right: 12px;
             }
         }
     </style>
 </head>
 <body>
-
+    <!-- Cabeçalho com botões de autenticação -->
     <header>
         <img src="logoguilda.jpeg" alt="Guilda do Poker" class="logo">
+        <!-- Botões de Autenticação -->
+        <div class="auth-buttons" id="auth-buttons">
+            <span class="user-greeting" id="user-greeting"></span>
+            <a href="login.html" class="auth-btn login-btn" id="login-button">Login</a>
+            <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastre-se</a>
+            <a href="perfil.html" class="auth-btn profile-btn" id="profile-button">Meu Perfil</a>
+            <button class="auth-btn logout-btn" id="logout-button">Sair</button>
+        </div>
+
         <button class="hamburger" aria-label="Abrir menu">
             <span></span>
             <span></span>
@@ -384,6 +525,7 @@
         </button>
     </header>
 
+    <!-- Navegação -->
     <nav>
         <div class="menu-container">
             <ul class="menu">
@@ -400,10 +542,10 @@
         </div>
     </nav>
 
-    <!-- Espaço para banner -->
-    <div class="banner-container">
-        <div class="banner">
-            Espaço para Banner (728x90)
+    <!-- Banner de Topo -->
+    <div class="banner-topo">
+        <div class="ad-placeholder ad-topo">
+            <p>Espaço reservado para banner (728x90)</p>
         </div>
     </div>
 
@@ -470,48 +612,114 @@
         </div>
     </div>
 
+    <!-- Rodapé -->
     <footer>
-        <div class="copyright">
-            <p>&copy; 2025 Guilda do Poker. Todos os direitos reservados.</p>
-        </div>
-        
+        <p>© 2025 Guilda do Poker - Todos os direitos reservados</p>
         <div class="aviso18">
             <span class="icone18">18+</span>
             <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
         </div>
+        <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
+            <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
+        </div>
     </footer>
 
     <script>
-        // JavaScript para controlar o menu hamburger
+        // Menu hamburger
         const hamburger = document.querySelector('.hamburger');
         const menu = document.querySelector('.menu');
-        
-        hamburger.addEventListener('click', function(e) {
-            e.stopPropagation();
-            menu.classList.toggle('active');
+
+        hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
+            menu.classList.toggle('active');
         });
-        
-        // Fechar o menu ao clicar em um link (útil para dispositivos móveis)
+
+        // Fechar menu ao clicar em um link (mobile)
         const menuLinks = document.querySelectorAll('.menu a');
         menuLinks.forEach(link => {
-            link.addEventListener('click', function() {
+            link.addEventListener('click', () => {
                 if (window.innerWidth <= 768) {
-                    menu.classList.remove('active');
                     hamburger.classList.remove('active');
+                    menu.classList.remove('active');
                 }
             });
         });
-        
-        // Fechar o menu ao clicar fora dele
-        document.addEventListener('click', function(event) {
-            if (window.innerWidth <= 768 && menu.classList.contains('active')) {
-                if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
-                    menu.classList.remove('active');
-                    hamburger.classList.remove('active');
-                }
+
+        // Configuração do Supabase
+        const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true
             }
         });
+
+        // Verificar se usuário está logado ao carregar a página
+        document.addEventListener('DOMContentLoaded', async function() {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session) {
+                console.log('Usuário logado:', session.user.email);
+                updateUIForLoggedInUser();
+            } else {
+                console.log('Usuário não logado');
+                updateUIForLoggedOutUser();
+            }
+            
+            // Adicionar evento de clique para o botão de logout
+            document.getElementById('logout-button').addEventListener('click', logout);
+        });
+
+        // Atualizar UI para usuário logado - SEM SAUDAÇÃO
+        function updateUIForLoggedInUser() {
+            // Esconder botões de login/cadastro
+            document.getElementById('login-button').style.display = 'none';
+            document.getElementById('signup-button').style.display = 'none';
+            
+            // Mostrar botões de perfil/logout
+            document.getElementById('profile-button').style.display = 'block';
+            document.getElementById('logout-button').style.display = 'block';
+            
+            // ESCONDER COMPLETAMENTE A SAUDAÇÃO DO USUÁRIO
+            document.getElementById('user-greeting').style.display = 'none';
+        }
+
+        // Atualizar UI para usuário não logado
+        function updateUIForLoggedOutUser() {
+            // Mostrar botões de login/cadastro
+            document.getElementById('login-button').style.display = 'block';
+            document.getElementById('signup-button').style.display = 'block';
+            
+            // Esconder botões de perfil/logout
+            document.getElementById('profile-button').style.display = 'none';
+            document.getElementById('logout-button').style.display = 'none';
+            
+            // Esconder saudação
+            document.getElementById('user-greeting').style.display = 'none';
+        }
+
+        // Função de logout
+        async function logout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                    console.error('Erro ao fazer logout:', error);
+                    alert('Erro ao fazer logout. Tente novamente.');
+                    return;
+                }
+                
+                // Atualizar UI e recarregar
+                updateUIForLoggedOutUser();
+                window.location.reload();
+                
+            } catch (error) {
+                console.error('Erro inesperado no logout:', error);
+                alert('Erro inesperado. Tente novamente.');
+            }
+        }
     </script>
 </body>
 </html>
