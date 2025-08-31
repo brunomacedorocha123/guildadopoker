@@ -746,10 +746,9 @@
  </footer>
 
 <script>
-// Configuração do Supabase - VERIFICAR SE A CHAVE ESTÁ CORRETA
+// Configuração do Supabase
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-// VERIFIQUE se esta é a chave pública/anônima correta do seu projeto Supabase
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // Elementos DOM
@@ -821,7 +820,7 @@ menuLinks.forEach(link => {
   });
 });
 
-// Fechar o menu ao clicar fuera dele
+// Fechar o menu ao clicar fora dele
 document.addEventListener('click', function(event) {
   if (window.innerWidth <= 768 && menu.classList.contains('active')) {
     if (!menu.contains(event.target) && !menuToggle.contains(event.target)) {
@@ -834,11 +833,20 @@ document.addEventListener('click', function(event) {
 // Verificar estado de autenticação
 async function checkAuthState() {
   try {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError) {
+      console.error('Erro ao obter sessão:', sessionError);
+      showNotification('Erro de autenticação. Redirecionando...', false);
+      setTimeout(() => window.location.href = 'index.html', 2000);
+      return;
+    }
+
     console.log('Sessão:', session ? 'Usuário autenticado' : 'Não autenticado');
 
     if (!session) {
-      window.location.href = 'index.html';
+      showNotification('Por favor, faça login primeiro', false);
+      setTimeout(() => window.location.href = 'index.html', 2000);
       return;
     }
 
@@ -863,7 +871,12 @@ async function createUserProfile(user) {
         }
       ]);
 
-    if (error && error.code !== '23505') { // Ignorar erro de duplicidade
+    if (error) {
+      // Ignorar erro de duplicidade (código 23505)
+      if (error.code === '23505') {
+        console.log('Perfil já existe, ignorando criação...');
+        return true;
+      }
       console.error('Erro ao criar perfil:', error);
       return false;
     }
@@ -898,6 +911,9 @@ async function loadUserData(user) {
           .eq('id', user.id)
           .single();
         perfilData = newPerfilData;
+      } else {
+        showNotification('Erro ao criar perfil. Tente novamente.', false);
+        return;
       }
     }
     
@@ -928,16 +944,7 @@ async function loadUserData(user) {
     // Carregar avatar se existir
     if (perfilData?.avatar_id) {
       currentAvatarId = perfilData.avatar_id;
-      const { data: avatarData } = await supabase
-        .from('avatares')
-        .select('url_imagem')
-        .eq('id', perfilData.avatar_id)
-        .single();
-      
-      if (avatarData) {
-        const img = uploadFoto.querySelector('img');
-        img.src = avatarData.url_imagem;
-      }
+      await updateAvatarDisplay(perfilData.avatar_id);
     }
 
     originalValues = {
@@ -959,10 +966,10 @@ async function loadUserData(user) {
 // Atualizar perfil do usuário
 async function updateUserProfile() {
   try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !session) {
       showNotification('Sessão expirada. Faça login novamente.', false);
-      window.location.href = 'index.html';
+      setTimeout(() => window.location.href = 'index.html', 2000);
       return false;
     }
 
@@ -975,9 +982,8 @@ async function updateUserProfile() {
     // Verificar se há um avatar selecionado
     let avatarId = currentAvatarId;
     const selectedAvatarModal = document.querySelector('#avatar-options-modal .avatar-option.selected');
-    if (selectedAvatarModal) {
-      // Converter para número e tratar valores nulos/undefined
-      avatarId = selectedAvatarModal.dataset.id ? parseInt(selectedAvatarModal.dataset.id) : null;
+    if (selectedAvatarModal && selectedAvatarModal.dataset.id) {
+      avatarId = parseInt(selectedAvatarModal.dataset.id);
     }
 
     const updates = {
@@ -985,9 +991,15 @@ async function updateUserProfile() {
       telefone: telefoneInput.value.trim(),
       apelido_poker: apelidoPokerInput.value.trim(),
       plataforma_preferida: plataformaSelect.value,
-      avatar_id: avatarId,
       data_atualizacao: new Date().toISOString()
     };
+
+    // Adicionar avatar_id apenas se foi selecionado um
+    if (avatarId) {
+      updates.avatar_id = avatarId;
+    } else {
+      updates.avatar_id = null;
+    }
 
     const { error } = await supabase
       .from('perfis')
@@ -997,17 +1009,18 @@ async function updateUserProfile() {
     if (error) {
       console.error('Erro ao atualizar perfil:', error);
       
-      // Verificar se é erro de chave de API inválida
       if (error.message.includes('Invalid API key') || error.message.includes('JWT')) {
         showNotification('Erro de configuração. Entre em contato com o suporte.', false);
       } else {
-        showNotification('Erro ao salvar alterações: ' + error.message, false);
+        showNotification('Erro ao salvar alterações. Tente novamente.', false);
       }
       
       return false;
     }
 
     showNotification('Perfil atualizado com sucesso!', true);
+    
+    // Atualizar a exibição
     userNameElement.textContent = nomeCompletoInput.value;
     
     if (apelidoPokerInput.value) {
@@ -1018,9 +1031,13 @@ async function updateUserProfile() {
     
     if (avatarId) {
       await updateAvatarDisplay(avatarId);
+    } else {
+      // Reset para avatar padrão se nenhum avatar foi selecionado
+      const defaultAvatar = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI2MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0iI2M4YjY1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
+      document.querySelector('.profile-picture img').src = defaultAvatar;
     }
     
-    originalValues = { ...updates };
+    originalValues = { ...updates, avatar_id: avatarId };
     currentAvatarId = avatarId;
     
     return true;
@@ -1033,6 +1050,22 @@ async function updateUserProfile() {
 
 // Event Listeners para os botões do perfil
 btnEditar.addEventListener('click', () => {
+  entrarModoEdicao();
+});
+
+btnCancelar.addEventListener('click', () => {
+  sairModoEdicao();
+});
+
+btnSalvar.addEventListener('click', async () => {
+  const success = await updateUserProfile();
+  if (success) {
+    sairModoEdicao();
+  }
+});
+
+// Funções para entrar/sair do modo edição
+function entrarModoEdicao() {
   editMode = true;
   nomeCompletoInput.disabled = false;
   telefoneInput.disabled = false;
@@ -1042,19 +1075,22 @@ btnEditar.addEventListener('click', () => {
   btnEditar.classList.add('btn-hidden');
   btnSalvar.classList.remove('btn-hidden');
   btnCancelar.classList.remove('btn-hidden');
-});
+}
 
-btnCancelar.addEventListener('click', () => {
+function sairModoEdicao() {
   editMode = false;
   nomeCompletoInput.disabled = true;
   telefoneInput.disabled = true;
   apelidoPokerInput.disabled = true;
   plataformaSelect.disabled = true;
+  
+  // Restaurar valores originais
   nomeCompletoInput.value = originalValues.nome_completo;
   telefoneInput.value = originalValues.telefone;
   apelidoPokerInput.value = originalValues.apelido_poker;
   plataformaSelect.value = originalValues.plataforma_preferida;
   
+  // Restaurar avatar selecionado
   document.querySelectorAll('.avatar-option').forEach(option => {
     option.classList.remove('selected');
   });
@@ -1069,22 +1105,7 @@ btnCancelar.addEventListener('click', () => {
   btnEditar.classList.remove('btn-hidden');  
   btnSalvar.classList.add('btn-hidden');  
   btnCancelar.classList.add('btn-hidden');  
-});
-
-btnSalvar.addEventListener('click', async () => {
-  const success = await updateUserProfile();
-  if (success) {
-    editMode = false;
-    nomeCompletoInput.disabled = true;
-    telefoneInput.disabled = true;
-    apelidoPokerInput.disabled = true;
-    plataformaSelect.disabled = true;
-
-    btnEditar.classList.remove('btn-hidden');
-    btnSalvar.classList.add('btn-hidden');
-    btnCancelar.classList.add('btn-hidden');
-  }
-});
+}
 
 // Carregar avatares quando o modal é aberto
 uploadFoto.addEventListener('click', async () => {
@@ -1132,11 +1153,16 @@ function displayAvatares(avatares) {
   const avatarOptions = document.getElementById('avatar-options-modal');
   avatarOptions.innerHTML = '';
 
+  if (avatares.length === 0) {
+    avatarOptions.innerHTML = '<p style="color: #fff; text-align: center;">Nenhum avatar disponível</p>';
+    return;
+  }
+
   avatares.forEach(avatar => {
     const avatarElement = document.createElement('div');
     avatarElement.className = 'avatar-option';
     avatarElement.dataset.id = avatar.id;
-    avatarElement.innerHTML = `<img src="${avatar.url_imagem}" alt="${avatar.nome}">`;
+    avatarElement.innerHTML = `<img src="${avatar.url_imagem}" alt="${avatar.nome}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2M4YjY1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">`;
     
     avatarElement.addEventListener('click', () => {
       selectAvatar(avatar.id);
@@ -1161,9 +1187,6 @@ function selectAvatar(avatarId) {
   if (selectedAvatar) {
     selectedAvatar.classList.add('selected');
     currentAvatarId = avatarId;
-    
-    // Atualizar a imagem de perfil imediatamente
-    updateAvatarDisplay(avatarId);
   }
 }
 
@@ -1188,7 +1211,7 @@ async function updateAvatarDisplay(avatarId) {
   }
 }
 
-// Função de logout correta para Supabase v2
+// Função de logout
 async function logout() {
   try {
     const { error } = await supabase.auth.signOut();
@@ -1199,6 +1222,29 @@ async function logout() {
   } catch (error) {
     console.error('Erro inesperado no logout:', error);
     window.location.href = 'index.html';
+  }
+}
+
+// Adicionar suporte para tecla Enter no formulário
+document.getElementById('profile-form').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter' && editMode) {
+    e.preventDefault();
+    btnSalvar.click();
+  }
+});
+
+// Verificar conexão com Supabase
+async function testSupabaseConnection() {
+  try {
+    const { data, error } = await supabase
+      .from('perfis')
+      .select('count')
+      .limit(1);
+    
+    return !error;
+  } catch (error) {
+    console.error('Erro ao testar conexão:', error);
+    return false;
   }
 }
 </script>
