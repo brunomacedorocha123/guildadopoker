@@ -629,46 +629,57 @@
   </footer>
 
   <!-- Script do menu mobile -->
-  <script>
+<script>
+    // Configuração do Supabase - DEVE SER IDÊNTICA em todas as páginas
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+    // NO SEU index.html - Substitua esta linha:
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Tornar a função logout global para ser acessada pelo onclick
+// Pela chave CORRETA do seu projeto Supabase
+    // Configuração IMPORTANTE para persistência de sessão
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
+    // Função de logout global
     window.logout = async function() {
       try {
         console.log('Iniciando logout...');
         
-        // Verificar se há uma sessão ativa antes de tentar logout
-        const { data: { session } } = await supabase.auth.getSession();
+        // Limpar storage local primeiro
+        localStorage.removeItem('supabase.auth.token');
+        sessionStorage.removeItem('supabase.auth.token');
         
-        if (!session) {
-          console.log('Nenhuma sessão ativa, redirecionando...');
-          window.location.href = 'index.html';
-          return;
-        }
-        
+        // Tentar logout no Supabase
         const { error } = await supabase.auth.signOut();
         
         if (error) {
-          console.error('Erro no logout:', error);
-          // Mesmo com erro, redireciona para limpar o estado local
-          window.location.href = 'index.html';
-        } else {
-          console.log('Logout realizado com sucesso');
-          window.location.href = 'index.html';
+          console.warn('Erro no logout Supabase (pode ser normal se não houver sessão):', error.message);
         }
+        
+        // Forçar limpeza completa e redirecionamento
+        window.location.href = 'index.html?logout=true';
+        
       } catch (error) {
         console.error('Erro inesperado no logout:', error);
         window.location.href = 'index.html';
       }
     }
 
+    // Verificar estado de autenticação
     async function checkAuthState() {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const authButtons = document.getElementById('auth-buttons');
+        const { data: { session }, error } = await supabase.auth.getSession();
         
+        if (error) {
+          console.warn('Erro ao obter sessão:', error.message);
+        }
+        
+        const authButtons = document.getElementById('auth-buttons');
         if (!authButtons) return;
         
         console.log('Estado da sessão:', session ? 'Logado' : 'Deslogado');
@@ -678,14 +689,6 @@
             <a href="perfil.html" class="auth-btn login-btn">Meu Perfil</a>
             <button onclick="logout()" class="auth-btn signup-btn">Sair</button>
           `;
-          
-          // Adicionar event listener para o botão de logout
-          setTimeout(() => {
-            const logoutBtn = document.querySelector('.signup-btn');
-            if (logoutBtn) {
-              logoutBtn.addEventListener('click', window.logout);
-            }
-          }, 100);
         } else {
           authButtons.innerHTML = `
             <a href="login.html" class="auth-btn login-btn">Login</a>
@@ -693,18 +696,58 @@
           `;
         }
       } catch (error) {
-        console.error('Erro ao verificar estado de autenticação:', error);
+        console.error('Erro ao verificar autenticação:', error);
       }
     }
 
+    // Inicialização
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('Página carregada - verificando autenticação...');
+      console.log('Página index carregada');
+      
+      // Verificar se é um redirecionamento de logout
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('logout') === 'true') {
+        // Limpar parâmetro da URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      
       checkAuthState();
+      
+      // Configurar menu mobile
+      const hamburger = document.querySelector('.hamburger');
+      const menu = document.querySelector('.menu');
+      
+      if (hamburger && menu) {
+        hamburger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          menu.classList.toggle('active');
+          hamburger.classList.toggle('active');
+        });
+        
+        const menuLinks = document.querySelectorAll('.menu a');
+        menuLinks.forEach(link => {
+          link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+              menu.classList.remove('active');
+              hamburger.classList.remove('active');
+            }
+          });
+        });
+        
+        document.addEventListener('click', function(event) {
+          if (window.innerWidth <= 768 && menu.classList.contains('active')) {
+            if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+              menu.classList.remove('active');
+              hamburger.classList.remove('active');
+            }
+          }
+        });
+      }
     });
 
-    // Ouvir mudanças de estado de autenticação
+    // Ouvir mudanças de autenticação
     supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Evento de autenticação:', event, session ? 'Sessão disponível' : 'Sem sessão');
+      console.log('Mudança de autenticação:', event);
       checkAuthState();
     });
 </script>

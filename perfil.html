@@ -745,9 +745,10 @@
  </div>
  </footer>
 
- <script>
-// Configuração do Supabase
+<script>
+// Configuração do Supabase - VERIFICAR SE A CHAVE ESTÁ CORRETA
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+// VERIFIQUE se esta é a chave pública/anônima correta do seu projeto Supabase
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -975,7 +976,8 @@ async function updateUserProfile() {
     let avatarId = currentAvatarId;
     const selectedAvatarModal = document.querySelector('#avatar-options-modal .avatar-option.selected');
     if (selectedAvatarModal) {
-      avatarId = selectedAvatarModal.dataset.id;
+      // Converter para número e tratar valores nulos/undefined
+      avatarId = selectedAvatarModal.dataset.id ? parseInt(selectedAvatarModal.dataset.id) : null;
     }
 
     const updates = {
@@ -994,7 +996,14 @@ async function updateUserProfile() {
 
     if (error) {
       console.error('Erro ao atualizar perfil:', error);
-      showNotification('Erro ao salvar alterações: ' + error.message, false);
+      
+      // Verificar se é erro de chave de API inválida
+      if (error.message.includes('Invalid API key') || error.message.includes('JWT')) {
+        showNotification('Erro de configuração. Entre em contato com o suporte.', false);
+      } else {
+        showNotification('Erro ao salvar alterações: ' + error.message, false);
+      }
+      
       return false;
     }
 
@@ -1133,16 +1142,13 @@ function displayAvatares(avatares) {
       selectAvatar(avatar.id);
     });
     
+    // Marcar como selecionado se for o avatar atual
+    if (avatar.id === currentAvatarId) {
+      avatarElement.classList.add('selected');
+    }
+    
     avatarOptions.appendChild(avatarElement);
   });
-  
-  // Selecionar o avatar atual
-  if (currentAvatarId) {
-    const avatarOption = document.querySelector(`.avatar-option[data-id="${currentAvatarId}"]`);
-    if (avatarOption) {
-      avatarOption.classList.add('selected');
-    }
-  }
 }
 
 // Selecionar um avatar
@@ -1179,6 +1185,20 @@ async function updateAvatarDisplay(avatarId) {
     profileImg.src = data.url_imagem;
   } catch (error) {
     console.error('Erro ao atualizar exibição do avatar:', error);
+  }
+}
+
+// Função de logout correta para Supabase v2
+async function logout() {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
+    window.location.href = 'index.html';
+  } catch (error) {
+    console.error('Erro inesperado no logout:', error);
+    window.location.href = 'index.html';
   }
 }
 </script>
