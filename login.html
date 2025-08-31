@@ -296,249 +296,185 @@
         </div>
     </div>
 
-    <script>
-        // Inicialização do Supabase
-        const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+   <script>
+    // Inicialização do Supabase
+    const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storage: localStorage
+        }
+    });
+    
+    // Elementos da interface
+    const loginForm = document.getElementById('login-form');
+    const messageElement = document.getElementById('message');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('login-button');
+    const buttonText = document.getElementById('button-text');
+    const buttonLoading = document.getElementById('button-loading');
+    
+    // Processar o formulário de login
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
         
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true,
-                detectSessionInUrl: true,
-                storage: localStorage
-            }
-        });
+        // Resetar mensagem
+        hideMessage();
         
-        // Elementos da interface
-        const loginForm = document.getElementById('login-form');
-        const messageElement = document.getElementById('message');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const loginButton = document.getElementById('login-button');
-        const buttonText = document.getElementById('button-text');
-        const buttonLoading = document.getElementById('button-loading');
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
         
-        // Processar o formulário de login
-        loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Resetar mensagem
-            hideMessage();
-            
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-            
-            if (!email || !password) {
-                showMessage('Preencha todos os campos.', 'error');
-                return;
-            }
-            
-            if (!isValidEmail(email)) {
-                showMessage('Por favor, insira um e-mail válido.', 'error');
-                return;
-            }
-            
-            // Mostrar loading
-            setLoading(true);
-            
-            try {
-                // Tentar fazer login
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
-                
-                if (error) {
-                    handleLoginError(error);
-                    setLoading(false);
-                    return;
-                }
-                
-                if (data.session) {
-                    // Login bem-sucedido
-                    showMessage('Login realizado com sucesso! Redirecionando...', 'success');
-                    
-                    // Salvar sessão manualmente como fallback
-                    const sessionData = {
-                        access_token: data.session.access_token,
-                        refresh_token: data.session.refresh_token,
-                        expires_at: data.session.expires_at,
-                        user: {
-                            id: data.user.id,
-                            email: data.user.email
-                        }
-                    };
-                    localStorage.setItem('guilda-poker-auth', JSON.stringify(sessionData));
-                    
-                    // Verificar se a sessão foi persistida corretamente antes de redirecionar
-                    await verifySessionPersistence();
-                    
-                    // Redirecionar com parâmetro de sucesso
-                    window.location.href = 'index.html?login=success&t=' + Date.now();
-                }
-                
-            } catch (error) {
-                console.error('Erro inesperado:', error);
-                showMessage('Erro inesperado. Tente novamente.', 'error');
-                setLoading(false);
-            }
-        });
+        if (!email || !password) {
+            showMessage('Preencha todos os campos.', 'error');
+            return;
+        }
         
-        // Função para verificar se a sessão foi persistida corretamente
-        async function verifySessionPersistence() {
-            return new Promise((resolve) => {
-                let attempts = 0;
-                const maxAttempts = 10;
-                
-                const checkSession = setInterval(async () => {
-                    attempts++;
-                    
-                    // Verificar se a sessão está disponível
-                    const { data: { session } } = await supabase.auth.getSession();
-                    
-                    if (session) {
-                        clearInterval(checkSession);
-                        console.log('Sessão persistida com sucesso após', attempts, 'tentativas');
-                        resolve(true);
-                    } else if (attempts >= maxAttempts) {
-                        clearInterval(checkSession);
-                        console.log('Sessão não persistida após', maxAttempts, 'tentativas - usando fallback');
-                        resolve(false);
-                    }
-                }, 300); // Verificar a cada 300ms
+        if (!isValidEmail(email)) {
+            showMessage('Por favor, insira um e-mail válido.', 'error');
+            return;
+        }
+        
+        // Mostrar loading
+        setLoading(true);
+        
+        try {
+            // Tentar fazer login
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
             });
-        }
-        
-        function handleLoginError(error) {
-            let errorMessage = 'Erro no login: ';
             
-            if (error.message.includes('Invalid login credentials')) {
-                errorMessage = 'E-mail ou senha incorretos.';
-            } else if (error.message.includes('Email not confirmed')) {
-                errorMessage = 'E-mail não confirmado. Verifique sua caixa de entrada.';
-            } else if (error.message.includes('Failed to fetch')) {
-                errorMessage = 'Problema de conexão. Verifique sua internet.';
-            } else if (error.message.includes('Invalid API key')) {
-                errorMessage = 'Erro de configuração. Por favor, contate o suporte.';
-            } else {
-                errorMessage += error.message;
-            }
-            
-            showMessage(errorMessage, 'error');
-        }
-        
-        // Funções auxiliares
-        function showMessage(text, type) {
-            messageElement.textContent = text;
-            messageElement.className = `message ${type}`;
-            messageElement.classList.remove('hidden');
-        }
-        
-        function hideMessage() {
-            messageElement.classList.add('hidden');
-        }
-        
-        function setLoading(loading) {
-            if (loading) {
-                buttonText.classList.add('hidden');
-                buttonLoading.classList.remove('hidden');
-                loginButton.disabled = true;
-            } else {
-                buttonText.classList.remove('hidden');
-                buttonLoading.classList.add('hidden');
-                loginButton.disabled = false;
-            }
-        }
-        
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-        
-        function togglePassword() {
-            const passwordField = document.getElementById('password');
-            const toggleButton = document.querySelector('.toggle-password');
-            
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                toggleButton.textContent = '🔒';
-            } else {
-                passwordField.type = 'password';
-                toggleButton.textContent = '👁️';
-            }
-        }
-        
-        // Focar no campo de email ao carregar
-        window.addEventListener('load', function() {
-            emailInput.focus();
-            
-            // Verificar mensagens da URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const message = urlParams.get('message');
-            const messageType = urlParams.get('type');
-            
-            if (message && messageType) {
-                showMessage(decodeURIComponent(message), messageType);
-            }
-            
-            // Verificar se já está logado e redirecionar
-            checkIfAlreadyLoggedIn();
-        });
-        
-        // Verificar se usuário já está logado
-        async function checkIfAlreadyLoggedIn() {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                
-                // Verificar também sessão manual
-                const manualAuth = localStorage.getItem('guilda-poker-auth');
-                let manualSessionValid = false;
-                
-                if (manualAuth) {
-                    try {
-                        const authData = JSON.parse(manualAuth);
-                        const expiresAt = new Date(authData.expires_at);
-                        manualSessionValid = expiresAt > new Date();
-                    } catch (e) {
-                        console.log('Sessão manual inválida');
-                    }
-                }
-                
-                if (session || manualSessionValid) {
-                    showMessage('Você já está logado! Redirecionando...', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
-                }
-            } catch (error) {
-                console.log('Erro ao verificar sessão existente:', error);
-            }
-        }
-        
-        // Prevenir duplo clique
-        let isSubmitting = false;
-        loginForm.addEventListener('submit', function(e) {
-            if (isSubmitting) {
-                e.preventDefault();
+            if (error) {
+                handleLoginError(error);
+                setLoading(false);
                 return;
             }
-            isSubmitting = true;
             
-            setTimeout(() => {
-                isSubmitting = false;
-            }, 3000);
-        });
-
-        // Enter para submit
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !loginButton.disabled) {
-                loginForm.dispatchEvent(new Event('submit'));
+            if (data.session) {
+                // Login bem-sucedido
+                showMessage('Login realizado com sucesso! Redirecionando...', 'success');
+                
+                // Salvar sessão manualmente como fallback
+                const sessionData = {
+                    access_token: data.session.access_token,
+                    refresh_token: data.session.refresh_token,
+                    expires_at: data.session.expires_at,
+                    user: {
+                        id: data.user.id,
+                        email: data.user.email
+                    }
+                };
+                localStorage.setItem('guilda-poker-auth', JSON.stringify(sessionData));
+                
+                // Aguardar um pouco para garantir persistência e redirecionar
+                setTimeout(() => {
+                    window.location.href = 'index.html?login=success&t=' + Date.now();
+                }, 1000);
             }
-        });
+            
+        } catch (error) {
+            console.error('Erro inesperado:', error);
+            showMessage('Erro inesperado. Tente novamente.', 'error');
+            setLoading(false);
+        }
+    });
+    
+    function handleLoginError(error) {
+        let errorMessage = 'Erro no login: ';
+        
+        if (error.message.includes('Invalid login credentials')) {
+            errorMessage = 'E-mail ou senha incorretos.';
+        } else if (error.message.includes('Email not confirmed')) {
+            errorMessage = 'E-mail não confirmado. Verifique sua caixa de entrada.';
+        } else if (error.message.includes('Failed to fetch')) {
+            errorMessage = 'Problema de conexão. Verifique sua internet.';
+        } else {
+            errorMessage += error.message;
+        }
+        
+        showMessage(errorMessage, 'error');
+    }
+    
+    // Funções auxiliares
+    function showMessage(text, type) {
+        messageElement.textContent = text;
+        messageElement.className = `message ${type}`;
+        messageElement.classList.remove('hidden');
+    }
+    
+    function hideMessage() {
+        messageElement.classList.add('hidden');
+    }
+    
+    function setLoading(loading) {
+        if (loading) {
+            buttonText.classList.add('hidden');
+            buttonLoading.classList.remove('hidden');
+            loginButton.disabled = true;
+        } else {
+            buttonText.classList.remove('hidden');
+            buttonLoading.classList.add('hidden');
+            loginButton.disabled = false;
+        }
+    }
+    
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+    
+    function togglePassword() {
+        const passwordField = document.getElementById('password');
+        const toggleButton = document.querySelector('.toggle-password');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleButton.textContent = '🔒';
+        } else {
+            passwordField.type = 'password';
+            toggleButton.textContent = '👁️';
+        }
+    }
+    
+    // Focar no campo de email ao carregar
+    window.addEventListener('load', function() {
+        emailInput.focus();
+        
+        // Verificar mensagens da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        const messageType = urlParams.get('type');
+        
+        if (message && messageType) {
+            showMessage(decodeURIComponent(message), messageType);
+        }
+    });
+    
+    // Prevenir duplo clique
+    let isSubmitting = false;
+    loginForm.addEventListener('submit', function(e) {
+        if (isSubmitting) {
+            e.preventDefault();
+            return;
+        }
+        isSubmitting = true;
+        
+        setTimeout(() => {
+            isSubmitting = false;
+        }, 3000);
+    });
 
-        // Debug: Expor supabase para console
-        window.supabaseClient = supabase;
-    </script>
+    // Enter para submit
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !loginButton.disabled) {
+            loginForm.dispatchEvent(new Event('submit'));
+        }
+    });
+</script>
 </body>
 </html>
