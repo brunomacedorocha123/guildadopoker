@@ -630,7 +630,7 @@
 
   <!-- Script do menu mobile -->
 <script>
-    // Configuração do Supabase - CHAVE CORRIGIDA
+    // Configuração do Supabase
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
@@ -817,9 +817,45 @@
         }
     }
 
+    // Configurar menu mobile
+    function setupMobileMenu() {
+        const hamburger = document.querySelector('.hamburger');
+        const menu = document.querySelector('.menu');
+        
+        if (hamburger && menu) {
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menu.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+            
+            const menuLinks = document.querySelectorAll('.menu a');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        menu.classList.remove('active');
+                        hamburger.classList.remove('active');
+                    }
+                });
+            });
+            
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768 && menu.classList.contains('active')) {
+                    if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                        menu.classList.remove('active');
+                        hamburger.classList.remove('active');
+                    }
+                }
+            });
+        }
+    }
+
     // Inicialização - VERSÃO MELHORADA
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Página carregada - Iniciando verificação de autenticação');
+        
+        // Configurar menu mobile primeiro
+        setupMobileMenu();
         
         // Verificar autenticação imediatamente
         checkAuthState();
@@ -881,6 +917,48 @@
         }
     });
 
-</Script>
+    // Função para debug (chame debugAuth() no console)
+    window.debugAuth = function() {
+        console.group('Debug de Autenticação');
+        console.log('URL:', window.location.href);
+        console.log('Auth checked:', authChecked);
+        console.log('Auth state:', authState);
+        
+        // Verificar sessão manual
+        const manualAuth = localStorage.getItem('guilda-poker-auth');
+        if (manualAuth) {
+            try {
+                const authData = JSON.parse(manualAuth);
+                console.log('Sessão manual:', authData);
+                console.log('Expira em:', new Date(authData.expires_at));
+                console.log('Válida:', new Date(authData.expires_at) > new Date());
+            } catch (e) {
+                console.log('Sessão manual inválida');
+            }
+        } else {
+            console.log('Nenhuma sessão manual encontrada');
+        }
+        
+        // Verificar sessão Supabase
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            console.log('Sessão Supabase:', session);
+            if (session) {
+                console.log('Expira em:', new Date(session.expires_at));
+                console.log('Válida:', new Date(session.expires_at) > new Date());
+            }
+            
+            // Verificar storage keys
+            console.log('Keys no localStorage:');
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.includes('supabase') || key.includes('auth') || key.includes('guilda')) {
+                    console.log('  ', key, ':', localStorage.getItem(key)?.substring(0, 50) + '...');
+                }
+            }
+            
+            console.groupEnd();
+        });
+    };
+</script>
 </body>
 </html>
