@@ -630,42 +630,30 @@
 
   <!-- Script do menu mobile -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const hamburger = document.querySelector('.hamburger');
-      const menu = document.querySelector('.menu');
-      
-      hamburger.addEventListener('click', function(e) {
-        e.stopPropagation();
-        menu.classList.toggle('active');
-        hamburger.classList.toggle('active');
-      });
-      
-      const menuLinks = document.querySelectorAll('.menu a');
-      menuLinks.forEach(link => {
-        link.addEventListener('click', function() {
-          if (window.innerWidth <= 768) {
-            menu.classList.remove('active');
-            hamburger.classList.remove('active');
-          }
-        });
-      });
-      
-      document.addEventListener('click', function(event) {
-        if (window.innerWidth <= 768 && menu.classList.contains('active')) {
-          if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
-            menu.classList.remove('active');
-            hamburger.classList.remove('active');
-          }
-        }
-      });
-    });
-  </script>
-
-  <!-- Script de autenticação Supabase -->
-  <script>
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Tornar a função logout global para ser acessada pelo onclick
+    window.logout = async function() {
+      try {
+        console.log('Iniciando logout...');
+        const { error } = await supabase.auth.signOut();
+        
+        if (error) {
+          console.error('Erro no logout:', error);
+          alert('Erro ao fazer logout: ' + error.message);
+        } else {
+          console.log('Logout realizado com sucesso');
+          // Forçar recarregamento para garantir que o estado seja atualizado
+          window.location.href = 'index.html';
+        }
+      } catch (error) {
+        console.error('Erro inesperado no logout:', error);
+        alert('Erro inesperado ao fazer logout');
+        window.location.href = 'index.html';
+      }
+    }
 
     async function checkAuthState() {
       try {
@@ -673,6 +661,8 @@
         const authButtons = document.getElementById('auth-buttons');
         
         if (!authButtons) return;
+        
+        console.log('Estado da sessão:', session ? 'Logado' : 'Deslogado');
         
         if (session) {
           authButtons.innerHTML = `
@@ -690,30 +680,23 @@
       }
     }
 
-    async function logout() {
-      try {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-          console.error('Erro ao fazer logout:', error);
-          alert('Erro ao fazer logout. Tente novamente.');
-        } else {
-          // Redirecionar para a página inicial após logout
-          window.location.href = 'index.html';
-        }
-      } catch (error) {
-        console.error('Erro inesperado ao fazer logout:', error);
-        window.location.href = 'index.html';
-      }
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
       checkAuthState();
+      
+      // Adicionar event listener alternativo para evitar problemas de onclick
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('signup-btn') && e.target.textContent === 'Sair') {
+          e.preventDefault();
+          window.logout();
+        }
+      });
     });
 
     supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Mudança de estado de autenticação:', event);
       checkAuthState();
     });
-  </script>
+</script>
 
 </body>
 </html> 
