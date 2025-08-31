@@ -297,201 +297,293 @@
     </div>
 
     <script>
-        // Inicialização do Supabase
-        const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-        
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true,
-                detectSessionInUrl: true
-            }
-        });
-        
-        // Elementos da interface
-        const loginForm = document.getElementById('login-form');
-        const messageElement = document.getElementById('message');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const loginButton = document.getElementById('login-button');
-        const buttonText = document.getElementById('button-text');
-        const buttonLoading = document.getElementById('button-loading');
-        
-        // Verificar se já está logado
-        async function checkExistingSession() {
-            try {
-                const { data: { session }, error } = await supabase.auth.getSession();
-                
-                if (error) {
-                    console.warn('Erro ao verificar sessão:', error.message);
-                    return false;
-                }
-                
-                if (session) {
-                    // Verificar se a sessão é válida
-                    const expiresAt = new Date(session.expires_at);
-                    if (expiresAt > new Date()) {
-                        console.log('Sessão válida encontrada, redirecionando...');
-                        window.location.href = 'index.html';
-                        return true;
-                    } else {
-                        // Sessão expirada, fazer logout
-                        await supabase.auth.signOut();
-                    }
-                }
-                
-                return false;
-            } catch (error) {
-                console.error('Erro ao verificar sessão existente:', error);
+    // Inicialização do Supabase
+    const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storage: localStorage
+        }
+    });
+    
+    // Elementos da interface
+    const loginForm = document.getElementById('login-form');
+    const messageElement = document.getElementById('message');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('login-button');
+    const buttonText = document.getElementById('button-text');
+    const buttonLoading = document.getElementById('button-loading');
+    
+    // Verificar se já está logado
+    async function checkExistingSession() {
+        try {
+            console.log('Verificando sessão existente...');
+            
+            // Aguardar um pouco para o Supabase inicializar
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
+            const { data: { session }, error } = await supabase.auth.getSession();
+            
+            if (error) {
+                console.warn('Erro ao verificar sessão:', error.message);
                 return false;
             }
+            
+            if (session) {
+                // Verificar se a sessão é válida
+                const expiresAt = new Date(session.expires_at);
+                const isValid = expiresAt > new Date();
+                console.log('Sessão encontrada - Válida:', isValid, 'Expira em:', expiresAt);
+                
+                if (isValid) {
+                    console.log('Sessão válida encontrada, redirecionando...');
+                    window.location.href = 'index.html?t=' + Date.now();
+                    return true;
+                } else {
+                    // Sessão expirada, fazer logout
+                    console.log('Sessão expirada, fazendo logout...');
+                    await supabase.auth.signOut();
+                }
+            }
+            
+            return false;
+        } catch (error) {
+            console.error('Erro ao verificar sessão existente:', error);
+            return false;
+        }
+    }
+    
+    // Processar o formulário de login - VERSÃO CORRIGIDA
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Resetar mensagem
+        hideMessage();
+        
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        
+        if (!email || !password) {
+            showMessage('Preencha todos os campos.', 'error');
+            return;
         }
         
-        // Processar o formulário de login
-        loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
+        if (!isValidEmail(email)) {
+            showMessage('Por favor, insira um e-mail válido.', 'error');
+            return;
+        }
+        
+        // Mostrar loading
+        setLoading(true);
+        
+        try {
+            console.log('Iniciando processo de login...');
             
-            // Resetar mensagem
-            hideMessage();
+            // Tentar fazer login
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
             
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-            
-            if (!email || !password) {
-                showMessage('Preencha todos os campos.', 'error');
-                return;
-            }
-            
-            if (!isValidEmail(email)) {
-                showMessage('Por favor, insira um e-mail válido.', 'error');
-                return;
-            }
-            
-            // Mostrar loading
-            setLoading(true);
-            
-            try {
-                // Tentar fazer login
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
+            if (error) {
+                // Tratar erros específicos
+                let errorMessage = 'Erro no login: ';
                 
-                if (error) {
-                    // Tratar erros específicos
-                    let errorMessage = 'Erro no login: ';
-                    
-                    if (error.message.includes('Invalid login credentials')) {
-                        errorMessage = 'E-mail ou senha incorretos.';
-                    } else if (error.message.includes('Email not confirmed')) {
-                        errorMessage = 'E-mail não confirmado. Verifique sua caixa de entrada.';
-                    } else {
-                        errorMessage += error.message;
-                    }
-                    
-                    showMessage(errorMessage, 'error');
-                    setLoading(false);
-                    return;
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMessage = 'E-mail ou senha incorretos.';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMessage = 'E-mail não confirmado. Verifique sua caixa de entrada.';
+                } else {
+                    errorMessage += error.message;
                 }
                 
-                if (data.session) {
-                    showMessage('Login realizado com sucesso! Redirecionando...', 'success');
+                showMessage(errorMessage, 'error');
+                setLoading(false);
+                return;
+            }
+            
+            if (data.session) {
+                console.log('Login bem-sucedido, verificando persistência da sessão...');
+                showMessage('Login realizado com sucesso! Verificando...', 'success');
+                
+                // AGUARDAR a sessão ser persistida antes de redirecionar
+                await waitForSessionPersisted();
+                
+                // Verificar novamente se a sessão está realmente salva
+                const sessionVerified = await verifySessionPersisted();
+                
+                if (sessionVerified) {
+                    showMessage('Redirecionando...', 'success');
                     
-                    // Aguardar um pouco antes de redirecionar
+                    // Redirecionar com garantia
                     setTimeout(() => {
                         window.location.href = 'index.html?login=success&t=' + Date.now();
-                    }, 1500);
+                    }, 1000);
+                } else {
+                    showMessage('Problema na sessão. Tente novamente.', 'error');
+                    setLoading(false);
                 }
+            }
+            
+        } catch (error) {
+            console.error('Erro inesperado:', error);
+            showMessage('Erro inesperado. Tente novamente.', 'error');
+            setLoading(false);
+        }
+    });
+    
+    // Função para aguardar a persistência da sessão
+    async function waitForSessionPersisted() {
+        return new Promise(resolve => {
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            const checkInterval = setInterval(async () => {
+                attempts++;
                 
-            } catch (error) {
-                console.error('Erro inesperado:', error);
-                showMessage('Erro inesperado. Tente novamente.', 'error');
-                setLoading(false);
-            }
-        });
-        
-        // Funções auxiliares
-        function showMessage(text, type) {
-            messageElement.textContent = text;
-            messageElement.className = `message ${type}`;
-            messageElement.classList.remove('hidden');
-        }
-        
-        function hideMessage() {
-            messageElement.classList.add('hidden');
-        }
-        
-        function setLoading(loading) {
-            if (loading) {
-                buttonText.classList.add('hidden');
-                buttonLoading.classList.remove('hidden');
-                loginButton.disabled = true;
-            } else {
-                buttonText.classList.remove('hidden');
-                buttonLoading.classList.add('hidden');
-                loginButton.disabled = false;
-            }
-        }
-        
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-        
-        function togglePassword() {
-            const passwordField = document.getElementById('password');
-            const toggleButton = document.querySelector('.toggle-password');
-            
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                toggleButton.textContent = '🔒';
-            } else {
-                passwordField.type = 'password';
-                toggleButton.textContent = '👁️';
-            }
-        }
-        
-        // Focar no campo de email ao carregar
-        window.addEventListener('load', function() {
-            emailInput.focus();
-            
-            // Verificar parâmetros da URL para mensagens
-            const urlParams = new URLSearchParams(window.location.search);
-            const message = urlParams.get('message');
-            const messageType = urlParams.get('type');
-            
-            if (message && messageType) {
-                showMessage(decodeURIComponent(message), messageType);
-            }
-            
-            // Verificar sessão existente
-            setTimeout(() => {
-                checkExistingSession();
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (session || attempts >= maxAttempts) {
+                    clearInterval(checkInterval);
+                    resolve();
+                }
             }, 100);
         });
-        
-        // Prevenir duplo clique no formulário
-        let isSubmitting = false;
-        loginForm.addEventListener('submit', function(e) {
-            if (isSubmitting) {
-                e.preventDefault();
-                return;
-            }
-            isSubmitting = true;
+    }
+    
+    // Função para verificar se a sessão foi persistida corretamente
+    async function verifySessionPersisted() {
+        try {
+            // Verificar no localStorage
+            const storageKey = 'sb-' + supabaseUrl.split('//')[1].split('.')[0] + '-auth-token';
+            const storedSession = localStorage.getItem(storageKey);
             
-            // Resetar após 3 segundos caso haja erro
-            setTimeout(() => {
-                isSubmitting = false;
-            }, 3000);
-        });
-        
-        // Melhorar UX - Submit ao pressionar Enter
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !loginButton.disabled) {
-                loginForm.dispatchEvent(new Event('submit'));
+            if (!storedSession) {
+                console.log('Sessão não encontrada no localStorage');
+                return false;
             }
-        });
-    </script>
+            
+            // Verificar se a sessão é válida
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                console.log('Sessão não encontrada via API');
+                return false;
+            }
+            
+            const expiresAt = new Date(session.expires_at);
+            const isValid = expiresAt > new Date();
+            
+            console.log('Sessão verificada - Válida:', isValid);
+            return isValid;
+            
+        } catch (error) {
+            console.error('Erro ao verificar sessão persistida:', error);
+            return false;
+        }
+    }
+    
+    // Funções auxiliares
+    function showMessage(text, type) {
+        messageElement.textContent = text;
+        messageElement.className = `message ${type}`;
+        messageElement.classList.remove('hidden');
+    }
+    
+    function hideMessage() {
+        messageElement.classList.add('hidden');
+    }
+    
+    function setLoading(loading) {
+        if (loading) {
+            buttonText.classList.add('hidden');
+            buttonLoading.classList.remove('hidden');
+            loginButton.disabled = true;
+        } else {
+            buttonText.classList.remove('hidden');
+            buttonLoading.classList.add('hidden');
+            loginButton.disabled = false;
+        }
+    }
+    
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+    
+    function togglePassword() {
+        const passwordField = document.getElementById('password');
+        const toggleButton = document.querySelector('.toggle-password');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleButton.textContent = '🔒';
+        } else {
+            passwordField.type = 'password';
+            toggleButton.textContent = '👁️';
+        }
+    }
+    
+    // Focar no campo de email ao carregar
+    window.addEventListener('load', async function() {
+        emailInput.focus();
+        
+        // Verificar parâmetros da URL para mensagens
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        const messageType = urlParams.get('type');
+        
+        if (message && messageType) {
+            showMessage(decodeURIComponent(message), messageType);
+        }
+        
+        // Verificar sessão existente (com delay para inicialização)
+        setTimeout(async () => {
+            const hasSession = await checkExistingSession();
+            if (!hasSession) {
+                console.log('Nenhuma sessão válida encontrada');
+            }
+        }, 300);
+    });
+    
+    // Prevenir duplo clique no formulário
+    let isSubmitting = false;
+    loginForm.addEventListener('submit', function(e) {
+        if (isSubmitting) {
+            e.preventDefault();
+            return;
+        }
+        isSubmitting = true;
+        
+        // Resetar após 5 segundos caso haja erro
+        setTimeout(() => {
+            isSubmitting = false;
+        }, 5000);
+    });
+    
+    // Melhorar UX - Submit ao pressionar Enter
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !loginButton.disabled) {
+            loginForm.dispatchEvent(new Event('submit'));
+        }
+    });
+    
+    // Debug: Log de eventos de autenticação
+    supabase.auth.onAuthStateChange((event, session) => {
+        console.log('Evento de autenticação:', event, session ? 'Com sessão' : 'Sem sessão');
+        
+        if (event === 'SIGNED_IN' && session) {
+            console.log('SIGNED_IN - Sessão recebida:', {
+                expiresAt: new Date(session.expires_at),
+                isValid: new Date(session.expires_at) > new Date()
+            });
+        }
+    });
+</script>
 </body>
 </html>

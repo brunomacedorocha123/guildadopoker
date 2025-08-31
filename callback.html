@@ -11,6 +11,8 @@
             --bg-2: #1c1c1c;
             --gold: #ffcc00;
             --text: #f5f5f5;
+            --success: #4caf50;
+            --error: #f44336;
         }
         
         * {
@@ -21,7 +23,7 @@
         }
         
         body {
-            background-color: var(--bg);
+            background: linear-gradient(135deg, var(--bg), var(--bg-2));
             color: var(--text);
             min-height: 100vh;
             display: flex;
@@ -32,132 +34,315 @@
         
         .container {
             background-color: var(--bg-2);
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             width: 100%;
             max-width: 500px;
-            padding: 30px;
+            padding: 40px;
             text-align: center;
-            border: 1px solid var(--gold);
+            border: 2px solid var(--gold);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .logo {
+            color: var(--gold);
+            font-size: 3rem;
+            margin-bottom: 20px;
         }
         
         h1 {
             color: var(--gold);
-            margin-bottom: 15px;
-            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-size: 2rem;
         }
         
         p {
             color: #e6e6e6;
             margin-bottom: 25px;
-            line-height: 1.5;
+            line-height: 1.6;
+            font-size: 16px;
         }
         
         .status {
             padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+            border-radius: 10px;
+            margin: 25px 0;
             font-weight: 500;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .loading {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.1), rgba(255, 204, 0, 0.2));
+            color: var(--gold);
+            border: 2px solid var(--gold);
         }
         
         .success {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: #28a745;
-            border: 1px solid #28a745;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.2));
+            color: var(--success);
+            border: 2px solid var(--success);
         }
         
         .error {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-            border: 1px solid #dc3545;
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(244, 67, 54, 0.2));
+            color: var(--error);
+            border: 2px solid var(--error);
         }
         
         .btn {
             display: inline-block;
-            background-color: var(--gold);
+            background: linear-gradient(135deg, var(--gold), #e6b800);
             color: var(--bg);
-            padding: 12px 25px;
-            border-radius: 5px;
+            padding: 15px 30px;
+            border-radius: 8px;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: bold;
             margin: 10px;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .btn:hover {
-            background-color: #e6b800;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 204, 0, 0.3);
         }
         
         .btn-secondary {
-            background-color: transparent;
+            background: transparent;
             color: var(--gold);
-            border: 1px solid var(--gold);
+            border: 2px solid var(--gold);
         }
         
         .btn-secondary:hover {
-            background-color: rgba(255, 204, 0, 0.1);
+            background: rgba(255, 204, 0, 0.1);
+            transform: translateY(-2px);
         }
         
         .countdown {
-            margin-top: 20px;
+            margin-top: 25px;
             color: #bbb;
+            font-size: 14px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 204, 0, 0.3);
+            border-top: 4px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="logo">♠️♥️♣️♦️</div>
         <h1>Processando Autenticação</h1>
         
-        <div id="status" class="status">
-            <p>Processando sua solicitação...</p>
+        <div id="status" class="status loading">
+            <div class="spinner"></div>
+            <p>Verificando sua sessão...</p>
         </div>
         
-        <div id="buttons" style="display: none;">
+        <div id="buttons" class="hidden">
             <a href="https://guildadopoker.netlify.app/" class="btn">Página Principal</a>
             <a href="https://guildadopoker.netlify.app/login.html" class="btn btn-secondary">Fazer Login</a>
         </div>
         
-        <div id="countdown" class="countdown">
-            Redirecionando em <span id="countdown-value">10</span> segundos...
+        <div id="countdown" class="countdown hidden">
+            Redirecionando em <span id="countdown-value">5</span> segundos...
         </div>
     </div>
 
     <script>
+        // Configuração do Supabase
+        const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+        
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
+        });
+
         // Processar quando a página carregar
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             const urlParams = new URLSearchParams(window.location.search);
             const status = urlParams.get('status');
             const message = urlParams.get('message');
             
             const statusElement = document.getElementById('status');
             const buttonsElement = document.getElementById('buttons');
+            const countdownElement = document.getElementById('countdown');
             
-            if (status === 'success') {
-                statusElement.className = 'status success';
-                statusElement.innerHTML = `<p>${message || 'Operação realizada com sucesso!'}</p>`;
-            } else if (status === 'error') {
-                statusElement.className = 'status error';
-                statusElement.innerHTML = `<p>${message || 'Erro na operação.'}</p>`;
+            // Verificar autenticação real com Supabase
+            try {
+                console.log('Verificando autenticação no callback...');
+                
+                // Aguardar um pouco para garantir que a sessão foi persistida
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    console.error('Erro ao verificar sessão:', error);
+                    showError('Erro na autenticação. Tente novamente.');
+                    return;
+                }
+                
+                if (session) {
+                    // Verificar se a sessão é válida
+                    const expiresAt = new Date(session.expires_at);
+                    const isValid = expiresAt > new Date();
+                    
+                    if (isValid) {
+                        console.log('Sessão válida encontrada!');
+                        showSuccess('Login realizado com sucesso! Redirecionando...');
+                        startCountdown('https://guildadopoker.netlify.app/', 3);
+                    } else {
+                        console.log('Sessão expirada');
+                        showError('Sessão expirada. Faça login novamente.');
+                    }
+                } else {
+                    console.log('Nenhuma sessão encontrada');
+                    showError('Autenticação falhou. Tente novamente.');
+                }
+                
+            } catch (error) {
+                console.error('Erro inesperado:', error);
+                showError('Erro inesperado. Tente novamente.');
             }
             
-            buttonsElement.style.display = 'block';
-            startCountdown();
+            // Mostrar mensagem de parâmetros da URL se existir
+            if (status && message) {
+                const decodedMessage = decodeURIComponent(message);
+                if (status === 'success') {
+                    showSuccess(decodedMessage);
+                } else if (status === 'error') {
+                    showError(decodedMessage);
+                }
+            }
         });
         
-        function startCountdown() {
-            let seconds = 10;
+        function showSuccess(message) {
+            const statusElement = document.getElementById('status');
+            statusElement.className = 'status success';
+            statusElement.innerHTML = `<p>✅ ${message}</p>`;
+            
+            document.getElementById('buttons').classList.remove('hidden');
+            document.getElementById('countdown').classList.remove('hidden');
+        }
+        
+        function showError(message) {
+            const statusElement = document.getElementById('status');
+            statusElement.className = 'status error';
+            statusElement.innerHTML = `<p>❌ ${message}</p>`;
+            
+            document.getElementById('buttons').classList.remove('hidden');
+            document.getElementById('countdown').classList.add('hidden');
+        }
+        
+        function startCountdown(url, seconds = 5) {
+            let countdown = seconds;
             const countdownElement = document.getElementById('countdown-value');
+            countdownElement.textContent = countdown;
+            
+            document.getElementById('countdown').classList.remove('hidden');
             
             const interval = setInterval(() => {
-                seconds--;
-                countdownElement.textContent = seconds;
+                countdown--;
+                countdownElement.textContent = countdown;
                 
-                if (seconds <= 0) {
+                if (countdown <= 0) {
                     clearInterval(interval);
-                    window.location.href = 'https://guildadopoker.netlify.app/';
+                    window.location.href = url;
                 }
             }, 1000);
         }
+        
+        // Função para extrair parâmetros da URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+            const results = regex.exec(window.location.href);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+        
+        // Verificar se há hash de autenticação na URL
+        function checkAuthHash() {
+            if (window.location.hash.includes('access_token') || 
+                window.location.hash.includes('error')) {
+                console.log('Hash de autenticação detectado:', window.location.hash);
+                
+                // O Supabase deve lidar automaticamente com isso,
+                // mas forçamos uma verificação extra
+                setTimeout(() => {
+                    supabase.auth.getSession().then(({ data: { session } }) => {
+                        if (session) {
+                            window.location.href = 'https://guildadopoker.netlify.app/';
+                        }
+                    });
+                }, 1000);
+            }
+        }
+        
+        // Executar verificação de hash
+        checkAuthHash();
     </script>
 </body>
 </html>
