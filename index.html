@@ -353,7 +353,7 @@
    color: white;
    font-weight: bold;
    padding: 4px 8px;
-   borderRadius: 6px;
+   border-radius: 6px;
    font-size: 13px;
   }
 
@@ -686,10 +686,13 @@
     const { data: { session } } = await supabase.auth.getSession();
     
     if (session) {
+      console.log('Usuário logado:', session.user.email);
       // Buscar dados do perfil para pegar o apelido
       const userApelido = await getUserApelido(session.user.id);
+      console.log('Apelido encontrado:', userApelido);
       updateUIForLoggedInUser(session.user, userApelido);
     } else {
+      console.log('Usuário não logado');
       updateUIForLoggedOutUser();
     }
     
@@ -700,6 +703,8 @@
   // Buscar apelido do usuário
   async function getUserApelido(userId) {
     try {
+      console.log('Buscando apelido para o usuário:', userId);
+      
       const { data, error } = await supabase
         .from('perfis')
         .select('apelido_poker')
@@ -708,11 +713,11 @@
 
       if (error) {
         console.error('Erro ao buscar apelido:', error);
-        // Se não encontrar o apelido, retorna null
         return null;
       }
 
-      return data?.apelido_poker || null;
+      console.log('Dados retornados da busca:', data);
+      return data ? data.apelido_poker : null;
     } catch (error) {
       console.error('Erro ao buscar apelido:', error);
       return null;
@@ -733,9 +738,11 @@
     const userGreeting = document.getElementById('user-greeting');
     if (apelido) {
       userGreeting.textContent = `Olá, ${apelido}`;
+      console.log('Saudação definida com apelido:', apelido);
     } else {
       // Se não tiver apelido, usa o email
       userGreeting.textContent = `Olá, ${user.email}`;
+      console.log('Saudação definida com email:', user.email);
     }
     userGreeting.style.display = 'block';
   }
