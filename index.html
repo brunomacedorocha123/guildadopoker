@@ -7,881 +7,785 @@
  <title>Guilda do Poker</title>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
  <style>
- :root{
-  --bg:#121212;
-  --bg-2:#1c1c1c;
-  --bg-3:#2c2c2c;
-  --gold:#ffcc00;
-  --text:#f5f5f5;
- }
-
-
-
- *{box-sizing:border-box;margin:0;padding:0}
-
-
-
- body{
-  font-family: Arial, sans-serif;
-  background-color: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
- }
-
-
-
- /* ===== CABEÇALHO COM BOTÕES ===== */
- header {
-  background: var(--bg-2);
-  padding: 15px 20px;
-  text-align: center;
-  border-bottom: 2px solid var(--gold);
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 70px;
- }
-
- header img {
-  max-width: 160px;
-  height: auto;
- }
-
-
-
- /* ===== BOTÕES DE AUTENTICAÇÃO ===== */
- .auth-buttons {
-  position: absolute;
-  right: 60px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  gap: 10px;
-  align-items: center;
- }
-
- .user-greeting {
-  color: var(--gold);
-  margin-right: 10px;
-  font-size: 0.9rem;
-  display: none;
- }
-
- .auth-btn {
-  padding: 7px 14px;
-  border-radius: 5px;
-  font-weight: bold;
-  text-decoration: none;
-  font-size: 0.85rem;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  cursor: pointer;
-  border: 1px solid transparent;
- }
-
- .login-btn {
-  background-color: transparent;
-  color: var(--gold);
-  border: 1px solid var(--gold);
- }
-
- .login-btn:hover {
-  background-color: rgba(255, 204, 0, 0.1);
- }
-
- .signup-btn {
-  background-color: var(--gold);
-  color: var(--bg);
-  border: 1px solid var(--gold);
-  padding: 7px 16px !important;
- }
-
- .signup-btn:hover {
-  background-color: #e6b800;
-  border-color: #e6b800;
- }
-
- .profile-btn, .logout-btn {
-  background-color: transparent;
-  color: var(--gold);
-  border: 1px solid var(--gold);
-  display: none;
- }
-
- .profile-btn:hover, .logout-btn:hover {
-  background-color: rgba(255, 204, 0, 0.1);
- }
-
-
-
- /* ===== MENU DE NAVEGAÇÃO ===== */
- nav {
-  background: var(--bg-3);
-  padding: 15px 0;
-  position: relative;
-  width: 100%;
- }
-
-
-
- .menu-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
- }
-
-
-
- .menu {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  justify-content: center;
- }
-
-
-
- .menu li {
-  margin: 0;
- }
-
-
-
- .menu a {
-  color: var(--gold);
-  padding: 14px 22px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: .2s;
-  display: block;
-  text-align: center;
-  font-size: 1.05rem;
- }
-
-
-
- .menu a:hover, .menu a.active {
-  color: #ffffff;
-  text-decoration: underline;
-  background-color: rgba(255, 204, 0, 0.15);
-  border-radius: 6px;
- }
-
-
-
- /* ===== BOTÃO HAMBÚRGUER ===== */
- .hamburger {
-  display: none;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 42px;
-  height: 36px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  position: absolute;
-  right: 25px;
-  top: 20px;
-  z-index: 1001;
- }
-
-
-
- .hamburger span {
-  width: 100%;
-  height: 4px;
-  background-color: var(--gold);
-  border-radius: 3px;
-  transition: all 0.3s linear;
- }
-
-
-
- .hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(8px, 8px);
- }
-
-
-
- .hamburger.active span:nth-child(2) {
-  opacity: 0;
- }
-
-
-
- .hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -7px);
- }
-
-
-
- /* ===== BANNER DE TOPO ===== */
- .banner-topo {
-  width: 100%;
-  background-color: #2a2a2a;
-  padding: 15px;
-  text-align: center;
-  border-bottom: 1px solid var(--gold);
- }
-
- .ad-placeholder {
-  background-color: #2a2a2a;
-  border: 2px dashed #666;
-  border-radius: 8px;
-  color: #999;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  box-sizing: border-box;
- }
-
- .ad-topo {
-  width: 728px;
-  height: 90px;
-  margin: 0 auto;
- }
-
- .ad-lateral {
-  width: 300px;
-  height: 600px;
-  margin-left: 20px;
- }
-
- .ad-placeholder p {
-  margin: 0;
-  font-size: 14px;
- }
-
-
-
- .conteudo-principal {
-  display: flex;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  width: 100%;
-  flex: 1;
- }
-
- .conteudo {
-  flex: 1;
- }
-
-
-
- section{
-  padding: 30px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
-  width: 100%;
- }
-
-
-
- section .texto{
-  flex: 1;
-  min-width: 300px;
- }
-
- section .texto h1{
-  color: var(--gold);
-  margin-bottom: 20px;
-  font-size: 2.6em;
-  text-align: center;
- }
-
- section .texto p{
-  color:#e6e6e6;
-  font-size: 1.1em;
-  text-align: justify;
-  margin-bottom: 20px;
- }
-
-
-
- .highlight{
-  color: var(--gold);
-  font-weight: bold;
- }
-
-
-
- section .imagem img{
-  max-width: 500px;
-  width: 100%;
-  border-radius: 12px;
-  border: 3px solid var(--gold);
-  box-shadow:0 4px 12px rgba(0,0,0,.6);
- }
-
-
-
- /* Barra lateral para banner */
- .sidebar {
-  width: 340px;
-  padding: 10px;
-  flex-shrink: 0;
- }
-
-
-
- /* Seção Sobre Nós */
- .sobre-nos {
-  background-color: var(--bg-2);
-  padding: 60px 20px;
-  margin: 40px 0;
-  border-top: 2px solid var(--gold);
-  border-bottom: 2px solid var(--gold);
- }
-
- .sobre-nos h2 {
-  color: var(--gold);
-  text-align: center;
-  font-size: 2.2em;
-  margin-bottom: 30px;
- }
-
- .sobre-nos p {
-  color: #e6e6e6;
-  font-size: 1.1em;
-  line-height: 1.8;
-  text-align: justify;
-  max-width: 900px;
-  margin: 0 auto 20px;
- }
-
- .sobre-nos .assinatura {
-  text-align: right;
-  margin-top: 30px;
-  font-style: italic;
-  color: var(--gold);
- }
-
-
-
- footer{
-  background: var(--bg-2);
-  text-align: center;
-  padding: 15px;
-  margin-top: 40px;
-  border-top: 2px solid var(--gold);
-  font-size: 14px;
-  color:#bbb;
- }
-
-
-
- .aviso18{
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
- }
-
- .icone18{
-  background: red;
-  color: white;
-  font-weight: bold;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 13px;
- }
-
-
-
- /* ===== RESPONSIVIDADE ===== */
- @media (max-width: 992px) {
-  .menu a {
-  padding: 12px 18px;
-  font-size: 1rem;
+  :root{
+   --bg:#121212;
+   --bg-2:#1c1c1c;
+   --bg-3:#2c2c2c;
+   --gold:#ffcc00;
+   --text:#f5f5f5;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+   font-family: Arial, sans-serif;
+   background-color: var(--bg);
+   color: var(--text);
+   line-height: 1.6;
+   display: flex;
+   flex-direction: column;
+   min-height: 100vh;
+  }
+
+  /* ===== CABEÇALHO COM BOTÕES ===== */
+  header {
+   background: var(--bg-2);
+   padding: 15px 20px;
+   text-align: center;
+   border-bottom: 2px solid var(--gold);
+   position: relative;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   min-height: 70px;
   }
   
+  header img {
+   max-width: 160px;
+   height: auto;
+  }
+
+  /* ===== BOTÕES DE AUTENTICAÇÃO ===== */
   .auth-buttons {
-  right: 50px;
-  }
-  
-  .auth-btn {
-  padding: 6px 12px;
-  font-size: 0.8rem;
-  }
-  
-  .signup-btn {
-  padding: 6px 14px !important;
+   position: absolute;
+   right: 60px;
+   top: 50%;
+   transform: translateY(-50%);
+   display: flex;
+   gap: 10px;
+   align-items: center;
   }
   
   .user-greeting {
-  display: none;
-  }
- }
-
-
-
- @media (max-width: 768px) {
-  header {
-  padding: 12px 15px;
-  min-height: 60px;
-  justify-content: space-between;
-  }
-  
-  header img {
-  max-width: 140px;
-  }
-  
-  .auth-buttons {
-  position: static;
-  transform: none;
-  margin-top: 0;
-  width: auto;
-  gap: 8px;
-  margin-right: 55px;
+   color: var(--gold);
+   margin-right: 10px;
+   font-size: 0.9rem;
+   display: none;
   }
   
   .auth-btn {
-  padding: 6px 12px;
-  font-size: 0.75rem;
-  width: auto;
+   padding: 7px 14px;
+   border-radius: 5px;
+   font-weight: bold;
+   text-decoration: none;
+   font-size: 0.85rem;
+   transition: all 0.3s ease;
+   white-space: nowrap;
+   cursor: pointer;
+   border: 1px solid var(--gold);
+   display: inline-block;
+   text-align: center;
+  }
+  
+  .login-btn {
+   background-color: transparent;
+   color: var(--gold);
+  }
+  
+  .login-btn:hover {
+   background-color: rgba(255, 204, 0, 0.1);
   }
   
   .signup-btn {
-  padding: 6px 12px !important;
+   background-color: var(--gold);
+   color: var(--bg);
+   padding: 7px 16px !important;
   }
   
+  .signup-btn:hover {
+   background-color: #e6b800;
+   border-color: #e6b800;
+  }
+  
+  .profile-btn {
+    background-color: var(--gold);
+    color: var(--bg);
+  }
+  
+  .profile-btn:hover {
+    background-color: #e6b800;
+    border-color: #e6b800;
+  }
+  
+  .logout-btn {
+    background-color: var(--bg);
+    color: var(--gold);
+  }
+  
+  .logout-btn:hover {
+    background-color: rgba(255, 204, 0, 0.1);
+  }
+
+  /* ===== MENU DE NAVEGAÇÃO ===== */
   nav {
-  padding: 0;
-  background: transparent;
-  }
-  
-  .hamburger {
-  display: flex;
-  width: 36px;
-  height: 30px;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
+   background: var(--bg-3);
+   padding: 15px 0;
+   position: relative;
+   width: 100%;
   }
 
-
-
-  .hamburger span {
-  height: 3px;
+  .menu-container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   max-width: 1200px;
+   margin: 0 auto;
+   padding: 0 20px;
   }
-
-
 
   .menu {
-  flex-direction: column;
-  width: 100%;
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: var(--bg-3);
-  z-index: 1000;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-  padding: 15px 0;
-  border-top: 2px solid var(--gold);
+   display: flex;
+   list-style: none;
+   margin: 0;
+   padding: 0;
+   width: 100%;
+   justify-content: center;
   }
-
-
-
-  .menu.active {
-  display: flex;
-  }
-
-
 
   .menu li {
-  width: 100%;
-  text-align: center;
+   margin: 0;
   }
-
-
 
   .menu a {
-  padding: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  font-size: 1.1rem;
+   color: var(--gold);
+   padding: 14px 22px;
+   text-decoration: none;
+   font-weight: bold;
+   transition: .2s;
+   display: block;
+   text-align: center;
+   font-size: 1.05rem;
+  }
+
+  .menu a:hover, .menu a.active {
+   color: #ffffff;
+   text-decoration: underline;
+   background-color: rgba(255, 204, 0, 0.15);
+   border-radius: 6px;
+  }
+
+  /* ===== BOTÃO HAMBÚRGUER ===== */
+  .hamburger {
+   display: none;
+   flex-direction: column;
+   justify-content: space-around;
+   width: 42px;
+   height: 36px;
+   background: transparent;
+   border: none;
+   cursor: pointer;
+   padding: 0;
+   position: absolute;
+   right: 25px;
+   top: 20px;
+   z-index: 1001;
+  }
+
+  .hamburger span {
+   width: 100%;
+   height: 4px;
+   background-color: var(--gold);
+   border-radius: 3px;
+   transition: all 0.3s linear;
+  }
+
+  .hamburger.active span:nth-child(1) {
+   transform: rotate(45deg) translate(8px, 8px);
+  }
+
+  .hamburger.active span:nth-child(2) {
+   opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+   transform: rotate(-45deg) translate(7px, -7px);
+  }
+
+  /* ===== BANNER DE TOPO ===== */
+  .banner-topo {
+   width: 100%;
+   background-color: #2a2a2a;
+   padding: 15px;
+   text-align: center;
+   border-bottom: 1px solid var(--gold);
   }
   
-  .menu a:last-child {
-  border-bottom: none;
-  }
-  
-  .menu-container {
-  padding: 0;
-  }
-  
-  .conteudo-principal {
-  flex-direction: column;
-  }
-  
-  .sidebar {
-  width: 100%;
-  order: 3;
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-  }
-  
-  .ad-lateral {
-  margin-left: 0;
-  height: 250px;
-  width: 100%;
-  max-width: 728px;
-  }
-  
-  section{
-  flex-direction: column-reverse;
-  align-items: center;
-  text-align: center;
-  }
-  
-  section .texto, section .imagem{
-  width: 100%;
-  }
-  
-  .aviso18{
-  flex-direction: column;
-  text-align:center;
-  }
-  
-  .sobre-nos p {
-  width: 95%;
+  .ad-placeholder {
+   background-color: #2a2a2a;
+   border: 2px dashed #666;
+   border-radius: 8px;
+   color: #999;
+   text-align: center;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin: 0 auto;
+   box-sizing: border-box;
   }
   
   .ad-topo {
-  width: 100%;
-  height: auto;
-  min-height: 90px;
+   width: 728px;
+   height: 90px;
+   margin: 0 auto;
   }
- }
+  
+  .ad-lateral {
+   width: 300px;
+   height: 600px;
+   margin-left: 20px;
+  }
+  
+  .ad-placeholder p {
+   margin: 0;
+   font-size: 14px;
+  }
 
+  .conteudo-principal {
+   display: flex;
+   max-width: 1200px;
+   margin: 0 auto;
+   padding: 20px;
+   width: 100%;
+   flex: 1;
+  }
+  
+  .conteudo {
+   flex: 1;
+  }
 
+  section{
+   padding: 30px 0;
+   display: flex;
+   justify-content: space-between;
+   align-items: flex-start;
+   gap: 20px;
+   flex-wrap: wrap;
+   width: 100%;
+  }
 
- @media (max-width: 480px) {
-  header {
-  padding: 10px 12px;
+  section .texto{
+   flex: 1;
+   min-width: 300px;
   }
   
-  header img {
-  max-width: 120px;
+  section .texto h1{
+   color: var(--gold);
+   margin-bottom: 20px;
+   font-size: 2.6em;
+   text-align: center;
   }
   
-  .auth-buttons {
-  gap: 6px;
-  margin-right: 45px;
+  section .texto p{
+   color:#e6e6e6;
+   font-size: 1.1em;
+   text-align: justify;
+   margin-bottom: 20px;
+  }
+
+  .highlight{
+   color: var(--gold);
+   font-weight: bold;
+  }
+
+  section .imagem img{
+   max-width: 500px;
+   width: 100%;
+   border-radius: 12px;
+   border: 3px solid var(--gold);
+   box-shadow:0 4px 12px rgba(0,0,0,.6);
+  }
+
+  /* Barra lateral para banner */
+  .sidebar {
+   width: 340px;
+   padding: 10px;
+   flex-shrink: 0;
+  }
+
+  /* Seção Sobre Nós */
+  .sobre-nos {
+   background-color: var(--bg-2);
+   padding: 60px 20px;
+   margin: 40px 0;
+   border-top: 2px solid var(--gold);
+   border-bottom: 2px solid var(--gold);
   }
   
-  .auth-btn {
-  padding: 5px 10px;
-  font-size: 0.7rem;
+  .sobre-nos h2 {
+   color: var(--gold);
+   text-align: center;
+   font-size: 2.2em;
+   margin-bottom: 30px;
   }
   
-  .hamburger {
-  width: 32px;
-  height: 28px;
-  right: 12px;
+  .sobre-nos p {
+   color: #e6e6e6;
+   font-size: 1.1em;
+   line-height: 1.8;
+   text-align: justify;
+   max-width: 900px;
+   margin: 0 auto 20px;
   }
- }
+  
+  .sobre-nos .assinatura {
+   text-align: right;
+   margin-top: 30px;
+   font-style: italic;
+   color: var(--gold);
+  }
+
+  footer{
+   background: var(--bg-2);
+   text-align: center;
+   padding: 15px;
+   margin-top: 40px;
+   border-top: 2px solid var(--gold);
+   font-size: 14px;
+   color:#bbb;
+  }
+
+  .aviso18{
+   margin-top: 10px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 8px;
+   flex-wrap: wrap;
+  }
+  
+  .icone18{
+   background: red;
+   color: white;
+   font-weight: bold;
+   padding: 4px 8px;
+   border-radius: 6px;
+   font-size: 13px;
+  }
+
+  /* ===== RESPONSIVIDADE ===== */
+  @media (max-width: 992px) {
+   .menu a {
+    padding: 12px 18px;
+    font-size: 1rem;
+   }
+   
+   .auth-buttons {
+    right: 50px;
+   }
+   
+   .auth-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+   }
+   
+   .signup-btn {
+    padding: 6px 14px !important;
+   }
+   
+   .user-greeting {
+    display: none;
+   }
+  }
+
+  @media (max-width: 768px) {
+   header {
+    padding: 12px 15px;
+    min-height: 60px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+   }
+   
+   header img {
+    max-width: 140px;
+   }
+   
+   .auth-buttons {
+    position: static;
+    transform: none;
+    margin-top: 15px;
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
+    order: 3;
+   }
+   
+   .auth-btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+   }
+   
+   .signup-btn {
+    padding: 8px 18px !important;
+   }
+   
+   nav {
+    padding: 0;
+    background: transparent;
+   }
+   
+   .hamburger {
+    display: flex;
+    width: 36px;
+    height: 30px;
+    right: 15px;
+    top: 15px;
+    transform: none;
+    position: absolute;
+   }
+
+   .hamburger span {
+    height: 3px;
+   }
+
+   .menu {
+    flex-direction: column;
+    width: 100%;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--bg-3);
+    z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    padding: 15px 0;
+    border-top: 2px solid var(--gold);
+   }
+
+   .menu.active {
+    display: flex;
+   }
+
+   .menu li {
+    width: 100%;
+    text-align: center;
+   }
+
+   .menu a {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 1.1rem;
+   }
+   
+   .menu a:last-child {
+    border-bottom: none;
+   }
+   
+   .menu-container {
+    padding: 0;
+   }
+   
+   .conteudo-principal {
+    flex-direction: column;
+   }
+   
+   .sidebar {
+    width: 100%;
+    order: 3;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+   }
+   
+   .ad-lateral {
+    margin-left: 0;
+    height: 250px;
+    width: 100%;
+    max-width: 728px;
+   }
+   
+   section{
+    flex-direction: column-reverse;
+    align-items: center;
+    text-align: center;
+   }
+   
+   section .texto, section .imagem{
+    width: 100%;
+   }
+   
+   .aviso18{
+    flex-direction: column;
+    text-align:center;
+   }
+   
+   .sobre-nos p {
+    width: 95%;
+   }
+   
+   .ad-topo {
+    width: 100%;
+    height: auto;
+    min-height: 90px;
+   }
+  }
+
+  @media (max-width: 480px) {
+   header {
+    padding: 10px 12px;
+   }
+   
+   header img {
+    max-width: 120px;
+   }
+   
+   .auth-buttons {
+    gap: 6px;
+   }
+   
+   .auth-btn {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+   }
+   
+   .hamburger {
+    width: 32px;
+    height: 28px;
+    right: 12px;
+   }
+  }
  </style>
 </head>
 <body>
 
-
-
  <!-- Cabeçalho com botões de autenticação -->
  <header>
- <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
-
- <!-- Botões de Autenticação -->
- <div class="auth-buttons" id="auth-buttons">
-  <span class="user-greeting" id="user-greeting"></span>
-  <a href="login.html" class="auth-btn login-btn" id="login-button">Login</a>
-  <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastre-se</a>
-  <a href="perfil.html" class="auth-btn profile-btn" id="profile-button">Meu Perfil</a>
-  <button class="auth-btn logout-btn" id="logout-button" onclick="logout()">Sair</button>
- </div>
-
- <button class="hamburger" aria-label="Abrir menu">
-  <span></span>
-  <span></span>
-  <span></span>
- </button>
+  <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
+  
+  <!-- Botões de Autenticação -->
+  <div class="auth-buttons" id="auth-buttons">
+   <span class="user-greeting" id="user-greeting"></span>
+   <a href="login.html" class="auth-btn login-btn" id="login-button">Login</a>
+   <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastre-se</a>
+   <a href="perfil.html" class="auth-btn profile-btn" id="profile-button">Meu Perfil</a>
+   <button class="auth-btn logout-btn" id="logout-button">Sair</button>
+  </div>
+  
+  <button class="hamburger" aria-label="Abrir menu">
+   <span></span>
+   <span></span>
+   <span></span>
+  </button>
  </header>
-
-
 
  <!-- Navegação -->
  <nav>
- <div class="menu-container">
-  <ul class="menu">
-  <li><a href="index.html" class="active">Home</a></li>
-  <li><a href="pppoker.html">PPPoker</a></li>
-  <li><a href="suprema.html">Suprema Poker</a></li>
-  <li><a href="torneios.html">Torneios</a></li>
-  <li><a href="regrasdopoker.html">Regras do Poker</a></li>
-  <li><a href="divulgacao.html">Divulgação</a></li>
-  <li><a href="blog.html">Blog</a></li>
-  <li><a href="dicionario.html">Dicionário</a></li>
-  <li><a href="contato.html">Contato</a></li>
-  </ul>
- </div>
+  <div class="menu-container">
+   <ul class="menu">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="pppoker.html">PPPoker</a></li>
+    <li><a href="suprema.html">Suprema Poker</a></li>
+    <li><a href="torneios.html">Torneios</a></li>
+    <li><a href="regrasdopoker.html">Regras do Poker</a></li>
+    <li><a href="divulgacao.html">Divulgação</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="dicionario.html">Dicionário</a></li>
+    <li><a href="contato.html">Contato</a></li>
+   </ul>
+  </div>
  </nav>
-
-
 
  <!-- Banner de Topo -->
  <div class="banner-topo">
- <div class="ad-placeholder ad-topo">
-  <p>Espaço reservado para banner (728x90)</p>
+  <div class="ad-placeholder ad-topo">
+   <p>Espaço reservado para banner (728x90)</p>
+  </div>
  </div>
- </div>
-
-
 
  <div class="conteudo-principal">
- <div class="conteudo">
-  <!-- Seção principal -->
-  <section>
-  <div class="texto">
-   <h1>Bem-vindo à Guilda do Poker</h1>
-   <p>
-   A Guilda do Poker é um espaço para jogadores apaixonados por estratégia, diversão e competição.
-   Aqui você encontra torneios, cash games e parceiros confiáveis.
-   <br><br>
-    <span class="highlight">ID da Guilda do Poker no PPPoker</span>: <strong>4583211</strong><br>
-    <span class="highlight">Agente no Suprema Poker</span><br>
-   ID do Clube: <strong>29446</strong><br>
-   ID do Agente: <strong>1422946</strong><br><br><br>
-   </p>
+  <div class="conteudo">
+   <!-- Seção principal -->
+   <section>
+    <div class="texto">
+     <h1>Bem-vindo à Guilda do Poker</h1>
+     <p>
+      A Guilda do Poker é um espaço para jogadores apaixonados por estratégia, diversão и competição.
+      Aqui você encontra torneios, cash games e parceiros confiáveis.
+      <br><br>
+       <span class="highlight">ID da Guilda do Poker no PPPoker</span>: <strong>4583211</strong><br>
+       <span class="highlight">Agente no Suprema Poker</span><br>
+      ID do Clube: <strong>29446</strong><br>
+      ID do Agente: <strong>1422946</strong><br><br><br>
+     </p>
+    </div>
+
+    <div class="imagem">
+     <img src="mulhercroupier1.jpg" alt="Croupier do Poker">
+    </div>
+   </section>
+
+   <!-- Seção Sobre Nós -->
+   <div class="sobre-nos">
+    <h2>Sobre Nós</h2>
+    <p>
+     A Guilda do Poker foi criada para reunir jogadores em uma comunidade acolhedora, aberta tanto a iniciantes quanto a experientes.
+     Nosso propósito e proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
+    <p>
+     Estamos em constante crescimento и evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam
+     nossa comunidade. Um dos nossos principais objetivos e introduzir formatos inovadores de torneios, trazendo variedade e
+     dinamismo para nossas mesas, mantendo sempre a acessibilidade e o equilibrio competitivo.
+    </p>
+    <p>
+     Nosso trabalho é guiado por valores fundamentais: a responsabilidade no jogo, a diversão sebagai elemento central,
+     a competitividade saudável e o respeito entre todos os membros. Acreditamos que o poker vai além das cartas e fichas -
+     é uma experiência social que une pessoas em torno da estratégia, do raciocínio rápido e da emoção do jogo.
+    </p>
+    <p>
+     Meu nome é Bruno Macedo, e tenho sebagai missão pessoal fortalecer cada vez mais nossa comunidade, criando laços duradouros
+     entre jogadores e estabelecendo a Guilda do Poker como referência em ambientes virtuais de poker. Estou comprometido em
+     evoluir nosso clube continuamente, ouvindo sugestões e implementando melhorias que elevem a experiência de jogo para todos.
+    </p>
+    <p>
+     Junte-se a nós nessa jornada e faça parte de uma comunidade que valoriza cada jogador, onde sua presença contribui para
+     tornar nosso clube ainda mais especial e acolhedor.
+    </p>
+    <p class="assinatura">Bruno Macedo<br>Fundador da Guilda do Poker</p>
+   </div>
   </div>
-
-
-
-  <div class="imagem">
-   <img src="mulhercroupier1.jpg" alt="Croupier do Poker">
-  </div>
-  </section>
-
-
-
-  <!-- Seção Sobre Nós -->
-  <div class="sobre-nos">
-  <h2>Sobre Nós</h2>
-  <p>
-   A Guilda do Poker foi criada para reunir jogadores em uma comunidade acolhedora, aberta tanto a iniciantes quanto a experientes.
-   Nosso propósito e proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
-  <p>
-   Estamos em constante crescimento và evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam
-   nossa comunidade. Um dos nossos principais objetivos e introduzir formatos inovadores de torneios, trazendo variedade e
-   dinamismo para nossas mesas, mantendo sempre a acessibilidade e o equilibrio competitivo.
-  </p>
-  <p>
-   Nosso trabalho é guiado por valores fundamentais: a responsabilidade no jogo, a diversão sebagai elemento central,
-   a competitividade saudável e o respeito entre todos os membros. Acreditamos que o poker vai além das cartas e fichas -
-   é uma experiência social que une pessoas em torno da estratégia, do raciocínio rápido e da emoção do jogo.
-  </p>
-  <p>
-   Meu nome é Bruno Macedo, e tenho sebagai missão pessoal fortalecer cada vez mais nossa comunidade, criando laços duradouros
-   entre jogadores e estabelecendo a Guilda do Poker como referência em ambientes virtuais de poker. Estou comprometido em
-   evoluir nosso clube continuamente, ouvindo sugestões e implementando melhorias que elevem a experiência de jogo para todos.
-  </p>
-  <p>
-   Junte-se a nós nessa jornada e faça parte de uma comunidade que valoriza cada jogador, onde sua presença contribui para
-   tornar nosso clube ainda mais especial e acolhedor.
-  </p>
-  <p class="assinatura">Bruno Macedo<br>Fundador da Guilda do Poker</p>
-  </div>
- </div>
-
- <!-- Banner Lateral -->
- <div class="sidebar">
-  <div class="ad-placeholder ad-lateral">
-  <p>Espaço reservado para banner (300x600)</p>
+  
+  <!-- Banner Lateral -->
+  <div class="sidebar">
+   <div class="ad-placeholder ad-lateral">
+    <p>Espaço reservado para banner (300x600)</p>
+   </div>
   </div>
  </div>
- </div>
-
-
 
  <!-- Rodapé -->
  <footer>
- <p>© 2025 Guilda do Poker - Todos os direitos reservados</p>
- <div class="aviso18">
-  <span class="icone18">18+</span>
-  <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
- </div>
- <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-  <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
-  <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
- </div>
+  <p>© 2025 Guilda do Poker - Todos os direitos reservados</p>
+  <div class="aviso18">
+   <span class="icone18">18+</span>
+   <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+  </div>
+  <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+   <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
+   <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
+  </div>
  </footer>
-
-
 
  <!-- Script do menu mobile -->
  <script>
- // Menu hamburger
- const hamburger = document.querySelector('.hamburger');
- const menu = document.querySelector('.menu');
-
- hamburger.addEventListener('click', () => {
-  hamburger.classList.toggle('active');
-  menu.classList.toggle('active');
- });
-
- // Fechar menu ao clicar em um link (mobile)
- const menuLinks = document.querySelectorAll('.menu a');
- menuLinks.forEach(link => {
-  link.addEventListener('click', () => {
-  if (window.innerWidth <= 768) {
-   hamburger.classList.remove('active');
-   menu.classList.remove('active');
-  }
+  // Menu hamburger
+  const hamburger = document.querySelector('.hamburger');
+  const menu = document.querySelector('.menu');
+  
+  hamburger.addEventListener('click', () => {
+   hamburger.classList.toggle('active');
+   menu.classList.toggle('active');
   });
- });
+  
+  // Fechar menu ao clicar em um link (mobile)
+  const menuLinks = document.querySelectorAll('.menu a');
+  menuLinks.forEach(link => {
+   link.addEventListener('click', () => {
+    if (window.innerWidth <= 768) {
+     hamburger.classList.remove('active');
+     menu.classList.remove('active');
+    }
+   });
+  });
+  
+  // Configuração do Supabase
+  const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true
+    }
+  });
+
+  // Verificar se usuário está logado ao carregar a página
+  document.addEventListener('DOMContentLoaded', async function() {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (session) {
+      // Buscar dados do perfil para pegar o apelido
+      const userApelido = await getUserApelido(session.user.id);
+      updateUIForLoggedInUser(session.user, userApelido);
+    } else {
+      updateUIForLoggedOutUser();
+    }
+    
+    // Adicionar evento de clique para o botão de logout
+    document.getElementById('logout-button').addEventListener('click', logout);
+  });
+
+  // Buscar apelido do usuário
+  async function getUserApelido(userId) {
+    try {
+      const { data, error } = await supabase
+        .from('perfis')
+        .select('apelido_poker')
+        .eq('id', userId)
+        .single();
+
+      if (error || !data) {
+        console.log('Apelido não encontrado, usando email');
+        return null;
+      }
+
+      return data.apelido_poker;
+    } catch (error) {
+      console.error('Erro ao buscar apelido:', error);
+      return null;
+    }
+  }
+
+  // Atualizar UI para usuário logado
+  function updateUIForLoggedInUser(user, apelido) {
+    // Esconder botões de login/cadastro
+    document.getElementById('login-button').style.display = 'none';
+    document.getElementById('signup-button').style.display = 'none';
+    
+    // Mostrar botões de perfil/logout
+    document.getElementById('profile-button').style.display = 'block';
+    document.getElementById('logout-button').style.display = 'block';
+    
+    // Atualizar saudação com apelido ou email
+    const userGreeting = document.getElementById('user-greeting');
+    if (apelido) {
+      userGreeting.textContent = `Olá, ${apelido}`;
+    } else {
+      userGreeting.textContent = `Olá, ${user.email}`;
+    }
+    userGreeting.style.display = 'block';
+  }
+
+  // Atualizar UI para usuário não logado
+  function updateUIForLoggedOutUser() {
+    // Mostrar botões de login/cadastro
+    document.getElementById('login-button').style.display = 'block';
+    document.getElementById('signup-button').style.display = 'block';
+    
+    // Esconder botões de perfil/logout
+    document.getElementById('profile-button').style.display = 'none';
+    document.getElementById('logout-button').style.display = 'none';
+    
+    // Esconder saudação
+    document.getElementById('user-greeting').style.display = 'none';
+  }
+
+  // Função de logout
+  async function logout() {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Erro ao fazer logout:', error);
+        alert('Erro ao fazer logout. Tente novamente.');
+        return;
+      }
+      
+      // Atualizar UI e recarregar
+      updateUIForLoggedOutUser();
+      window.location.reload();
+      
+    } catch (error) {
+      console.error('Erro inesperado no logout:', error);
+      alert('Erro inesperado. Tente novamente.');
+    }
+  }
  </script>
-
-
-
-<script>
-// Configuração do Supabase
-const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-
-
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
- auth: {
-  persistSession: true,
-  autoRefreshToken: true
- }
-});
-
-
-
-// Verificar se usuário está logado ao carregar a página
-document.addEventListener('DOMContentLoaded', async function() {
- const { data: { session } } = await supabase.auth.getSession();
-
- if (session) {
-  // Buscar dados do perfil para pegar o apelido
-  const userApelido = await getUserApelido(session.user.id);
-  updateUIForLoggedInUser(session.user, userApelido);
- } else {
-  updateUIForLoggedOutUser();
- }
-});
-
-
-
-// Buscar apelido do usuário
-async function getUserApelido(userId) {
- try {
-  const { data, error } = await supabase
-   .from('perfis')
-   .select('apelido_poker')
-   .eq('id', userId)
-   .single();
-
-
-
-  if (error || !data) {
-   console.log('Apelido não encontrado, usando email');
-   return null;
-  }
-
-
-
-  return data.apelido_poker;
- } catch (error) {
-  console.error('Erro ao buscar apelido:', error);
-  return null;
- }
-}
-
-
-
-// Atualizar UI para usuário logado
-function updateUIForLoggedInUser(user, apelido) {
- // Esconder botões de login/cadastro
- document.getElementById('login-button').style.display = 'none';
- document.getElementById('signup-button').style.display = 'none';
-
- // Mostrar botões de perfil/logout
- document.getElementById('profile-button').style.display = 'block';
- document.getElementById('logout-button').style.display = 'block';
-
- // Atualizar saudação com apelido ou email
- const userGreeting = document.getElementById('user-greeting');
- if (apelido) {
-  userGreeting.textContent = `Olá, ${apelido}`;
- } else {
-  userGreeting.textContent = `Olá, ${user.email}`;
- }
- userGreeting.style.display = 'block';
-}
-
-
-
-// Atualizar UI para usuário não logado
-function updateUIForLoggedOutUser() {
- // Mostrar botões de login/cadastro
- document.getElementById('login-button').style.display = 'block';
- document.getElementById('signup-button').style.display = 'block';
-
- // Esconder botões de perfil/logout
- document.getElementById('profile-button').style.display = 'none';
- document.getElementById('logout-button').style.display = 'none';
-
- // Esconder saudação
- document.getElementById('user-greeting').style.display = 'none';
-}
-
-
-
-// Função de logout
-async function logout() {
- try {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-   console.error('Erro ao fazer logout:', error);
-   alert('Erro ao fazer logout. Tente novamente.');
-   return;
-  }
-  
-  // Limpar dados de autenticação
-  localStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
-  
-  // Atualizar UI e recarregar
-  updateUIForLoggedOutUser();
-  setTimeout(() => {
-   window.location.reload();
-  }, 500);
-  
- } catch (error) {
-  console.error('Erro inesperado no logout:', error);
- }
-}
-</script>
 </body>
 </html>
-
-
