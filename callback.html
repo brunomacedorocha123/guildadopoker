@@ -168,6 +168,18 @@
             display: none;
         }
         
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: left;
+            color: #bbb;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
         @media (max-width: 480px) {
             .container {
                 padding: 30px 20px;
@@ -192,7 +204,7 @@
         
         <div id="status" class="status loading">
             <div class="spinner"></div>
-            <p>Verificando sua sessão...</p>
+            <p id="status-message">Verificando sua sessão...</p>
         </div>
         
         <div id="buttons" class="hidden">
@@ -202,6 +214,11 @@
         
         <div id="countdown" class="countdown hidden">
             Redirecionando em <span id="countdown-value">5</span> segundos...
+        </div>
+        
+        <div id="debug" class="debug-info hidden">
+            <strong>Informações de Debug:</strong>
+            <div id="debug-content"></div>
         </div>
     </div>
 
@@ -214,93 +231,177 @@
             auth: {
                 persistSession: true,
                 autoRefreshToken: true,
-                detectSessionInUrl: true
+                detectSessionInUrl: true,
+                storage: localStorage
             }
         });
 
-        // Processar quando a página carregar
-        document.addEventListener('DOMContentLoaded', async function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get('status');
-            const message = urlParams.get('message');
-            
-            const statusElement = document.getElementById('status');
-            const buttonsElement = document.getElementById('buttons');
-            const countdownElement = document.getElementById('countdown');
-            
-            // Verificar autenticação real com Supabase
+        // Elementos DOM
+        const statusElement = document.getElementById('status');
+        const statusMessage = document.getElementById('status-message');
+        const buttonsElement = document.getElementById('buttons');
+        const countdownElement = document.getElementById('countdown');
+        const debugElement = document.getElementById('debug');
+        const debugContent = document.getElementById('debug-content');
+
+        // Modo debug - habilitar para troubleshooting
+        const DEBUG_MODE = true;
+
+        // Função para debug
+        function logDebug(message) {
+            if (DEBUG_MODE) {
+                console.log('[DEBUG]', message);
+                debugContent.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${message}</div>`;
+                debugElement.classList.remove('hidden');
+            }
+        }
+
+        // Processar autenticação
+        async function processAuthentication() {
             try {
-                console.log('Verificando autenticação no callback...');
+                logDebug('Iniciando processamento de autenticação...');
+
+                // 1. Verificar se há hash de autenticação na URL
+                if (window.location.hash) {
+                    logDebug('Hash encontrado na URL: ' + window.location.hash.substring(0, 50) + '...');
+                    
+                    // O Supabase deve processar automaticamente o hash
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+
+                // 2. Aguardar a persistência da sessão
+                logDebug('Aguardando persistência da sessão...');
+                statusMessage.textContent = 'Persistindo sessão...';
                 
-                // Aguardar um pouco para garantir que a sessão foi persistida
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await waitForSessionPersisted();
+
+                // 3. Verificar sessão novamente
+                logDebug('Verificando sessão persistida...');
+                statusMessage.textContent = 'Verificando sessão...';
                 
                 const { data: { session }, error } = await supabase.auth.getSession();
-                
+
                 if (error) {
-                    console.error('Erro ao verificar sessão:', error);
-                    showError('Erro na autenticação. Tente novamente.');
-                    return;
+                    logDebug('Erro ao obter sessão: ' + error.message);
+                    throw new Error('Erro na autenticação: ' + error.message);
                 }
-                
+
                 if (session) {
-                    // Verificar se a sessão é válida
+                    // Verificar validade da sessão
                     const expiresAt = new Date(session.expires_at);
                     const isValid = expiresAt > new Date();
                     
+                    logDebug(`Sessão encontrada - Válida: ${isValid}, Expira: ${expiresAt}`);
+                    
                     if (isValid) {
-                        console.log('Sessão válida encontrada!');
+                        logDebug('Autenticação bem-sucedida!');
                         showSuccess('Login realizado com sucesso! Redirecionando...');
                         startCountdown('https://guildadopoker.netlify.app/', 3);
+                        return;
                     } else {
-                        console.log('Sessão expirada');
-                        showError('Sessão expirada. Faça login novamente.');
+                        logDebug('Sessão expirada');
+                        // Tentar renovar o token
+                        await attemptTokenRefresh();
                     }
-                } else {
-                    console.log('Nenhuma sessão encontrada');
-                    showError('Autenticação falhou. Tente novamente.');
+                }
+
+                // 4. Se chegou aqui, a autenticação falhou
+                logDebug('Autenticação falhou - Nenhuma sessão válida encontrada');
+                throw new Error('Não foi possível autenticar a sessão');
+
+            } catch (error) {
+                logDebug('Erro no processamento: ' + error.message);
+                showError('Problema na sessão. Tente novamente.');
+                
+                // Limpar sessão inválida
+                await cleanupInvalidSession();
+            }
+        }
+
+        // Aguardar a sessão ser persistida
+        async function waitForSessionPersisted() {
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+                const maxAttempts = 20; // 10 segundos no total
+                
+                const checkInterval = setInterval(async () => {
+                    attempts++;
+                    
+                    try {
+                        const { data: { session } } = await supabase.auth.getSession();
+                        const storageKey = 'sb-ffyectkjlwgqzjgwhexy-auth-token';
+                        const storedSession = localStorage.getItem(storageKey);
+                        
+                        logDebug(`Tentativa ${attempts}: Sessão: ${!!session}, Storage: ${!!storedSession}`);
+                        
+                        if (session || attempts >= maxAttempts) {
+                            clearInterval(checkInterval);
+                            resolve();
+                        }
+                    } catch (error) {
+                        clearInterval(checkInterval);
+                        reject(error);
+                    }
+                }, 500);
+            });
+        }
+
+        // Tentar renovar o token
+        async function attemptTokenRefresh() {
+            try {
+                logDebug('Tentando renovar token...');
+                const { data, error } = await supabase.auth.refreshSession();
+                
+                if (error) {
+                    logDebug('Erro ao renovar token: ' + error.message);
+                    return false;
                 }
                 
-            } catch (error) {
-                console.error('Erro inesperado:', error);
-                showError('Erro inesperado. Tente novamente.');
-            }
-            
-            // Mostrar mensagem de parâmetros da URL se existir
-            if (status && message) {
-                const decodedMessage = decodeURIComponent(message);
-                if (status === 'success') {
-                    showSuccess(decodedMessage);
-                } else if (status === 'error') {
-                    showError(decodedMessage);
+                if (data.session) {
+                    logDebug('Token renovado com sucesso');
+                    return true;
                 }
+                
+                return false;
+            } catch (error) {
+                logDebug('Erro na renovação: ' + error.message);
+                return false;
             }
-        });
-        
+        }
+
+        // Limpar sessão inválida
+        async function cleanupInvalidSession() {
+            try {
+                await supabase.auth.signOut();
+                localStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
+                sessionStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
+                logDebug('Sessão inválida limpa');
+            } catch (error) {
+                logDebug('Erro ao limpar sessão: ' + error.message);
+            }
+        }
+
+        // Funções de UI
         function showSuccess(message) {
-            const statusElement = document.getElementById('status');
             statusElement.className = 'status success';
             statusElement.innerHTML = `<p>✅ ${message}</p>`;
-            
-            document.getElementById('buttons').classList.remove('hidden');
-            document.getElementById('countdown').classList.remove('hidden');
+            buttonsElement.classList.remove('hidden');
+            countdownElement.classList.remove('hidden');
         }
-        
+
         function showError(message) {
-            const statusElement = document.getElementById('status');
             statusElement.className = 'status error';
             statusElement.innerHTML = `<p>❌ ${message}</p>`;
-            
-            document.getElementById('buttons').classList.remove('hidden');
-            document.getElementById('countdown').classList.add('hidden');
+            buttonsElement.classList.remove('hidden');
+            countdownElement.classList.add('hidden');
         }
-        
+
         function startCountdown(url, seconds = 5) {
             let countdown = seconds;
             const countdownElement = document.getElementById('countdown-value');
             countdownElement.textContent = countdown;
             
-            document.getElementById('countdown').classList.remove('hidden');
+            countdownElement.parentElement.classList.remove('hidden');
             
             const interval = setInterval(() => {
                 countdown--;
@@ -312,37 +413,47 @@
                 }
             }, 1000);
         }
-        
-        // Função para extrair parâmetros da URL
-        function getUrlParameter(name) {
-            name = name.replace(/[\[\]]/g, '\\$&');
-            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-            const results = regex.exec(window.location.href);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
-        }
-        
-        // Verificar se há hash de autenticação na URL
-        function checkAuthHash() {
-            if (window.location.hash.includes('access_token') || 
-                window.location.hash.includes('error')) {
-                console.log('Hash de autenticação detectado:', window.location.hash);
-                
-                // O Supabase deve lidar automaticamente com isso,
-                // mas forçamos uma verificação extra
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', async function() {
+            logDebug('Página carregada - Iniciando autenticação');
+            
+            // Processar parâmetros da URL primeiro
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const message = urlParams.get('message');
+            
+            if (status && message) {
+                const decodedMessage = decodeURIComponent(message);
+                if (status === 'success') {
+                    showSuccess(decodedMessage);
+                    return;
+                } else if (status === 'error') {
+                    showError(decodedMessage);
+                    return;
+                }
+            }
+            
+            // Processar autenticação
+            try {
+                await processAuthentication();
+            } catch (error) {
+                logDebug('Erro fatal: ' + error.message);
+                showError('Erro inesperado. Tente novamente.');
+            }
+        });
+
+        // Listener para eventos de auth do Supabase
+        supabase.auth.onAuthStateChange((event, session) => {
+            logDebug(`Evento de auth: ${event}, Sessão: ${!!session}`);
+            
+            if (event === 'SIGNED_IN' && session) {
+                logDebug('SIGNED_IN - Redirecionando...');
                 setTimeout(() => {
-                    supabase.auth.getSession().then(({ data: { session } }) => {
-                        if (session) {
-                            window.location.href = 'https://guildadopoker.netlify.app/';
-                        }
-                    });
+                    window.location.href = 'https://guildadopoker.netlify.app/';
                 }, 1000);
             }
-        }
-        
-        // Executar verificação de hash
-        checkAuthHash();
+        });
     </script>
 </body>
 </html>
