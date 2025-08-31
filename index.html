@@ -643,6 +643,10 @@
         }
     });
 
+    // Variável global para controlar o estado de autenticação
+    let authChecked = false;
+    let authState = false;
+
     // Função de logout
     window.logout = async function() {
         try {
@@ -677,6 +681,11 @@
 
     // Verificação robusta de autenticação - VERSÃO CORRIGIDA
     async function checkAuthState() {
+        if (authChecked) {
+            console.log('Autenticação já verificada, estado:', authState);
+            return authState;
+        }
+
         try {
             console.log('Verificando autenticação...');
             
@@ -687,13 +696,8 @@
                 // Limpar o parâmetro da URL
                 window.history.replaceState({}, document.title, window.location.pathname);
                 
-                // Forçar uma verificação completa da sessão após login
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session) {
-                    console.log('Sessão encontrada após login:', session);
-                    updateAuthUI(true);
-                    return true;
-                }
+                // Aguardar um pouco para garantir que a sessão foi persistida
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
             
             // 2. Verificar logout
@@ -701,19 +705,61 @@
                 console.log('Logout bem-sucedido detectado via URL');
                 window.history.replaceState({}, document.title, window.location.pathname);
                 updateAuthUI(false);
+                authChecked = true;
+                authState = false;
                 return false;
             }
             
-            // 3. Verificar sessão manual (fallback)
+            // 3. Verificar sessão do Supabase PRIMEIRO (mais confiável)
+            const { data: { session }, error } = await supabase.auth.getSession();
+            
+            if (error) {
+                console.warn('Erro ao verificar sessão Supabase:', error.message);
+            }
+            
+            if (session) {
+                const expiresAt = new Date(session.expires_at);
+                const isValid = expiresAt > new Date();
+                
+                console.log('Sessão Supabase - Válida:', isValid, 'Expira:', expiresAt);
+                
+                if (isValid) {
+                    console.log('Autenticado via Supabase');
+                    updateAuthUI(true);
+                    authChecked = true;
+                    authState = true;
+                    
+                    // Sincronizar sessão manual
+                    const sessionData = {
+                        access_token: session.access_token,
+                        refresh_token: session.refresh_token,
+                        expires_at: session.expires_at,
+                        user: {
+                            id: session.user.id,
+                            email: session.user.email
+                        }
+                    };
+                    localStorage.setItem('guilda-poker-auth', JSON.stringify(sessionData));
+                    
+                    return true;
+                } else {
+                    console.log('Sessão Supabase expirada');
+                    await supabase.auth.signOut();
+                }
+            }
+            
+            // 4. Verificar sessão manual (fallback) - SÓ SE SUPABASE FALHAR
             const manualAuth = localStorage.getItem('guilda-poker-auth');
-            if (manualAuth) {
+            if (manualAuth && !session) {
                 try {
                     const authData = JSON.parse(manualAuth);
                     const expiresAt = new Date(authData.expires_at);
                     
                     if (expiresAt > new Date()) {
-                        console.log('Sessão manual válida encontrada');
+                        console.log('Sessão manual válida encontrada (fallback)');
                         updateAuthUI(true);
+                        authChecked = true;
+                        authState = true;
                         return true;
                     } else {
                         console.log('Sessão manual expirada');
@@ -725,38 +771,18 @@
                 }
             }
             
-            // 4. Verificar sessão do Supabase
-            const { data: { session }, error } = await supabase.auth.getSession();
-            
-            if (error) {
-                console.warn('Erro ao verificar sessão:', error.message);
-                updateAuthUI(false);
-                return false;
-            }
-            
-            if (session) {
-                const expiresAt = new Date(session.expires_at);
-                const isValid = expiresAt > new Date();
-                
-                console.log('Sessão Supabase - Válida:', isValid, 'Expira:', expiresAt);
-                
-                if (isValid) {
-                    updateAuthUI(true);
-                    return true;
-                } else {
-                    console.log('Sessão expirada');
-                    await supabase.auth.signOut();
-                }
-            }
-            
             // 5. Se não encontrou sessão válida
             console.log('Nenhuma sessão válida encontrada');
             updateAuthUI(false);
+            authChecked = true;
+            authState = false;
             return false;
             
         } catch (error) {
             console.error('Erro na verificação de autenticação:', error);
             updateAuthUI(false);
+            authChecked = true;
+            authState = false;
             return false;
         }
     }
@@ -827,18 +853,37 @@
         // Verificar autenticação imediatamente
         checkAuthState();
         
-        // Verificar novamente após um breve delay (para garantir que a sessão foi persistida)
+        // Verificar novamente após um delay (para sessões que demoram a persistir)
         setTimeout(async () => {
-            await checkAuthState();
-        }, 800);
+            if (!authChecked) {
+                console.log('Verificação secundária de autenticação...');
+                await checkAuthState();
+            }
+        }, 1000);
+        
+        // Verificação final após 3 segundos (fallback)
+        setTimeout(async () => {
+            if (!authChecked) {
+                console.log('Verificação final de autenticação...');
+                await checkAuthState();
+            }
+        }, 3000);
     });
 
-    // Ouvir mudanças de autenticação
+    // Ouvir mudanças de autenticação - COM PROTECÇÃO CONTRA FLICKERING
     supabase.auth.onAuthStateChange((event, session) => {
         console.log('Evento de autenticação:', event);
         
+        // Ignorar eventos se já tivermos um estado definido
+        if (authChecked) {
+            console.log('Evento ignorado - autenticação já verificada');
+            return;
+        }
+        
         if (event === 'SIGNED_IN') {
             console.log('Usuário autenticado - atualizando UI');
+            authState = true;
+            authChecked = true;
             updateAuthUI(true);
             
             // Salvar sessão manualmente como fallback
@@ -856,13 +901,12 @@
             }
         } else if (event === 'SIGNED_OUT') {
             console.log('Usuário deslogado - atualizando UI');
+            authState = false;
+            authChecked = true;
             updateAuthUI(false);
             
             // Limpar sessão manual
             localStorage.removeItem('guilda-poker-auth');
-        } else if (event === 'TOKEN_REFRESHED') {
-            console.log('Token atualizado - verificando sessão novamente');
-            checkAuthState();
         }
     });
 
@@ -870,6 +914,8 @@
     window.debugAuth = function() {
         console.group('Debug de Autenticação');
         console.log('URL:', window.location.href);
+        console.log('Auth checked:', authChecked);
+        console.log('Auth state:', authState);
         
         // Verificar sessão manual
         const manualAuth = localStorage.getItem('guilda-poker-auth');
