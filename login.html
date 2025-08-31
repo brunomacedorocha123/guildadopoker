@@ -137,22 +137,6 @@
             color: var(--error);
             border: 2px solid var(--error);
         }
-        
-        .password-wrapper {
-            position: relative;
-        }
-        
-        .toggle-password {
-            position: absolute;
-            right: 15px;  /* Ajustei a posição para o botão ficar mais à direita */
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text);
-            cursor: pointer;
-            padding: 5px;
-        }
     </style>
 </head>
 <body>
@@ -172,10 +156,7 @@
             
             <div class="form-group">
                 <label for="password">Senha</label>
-                <div class="password-wrapper">
-                    <input type="password" id="password" required placeholder="Sua senha">
-                    <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>
-                </div>
+                <input type="password" id="password" required placeholder="Sua senha">
             </div>
             
             <button type="submit" id="login-button">
@@ -211,20 +192,6 @@
         setTimeout(() => {
             messageDiv.style.display = 'none';
         }, 3000);
-    }
-
-    // Função para mostrar/ocultar senha
-    function togglePassword() {
-        const passwordInput = document.getElementById('password');
-        const toggleButton = document.querySelector('.toggle-password');
-        
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            toggleButton.textContent = '🔒';
-        } else {
-            passwordInput.type = 'password';
-            toggleButton.textContent = '👁️';
-        }
     }
 
     // Função principal de login
@@ -270,7 +237,6 @@
         }
     }
 
-    //
     // Event listener para o formulário
     document.getElementById('login-form').addEventListener('submit', handleLogin);
 

@@ -149,8 +149,8 @@
       font-size: 1.05rem;
     }
 
-    .menu a:hover, .menu a.active {
-      color: #ffffff;
+    .menu a:hover, .menu a.active { 
+      color: #ffffff; 
       text-decoration: underline;
       background-color: rgba(255, 204, 0, 0.15);
       border-radius: 6px;
@@ -375,7 +375,7 @@
       }
       
       .user-greeting {
-        display: none; /* Esconder saudação em mobile */
+        display: none;
       }
     }
 
@@ -396,7 +396,7 @@
         margin-top: 0;
         width: auto;
         gap: 8px;
-        margin-right: 55px; /* Espaço para o hamburger */
+        margin-right: 55px;
       }
       
       .auth-btn {
@@ -655,17 +655,37 @@
   </footer>
 
   <!-- Script do menu mobile -->
-<script>
-// Configuração do Supabase (a mesma em todas as páginas)
-const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+  <script>
+    // Menu hamburger
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.menu');
+    
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      menu.classList.toggle('active');
+    });
+    
+    // Fechar menu ao clicar em um link (mobile)
+    const menuLinks = document.querySelectorAll('.menu a');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          hamburger.classList.remove('active');
+          menu.classList.remove('active');
+        }
+      });
+    });
+  </script>
 
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+<script>
+// Configuração do Supabase
+const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: {
         persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        storage: localStorage
+        autoRefreshToken: true
     }
 });
 
@@ -674,47 +694,67 @@ document.addEventListener('DOMContentLoaded', async function() {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (session) {
-        // Usuário está logado, mostrar botão de perfil/logout
-        console.log('Usuário logado:', session.user.email);
-        updateUIForLoggedInUser(session.user);
+        // Buscar dados do perfil para pegar o apelido
+        const userApelido = await getUserApelido(session.user.id);
+        updateUIForLoggedInUser(session.user, userApelido);
     } else {
-        // Usuário não está logado, mostrar botão de login
-        console.log('Usuário não logado');
         updateUIForLoggedOutUser();
     }
 });
 
-// Atualizar UI para usuário logado
-function updateUIForLoggedInUser(user) {
-    // Esconder botão de login
-    const loginBtn = document.getElementById('login-button');
-    const profileBtn = document.getElementById('profile-button');
-    const logoutBtn = document.getElementById('logout-button');
-    
-    if (loginBtn) loginBtn.style.display = 'none';
-    if (profileBtn) profileBtn.style.display = 'block';
-    if (logoutBtn) logoutBtn.style.display = 'block';
-    
-    // Atualizar saudação se existir
-    const userGreeting = document.getElementById('user-greeting');
-    if (userGreeting) {
-        userGreeting.textContent = `Olá, ${user.email}`;
-        userGreeting.style.display = 'block';
+// Buscar apelido do usuário
+async function getUserApelido(userId) {
+    try {
+        const { data, error } = await supabase
+            .from('perfis')
+            .select('apelido_poker')
+            .eq('id', userId)
+            .single();
+
+        if (error || !data) {
+            console.log('Apelido não encontrado, usando email');
+            return null;
+        }
+
+        return data.apelido_poker;
+    } catch (error) {
+        console.error('Erro ao buscar apelido:', error);
+        return null;
     }
+}
+
+// Atualizar UI para usuário logado
+function updateUIForLoggedInUser(user, apelido) {
+    // Esconder botões de login/cadastro
+    document.getElementById('login-button').style.display = 'none';
+    document.getElementById('signup-button').style.display = 'none';
+    
+    // Mostrar botões de perfil/logout
+    document.getElementById('profile-button').style.display = 'block';
+    document.getElementById('logout-button').style.display = 'block';
+    
+    // Atualizar saudação com apelido ou email
+    const userGreeting = document.getElementById('user-greeting');
+    if (apelido) {
+        userGreeting.textContent = `Olá, ${apelido}`;
+    } else {
+        userGreeting.textContent = `Olá, ${user.email}`;
+    }
+    userGreeting.style.display = 'block';
 }
 
 // Atualizar UI para usuário não logado
 function updateUIForLoggedOutUser() {
-    const loginBtn = document.getElementById('login-button');
-    const profileBtn = document.getElementById('profile-button');
-    const logoutBtn = document.getElementById('logout-button');
+    // Mostrar botões de login/cadastro
+    document.getElementById('login-button').style.display = 'block';
+    document.getElementById('signup-button').style.display = 'block';
     
-    if (loginBtn) loginBtn.style.display = 'block';
-    if (profileBtn) profileBtn.style.display = 'none';
-    if (logoutBtn) logoutBtn.style.display = 'none';
+    // Esconder botões de perfil/logout
+    document.getElementById('profile-button').style.display = 'none';
+    document.getElementById('logout-button').style.display = 'none';
     
-    const userGreeting = document.getElementById('user-greeting');
-    if (userGreeting) userGreeting.style.display = 'none';
+    // Esconder saudação
+    document.getElementById('user-greeting').style.display = 'none';
 }
 
 // Função de logout
@@ -723,14 +763,19 @@ async function logout() {
         const { error } = await supabase.auth.signOut();
         if (error) {
             console.error('Erro ao fazer logout:', error);
+            alert('Erro ao fazer logout. Tente novamente.');
+            return;
         }
         
         // Limpar dados de autenticação
         localStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
-        localStorage.removeItem('guilda-poker-auth');
         
-        // Recarregar a página para atualizar UI
-        window.location.reload();
+        // Atualizar UI e recarregar
+        updateUIForLoggedOutUser();
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+        
     } catch (error) {
         console.error('Erro inesperado no logout:', error);
     }
