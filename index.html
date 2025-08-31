@@ -630,9 +630,9 @@
 
   <!-- Script do menu mobile -->
 <script>
-    // Configuração do Supabase
+    // Configuração do Supabase - CHAVE CORRIGIDA
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJstupXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
         auth: {
@@ -675,7 +675,7 @@
         }
     }
 
-    // Verificação robusta de autenticação
+    // Verificação robusta de autenticação - VERSÃO CORRIGIDA
     async function checkAuthState() {
         try {
             console.log('Verificando autenticação...');
@@ -686,9 +686,25 @@
                 console.log('Login bem-sucedido detectado via URL');
                 // Limpar o parâmetro da URL
                 window.history.replaceState({}, document.title, window.location.pathname);
+                
+                // Forçar uma verificação completa da sessão após login
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    console.log('Sessão encontrada após login:', session);
+                    updateAuthUI(true);
+                    return true;
+                }
             }
             
-            // 2. Verificar sessão manual (fallback)
+            // 2. Verificar logout
+            if (urlParams.get('logout') === 'success') {
+                console.log('Logout bem-sucedido detectado via URL');
+                window.history.replaceState({}, document.title, window.location.pathname);
+                updateAuthUI(false);
+                return false;
+            }
+            
+            // 3. Verificar sessão manual (fallback)
             const manualAuth = localStorage.getItem('guilda-poker-auth');
             if (manualAuth) {
                 try {
@@ -709,7 +725,7 @@
                 }
             }
             
-            // 3. Verificar sessão do Supabase
+            // 4. Verificar sessão do Supabase
             const { data: { session }, error } = await supabase.auth.getSession();
             
             if (error) {
@@ -722,7 +738,7 @@
                 const expiresAt = new Date(session.expires_at);
                 const isValid = expiresAt > new Date();
                 
-                console.log('Sessão Supabase - Válida:', isValid);
+                console.log('Sessão Supabase - Válida:', isValid, 'Expira:', expiresAt);
                 
                 if (isValid) {
                     updateAuthUI(true);
@@ -733,7 +749,7 @@
                 }
             }
             
-            // 4. Se não encontrou sessão válida
+            // 5. Se não encontrou sessão válida
             console.log('Nenhuma sessão válida encontrada');
             updateAuthUI(false);
             return false;
@@ -801,17 +817,20 @@
         }
     }
 
-    // Inicialização
+    // Inicialização - VERSÃO MELHORADA
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Página carregada - Iniciando verificação de autenticação');
         
         // Configurar menu mobile primeiro
         setupMobileMenu();
         
-        // Aguardar um pouco e verificar autenticação
+        // Verificar autenticação imediatamente
+        checkAuthState();
+        
+        // Verificar novamente após um breve delay (para garantir que a sessão foi persistida)
         setTimeout(async () => {
             await checkAuthState();
-        }, 300);
+        }, 800);
     });
 
     // Ouvir mudanças de autenticação
@@ -821,9 +840,29 @@
         if (event === 'SIGNED_IN') {
             console.log('Usuário autenticado - atualizando UI');
             updateAuthUI(true);
+            
+            // Salvar sessão manualmente como fallback
+            if (session) {
+                const sessionData = {
+                    access_token: session.access_token,
+                    refresh_token: session.refresh_token,
+                    expires_at: session.expires_at,
+                    user: {
+                        id: session.user.id,
+                        email: session.user.email
+                    }
+                };
+                localStorage.setItem('guilda-poker-auth', JSON.stringify(sessionData));
+            }
         } else if (event === 'SIGNED_OUT') {
             console.log('Usuário deslogado - atualizando UI');
             updateAuthUI(false);
+            
+            // Limpar sessão manual
+            localStorage.removeItem('guilda-poker-auth');
+        } else if (event === 'TOKEN_REFRESHED') {
+            console.log('Token atualizado - verificando sessão novamente');
+            checkAuthState();
         }
     });
 
@@ -854,6 +893,16 @@
                 console.log('Expira em:', new Date(session.expires_at));
                 console.log('Válida:', new Date(session.expires_at) > new Date());
             }
+            
+            // Verificar storage keys
+            console.log('Keys no localStorage:');
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.includes('supabase') || key.includes('auth') || key.includes('guilda')) {
+                    console.log('  ', key, ':', localStorage.getItem(key)?.substring(0, 50) + '...');
+                }
+            }
+            
             console.groupEnd();
         });
     };
