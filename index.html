@@ -607,7 +607,7 @@
     <p>
      Estamos em constante crescimento e evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam
      nossa comunidade. Um dos nossos principais objetivos e introduzir formatos inovadores de torneios, trazendo variedade e
-     dinamismo para nossas mesas, mantendo sempre a acessibilidade e o equilibrio competitivo.
+     dinamismo para nossas mesas, mantening sempre a acessibilidade e o equilibrio competitivo.
     </p>
     <p>
      Nosso trabalho é guiado por valores fundamentais: a responsabilidade no jogo, a diversão como elemento central,
@@ -672,7 +672,7 @@
   
   // Configuração do Supabase
   const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMDAxNDAsImV4cCI6MjA3MTg2NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: {
@@ -706,14 +706,38 @@
         .eq('id', userId)
         .single();
 
-      if (error || !data) {
-        console.log('Apelido não encontrado, usando email');
-        return null;
+      if (error) {
+        console.error('Erro ao buscar apelido:', error);
+        // Se não encontrar o apelido, tenta buscar o nome ou retorna uma string vazia
+        return await getAlternativeName(userId) || '';
       }
 
-      return data.apelido_poker;
+      return data?.apelido_poker || '';
     } catch (error) {
       console.error('Erro ao buscar apelido:', error);
+      return '';
+    }
+  }
+
+  // Buscar nome alternativo caso o apelido não esteja disponível
+  async function getAlternativeName(userId) {
+    try {
+      // Tenta buscar o nome completo
+      const { data, error } = await supabase
+        .from('perfis')
+        .select('nome_completo')
+        .eq('id', userId)
+        .single();
+
+      if (!error && data && data.nome_completo) {
+        // Retorna apenas o primeiro nome
+        return data.nome_completo.split(' ')[0];
+      }
+      
+      // Se não encontrar nome completo, retorna null
+      return null;
+    } catch (error) {
+      console.error('Erro ao buscar nome alternativo:', error);
       return null;
     }
   }
@@ -728,12 +752,14 @@
     document.getElementById('profile-button').style.display = 'block';
     document.getElementById('logout-button').style.display = 'block';
     
-    // Atualizar saudação com apelido ou email
+    // Atualizar saudação com apelido
     const userGreeting = document.getElementById('user-greeting');
-    if (apelido) {
+    if (apelido && apelido.trim() !== '') {
       userGreeting.textContent = `Olá, ${apelido}`;
     } else {
-      userGreeting.textContent = `Olá, ${user.email}`;
+      // Se não tiver apelido, usa o email mas remove a parte após o @
+      const username = user.email.split('@')[0];
+      userGreeting.textContent = `Olá, ${username}`;
     }
     userGreeting.style.display = 'block';
   }
