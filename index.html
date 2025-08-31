@@ -15,9 +15,7 @@
    --text:#f5f5f5;
   }
 
-
   *{box-sizing:border-box;margin:0;padding:0}
-
 
   body{
    font-family: Arial, sans-serif;
@@ -28,7 +26,6 @@
    flex-direction: column;
    min-height: 100vh;
   }
-
 
   /* ===== CABEÇALHO COM BOTÕES ===== */
   header {
@@ -47,7 +44,6 @@
    max-width: 160px;
    height: auto;
   }
-
 
   /* ===== BOTÕES DE AUTENTICAÇÃO ===== */
   .auth-buttons {
@@ -101,17 +97,26 @@
    border-color: #e6b800;
   }
   
-  .profile-btn, .logout-btn {
-   background-color: transparent;
-   color: var(--gold);
-   border: 1px solid var(--gold);
-   display: none;
+  .profile-btn {
+    background-color: var(--gold);
+    color: var(--bg);
+    border: 1px solid var(--gold);
   }
   
-  .profile-btn:hover, .logout-btn:hover {
-   background-color: rgba(255, 204, 0, 0.1);
+  .profile-btn:hover {
+    background-color: #e6b800;
+    border-color: #e6b800;
   }
-
+  
+  .logout-btn {
+    background-color: var(--bg);
+    color: var(--gold);
+    border: 1px solid var(--gold);
+  }
+  
+  .logout-btn:hover {
+    background-color: rgba(255, 204, 0, 0.1);
+  }
 
   /* ===== MENU DE NAVEGAÇÃO ===== */
   nav {
@@ -120,7 +125,6 @@
    position: relative;
    width: 100%;
   }
-
 
   .menu-container {
    display: flex;
@@ -131,7 +135,6 @@
    padding: 0 20px;
   }
 
-
   .menu {
    display: flex;
    list-style: none;
@@ -141,11 +144,9 @@
    justify-content: center;
   }
 
-
   .menu li {
    margin: 0;
   }
-
 
   .menu a {
    color: var(--gold);
@@ -158,14 +159,12 @@
    font-size: 1.05rem;
   }
 
-
   .menu a:hover, .menu a.active {
    color: #ffffff;
    text-decoration: underline;
    background-color: rgba(255, 204, 0, 0.15);
    border-radius: 6px;
   }
-
 
   /* ===== BOTÃO HAMBÚRGUER ===== */
   .hamburger {
@@ -184,7 +183,6 @@
    z-index: 1001;
   }
 
-
   .hamburger span {
    width: 100%;
    height: 4px;
@@ -193,21 +191,17 @@
    transition: all 0.3s linear;
   }
 
-
   .hamburger.active span:nth-child(1) {
    transform: rotate(45deg) translate(8px, 8px);
   }
-
 
   .hamburger.active span:nth-child(2) {
    opacity: 0;
   }
 
-
   .hamburger.active span:nth-child(3) {
    transform: rotate(-45deg) translate(7px, -7px);
   }
-
 
   /* ===== BANNER DE TOPO ===== */
   .banner-topo {
@@ -248,7 +242,6 @@
    font-size: 14px;
   }
 
-
   .conteudo-principal {
    display: flex;
    max-width: 1200px;
@@ -262,7 +255,6 @@
    flex: 1;
   }
 
-
   section{
    padding: 30px 0;
    display: flex;
@@ -272,7 +264,6 @@
    flex-wrap: wrap;
    width: 100%;
   }
-
 
   section .texto{
    flex: 1;
@@ -293,12 +284,10 @@
    margin-bottom: 20px;
   }
 
-
   .highlight{
    color: var(--gold);
    font-weight: bold;
   }
-
 
   section .imagem img{
    max-width: 500px;
@@ -308,14 +297,12 @@
    box-shadow:0 4px 12px rgba(0,0,0,.6);
   }
 
-
   /* Barra lateral para banner */
   .sidebar {
    width: 340px;
    padding: 10px;
    flex-shrink: 0;
   }
-
 
   /* Seção Sobre Nós */
   .sobre-nos {
@@ -349,7 +336,6 @@
    color: var(--gold);
   }
 
-
   footer{
    background: var(--bg-2);
    text-align: center;
@@ -359,7 +345,6 @@
    font-size: 14px;
    color:#bbb;
   }
-
 
   .aviso18{
    margin-top: 10px;
@@ -378,7 +363,6 @@
    border-radius: 6px;
    font-size: 13px;
   }
-
 
   /* ===== RESPONSIVIDADE ===== */
   @media (max-width: 992px) {
@@ -405,12 +389,12 @@
    }
   }
 
-
   @media (max-width: 768px) {
    header {
     padding: 12px 15px;
     min-height: 60px;
     justify-content: space-between;
+    flex-wrap: wrap;
    }
    
    header img {
@@ -420,20 +404,20 @@
    .auth-buttons {
     position: static;
     transform: none;
-    margin-top: 0;
-    width: auto;
+    margin-top: 15px;
+    width: 100%;
+    justify-content: center;
     gap: 8px;
-    margin-right: 55px;
+    order: 3;
    }
    
    .auth-btn {
-    padding: 6px 12px;
-    font-size: 0.75rem;
-    width: auto;
+    padding: 8px 16px;
+    font-size: 0.85rem;
    }
    
    .signup-btn {
-    padding: 6px 12px !important;
+    padding: 8px 18px !important;
    }
    
    nav {
@@ -446,15 +430,14 @@
     width: 36px;
     height: 30px;
     right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 15px;
+    transform: none;
+    position: absolute;
    }
-
 
    .hamburger span {
     height: 3px;
    }
-
 
    .menu {
     flex-direction: column;
@@ -470,17 +453,14 @@
     border-top: 2px solid var(--gold);
    }
 
-
    .menu.active {
     display: flex;
    }
-
 
    .menu li {
     width: 100%;
     text-align: center;
    }
-
 
    .menu a {
     padding: 16px;
@@ -541,7 +521,6 @@
    }
   }
 
-
   @media (max-width: 480px) {
    header {
     padding: 10px 12px;
@@ -553,12 +532,11 @@
    
    .auth-buttons {
     gap: 6px;
-    margin-right: 45px;
    }
    
    .auth-btn {
-    padding: 5px 10px;
-    font-size: 0.7rem;
+    padding: 7px 12px;
+    font-size: 0.8rem;
    }
    
    .hamburger {
@@ -567,6 +545,7 @@
     right: 12px;
    }
   }
+</style>
  </style>
 </head>
 <body>
@@ -648,7 +627,7 @@
     <h2>Sobre Nós</h2>
     <p>
      A Guilda do Poker foi criada para reunir jogadores em uma comunidade acolhedora, aberta tanto a iniciantes quanto a experientes.
-     Nosso propósito adalah proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
+     Nosso propósito e proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
     <p>
      Estamos em constante crescimento và evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam
      nossa comunidade. Um dos nossos principais objetivos e introduzir formatos inovadores de torneios, trazendo variedade e
