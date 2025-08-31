@@ -687,11 +687,7 @@
     
     if (session) {
       console.log('Usuário logado:', session.user.email);
-      // Buscar dados COMPLETOS do perfil
-      const userProfile = await getUserProfile(session.user.id);
-      console.log('Perfil encontrado (DEBUG):', userProfile);
-      console.log('Apelido específico:', userProfile ? userProfile.apelido_poker : 'não encontrado');
-      updateUIForLoggedInUser(session.user, userProfile);
+      updateUIForLoggedInUser();
     } else {
       console.log('Usuário não logado');
       updateUIForLoggedOutUser();
@@ -701,47 +697,8 @@
     document.getElementById('logout-button').addEventListener('click', logout);
   });
 
-  // Buscar perfil COMPLETO do usuário - VERSÃO CORRIGIDA
-  async function getUserProfile(userId) {
-    try {
-      console.log('Buscando perfil completo para o usuário:', userId);
-      
-      // Primeiro tenta buscar apelido_poker e nome_completo
-      const { data, error } = await supabase
-        .from('perfis')
-        .select('apelido_poker, nome_completo')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        console.error('Erro ao buscar perfil completo:', error);
-        
-        // Se der erro, tenta buscar apenas o apelido
-        const { data: simpleData, error: simpleError } = await supabase
-          .from('perfis')
-          .select('apelido_poker')
-          .eq('id', userId)
-          .single();
-        
-        if (simpleError) {
-          console.error('Erro ao buscar apelido:', simpleError);
-          return null;
-        }
-        
-        console.log('Dados simples do perfil:', simpleData);
-        return simpleData;
-      }
-
-      console.log('Dados completos do perfil:', data);
-      return data;
-    } catch (error) {
-      console.error('Erro inesperado ao buscar perfil:', error);
-      return null;
-    }
-  }
-
-  // Atualizar UI para usuário logado - VERSÃO CORRIGIDA
-  function updateUIForLoggedInUser(user, userProfile) {
+  // Atualizar UI para usuário logado - SEM SAUDAÇÃO
+  function updateUIForLoggedInUser() {
     // Esconder botões de login/cadastro
     document.getElementById('login-button').style.display = 'none';
     document.getElementById('signup-button').style.display = 'none';
@@ -750,29 +707,8 @@
     document.getElementById('profile-button').style.display = 'block';
     document.getElementById('logout-button').style.display = 'block';
     
-    // Atualizar saudação - PRIORIDADE PARA O APELIDO
-    const userGreeting = document.getElementById('user-greeting');
-    
-    if (userProfile && userProfile.apelido_poker) {
-      userGreeting.textContent = `Olá, ${userProfile.apelido_poker}`;
-      console.log('Saudação com apelido do poker:', userProfile.apelido_poker);
-    } 
-    else if (userProfile && userProfile.nome_completo) {
-      userGreeting.textContent = `Olá, ${userProfile.nome_completo}`;
-      console.log('Saudação com nome completo:', userProfile.nome_completo);
-    }
-    else if (user.user_metadata?.full_name) {
-      userGreeting.textContent = `Olá, ${user.user_metadata.full_name}`;
-      console.log('Saudação com nome do metadata:', user.user_metadata.full_name);
-    }
-    else {
-      // Última opção: primeira parte do email
-      const nome = user.email.split('@')[0];
-      userGreeting.textContent = `Olá, ${nome}`;
-      console.log('Saudação com parte do email:', nome);
-    }
-    
-    userGreeting.style.display = 'block';
+    // ESCONDER COMPLETAMENTE A SAUDAÇÃO DO USUÁRIO
+    document.getElementById('user-greeting').style.display = 'none';
   }
 
   // Atualizar UI para usuário não logado
