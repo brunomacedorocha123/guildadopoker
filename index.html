@@ -27,48 +27,92 @@
       min-height: 100vh;
     }
 
-    /* ===== CABEÇALHO COM BOTÕES ===== */
-    header {
+    /* ===== CABEÇALHO SUPERIOR (MENU HAMBURGUER) ===== */
+    .top-header {
+      background: var(--bg-2);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--gold);
+    }
+    
+    .logo-mobile {
+      max-width: 100px;
+      height: auto;
+      display: none;
+    }
+    
+    /* ===== BOTÃO HAMBÚRGUER ===== */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 42px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 1001;
+    }
+
+    .hamburger span {
+      width: 100%;
+      height: 4px;
+      background-color: var(--gold);
+      border-radius: 3px;
+      transition: all 0.3s linear;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    /* ===== CABEÇALHO PRINCIPAL ===== */
+    .main-header {
       background: var(--bg-2);
       padding: 15px 20px;
       text-align: center;
-      border-bottom: 2px solid var(--gold);
-      position: relative;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      min-height: 70px;
     }
     
-    header img { 
-      max-width: 160px;
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .logo-container img { 
+      max-width: 180px;
       height: auto; 
     }
 
     /* ===== BOTÕES DE AUTENTICAÇÃO ===== */
     .auth-buttons {
-      position: absolute;
-      right: 60px;
-      top: 50%;
-      transform: translateY(-50%);
       display: flex;
-      gap: 10px;
+      gap: 15px;
       align-items: center;
-    }
-    
-    .user-greeting {
-      color: var(--gold);
-      margin-right: 10px;
-      font-size: 0.9rem;
-      display: none;
+      margin-bottom: 15px;
     }
     
     .auth-btn {
-      padding: 7px 14px;
+      padding: 10px 20px;
       border-radius: 5px;
       font-weight: bold;
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 1rem;
       transition: all 0.3s ease;
       white-space: nowrap;
       cursor: pointer;
@@ -76,7 +120,7 @@
     }
     
     .login-btn {
-      background-color: transparent;
+      background-color: #000;
       color: var(--gold);
       border: 1px solid var(--gold);
     }
@@ -87,9 +131,8 @@
     
     .signup-btn {
       background-color: var(--gold);
-      color: var(--bg);
+      color: #000;
       border: 1px solid var(--gold);
-      padding: 7px 16px !important;
     }
     
     .signup-btn:hover {
@@ -106,6 +149,42 @@
     
     .profile-btn:hover, .logout-btn:hover {
       background-color: rgba(255, 204, 0, 0.1);
+    }
+
+    /* ===== ÁREA DO USUÁRIO LOGADO ===== */
+    .user-area {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .avatar-container {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--gold);
+      margin-bottom: 10px;
+    }
+    
+    .avatar-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .user-greeting {
+      color: var(--gold);
+      font-size: 1.1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .user-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
     }
 
     /* ===== MENU DE NAVEGAÇÃO ===== */
@@ -154,43 +233,6 @@
       text-decoration: underline;
       background-color: rgba(255, 204, 0, 0.15);
       border-radius: 6px;
-    }
-
-    /* ===== BOTÃO HAMBÚRGUER ===== */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: space-around;
-      width: 42px;
-      height: 36px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      position: absolute;
-      right: 25px;
-      top: 20px;
-      z-index: 1001;
-    }
-
-    .hamburger span {
-      width: 100%;
-      height: 4px;
-      background-color: var(--gold);
-      border-radius: 3px;
-      transition: all 0.3s linear;
-    }
-
-    .hamburger.active span:nth-child(1) {
-      transform: rotate(45deg) translate(8px, 8px);
-    }
-
-    .hamburger.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(7px, -7px);
     }
 
     /* ===== BANNER DE TOPO ===== */
@@ -258,12 +300,13 @@
     section .texto{
       flex: 1;
       min-width: 300px;
+      text-align: center;
     }
     
-    section .texto h1{
+    .page-title {
       color: var(--gold);
-      margin-bottom: 20px;
-      font-size: 2.6em;
+      margin: 10px 0 20px;
+      font-size: 2.2em;
       text-align: center;
     }
     
@@ -361,70 +404,60 @@
         font-size: 1rem;
       }
       
-      .auth-buttons {
-        right: 50px;
-      }
-      
       .auth-btn {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-      }
-      
-      .signup-btn {
-        padding: 6px 14px !important;
-      }
-      
-      .user-greeting {
-        display: none;
+        padding: 9px 18px;
+        font-size: 0.95rem;
       }
     }
 
     @media (max-width: 768px) {
-      header {
-        padding: 12px 15px;
-        min-height: 60px;
-        justify-content: space-between;
+      .top-header {
+        display: flex;
+        padding: 8px 15px;
       }
       
-      header img {
-        max-width: 140px;
-      }
-      
-      .auth-buttons {
-        position: static;
-        transform: none;
-        margin-top: 0;
-        width: auto;
-        gap: 8px;
-        margin-right: 55px;
-      }
-      
-      .auth-btn {
-        padding: 6px 12px;
-        font-size: 0.75rem;
-        width: auto;
-      }
-      
-      .signup-btn {
-        padding: 6px 12px !important;
-      }
-      
-      nav {
-        padding: 0;
-        background: transparent;
+      .logo-mobile {
+        display: block;
+        max-width: 80px;
       }
       
       .hamburger {
         display: flex;
         width: 36px;
         height: 30px;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
       }
 
       .hamburger span {
         height: 3px;
+      }
+      
+      .main-header {
+        padding: 15px;
+      }
+      
+      .logo-container {
+        display: none;
+      }
+      
+      .auth-buttons, .user-area {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+      }
+      
+      .auth-btn {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+      }
+      
+      .user-buttons {
+        width: 100%;
+        flex-direction: column;
+      }
+      
+      .user-buttons .auth-btn {
+        width: 100%;
       }
 
       .menu {
@@ -507,56 +540,83 @@
         height: auto;
         min-height: 90px;
       }
+      
+      .page-title {
+        font-size: 1.8em;
+      }
+      
+      .avatar-container {
+        width: 70px;
+        height: 70px;
+      }
     }
 
     @media (max-width: 480px) {
-      header {
-        padding: 10px 12px;
+      .top-header {
+        padding: 6px 12px;
       }
       
-      header img {
-        max-width: 120px;
-      }
-      
-      .auth-buttons {
-        gap: 6px;
-        margin-right: 45px;
-      }
-      
-      .auth-btn {
-        padding: 5px 10px;
-        font-size: 0.7rem;
+      .logo-mobile {
+        max-width: 70px;
       }
       
       .hamburger {
         width: 32px;
         height: 28px;
-        right: 12px;
+      }
+      
+      .auth-btn {
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+      
+      .avatar-container {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .user-greeting {
+        font-size: 1rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Cabeçalho com botões de autenticação -->
-  <header>
-    <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
-    
-    <!-- Botões de Autenticação -->
-    <div class="auth-buttons" id="auth-buttons">
-      <span class="user-greeting" id="user-greeting"></span>
-      <a href="login.html" class="auth-btn login-btn" id="login-button">Login</a>
-      <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastre-se</a>
-      <a href="perfil.html" class="auth-btn profile-btn" id="profile-button">Meu Perfil</a>
-      <button class="auth-btn logout-btn" id="logout-button" onclick="logout()">Sair</button>
-    </div>
-    
+  <!-- Cabeçalho Superior (Menu Hamburguer) -->
+  <div class="top-header">
+    <img src="logoguilda.jpeg" alt="Logo Guilda do Poker" class="logo-mobile">
     <button class="hamburger" aria-label="Abrir menu">
       <span></span>
       <span></span>
       <span></span>
     </button>
-  </header>
+  </div>
+
+  <!-- Cabeçalho Principal -->
+  <div class="main-header">
+    <div class="logo-container">
+      <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
+    </div>
+    
+    <!-- Área de Autenticação (usuário não logado) -->
+    <div class="auth-buttons" id="auth-buttons">
+      <a href="login.html" class="auth-btn login-btn" id="login-button">Login</a>
+      <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastre-se</a>
+    </div>
+    
+    <!-- Área do Usuário (usuário logado) -->
+    <div class="user-area" id="user-area">
+      <div class="avatar-container">
+        <img src="default-avatar.png" alt="Avatar" id="user-avatar">
+      </div>
+      <span class="user-greeting" id="user-greeting"></span>
+      <div class="user-buttons">
+        <a href="perfil.html" class="auth-btn profile-btn" id="profile-button">Meu Perfil</a>
+        <button class="auth-btn logout-btn" id="logout-button" onclick="logout()">Sair</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Navegação -->
   <nav>
@@ -587,7 +647,7 @@
       <!-- Seção principal -->
       <section>
         <div class="texto">
-          <h1>Bem-vindo à Guilda do Poker</h1>
+          <h1 class="page-title">Bem-vindo à Guilda do Poker</h1>
           <p>
             A Guilda do Poker é um espaço para jogadores apaixonados por estratégia, diversão e competição. 
             Aqui você encontra torneios, cash games e parceiros confiáveis.
@@ -694,67 +754,65 @@ document.addEventListener('DOMContentLoaded', async function() {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (session) {
-        // Buscar dados do perfil para pegar o apelido
-        const userApelido = await getUserApelido(session.user.id);
-        updateUIForLoggedInUser(session.user, userApelido);
+        // Buscar dados do perfil para pegar o apelido e avatar
+        const userData = await getUserData(session.user.id);
+        updateUIForLoggedInUser(session.user, userData.apelido, userData.avatar);
     } else {
         updateUIForLoggedOutUser();
     }
 });
 
-// Buscar apelido do usuário
-async function getUserApelido(userId) {
+// Buscar dados do usuário (apelido e avatar)
+async function getUserData(userId) {
     try {
         const { data, error } = await supabase
             .from('perfis')
-            .select('apelido_poker')
+            .select('apelido_poker, avatar_url')
             .eq('id', userId)
             .single();
 
         if (error || !data) {
-            console.log('Apelido não encontrado, usando email');
-            return null;
+            console.log('Dados não encontrados, usando valores padrão');
+            return { apelido: null, avatar: 'default-avatar.png' };
         }
 
-        return data.apelido_poker;
+        return { 
+            apelido: data.apelido_poker, 
+            avatar: data.avatar_url || 'default-avatar.png' 
+        };
     } catch (error) {
-        console.error('Erro ao buscar apelido:', error);
-        return null;
+        console.error('Erro ao buscar dados do usuário:', error);
+        return { apelido: null, avatar: 'default-avatar.png' };
     }
 }
 
 // Atualizar UI para usuário logado
-function updateUIForLoggedInUser(user, apelido) {
+function updateUIForLoggedInUser(user, apelido, avatarUrl) {
     // Esconder botões de login/cadastro
-    document.getElementById('login-button').style.display = 'none';
-    document.getElementById('signup-button').style.display = 'none';
+    document.getElementById('auth-buttons').style.display = 'none';
     
-    // Mostrar botões de perfil/logout
-    document.getElementById('profile-button').style.display = 'block';
-    document.getElementById('logout-button').style.display = 'block';
+    // Mostrar área do usuário
+    document.getElementById('user-area').style.display = 'flex';
+    
+    // Atualizar avatar
+    document.getElementById('user-avatar').src = avatarUrl;
     
     // Atualizar saudação com apelido ou email
     const userGreeting = document.getElementById('user-greeting');
     if (apelido) {
-        userGreeting.textContent = `Olá, ${apelido}`;
+        userGreeting.textContent = apelido;
     } else {
-        userGreeting.textContent = `Olá, ${user.email}`;
+        userGreeting.textContent = user.email;
     }
-    userGreeting.style.display = 'block';
 }
 
 // Atualizar UI para usuário não logado
 function updateUIForLoggedOutUser() {
     // Mostrar botões de login/cadastro
-    document.getElementById('login-button').style.display = 'block';
-    document.getElementById('signup-button').style.display = 'block';
+    document.getElementById('auth-buttons').style.display = 'flex';
     
-    // Esconder botões de perfil/logout
-    document.getElementById('profile-button').style.display = 'none';
-    document.getElementById('logout-button').style.display = 'none';
-    
-    // Esconder saudação
-    document.getElementById('user-greeting').style.display = 'none';
+    // Esconder área do usuário
+    document.getElementById('user-area').style.display = 'none';
 }
 
 // Função de logout
