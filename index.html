@@ -45,7 +45,7 @@
       height: auto; 
     }
 
-    /* ===== BOTÕES DE LOGIN E CADASTRO ===== */
+    /* ===== BOTÕES DE AUTENTICAÇÃO ===== */
     .auth-buttons {
       position: absolute;
       right: 60px;
@@ -53,6 +53,14 @@
       transform: translateY(-50%);
       display: flex;
       gap: 10px;
+      align-items: center;
+    }
+    
+    .user-greeting {
+      color: var(--gold);
+      margin-right: 10px;
+      font-size: 0.9rem;
+      display: none;
     }
     
     .auth-btn {
@@ -87,6 +95,17 @@
     .signup-btn:hover {
       background-color: #e6b800;
       border-color: #e6b800;
+    }
+    
+    .profile-btn, .logout-btn {
+      background-color: transparent;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      display: none;
+    }
+    
+    .profile-btn:hover, .logout-btn:hover {
+      background-color: rgba(255, 204, 0, 0.1);
     }
 
     /* ===== MENU DE NAVEGAÇÃO ===== */
@@ -354,6 +373,10 @@
       .signup-btn {
         padding: 6px 14px !important;
       }
+      
+      .user-greeting {
+        display: none; /* Esconder saudação em mobile */
+      }
     }
 
     @media (max-width: 768px) {
@@ -519,10 +542,13 @@
   <header>
     <img src="logoguilda.jpeg" alt="Logo Guilda do Poker">
     
-    <!-- Botões de Login e Cadastro -->
+    <!-- Botões de Autenticação -->
     <div class="auth-buttons" id="auth-buttons">
-      <a href="login.html" class="auth-btn login-btn">Login</a>
-      <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
+      <span class="user-greeting" id="user-greeting"></span>
+      <a href="login.html" class="auth-btn login-btn" id="login-button">Login</a>
+      <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastre-se</a>
+      <a href="perfil.html" class="auth-btn profile-btn" id="profile-button">Meu Perfil</a>
+      <button class="auth-btn logout-btn" id="logout-button" onclick="logout()">Sair</button>
     </div>
     
     <button class="hamburger" aria-label="Abrir menu">
@@ -585,7 +611,7 @@
          A Guilda do Poker foi criada dengan tujuan reunir jogadores em uma comunidade acolhedora, aberta tanto a iniciantes quanto a experientes. 
          Nosso propósito adalah proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
         <p>
-          Estamos em constante crescimento e evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam 
+          Estamos em constante crescimento và evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam 
           nossa comunidade. Um dos nossos principais objetivos adalah introduzir formatos inovadores de torneios, trazendo variedade e 
           dinamismo para nossas mesas, mantendo sempre a acessibilidade e o equilibrio competitivo.
         </p>
@@ -630,335 +656,85 @@
 
   <!-- Script do menu mobile -->
 <script>
-    // Configuração do Supabase
-    const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+// Configuração do Supabase (a mesma em todas as páginas)
+const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true,
-            storage: localStorage
-        }
-    });
-
-    // Variável global para controlar o estado de autenticação
-    let authChecked = false;
-    let authState = false;
-
-    // Função de logout
-    window.logout = async function() {
-        try {
-            console.log('Iniciando logout...');
-            
-            // Fazer logout no Supabase
-            const { error } = await supabase.auth.signOut();
-            if (error) {
-                console.warn('Erro no logout:', error.message);
-            }
-            
-            // Limpar todos os dados de autenticação
-            const keysToRemove = [
-                'sb-ffyectkjlwgqzjgwhexy-auth-token',
-                'guilda-poker-auth',
-                'supabase.auth.token'
-            ];
-            
-            keysToRemove.forEach(key => {
-                localStorage.removeItem(key);
-                sessionStorage.removeItem(key);
-            });
-            
-            // Recarregar a página
-            window.location.href = 'index.html?logout=success';
-            
-        } catch (error) {
-            console.error('Erro no logout:', error);
-            window.location.href = 'index.html';
-        }
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+    auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storage: localStorage
     }
+});
 
-    // Verificação robusta de autenticação
-    async function checkAuthState() {
-        if (authChecked) {
-            console.log('Autenticação já verificada, estado:', authState);
-            return authState;
-        }
-
-        try {
-            console.log('Verificando autenticação...');
-            
-            // 1. Verificar se há parâmetro de login bem-sucedido na URL
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('login') === 'success') {
-                console.log('Login bem-sucedido detectado via URL');
-                // Limpar o parâmetro da URL
-                window.history.replaceState({}, document.title, window.location.pathname);
-                
-                // Forçar uma verificação completa da sessão
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session) {
-                    console.log('Sessão encontrada após login:', session);
-                    updateAuthUI(true);
-                    authChecked = true;
-                    authState = true;
-                    return true;
-                }
-            }
-            
-            // 2. Verificar logout
-            if (urlParams.get('logout') === 'success') {
-                console.log('Logout bem-sucedido detectado via URL');
-                window.history.replaceState({}, document.title, window.location.pathname);
-                updateAuthUI(false);
-                authChecked = true;
-                authState = false;
-                return false;
-            }
-            
-            // 3. Verificar sessão do Supabase PRIMEIRO (mais confiável)
-            const { data: { session }, error } = await supabase.auth.getSession();
-            
-            if (error) {
-                console.warn('Erro ao verificar sessão Supabase:', error.message);
-            }
-            
-            if (session) {
-                const expiresAt = new Date(session.expires_at);
-                const isValid = expiresAt > new Date();
-                
-                console.log('Sessão Supabase - Válida:', isValid, 'Expira:', expiresAt);
-                
-                if (isValid) {
-                    console.log('Autenticado via Supabase');
-                    updateAuthUI(true);
-                    authChecked = true;
-                    authState = true;
-                    
-                    // Sincronizar sessão manual
-                    const sessionData = {
-                        access_token: session.access_token,
-                        refresh_token: session.refresh_token,
-                        expires_at: session.expires_at,
-                        user: {
-                            id: session.user.id,
-                            email: session.user.email
-                        }
-                    };
-                    localStorage.setItem('guilda-poker-auth', JSON.stringify(sessionData));
-                    
-                    return true;
-                } else {
-                    console.log('Sessão Supabase expirada');
-                    await supabase.auth.signOut();
-                }
-            }
-            
-            // 4. Verificar sessão manual (fallback) - SÓ SE SUPABASE FALHAR
-            const manualAuth = localStorage.getItem('guilda-poker-auth');
-            if (manualAuth && !session) {
-                try {
-                    const authData = JSON.parse(manualAuth);
-                    const expiresAt = new Date(authData.expires_at);
-                    
-                    if (expiresAt > new Date()) {
-                        console.log('Sessão manual válida encontrada (fallback)');
-                        updateAuthUI(true);
-                        authChecked = true;
-                        authState = true;
-                        return true;
-                    } else {
-                        console.log('Sessão manual expirada');
-                        localStorage.removeItem('guilda-poker-auth');
-                    }
-                } catch (e) {
-                    console.log('Sessão manual inválida');
-                    localStorage.removeItem('guilda-poker-auth');
-                }
-            }
-            
-            // 5. Se não encontrou sessão válida
-            console.log('Nenhuma sessão válida encontrada');
-            updateAuthUI(false);
-            authChecked = true;
-            authState = false;
-            return false;
-            
-        } catch (error) {
-            console.error('Erro na verificação de autenticação:', error);
-            updateAuthUI(false);
-            authChecked = true;
-            authState = false;
-            return false;
-        }
+// Verificar se usuário está logado ao carregar a página
+document.addEventListener('DOMContentLoaded', async function() {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (session) {
+        // Usuário está logado, mostrar botão de perfil/logout
+        console.log('Usuário logado:', session.user.email);
+        updateUIForLoggedInUser(session.user);
+    } else {
+        // Usuário não está logado, mostrar botão de login
+        console.log('Usuário não logado');
+        updateUIForLoggedOutUser();
     }
+});
 
-    // Atualizar a interface com base no estado de autenticação
-    function updateAuthUI(isAuthenticated) {
-        const authButtons = document.getElementById('auth-buttons');
-        if (!authButtons) {
-            console.error('Elemento auth-buttons não encontrado!');
-            return;
-        }
-        
-        if (isAuthenticated) {
-            authButtons.innerHTML = `
-                <a href="perfil.html" class="auth-btn login-btn">Meu Perfil</a>
-                <button onclick="logout()" class="auth-btn signup-btn">Sair</button>
-            `;
-            console.log('UI atualizada: Usuário autenticado');
-        } else {
-            authButtons.innerHTML = `
-                <a href="login.html" class="auth-btn login-btn">Login</a>
-                <a href="cadastro.html" class="auth-btn signup-btn">Cadastre-se</a>
-            `;
-            console.log('UI atualizada: Usuário não autenticado');
-        }
+// Atualizar UI para usuário logado
+function updateUIForLoggedInUser(user) {
+    // Esconder botão de login
+    const loginBtn = document.getElementById('login-button');
+    const profileBtn = document.getElementById('profile-button');
+    const logoutBtn = document.getElementById('logout-button');
+    
+    if (loginBtn) loginBtn.style.display = 'none';
+    if (profileBtn) profileBtn.style.display = 'block';
+    if (logoutBtn) logoutBtn.style.display = 'block';
+    
+    // Atualizar saudação se existir
+    const userGreeting = document.getElementById('user-greeting');
+    if (userGreeting) {
+        userGreeting.textContent = `Olá, ${user.email}`;
+        userGreeting.style.display = 'block';
     }
+}
 
-    // Configurar menu mobile
-    function setupMobileMenu() {
-        const hamburger = document.querySelector('.hamburger');
-        const menu = document.querySelector('.menu');
-        
-        if (hamburger && menu) {
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                menu.classList.toggle('active');
-                hamburger.classList.toggle('active');
-            });
-            
-            const menuLinks = document.querySelectorAll('.menu a');
-            menuLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 768) {
-                        menu.classList.remove('active');
-                        hamburger.classList.remove('active');
-                    }
-                });
-            });
-            
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth <= 768 && menu.classList.contains('active')) {
-                    if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
-                        menu.classList.remove('active');
-                        hamburger.classList.remove('active');
-                    }
-                }
-            });
+// Atualizar UI para usuário não logado
+function updateUIForLoggedOutUser() {
+    const loginBtn = document.getElementById('login-button');
+    const profileBtn = document.getElementById('profile-button');
+    const logoutBtn = document.getElementById('logout-button');
+    
+    if (loginBtn) loginBtn.style.display = 'block';
+    if (profileBtn) profileBtn.style.display = 'none';
+    if (logoutBtn) logoutBtn.style.display = 'none';
+    
+    const userGreeting = document.getElementById('user-greeting');
+    if (userGreeting) userGreeting.style.display = 'none';
+}
+
+// Função de logout
+async function logout() {
+    try {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.error('Erro ao fazer logout:', error);
         }
+        
+        // Limpar dados de autenticação
+        localStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
+        localStorage.removeItem('guilda-poker-auth');
+        
+        // Recarregar a página para atualizar UI
+        window.location.reload();
+    } catch (error) {
+        console.error('Erro inesperado no logout:', error);
     }
-
-    // Inicialização - VERSÃO MELHORADA
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Página carregada - Iniciando verificação de autenticação');
-        
-        // Configurar menu mobile primeiro
-        setupMobileMenu();
-        
-        // Verificar autenticação imediatamente
-        checkAuthState();
-        
-        // Verificar novamente após um delay (para sessões que demoram a persistir)
-        setTimeout(async () => {
-            if (!authChecked) {
-                console.log('Verificação secundária de autenticação...');
-                await checkAuthState();
-            }
-        }, 1000);
-        
-        // Verificação final após 3 segundos (fallback)
-        setTimeout(async () => {
-            if (!authChecked) {
-                console.log('Verificação final de autenticação...');
-                await checkAuthState();
-            }
-        }, 3000);
-    });
-
-    // Ouvir mudanças de autenticação - COM PROTECÇÃO CONTRA FLICKERING
-    supabase.auth.onAuthStateChange((event, session) => {
-        console.log('Evento de autenticação:', event);
-        
-        // Ignorar eventos se já tivermos um estado definido
-        if (authChecked) {
-            console.log('Evento ignorado - autenticação já verificada');
-            return;
-        }
-        
-        if (event === 'SIGNED_IN') {
-            console.log('Usuário autenticado - atualizando UI');
-            authState = true;
-            authChecked = true;
-            updateAuthUI(true);
-            
-            // Salvar sessão manualmente como fallback
-            if (session) {
-                const sessionData = {
-                    access_token: session.access_token,
-                    refresh_token: session.refresh_token,
-                    expires_at: session.expires_at,
-                    user: {
-                        id: session.user.id,
-                        email: session.user.email
-                    }
-                };
-                localStorage.setItem('guilda-poker-auth', JSON.stringify(sessionData));
-            }
-        } else if (event === 'SIGNED_OUT') {
-            console.log('Usuário deslogado - atualizando UI');
-            authState = false;
-            authChecked = true;
-            updateAuthUI(false);
-            
-            // Limpar sessão manual
-            localStorage.removeItem('guilda-poker-auth');
-        }
-    });
-
-    // Função para debug (chame debugAuth() no console)
-    window.debugAuth = function() {
-        console.group('Debug de Autenticação');
-        console.log('URL:', window.location.href);
-        console.log('Auth checked:', authChecked);
-        console.log('Auth state:', authState);
-        
-        // Verificar sessão manual
-        const manualAuth = localStorage.getItem('guilda-poker-auth');
-        if (manualAuth) {
-            try {
-                const authData = JSON.parse(manualAuth);
-                console.log('Sessão manual:', authData);
-                console.log('Expira em:', new Date(authData.expires_at));
-                console.log('Válida:', new Date(authData.expires_at) > new Date());
-            } catch (e) {
-                console.log('Sessão manual inválida');
-            }
-        } else {
-            console.log('Nenhuma sessão manual encontrada');
-        }
-        
-        // Verificar sessão Supabase
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            console.log('Sessão Supabase:', session);
-            if (session) {
-                console.log('Expira em:', new Date(session.expires_at));
-                console.log('Válida:', new Date(session.expires_at) > new Date());
-            }
-            
-            // Verificar storage keys
-            console.log('Keys no localStorage:');
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.includes('supabase') || key.includes('auth') || key.includes('guilda')) {
-                    console.log('  ', key, ':', localStorage.getItem(key)?.substring(0, 50) + '...');
-                }
-            }
-            
-            console.groupEnd();
-        });
-    };
+}
 </script>
 </body>
 </html>
