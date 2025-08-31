@@ -43,6 +43,36 @@
       display: none;
     }
     
+    /* ===== BOTÕES DE AUTENTICAÇÃO NO TOPO ===== */
+    .top-auth-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .top-auth-btn {
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    
+    .top-profile-btn, .top-logout-btn {
+      background-color: transparent;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      display: none;
+    }
+    
+    .top-profile-btn:hover, .top-logout-btn:hover {
+      background-color: rgba(255, 204, 0, 0.1);
+    }
+    
     /* ===== BOTÃO HAMBÚRGUER ===== */
     .hamburger {
       display: none;
@@ -160,12 +190,12 @@
     }
     
     .avatar-container {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       overflow: hidden;
       border: 3px solid var(--gold);
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
     
     .avatar-container img {
@@ -176,15 +206,15 @@
     
     .user-greeting {
       color: var(--gold);
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       text-align: center;
       font-weight: bold;
+      margin-bottom: 15px;
     }
     
     .user-buttons {
       display: flex;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 15px;
     }
 
     /* ===== MENU DE NAVEGAÇÃO ===== */
@@ -408,6 +438,11 @@
         padding: 9px 18px;
         font-size: 0.95rem;
       }
+      
+      .top-auth-btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+      }
     }
 
     @media (max-width: 768px) {
@@ -419,6 +454,10 @@
       .logo-mobile {
         display: block;
         max-width: 80px;
+      }
+      
+      .top-auth-buttons {
+        display: none;
       }
       
       .hamburger {
@@ -458,6 +497,11 @@
       
       .user-buttons .auth-btn {
         width: 100%;
+      }
+      
+      .avatar-container {
+        width: 90px;
+        height: 90px;
       }
 
       .menu {
@@ -544,11 +588,6 @@
       .page-title {
         font-size: 1.8em;
       }
-      
-      .avatar-container {
-        width: 70px;
-        height: 70px;
-      }
     }
 
     @media (max-width: 480px) {
@@ -571,12 +610,12 @@
       }
       
       .avatar-container {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
       }
       
       .user-greeting {
-        font-size: 1rem;
+        font-size: 1.1rem;
       }
     }
   </style>
@@ -586,6 +625,13 @@
   <!-- Cabeçalho Superior (Menu Hamburguer) -->
   <div class="top-header">
     <img src="logoguilda.jpeg" alt="Logo Guilda do Poker" class="logo-mobile">
+    
+    <!-- Botões de perfil e sair no topo (para desktop) -->
+    <div class="top-auth-buttons" id="top-auth-buttons">
+      <a href="perfil.html" class="top-auth-btn top-profile-btn" id="top-profile-button">Meu Perfil</a>
+      <button class="top-auth-btn top-logout-btn" id="top-logout-button" onclick="logout()">Sair</button>
+    </div>
+    
     <button class="hamburger" aria-label="Abrir menu">
       <span></span>
       <span></span>
@@ -740,7 +786,7 @@
 <script>
 // Configuração do Supabase
 const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: {
@@ -794,15 +840,20 @@ function updateUIForLoggedInUser(user, apelido, avatarUrl) {
     // Mostrar área do usuário
     document.getElementById('user-area').style.display = 'flex';
     
+    // Mostrar botões no topo (desktop)
+    document.getElementById('top-auth-buttons').style.display = 'flex';
+    
     // Atualizar avatar
     document.getElementById('user-avatar').src = avatarUrl;
     
-    // Atualizar saudação com apelido ou email
+    // Atualizar saudação com apelido (não email)
     const userGreeting = document.getElementById('user-greeting');
     if (apelido) {
         userGreeting.textContent = apelido;
     } else {
-        userGreeting.textContent = user.email;
+        // Se não tiver apelido, usar o email mas sem o domínio
+        const username = user.email.split('@')[0];
+        userGreeting.textContent = username;
     }
 }
 
@@ -813,6 +864,9 @@ function updateUIForLoggedOutUser() {
     
     // Esconder área do usuário
     document.getElementById('user-area').style.display = 'none';
+    
+    // Esconder botões no topo
+    document.getElementById('top-auth-buttons').style.display = 'none';
 }
 
 // Função de logout
