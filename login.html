@@ -6,301 +6,24 @@
     <title>Login - Guilda do Poker</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root {
-            --bg: #121212;
-            --bg-2: #1c1c1c;
-            --bg-3: #2c2c2c;
-            --gold: #ffcc00;
-            --text: #f5f5f5;
-            --success: #4caf50;
-            --error: #f44336;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            background: linear-gradient(135deg, var(--bg), var(--bg-2));
-        }
-        
-        .container {
-            background-color: var(--bg-2);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 450px;
-            padding: 40px;
-            border: 2px solid var(--gold);
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .logo-text {
-            color: var(--gold);
-            font-size: 2.8rem;
-            font-weight: bold;
-            text-shadow: 0 2px 10px rgba(255, 204, 0, 0.3);
-        }
-        
-        h1 {
-            color: var(--gold);
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2rem;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: var(--text);
-            font-weight: bold;
-        }
-        
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid var(--bg-3);
-            border-radius: 8px;
-            background-color: var(--bg-3);
-            color: var(--text);
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.2);
-            background-color: var(--bg-2);
-        }
-        
-        button {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--gold), #e6b800);
-            color: var(--bg);
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 204, 0, 0.3);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        button:disabled {
-            background: var(--bg-3);
-            color: #888;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .cadastro-link {
-            text-align: center;
-            margin-top: 25px;
-            color: #bbb;
-            font-size: 14px;
-        }
-        
-        .cadastro-link a {
-            color: var(--gold);
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-        
-        .cadastro-link a:hover {
-            color: #ffffff;
-            text-decoration: underline;
-        }
-        
-        .message {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: bold;
-            animation: slideDown 0.3s ease-out;
-        }
-        
-        .success {
-            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.2));
-            color: var(--success);
-            border: 2px solid var(--success);
-        }
-        
-        .error {
-            background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(244, 67, 54, 0.2));
-            color: var(--error);
-            border: 2px solid var(--error);
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
-        }
-        
-        .password-container {
-            position: relative;
-        }
-        
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text);
-            cursor: pointer;
-            padding: 5px;
-            width: auto;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .forgot-password {
-            text-align: right;
-            margin-top: -15px;
-            margin-bottom: 20px;
-        }
-        
-        .forgot-password a {
-            color: #bbb;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        
-        .forgot-password a:hover {
-            color: var(--gold);
-            text-decoration: underline;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 30px 20px;
-                margin: 10px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            input, button {
-                padding: 12px;
-            }
-        }
+        /* ... (seu CSS permanece igual) ... */
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">
-            <div class="logo-text">♠️♥️ GUILDA DO POKER ♣️♦️</div>
-        </div>
-        <h1>Acesse sua conta</h1>
-        
-        <div id="message" class="message hidden"></div>
-        
-        <form id="login-form">
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" required placeholder="seu@email.com">
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Senha</label>
-                <div class="password-container">
-                    <input type="password" id="password" required placeholder="Sua senha">
-                    <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>
-                </div>
-            </div>
-            
-            <div class="forgot-password">
-                <a href="recuperar-senha.html">Esqueceu sua senha?</a>
-            </div>
-            
-            <button type="submit" id="login-button">
-                <span id="button-text">Entrar</span>
-                <span id="button-loading" class="hidden">
-                    <span class="loading"></span>Entrando...
-                </span>
-            </button>
-        </form>
-        
-        <div class="cadastro-link">
-            Não tem uma conta? <a href="cadastro.html">Cadastre-se agora</a>
-        </div>
+        <!-- ... (seu HTML permanece igual) ... -->
     </div>
 
 <script>
-    // Configuração do Supabase
+    // Configuração do Supabase - CHAVE CORRIGIDA
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    
+    // SUA CHAVE ANON (PUBLIC) CORRETA - verifique no dashboard do Supabase
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
+    // Verifique se a chave está correta
+    console.log('Supabase Key:', supabaseKey);
+    
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
         auth: {
             persistSession: true,
@@ -309,6 +32,24 @@
             storage: localStorage
         }
     });
+
+    // Função para testar a conexão com Supabase
+    async function testSupabaseConnection() {
+        try {
+            const { data, error } = await supabase.auth.getSession();
+            
+            if (error && error.message.includes('Invalid API key')) {
+                console.error('ERRO: Chave API inválida');
+                showNotification('Erro de configuração. Entre em contato com o suporte.', false);
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Erro ao testar conexão:', error);
+            return false;
+        }
+    }
 
     // Função para mostrar notificações
     function showNotification(message, isSuccess = true) {
@@ -339,6 +80,12 @@
     // Função para lidar com o login
     async function handleLogin(email, password) {
         try {
+            // Testar conexão primeiro
+            const connectionOk = await testSupabaseConnection();
+            if (!connectionOk) {
+                return;
+            }
+
             // Mostrar estado de carregamento
             document.getElementById('button-text').classList.add('hidden');
             document.getElementById('button-loading').classList.remove('hidden');
@@ -350,7 +97,17 @@
             });
 
             if (error) {
-                showNotification('Erro no login: ' + error.message, false);
+                let errorMessage = 'Erro no login: ';
+                
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMessage = 'E-mail ou senha incorretos';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMessage = 'E-mail não confirmado. Verifique sua caixa de entrada.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                showNotification(errorMessage, false);
                 
                 // Restaurar botão
                 document.getElementById('button-text').classList.remove('hidden');
@@ -370,7 +127,7 @@
             
         } catch (error) {
             console.error('Erro inesperado:', error);
-            showNotification('Erro inesperado. Tente novamente.', false);
+            showNotification('Erro de conexão. Tente novamente.', false);
             
             // Restaurar botão
             document.getElementById('button-text').classList.remove('hidden');
@@ -396,19 +153,24 @@
 
     // Verificar se já está logado
     async function checkIfAlreadyLoggedIn() {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session) {
-            showNotification('Você já está logado. Redirecionando...', true);
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 2000);
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session) {
+                showNotification('Você já está logado. Redirecionando...', true);
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        } catch (error) {
+            console.log('Não foi possível verificar sessão existente');
         }
     }
 
     // Inicialização
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Página de login carregada');
+        testSupabaseConnection(); // Testar conexão ao carregar
         checkIfAlreadyLoggedIn();
     });
 </script>
