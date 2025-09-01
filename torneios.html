@@ -150,7 +150,7 @@
       
       /* ALTERAÇÃO: Aumentar a largura mínima da coluna Data/Horário */
       th:nth-child(2), td:nth-child(2) {
-        min-width: 120px !important; /* Aumentei de ~80px para 120px */
+        min-width: 120px !important;
       }
     }
 
@@ -192,11 +192,70 @@
       background: #2c2c2c;
     }
     
-    /* Ajustes para as colunas Buy-in e Add-on */
-    th:nth-child(3), td:nth-child(3), /* Buy-in */
-    th:nth-child(7), td:nth-child(7) { /* Valor do Add-on */
-      min-width: 80px;
-      width: 10%;
+    /* AJUSTES ESPECÍFICOS APENAS PARA A PRIMEIRA TABELA (Torneios da Guilda) */
+    /* Aumentar Data/Horário */
+    .table-container:first-of-type th:nth-child(2),
+    .table-container:first-of-type td:nth-child(2) {
+      min-width: 140px;
+    }
+    
+    /* Diminuir Nome do Torneio */
+    .table-container:first-of-type th:nth-child(1),
+    .table-container:first-of-type td:nth-child(1) {
+      max-width: 180px;
+      min-width: 150px;
+    }
+    
+    /* Ajustes para as outras colunas da primeira tabela */
+    .table-container:first-of-type th:nth-child(5),
+    .table-container:first-of-type td:nth-child(5) {
+      min-width: 100px;
+    }
+    
+    /* ÚLTIMO AJUSTE: Aumentar ligeiramente a coluna Valor do Add-on */
+    .table-container:first-of-type th:nth-child(7),
+    .table-container:first-of-type td:nth-child(7) {
+      min-width: 120px; /* Aumentado de 110px para 120px */
+    }
+    
+    .table-container:first-of-type th:nth-child(8),
+    .table-container:first-of-type td:nth-child(8) {
+      min-width: 100px;
+    }
+
+    /* NOVOS AJUSTES PARA MOBILE - Todas as tabelas */
+    @media screen and (max-width: 768px) {
+      /* Aumentar Buy-in (coluna 3) */
+      th:nth-child(3), td:nth-child(3) {
+        min-width: 90px !important;
+      }
+      
+      /* Diminuir Valor do Rebuy (coluna 5) */
+      th:nth-child(5), td:nth-child(5) {
+        min-width: 85px !important;
+        font-size: 0.85em;
+      }
+      
+      /* Aumentar Add-on (coluna 6) */
+      th:nth-child(6), td:nth-child(6) {
+        min-width: 90px !important;
+      }
+      
+      /* Ajustar Valor do Add-on (coluna 7) */
+      th:nth-child(7), td:nth-child(7) {
+        min-width: 100px !important;
+      }
+      
+      /* Ajustar padding para melhor uso do espaço */
+      th, td {
+        padding: 8px 5px;
+      }
+      
+      /* AJUSTE ESPECÍFICO PARA A PRIMEIRA TABELA NO MOBILE */
+      .table-container:first-of-type th:nth-child(7),
+      .table-container:first-of-type td:nth-child(7) {
+        min-width: 110px !important; /* Um pouco mais larga no mobile também */
+      }
     }
 
     .btn{
@@ -271,7 +330,7 @@
   </nav>
 
   <section>
-    <h1>Torneios da Guilda e Suprema Poker</h1>
+    <h1>Tabelas de Torneios</h1>
 
     <h2>Torneios da Guilda do Poker</h2>
     <div class="table-container">
@@ -284,6 +343,7 @@
           <th>Valor do Rebuy</th>
           <th>Add-on</th>
           <th>Valor do Add-on</th>
+          <th>Min.Jogadores</th>
           <th>Premiação</th>
         </tr>
         <tr>
@@ -294,6 +354,7 @@
           <td>R$20</td>
           <td>Sim</td>
           <td>R$20</td>
+          <td>10</td>
           <td>Garantido R$300</td>
         </tr>
         <tr>
@@ -304,16 +365,18 @@
           <td>R$25</td>
           <td>Sim</td>
           <td>R$25</td>
+           <td>10</td>
           <td>Garantido R$300</td>
         </tr>
         <tr>
-          <td> Torneio Duelo dos Cavaleiros (PLO5)</td>
+          <td>Torneio Duelo dos Cavaleiros (PLO5)</td>
           <td>03/09 - 22h</td>
           <td>R$20</td>
           <td>Sim</td>
           <td>R$10</td>
           <td>Sim</td>
           <td>R$20</td>
+          <td>10</td>
           <td>Garantido R$200</td>
         </tr>
         <tr>
@@ -324,6 +387,7 @@
           <td>R$50</td>
           <td>Não</td>
           <td>-</td>
+           <td>10</td>
           <td>Garantido R$500</td>
         </tr>
         <tr>
@@ -334,6 +398,7 @@
           <td>R$40</td>
           <td>Sim</td>
           <td>R$40</td>
+          <td>10</td>
           <td>Garantido R$750</td>
         </tr>
       </table>
