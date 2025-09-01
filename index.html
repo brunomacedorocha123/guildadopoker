@@ -21,13 +21,16 @@
   --bg-2:#1c1c1c;
   --bg-3:#2c2c2c;
   --gold:#ffcc00;
+  --gold-light:#ffdb4d;
+  --gold-dark:#e6b800;
   --text:#f5f5f5;
+  --text-secondary:#cccccc;
  }
 
  *{box-sizing:border-box;margin:0;padding:0}
 
  body{
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
@@ -257,46 +260,217 @@
   flex: 1;
  }
 
- section{
-  padding: 30px 0;
+ /* NOVO LAYOUT DA SEÇÃO PRINCIPAL */
+ .hero-section {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
-  width: 100%;
+  gap: 40px;
+  padding: 50px 0;
+  margin-bottom: 40px;
  }
 
- section .texto{
+ .hero-text {
   flex: 1;
   min-width: 300px;
  }
 
- section .texto h1{
+ .hero-text h1 {
   color: var(--gold);
   margin-bottom: 20px;
-  font-size: 2.6em;
-  text-align: center;
+  font-size: 2.8em;
+  line-height: 1.2;
+  text-align: left;
  }
 
- section .texto p{
-  color:#e6e6e6;
-  font-size: 1.1em;
-  text-align: justify;
-  margin-bottom: 20px;
+ .hero-text p {
+  color: var(--text-secondary);
+  font-size: 1.2em;
+  text-align: left;
+  margin-bottom: 30px;
+  line-height: 1.6;
  }
 
- .highlight{
-  color: var(--gold);
-  font-weight: bold;
+ .hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
  }
 
- section .imagem img{
-  max-width: 500px;
-  width: 100%;
-  border-radius: 12px;
+ .hero-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
   border: 3px solid var(--gold);
-  box-shadow:0 4px 12px rgba(0,0,0,.6);
+  box-shadow: 0 8px 25px rgba(0,0,0,.7);
+  transition: transform 0.3s ease;
+ }
+
+ .hero-image img:hover {
+  transform: scale(1.02);
+ }
+
+ /* NOVA SEÇÃO ONDE JOGAR */
+ .onde-jogar-section {
+  background: linear-gradient(to bottom, var(--bg-2), var(--bg-3));
+  padding: 60px 30px;
+  border-radius: 16px;
+  margin: 60px 0;
+  text-align: center;
+  border: 1px solid var(--gold);
+ }
+
+ .onde-jogar-section h2 {
+  color: var(--gold);
+  font-size: 2.4em;
+  margin-bottom: 20px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 15px;
+ }
+
+ .onde-jogar-section h2:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 2px;
+ }
+
+ .onde-jogar-section p {
+  color: var(--text-secondary);
+  font-size: 1.2em;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+ }
+
+ .plataformas-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+ }
+
+ .plataforma-card {
+  background: var(--bg-2);
+  border-radius: 12px;
+  padding: 30px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ }
+
+ .plataforma-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+ }
+
+ .plataforma-logo {
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 25px;
+ }
+
+ .plataforma-card h3 {
+  color: var(--gold);
+  margin-bottom: 15px;
+  font-size: 1.6em;
+ }
+
+ .plataforma-card p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  font-size: 1em;
+ }
+
+ .id-info {
+  background: var(--bg);
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: auto;
+  width: 100%;
+  border-left: 4px solid var(--gold);
+ }
+
+ .id-info strong {
+  color: var(--gold);
+  font-size: 1.1em;
+ }
+
+ /* Seção Sobre Nós */
+ .sobre-nos {
+  background-color: var(--bg-2);
+  padding: 70px 40px;
+  margin: 80px auto 60px;
+  border-top: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  width: 95%;
+  max-width: 1100px;
+  border-radius: 12px;
+  position: relative;
+ }
+
+ .sobre-nos:before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--gold);
+  border-radius: 3px;
+ }
+
+ .sobre-nos h2 {
+  color: var(--gold);
+  text-align: center;
+  font-size: 2.4em;
+  margin-bottom: 40px;
+ }
+
+ .sobre-nos p {
+  color: #e6e6e6;
+  font-size: 1.1em;
+  line-height: 1.8;
+  text-align: justify;
+  max-width: 1000px;
+  margin: 0 auto 25px;
+ }
+
+ .sobre-nos .assinatura {
+  text-align: right;
+  margin-top: 40px;
+  font-style: italic;
+  color: var(--gold);
+  font-size: 1.2em;
+ }
+
+ /* Logo no rodapé */
+ .logo-rodape {
+  text-align: center;
+  margin: 50px 0 30px;
+  padding: 20px 0;
+  border-top: 1px solid rgba(255, 204, 0, 0.3);
+ }
+
+ .logo-rodape img {
+  max-width: 280px;
+  height: auto;
+  opacity: 0.9;
  }
 
  /* Barra lateral para banner */
@@ -306,46 +480,10 @@
   flex-shrink: 0;
  }
 
- /* Seção Sobre Nós - CORRIGIDA */
- .sobre-nos {
-  background-color: var(--bg-2);
-  padding: 60px 20px;
-  margin: 60px auto 40px; /* Aumentei a margem superior para 60px */
-  border-top: 2px solid var(--gold);
-  border-bottom: 2px solid var(--gold);
-  width: 95%; /* Alterei para porcentagem */
-  max-width: 1100px; /* Aumentei a largura máxima */
-  border-radius: 8px; /* Adicionei bordas arredondadas */
- }
-
- .sobre-nos h2 {
-  color: var(--gold);
-  text-align: center;
-  font-size: 2.2em;
-  margin-bottom: 30px;
- }
-
- .sobre-nos p {
-  color: #e6e6e6;
-  font-size: 1.1em;
-  line-height: 1.8;
-  text-align: justify;
-  max-width: 1000px;   /* mais largo, se quiser */
-  margin: 0 auto 20px; /* centraliza e mantém espaçamento inferior */
-}
-
-
- .sobre-nos .assinatura {
-  text-align: right;
-  margin-top: 30px;
-  font-style: italic;
-  color: var(--gold);
- }
-
  footer{
   background: var(--bg-2);
   text-align: center;
-  padding: 15px;
+  padding: 25px 15px 15px;
   margin-top: 40px;
   border-top: 2px solid var(--gold);
   font-size: 14px;
@@ -353,7 +491,7 @@
  }
 
  .aviso18{
-  margin-top: 10px;
+  margin-top: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -394,10 +532,31 @@
   display: none;
   }
   
-  /* Ajuste responsivo para a seção Sobre Nós */
-  .sobre-nos {
-  width: 90%;
-  margin: 50px auto 40px;
+  .hero-section {
+  flex-direction: column;
+  text-align: center;
+  gap: 30px;
+  }
+  
+  .hero-text h1, .hero-text p {
+  text-align: center;
+  }
+  
+  .hero-image {
+  order: -1;
+  }
+  
+  .hero-image img {
+  max-width: 80%;
+  }
+  
+  .plataformas-container {
+  gap: 25px;
+  }
+  
+  .plataforma-card {
+  width: 100%;
+  max-width: 400px;
   }
  }
 
@@ -503,28 +662,34 @@
   max-width: 728px;
   }
   
-  section{
-  flex-direction: column-reverse;
-  align-items: center;
-  text-align: center;
+  .hero-text h1 {
+  font-size: 2.2em;
   }
   
-  section .texto, section .imagem{
-  width: 100%;
+  .hero-text p {
+  font-size: 1.1em;
+  }
+  
+  .onde-jogar-section {
+  padding: 40px 20px;
+  }
+  
+  .onde-jogar-section h2 {
+  font-size: 2em;
+  }
+  
+  .sobre-nos {
+  padding: 50px 25px;
+  margin: 50px auto 40px;
+  }
+  
+  .sobre-nos h2 {
+  font-size: 2em;
   }
   
   .aviso18{
   flex-direction: column;
   text-align:center;
-  }
-  
-  .sobre-nos {
-  width: 95%;
-  margin: 40px auto 30px;
-  }
-  
-  .sobre-nos p {
-  width: 95%;
   }
   
   .ad-topo {
@@ -554,15 +719,39 @@
   right: 12px;
   }
   
+  .hero-text h1 {
+  font-size: 1.9em;
+  }
+  
+  .onde-jogar-section {
+  padding: 30px 15px;
+  }
+  
+  .onde-jogar-section h2 {
+  font-size: 1.8em;
+  }
+  
+  .plataforma-card {
+  padding: 20px;
+  }
+  
+  .plataforma-logo {
+  max-width: 160px;
+  }
+  
   .sobre-nos {
-  padding: 40px 15px;
-  margin: 30px auto 25px;
+  padding: 40px 20px;
+  margin: 40px auto 30px;
+  }
+  
+  .logo-rodape img {
+  max-width: 220px;
   }
  }
  </style>
 </head>
 
-</html>
+<body>
  <!-- Cabeçalho com botões de autenticação -->
  <header>
  <!-- Botões de Autenticação -->
@@ -610,26 +799,51 @@
 
  <div class="conteudo-principal">
  <div class="conteudo">
-  <!-- Seção principal -->
-  <section>
-  <div class="texto">
-   <h1>Bem-vindo à Guilda do Poker</h1>
+  <!-- Seção principal reformulada -->
+  <div class="hero-section">
+   <div class="hero-text">
+    <h1>Bem-vindo à Guilda do Poker</h1>
+    <p>
+    A Guilda do Poker é um espaço para jogadores apaixonados por estratégia, diversão e competição.
+    Aqui você encontra torneios, cash games e parceiros confiáveis em um ambiente acolhedor e desafiador.
+    </p>
+   </div>
+
+   <div class="hero-image">
+    <img src="mulhercroupier1.jpg" alt="Croupier do Poker">
+   </div>
+  </div>
+  
+  <!-- Nova seção: Onde Jogar -->
+  <div class="onde-jogar-section">
+   <h2>Onde Jogar</h2>
    <p>
-   A Guilda do Poker é um espaço para jogadores apaixonados por estratégia, diversão e competição.
-   Aqui você encontra torneios, cash games e parceiros confiáveis.
-   <br><br>
-    <span class="highlight">ID da Guilda do Poker no PPPoker</span>: <strong>4583211</strong><br>
-    <span class="highlight">Agente no Suprema Poker</span><br>
-   ID do Clube: <strong>29446</strong><br>
-   ID do Agente: <strong>1422946</strong><br><br><br>
+    Na Guilda do Poker, oferecemos duas plataformas de excelência para você aproveitar o melhor do poker online.
+    Escolha sua plataforma preferida, faça parte do nosso clube e desfrute de torneios emocionantes, cash games
+    divertidos e uma comunidade de jogadores apaixonados.
    </p>
+   
+   <div class="plataformas-container">
+    <div class="plataforma-card">
+     <img src="logopppoker.png" alt="PPPoker" class="plataforma-logo">
+     <h3>PPPoker</h3>
+     <p>Junte-se ao nosso clube no PPPoker e participe de torneios exclusivos com jogadores de todo o Brasil.</p>
+     <div class="id-info">
+      ID da Guilda: <strong>4583211</strong>
+     </div>
+    </div>
+    
+    <div class="plataforma-card">
+     <img src="logosupremapoker.png" alt="Suprema Poker" class="plataforma-logo">
+     <h3>Suprema Poker</h3>
+     <p>Entre no nosso clube no Suprema Poker e desfrute de mesas diversificadas e um ambiente acolhedor.</p>
+     <div class="id-info">
+      ID do Clube: <strong>29446</strong><br>
+      ID do Agente: <strong>1422946</strong>
+     </div>
+    </div>
+   </div>
   </div>
-
-
-  <div class="imagem">
-   <img src="mulhercroupier1.jpg" alt="Croupier do Poker">
-  </div>
-  </section>
 
 
   <!-- Seção Sobre Nós -->
@@ -658,6 +872,11 @@
    tornar nosso clube ainda mais especial e acolhedor.
   </p>
   <p class="assinatura">Bruno Macedo<br>Fundador da Guilda do Poker</p>
+  </div>
+  
+  <!-- Logo no rodapé do conteúdo -->
+  <div class="logo-rodape">
+   <img src="logoguidapoker1.png" alt="Guilda do Poker">
   </div>
  </div>
 
@@ -708,7 +927,7 @@
 
  // Configuração do Supabase
  const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
- const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsudXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
 
  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
