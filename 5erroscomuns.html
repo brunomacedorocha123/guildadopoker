@@ -103,9 +103,9 @@
             margin-bottom: 20px;
             font-size: 18px;
             color: #e6e6e6;
-            text-align: justify; /* Texto justificado */
-            text-justify: inter-word; /* Melhora a justificação */
-            hyphens: auto; /* Hifenização automática para melhor quebra */
+            text-align: justify;
+            text-justify: inter-word;
+            hyphens: auto;
         }
         
         .tips-list {
@@ -124,7 +124,7 @@
             margin-bottom: 15px;
             margin-left: 20px;
             color: #e6e6e6;
-            text-align: justify; /* Texto justificado nas listas */
+            text-align: justify;
             text-justify: inter-word;
         }
         
@@ -134,7 +134,7 @@
             margin: 25px 0;
             font-style: italic;
             color: #e6e6e6;
-            text-align: justify; /* Texto justificado nas citações */
+            text-align: justify;
             text-justify: inter-word;
         }
         
@@ -155,7 +155,7 @@
             background-color: #0a291f;
         }
         
-        /* Footer */
+        /* Footer - Exatamente como no index.html */
         footer {
             text-align: center;
             padding: 20px;
@@ -164,44 +164,6 @@
             border-top: 2px solid var(--gold);
             font-size: 14px;
             color: #bbb;
-        }
-        
-        .footer-content {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            max-width: 1200px;
-            margin: 0 auto;
-            gap: 40px;
-        }
-        
-        .footer-section {
-            flex: 1;
-            min-width: 250px;
-            margin-bottom: 20px;
-            padding: 0 15px;
-        }
-        
-        .footer-section h3 {
-            color: var(--gold);
-            margin-bottom: 15px;
-        }
-        
-        .footer-section p, .footer-section a {
-            color: #cccccc;
-            margin-bottom: 10px;
-            display: block;
-            text-decoration: none;
-        }
-        
-        .footer-section a:hover {
-            color: var(--gold);
-        }
-        
-        .social-icons a {
-            display: inline-block;
-            margin-right: 15px;
-            font-size: 20px;
         }
         
         .copyright {
@@ -231,6 +193,24 @@
             margin: 0;
             color: #ccc;
         }
+        
+        /* Links de política e termos - Exatamente como no index.html */
+        .footer-links {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: #bbb;
+            text-decoration: underline;
+        }
+        
+        .footer-links a:hover {
+            color: var(--gold);
+        }
 
         /* Responsividade para dispositivos móveis */
         @media (max-width: 768px) {
@@ -249,19 +229,24 @@
             
             .article-text p {
                 font-size: 16px;
-                text-align: justify; /* Mantém justificado no mobile */
+                text-align: justify;
                 text-justify: inter-word;
                 hyphens: auto;
             }
             
             .tips-list li {
-                text-align: justify; /* Mantém justificado no mobile */
+                text-align: justify;
                 text-justify: inter-word;
             }
             
             .quote {
-                text-align: justify; /* Mantém justificado no mobile */
+                text-align: justify;
                 text-justify: inter-word;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
             }
         }
     </style>
@@ -297,7 +282,7 @@
             <div class="tips-list">
                 <h4>Como evitar:</h4>
                 <ul>
-                    <li>Seja mais seletivo com as mãos que joga, especialmente nas posições iniciais. Como regra geral, nas primeiras posições, jogue apenas as mãos mais forte.</li>
+                    <li>Seja mais seletivo com as mãos que joga, especialmente nas posições iniciais. Como regra geral, nas primeiras posições, jogue apenas as mãos mais fortes.</li>
                     <li>Estude tabelas de ranges de mãos iniciais e familiarize-se com quais mãos são lucrativas em cada posição.</li>
                     <li>Lembre-se: folding (desistir) é uma jogada estratégica, não uma derrota. Desistir de mãos ruins economiza fichas para investir em mãos melhores.</li>
                     <li>Use a regra dos 10% - tente jogar não mais que 10-15% das mãos nas primeiras sessões até desenvolver melhor seu senso de seleção.</li>
@@ -314,10 +299,10 @@
                 "Posição é poder no poker. Jogar na posição significa que você age depois dos seus oponentes, dando mais informações para tomar decisões. Um jogador experiente pode transformar uma mão medíocre em um vencedor simplesmente por estar na posição certa."
             </div>
             
-            <p>Para dominar o uso da posição, comece prestando atenção em como suas decisões mudam dependendo de sua posição na mesa. Note como é mais fácil jogar hands como suited connectors e pares pequenos quando você está na posição do dealer compared to estar under the gun.</p>
+            <p>Para dominar o uso da posição, comece prestando atenção em como suas decisões mudam dependendo de sua posição na mesa. Note como é mais fácil jogar hands como suited connectors e pares pequenos quando você está na posição do dealer comparado a estar under the gun.</p>
             
             <h3>3. Superestimar "Mãos Bonitas"</h3>
-            <p>Mãos como AK, AQ ou pares médios podem parecer fortes, mas são vulneráveis contra vários oponentes. Iniciantes frequentemente superestimam essas mãos e as levam muito far (longe demias), mesmo quando o board claramente favorece os oponentes.</p>
+            <p>Mãos como AK, AQ ou pares médios podem parecer fortes, mas são vulneráveis contra vários oponentes. Iniciantes frequentemente superestimam essas mãos e as levam muito far (longe demais), mesmo quando o board claramente favorece os oponentes.</p>
             
             <p>Um erro comum é se apaixonar por mãos como AK e continuar apostando agressivamente independentemente do board. Lembre-se: AK é uma mão de uma dupla alta, não é um par feito. Se o flop vem com cartas baixas e você não acerta, pode ser hora de reconsiderar seu envolvimento no hand, especialmente contra múltiplos oponentes.</p>
             
@@ -328,7 +313,7 @@
             <h3>4. Jogar de Forma Muito Previsível</h3>
             <p>Se você sempre apostar forte com boas mãos e desistir com mãos ruins, os jogadores experientes rapidamente perceberão seu padrão e explorarão isso. A previsibilidade é um dos maiores aproveitamentos no poker, e jogadores que não variam seu jogo se tornam alvos fáceis.</p>
             
-            <p>Jogadores previsíveis sofrem porque seus oponentes sempre sabem onde estão. SE você só bet quando tem uma hand forte, os oponentes vão fugir. Se você só check quando está fraco, vão bet contra você agressivamente. Desenvolver um jogo balanceado é essencial para o sucesso a longo prazo.</p>
+            <p>Jogadores previsíveis sofrem porque seus oponentes sempre saben onde estão. Se você só bet quando tem uma hand forte, os oponentes vão fugir. Se você só check quando está fraco, vão bet contra você agressivamente. Desenvolver um jogo balanceado é essencial para o sucesso a longo prazo.</p>
             
             <div class="tips-list">
                 <h4>Dica de ouro:</h4>
@@ -351,11 +336,11 @@
             <p>Além disso, estabeleça limites de perda e ganho para cada sessão. Isso ajuda a controlar o tilt após uma perda significativa e a proteger os lucros em dias bons. Lembre-se que o poker é uma maratona, não uma corrida de curta distância.</p>
             
             <h3>Conclusão</h3>
-            <p>Evitar esses cinco erros comuns já colocará você à frente da maioria dos jogadores recreativos. Lembre-se que o poker é um jogo de paciência, disciplina e aprendizado contínuo. Cada sessão é uma oportunidade para aprender và melhorar, não apenas para ganhar fichas.</p>
+            <p>Evitar esses cinco erros comuns já colocará você à frente da maioria dos jogadores recreativos. Lembre-se que o poker es un juego de paciencia, disciplina y aprendizaje continuo. Cada sessão é uma oportunidade para aprender e melhorar, não apenas para ganhar fichas.</p>
             
             <p>Os melhores jogadores não são necessariamente aqueles que conhecem as estratégias mais complexas, mas aqueles que cometem menos erros fundamentais. Trabalhe consistentemente nestes aspectos do seu jogo, e você verá melhorias significativas em seus resultados a longo prazo.</p>
             
-            <p>Na próxima vez que se sentar à mesa, mantenha esses pontos em mente e observe como suas decisões melhoram. Anote suas sessões, revise mãos difíceis e sempre busque feedback de jogadores mais experientes. O caminho para a maestria no poker é longo, mas evitando esses erros comus, você estará acelerando significativamente sua jornada.</p>
+            <p>Na próxima vez que se sentar à mesa, mantenha esses pontos em mente e observe como suas decisões melhoram. Anote suas sessões, revise mãos difíceis e sempre busque feedback de jogadores mais experientes. O caminho para a maestria no poker é longo, mas evitando esses erros comuns, você estará acelerando significativamente sua jornada.</p>
             
             <p>Quer mais dicas? Deixe nos comentários que tópico você gostaria que abordássemos no próximo artigo!</p>
             
@@ -363,15 +348,16 @@
         </div>
     </div>
 
+    <!-- Rodapé - Exatamente como no index.html -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Guilda do Poker</h3>
-            </div>
+        <div class="copyright">
+            <p>&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
         </div>
         
-        <div class="copyright">
-            <p>&copy; 2025 Guilda do Poker. Todos os direitos reservados.</p>
+        <!-- Links para Política de Privacidade e Termos e Condições - Exatamente como no index.html -->
+        <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
+            <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
         </div>
         
         <div class="aviso18">
