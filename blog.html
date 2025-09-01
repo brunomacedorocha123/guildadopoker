@@ -32,7 +32,7 @@
             min-height: 100vh;
         }
 
-        /* ===== CABEÇALHO COM BOTÕES ===== */
+        /* ===== CABEÇALHO ===== */
         header {
             background: var(--bg-2);
             padding: 15px 20px;
@@ -50,75 +50,9 @@
             width: auto;
         }
 
-        /* ===== BOTÕES DE AUTENTICAÇÃO ===== */
+        /* ===== BOTÕES DE AUTENTICAÇÃO (ESCONDIDOS) ===== */
         .auth-buttons {
-            position: absolute;
-            right: 60px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .user-greeting {
-            color: var(--gold);
-            margin-right: 10px;
-            font-size: 0.9rem;
             display: none;
-        }
-
-        .auth-btn {
-            padding: 7px 14px;
-            border-radius: 5px;
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            cursor: pointer;
-            border: 1px solid var(--gold);
-            display: inline-block;
-            text-align: center;
-        }
-
-        .login-btn {
-            background-color: transparent;
-            color: var(--gold);
-        }
-
-        .login-btn:hover {
-            background-color: rgba(255, 204, 0, 0.1);
-        }
-
-        .signup-btn {
-            background-color: var(--gold);
-            color: var(--bg);
-            padding: 7px 16px !important;
-        }
-
-        .signup-btn:hover {
-            background-color: #e6b800;
-            border-color: #e6b800;
-        }
-
-        .profile-btn {
-            background-color: var(--gold);
-            color: var(--bg);
-        }
-
-        .profile-btn:hover {
-            background-color: #e6b800;
-            border-color: #e6b800;
-        }
-
-        .logout-btn {
-            background-color: var(--bg);
-            color: var(--gold);
-        }
-
-        .logout-btn:hover {
-            background-color: rgba(255, 204, 0, 0.1);
         }
 
         /* ===== MENU DE NAVEGAÇÃO ===== */
@@ -365,19 +299,6 @@
                 font-size: 1rem;
             }
             
-            .auth-buttons {
-                right: 50px;
-            }
-            
-            .auth-btn {
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .signup-btn {
-                padding: 6px 14px !important;
-            }
-            
             .user-greeting {
                 display: none;
             }
@@ -387,27 +308,8 @@
             header {
                 padding: 12px 15px;
                 min-height: 60px;
-                justify-content: space-between;
-                flex-wrap: wrap;
-            }
-            
-            .auth-buttons {
-                position: static;
-                transform: none;
-                margin-top: 15px;
-                width: 100%;
                 justify-content: center;
-                gap: 8px;
-                order: 3;
-            }
-            
-            .auth-btn {
-                padding: 8px 16px;
-                font-size: 0.85rem;
-            }
-            
-            .signup-btn {
-                padding: 8px 18px !important;
+                flex-wrap: wrap;
             }
             
             nav {
@@ -488,15 +390,6 @@
                 padding: 10px 12px;
             }
             
-            .auth-buttons {
-                gap: 6px;
-            }
-            
-            .auth-btn {
-                padding: 7px 12px;
-                font-size: 0.8rem;
-            }
-            
             .hamburger {
                 width: 32px;
                 height: 28px;
@@ -509,7 +402,7 @@
     <!-- Cabeçalho com botões de autenticação -->
     <header>
         <img src="logoguidapoker1.png" alt="Guilda do Poker" class="logo">
-        <!-- Botões de Autenticação -->
+        <!-- Botões de Autenticação (ESCONDIDOS) -->
         <div class="auth-buttons" id="auth-buttons">
             <span class="user-greeting" id="user-greeting"></span>
             <a href="login.html" class="auth-btn login-btn" id="login-button">Login</a>
