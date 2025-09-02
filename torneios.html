@@ -34,7 +34,13 @@
       justify-content: center;
       align-items: center;
     }
-    header img{ max-width: 200px; height: auto; }
+    header img{ 
+      max-width: 200px; 
+      height: auto;
+      /* Garantir que a logo fique centralizada */
+      margin: 0 auto;
+      display: block;
+    }
 
     /* Menu / Navegação */
     nav{
@@ -98,8 +104,9 @@
     /* Responsivo - menu hambúrguer - MODIFICADO */
     @media screen and (max-width: 768px){
       header {
-        justify-content: space-between;
+        justify-content: center;
         padding: 15px;
+        flex-direction: column;
       }
       
       .nav-container {
@@ -300,6 +307,39 @@
     }
     .aviso18 p { margin: 0; }
 
+    /* Links do rodapé - AJUSTE PARA MOBILE */
+    .footer-links {
+      margin-top: 15px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .footer-links a {
+      color: #bbb;
+      text-decoration: underline;
+      white-space: nowrap;
+    }
+    
+    .footer-links span {
+      color: #666;
+    }
+    
+    /* Ajuste para mobile */
+    @media screen and (max-width: 768px) {
+      .footer-links {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 5px 10px;
+      }
+      
+      .footer-links a {
+        font-size: 0.9em;
+      }
+    }
   </style>
 </head>
 <body>
@@ -594,11 +634,11 @@
       <span class="icone18">18+</span>
       <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
     </div>
-    <!-- Links para Política de Privacidade e Termos e Condições -->
-    <div style="margin-top: 15px; text-align: center;">
-      <a href="politica.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Política de Privacidade</a>
-      <span style="color: #666;">|</span>
-      <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
+    <!-- Links para Política de Privacidade e Termos e Condições - MODIFICADO -->
+    <div class="footer-links">
+      <a href="politica.html">Política de Privacidade</a>
+      <span>|</span>
+      <a href="termos.html">Termos e Condições</a>
     </div>
   </footer>
 
