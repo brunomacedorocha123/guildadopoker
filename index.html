@@ -50,21 +50,19 @@
         border-bottom: 2px solid var(--gold);
         position: relative;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        min-height: 100px; /* Aumentado para acomodar a logo maior */
+        min-height: 100px;
     }
 
     /* ===== LOGO DO CABEÇALHO ===== */
     .logo-container {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
     }
 
     .header-logo {
-        height: 80px; /* Aumentado de 40px para 80px (praticamente duplicado) */
+        height: 80px;
         width: auto;
         transition: transform 0.3s ease;
     }
@@ -75,13 +73,10 @@
 
     /* ===== BOTÕES DE AUTENTICAÇÃO ===== */
     .auth-buttons {
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
         display: flex;
         gap: 10px;
         align-items: center;
+        margin-left: auto;
     }
 
     .user-greeting {
@@ -203,10 +198,8 @@
         border: none;
         cursor: pointer;
         padding: 0;
-        position: absolute;
-        right: 25px;
-        top: 20px;
         z-index: 1001;
+        margin-left: 15px;
     }
 
     .hamburger span {
@@ -485,7 +478,7 @@
         }
         
         .auth-buttons {
-            right: 15px;
+            gap: 8px;
         }
         
         .auth-btn {
@@ -536,29 +529,23 @@
     @media (max-width: 768px) {
         header {
             padding: 12px 15px;
-            min-height: 80px; /* Aumentado para acomodar a logo maior */
-            justify-content: space-between;
+            min-height: 80px;
             flex-wrap: wrap;
         }
         
         .logo-container {
-            position: static;
-            transform: none;
-            margin-right: auto;
-            margin-left: 10px;
             order: 1;
+            margin-right: auto;
         }
         
         .header-logo {
-            height: 60px; /* Aumentado de 35px para 60px */
+            height: 60px;
         }
         
         .auth-buttons {
-            position: static;
-            transform: none;
-            margin-top: 0;
-            width: auto;
             order: 2;
+            margin-left: 0;
+            margin-right: 50px; /* Espaço para o hamburger */
         }
         
         .auth-btn {
@@ -579,11 +566,9 @@
             display: flex;
             width: 36px;
             height: 30px;
-            right: 15px;
-            top: 15px;
-            transform: none;
-            position: absolute;
             order: 3;
+            position: relative;
+            margin-left: 0;
         }
 
         .hamburger span {
@@ -663,6 +648,21 @@
         }
     }
 
+    @media (max-width: 600px) {
+        .auth-buttons {
+            margin-right: 40px;
+        }
+        
+        .auth-btn {
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+        
+        .signup-btn {
+            padding: 6px 12px !important;
+        }
+    }
+
     @media (max-width: 480px) {
         header {
             padding: 10px 12px;
@@ -673,22 +673,26 @@
         }
         
         .header-logo {
-            height: 50px; /* Aumentado de 30px para 50px */
+            height: 50px;
         }
         
         .auth-buttons {
             gap: 6px;
+            margin-right: 35px;
         }
         
         .auth-btn {
-            padding: 7px 12px;
-            font-size: 0.8rem;
+            padding: 5px 8px;
+            font-size: 0.7rem;
+        }
+        
+        .signup-btn {
+            padding: 5px 10px !important;
         }
         
         .hamburger {
             width: 32px;
             height: 28px;
-            right: 12px;
         }
         
         .hero-text h1 {
@@ -716,7 +720,7 @@
             margin: 40px auto 30px;
         }
     }
-</style>
+    </style>
 </head>
 
 <body>
