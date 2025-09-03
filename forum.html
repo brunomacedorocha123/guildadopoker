@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fórum - Guia do Poker</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F5F5F5;
+      margin: 0;
+      padding: 0;
+      color: #333333;
+    }
+    header {
+      background-color: #0D1B2A;
+      color: #FFFFFF;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .topico {
+      background-color: #FFFFFF;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .topico:hover {
+      transform: translateY(-2px);
+    }
+    .topico a {
+      text-decoration: none;
+      color: #0066CC;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .descricao {
+      margin-top: 0.5rem;
+      color: #555555;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Fórum do Guia do Poker</h1>
+</header>
+
+<main id="lista-topicos">
+  <p>Carregando tópicos...</p>
+</main>
+
+<script>
+  // Dados do seu projeto Supabase
+  const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+  async function carregarTopicos() {
+    const { data, error } = await supabase
+      .from('topicos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    const container = document.getElementById('lista-topicos');
+    container.innerHTML = '';
+
+    if (error) {
+      container.innerHTML = `<p>Erro ao carregar tópicos: ${error.message}</p>`;
+      console.error(error);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p>Nenhum tópico encontrado.</p>';
+      return;
+    }
+
+    data.forEach(t => {
+      const div = document.createElement('div');
+      div.className = 'topico';
+      div.innerHTML = `
+        <a href="topico.html?id=${t.id}">${t.titulo}</a>
+        <p class="descricao">${t.descricao || ''}</p>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  carregarTopicos();
+</script>
+
+</body>
+</html>
