@@ -720,6 +720,13 @@
             margin: 40px auto 30px;
         }
     }
+
+    .forum-btn:hover {
+    background-color: transparent !important;
+    color: var(--gold) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+}
     </style>
 </head>
 
@@ -776,7 +783,7 @@
                 <img src="mulhercroupier1.jpg" alt="Croupier do Poker">
             </div>
         </div>
-        
+
         <!-- Nova seção: Onde Jogar -->
         <div class="onde-jogar-section">
             <h2>Onde Jogar</h2>
@@ -836,6 +843,15 @@
             <p class="assinatura">Bruno Macedo<br>Fundador da Guilda do Poker</p>
         </div>
     </div>
+
+    <div class="forum-button-container" id="forum-button-container" style="display: none; text-align: center; margin: 40px 0;">
+    <a href="forum.html" class="forum-btn" style="display: inline-block; padding: 15px 35px; background-color: var(--gold); color: var(--bg); text-decoration: none; font-weight: bold; border-radius: 8px; font-size: 1.2em; transition: all 0.3s ease; border: 2px solid var(--gold);">
+        Acessar Nosso Fórum
+    </a>
+    <p style="color: var(--text-secondary); margin-top: 15px; font-size: 1em;">
+        Participe de discussões, tire dúvidas e compartilhe estratégias com nossa comunidade
+    </p>
+</div>
 
     <!-- Rodapé -->
     <footer>
@@ -946,6 +962,40 @@
                 alert('Erro inesperado. Tente novamente.');
             }
         }
+
+        // Atualizar UI para usuário logado - SEM SAUDAÇÃO
+function updateUIForLoggedInUser() {
+    // Esconder botões de login/cadastro
+    document.getElementById('login-button').style.display = 'none';
+    document.getElementById('signup-button').style.display = 'none';
+    
+    // Mostrar botões de perfil/logout
+    document.getElementById('profile-button').style.display = 'block';
+    document.getElementById('logout-button').style.display = 'block';
+    
+    // ESCONDER COMPLETAMENTE A SAUDAÇÃO DO USUÁRIO
+    document.getElementById('user-greeting').style.display = 'none';
+    
+    // MOSTRAR BOTÃO DO FÓRUM
+    document.getElementById('forum-button-container').style.display = 'block';
+}
+
+// Atualizar UI para usuário não logado
+function updateUIForLoggedOutUser() {
+    // Mostrar botões de login/cadastro
+    document.getElementById('login-button').style.display = 'block';
+    document.getElementById('signup-button').style.display = 'block';
+    
+    // Esconder botões de perfil/logout
+    document.getElementById('profile-button').style.display = 'none';
+    document.getElementById('logout-button').style.display = 'none';
+    
+    // Esconder saudação
+    document.getElementById('user-greeting').style.display = 'none';
+    
+    // ESCONDER BOTÃO DO FÓRUM
+    document.getElementById('forum-button-container').style.display = 'none';
+}
     </script>
 </body>
 </html>
