@@ -696,235 +696,275 @@
         </div>
     </footer>
 
-    <script>
-        // Menu hamburger
-        const hamburger = document.querySelector('.hamburger');
-        const menu = document.querySelector('.menu');
+   <script>
+    // Menu hamburger
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.menu');
 
-        if (hamburger && menu) {
-            hamburger.addEventListener('click', () => {
-                hamburger.classList.toggle('active');
-                menu.classList.toggle('active');
-            });
-        }
-
-        // Fechar menu ao clicar em um link (mobile)
-        const menuLinks = document.querySelectorAll('.menu a');
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    if (hamburger) hamburger.classList.remove('active');
-                    if (menu) menu.classList.remove('active');
-                }
-            });
+    if (hamburger && menu) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            menu.classList.toggle('active');
         });
+    }
 
-        // Modal do Perfil
-        const profileModal = document.getElementById('profile-modal');
-        const closeModal = document.getElementById('close-modal');
-        const userAvatar = document.getElementById('user-avatar');
-        const userNickname = document.getElementById('user-nickname');
-
-        // Abrir modal ao clicar no avatar ou nickname
-        if (userAvatar) {
-            userAvatar.addEventListener('click', openProfileModal);
-        }
-        
-        if (userNickname) {
-            userNickname.addEventListener('click', openProfileModal);
-        }
-
-        function openProfileModal() {
-            if (profileModal) {
-                profileModal.classList.add('active');
+    // Fechar menu ao clicar em um link (mobile)
+    const menuLinks = document.querySelectorAll('.menu a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                if (hamburger) hamburger.classList.remove('active');
+                if (menu) menu.classList.remove('active');
             }
-        }
+        });
+    });
 
-        // Fechar modal
-        if (closeModal) {
-            closeModal.addEventListener('click', () => {
-                if (profileModal) {
-                    profileModal.classList.remove('active');
-                }
-            });
-        }
+    // Modal do Perfil
+    const profileModal = document.getElementById('profile-modal');
+    const closeModal = document.getElementById('close-modal');
+    const userAvatar = document.getElementById('user-avatar');
+    const userNickname = document.getElementById('user-nickname');
 
-        // Fechar modal ao clicar fora do conteúdo
-        window.addEventListener('click', (event) => {
-            if (event.target === profileModal) {
+    // Abrir modal ao clicar no avatar ou nickname
+    if (userAvatar) {
+        userAvatar.addEventListener('click', openProfileModal);
+    }
+    
+    if (userNickname) {
+        userNickname.addEventListener('click', openProfileModal);
+    }
+
+    function openProfileModal() {
+        if (profileModal) {
+            profileModal.classList.add('active');
+        }
+    }
+
+    // Fechar modal
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            if (profileModal) {
                 profileModal.classList.remove('active');
             }
         });
+    }
 
-        // Configuração do Supabase
-        const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    // Fechar modal ao clicar fora do conteúdo
+    window.addEventListener('click', (event) => {
+        if (event.target === profileModal) {
+            profileModal.classList.remove('active');
+        }
+    });
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true
-            }
-        });
+    // Configuração do Supabase
+    const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
-        // Função para carregar dados do perfil do usuário
-        async function loadUserProfile(userId) {
-            try {
-                // Buscar dados do perfil
-                const { data: perfilData, error: perfilError } = await supabase
-                    .from('perfis')
-                    .select('*')
-                    .eq('id', userId)
-                    .single();
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true
+        }
+    });
 
-                if (perfilError) {
-                    console.error('Erro ao carregar perfil:', perfilError);
-                    return null;
-                }
+    // Função para criar perfil se não existir
+    async function createUserProfile(userId, userEmail) {
+        try {
+            const username = userEmail.split('@')[0];
+            
+            // Criar novo perfil
+            const { data: newProfile, error: insertError } = await supabase
+                .from('perfis')
+                .insert([
+                    {
+                        usuario_id: userId,
+                        nome_completo: username,
+                        apelido_poker: username,
+                        data_criacao: new Date().toISOString(),
+                        data_atualizacao: new Date().toISOString()
+                    }
+                ])
+                .select()
+                .single();
 
-                return perfilData;
-            } catch (error) {
-                console.error('Erro inesperado ao carregar perfil:', error);
+            if (insertError) {
+                console.error('Erro ao criar perfil:', insertError);
                 return null;
             }
+
+            console.log('Novo perfil criado:', newProfile);
+            return newProfile;
+        } catch (error) {
+            console.error('Erro inesperado ao criar perfil:', error);
+            return null;
         }
+    }
 
-        // Função para carregar avatar do usuário
-        async function loadUserAvatar(avatarId) {
-            try {
-                if (!avatarId) return null;
+    // Função para carregar dados do perfil do usuário - CORRIGIDA
+    async function loadUserProfile(userId, userEmail) {
+        try {
+            // Buscar dados do perfil pelo usuario_id (CORREÇÃO)
+            const { data: perfilData, error: perfilError } = await supabase
+                .from('perfis')
+                .select('*')
+                .eq('usuario_id', userId)  // CORREÇÃO: usar usuario_id em vez de id
+                .single();
+
+            if (perfilError) {
+                console.error('Erro ao carregar perfil:', perfilError);
                 
-                const { data: avatarData, error: avatarError } = await supabase
-                    .from('avatares')
-                    .select('url_imagem')
-                    .eq('id', avatarId)
-                    .single();
-
-                if (avatarError) {
-                    console.error('Erro ao carregar avatar:', avatarError);
-                    return null;
+                // Se não encontrar perfil, criar um novo
+                if (perfilError.code === 'PGRST116') { // PGRST116 = nenhum resultado encontrado
+                    console.log('Perfil não encontrado, criando novo...');
+                    return await createUserProfile(userId, userEmail);
                 }
-
-                return avatarData.url_imagem;
-            } catch (error) {
-                console.error('Erro inesperado ao carregar avatar:', error);
+                
                 return null;
             }
-        }
 
-        // Atualizar UI com dados do usuário
-        async function updateUserUI(user, profile) {
-            const userAvatarImg = document.getElementById('avatar-img');
-            const userNicknameEl = document.getElementById('user-nickname');
-            const userGreeting = document.getElementById('user-greeting');
-            const profileAvatarImgEl = document.getElementById('profile-avatar-img');
-            const profileNameEl = document.getElementById('profile-name');
-            
-            // Definir apelido (nickname)
-            if (profile && profile.apelido_poker) {
-                if (userNicknameEl) userNicknameEl.textContent = profile.apelido_poker;
-                if (userGreeting) userGreeting.textContent = `Olá, ${profile.apelido_poker}`;
-                if (profileNameEl) profileNameEl.textContent = profile.apelido_poker;
-            } else {
-                const username = user.email.split('@')[0];
-                if (userNicknameEl) userNicknameEl.textContent = username;
-                if (userGreeting) userGreeting.textContent = `Olá, ${username}`;
-                if (profileNameEl) profileNameEl.textContent = username;
-            }
-            
-            // Carregar avatar
-            let avatarUrl = null;
-            if (profile && profile.avatar_id) {
-                avatarUrl = await loadUserAvatar(profile.avatar_id);
-            }
-            
-            if (avatarUrl) {
-                if (userAvatarImg) userAvatarImg.src = avatarUrl;
-                if (profileAvatarImgEl) profileAvatarImgEl.src = avatarUrl;
-            }
+            return perfilData;
+        } catch (error) {
+            console.error('Erro inesperado ao carregar perfil:', error);
+            return null;
         }
+    }
 
-        // Verificar se usuário está logado ao carregar a página
-        document.addEventListener('DOMContentLoaded', async function() {
-            const { data: { session } } = await supabase.auth.getSession();
+    // Função para carregar avatar do usuário
+    async function loadUserAvatar(avatarId) {
+        try {
+            if (!avatarId) return null;
             
-            if (session) {
-                console.log('Usuário logado:', session.user.email);
-                
-                // Carregar dados do perfil
-                const userProfile = await loadUserProfile(session.user.id);
-                
-                // Atualizar UI com dados do usuário
-                await updateUserUI(session.user, userProfile);
-                
-                updateUIForLoggedInUser();
-            } else {
-                console.log('Usuário não logado');
-                updateUIForLoggedOutUser();
+            const { data: avatarData, error: avatarError } = await supabase
+                .from('avatares')
+                .select('url_imagem')
+                .eq('id', avatarId)
+                .single();
+
+            if (avatarError) {
+                console.error('Erro ao carregar avatar:', avatarError);
+                return null;
+            }
+
+            return avatarData.url_imagem;
+        } catch (error) {
+            console.error('Erro inesperado ao carregar avatar:', error);
+            return null;
+        }
+    }
+
+    // Atualizar UI com dados do usuário
+    async function updateUserUI(user, profile) {
+        const userAvatarImg = document.getElementById('avatar-img');
+        const userNicknameEl = document.getElementById('user-nickname');
+        const userGreeting = document.getElementById('user-greeting');
+        const profileAvatarImgEl = document.getElementById('profile-avatar-img');
+        const profileNameEl = document.getElementById('profile-name');
+        
+        // Definir apelido (nickname)
+        if (profile && profile.apelido_poker) {
+            if (userNicknameEl) userNicknameEl.textContent = profile.apelido_poker;
+            if (userGreeting) userGreeting.textContent = `Olá, ${profile.apelido_poker}`;
+            if (profileNameEl) profileNameEl.textContent = profile.apelido_poker;
+        } else {
+            const username = user.email.split('@')[0];
+            if (userNicknameEl) userNicknameEl.textContent = username;
+            if (userGreeting) userGreeting.textContent = `Olá, ${username}`;
+            if (profileNameEl) profileNameEl.textContent = username;
+        }
+        
+        // Carregar avatar
+        let avatarUrl = null;
+        if (profile && profile.avatar_id) {
+            avatarUrl = await loadUserAvatar(profile.avatar_id);
+        }
+        
+        if (avatarUrl) {
+            if (userAvatarImg) userAvatarImg.src = avatarUrl;
+            if (profileAvatarImgEl) profileAvatarImgEl.src = avatarUrl;
+        }
+    }
+
+    // Verificar se usuário está logado ao carregar a página
+    document.addEventListener('DOMContentLoaded', async function() {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+            console.log('Usuário logado:', session.user.email);
+            
+            // Carregar dados do perfil
+            const userProfile = await loadUserProfile(session.user.id, session.user.email);
+            
+            // Atualizar UI com dados do usuário
+            await updateUserUI(session.user, userProfile);
+            
+            updateUIForLoggedInUser();
+        } else {
+            console.log('Usuário não logado');
+            updateUIForLoggedOutUser();
+        }
+        
+        // Adicionar evento de clique para o botão de logout
+        const logoutButton = document.getElementById('logout-button');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', logout);
+        }
+    });
+
+    // Atualizar UI para usuário logado
+    function updateUIForLoggedInUser() {
+        // Mostrar botões de perfil/logout
+        const profileButton = document.getElementById('profile-button');
+        const logoutButton = document.getElementById('logout-button');
+        
+        if (profileButton) profileButton.style.display = 'block';
+        if (logoutButton) logoutButton.style.display = 'block';
+        
+        // Mostrar área do usuário
+        const userArea = document.getElementById('user-area');
+        if (userArea) userArea.style.display = 'flex';
+        
+        // Mostrar saudação
+        const userGreeting = document.getElementById('user-greeting');
+        if (userGreeting) userGreeting.style.display = 'inline';
+    }
+
+    // Atualizar UI para usuário não logado
+    function updateUIForLoggedOutUser() {
+        // Esconder botões de perfil/logout
+        const profileButton = document.getElementById('profile-button');
+        const logoutButton = document.getElementById('logout-button');
+        
+        if (profileButton) profileButton.style.display = 'none';
+        if (logoutButton) logoutButton.style.display = 'none';
+        
+        // Esconder área do usuário
+        const userArea = document.getElementById('user-area');
+        if (userArea) userArea.style.display = 'none';
+        
+        // Esconder saudação
+        const userGreeting = document.getElementById('user-greeting');
+        if (userGreeting) userGreeting.style.display = 'none';
+    }
+
+    // Função de logout
+    async function logout() {
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Erro ao fazer logout:', error);
+                alert('Erro ao fazer logout. Tente novamente.');
+                return;
             }
             
-            // Adicionar evento de clique para o botão de logout
-            const logoutButton = document.getElementById('logout-button');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', logout);
-            }
-        });
-
-        // Atualizar UI para usuário logado
-        function updateUIForLoggedInUser() {
-            // Mostrar botões de perfil/logout
-            const profileButton = document.getElementById('profile-button');
-            const logoutButton = document.getElementById('logout-button');
+            // Atualizar UI e recarregar
+            updateUIForLoggedOutUser();
+            window.location.reload();
             
-            if (profileButton) profileButton.style.display = 'block';
-            if (logoutButton) logoutButton.style.display = 'block';
-            
-            // Mostrar área do usuário
-            const userArea = document.getElementById('user-area');
-            if (userArea) userArea.style.display = 'flex';
-            
-            // Mostrar saudação
-            const userGreeting = document.getElementById('user-greeting');
-            if (userGreeting) userGreeting.style.display = 'inline';
+        } catch (error) {
+            console.error('Erro inesperado no logout:', error);
+            alert('Erro inesperado. Tente novamente.');
         }
-
-        // Atualizar UI para usuário não logado
-        function updateUIForLoggedOutUser() {
-            // Esconder botões de perfil/logout
-            const profileButton = document.getElementById('profile-button');
-            const logoutButton = document.getElementById('logout-button');
-            
-            if (profileButton) profileButton.style.display = 'none';
-            if (logoutButton) logoutButton.style.display = 'none';
-            
-            // Esconder área do usuário
-            const userArea = document.getElementById('user-area');
-            if (userArea) userArea.style.display = 'none';
-            
-            // Esconder saudação
-            const userGreeting = document.getElementById('user-greeting');
-            if (userGreeting) userGreeting.style.display = 'none';
-        }
-
-        // Função de logout
-        async function logout() {
-            try {
-                const { error } = await supabase.auth.signOut();
-                if (error) {
-                    console.error('Erro ao fazer logout:', error);
-                    alert('Erro ao fazer logout. Tente novamente.');
-                    return;
-                }
-                
-                // Atualizar UI e recarregar
-                updateUIForLoggedOutUser();
-                window.location.reload();
-                
-            } catch (error) {
-                console.error('Erro inesperado no logout:', error);
-                alert('Erro inesperado. Tente novamente.');
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
