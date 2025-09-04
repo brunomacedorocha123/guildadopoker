@@ -917,8 +917,7 @@ footer img {
  </div>
  </footer>
 
-<script>
-// Configuração do Supabase - CORRIGIDA
+// Configuração do Supabase
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
@@ -1053,10 +1052,14 @@ async function checkAuthState() {
             return;
         }
 
-        await loadUserData(session.user);
-        
-        // Iniciar verificação periódica de autenticação
-        startAuthCheck();
+        // Primeiro cria o perfil se não existir, depois carrega os dados
+        const profileCreated = await createUserProfile(session.user);
+        if (profileCreated) {
+            await loadUserData(session.user);
+            
+            // Iniciar verificação periódica de autenticação
+            startAuthCheck();
+        }
     } catch (error) {
         console.error('Erro na autenticação:', error);
         showNotification('Erro de conexão. Tente novamente.', false);
@@ -1079,29 +1082,42 @@ function startAuthCheck() {
     }, 5000);
 }
 
-// Criar perfil de usuário se não existir
+// Criar perfil de usuário se não existir - CORRIGIDA
 async function createUserProfile(user) {
     try {
-        const { error } = await supabase
+        const { data, error } = await supabase
+            .from('perfis')
+            .select('id')
+            .eq('usuario_id', user.id)
+            .maybeSingle();
+
+        if (error && error.code !== 'PGRST116') {
+            console.error('Erro ao verificar perfil:', error);
+            return false;
+        }
+
+        // Se perfil já existe, retorna sucesso
+        if (data) {
+            console.log('Perfil já existe');
+            return true;
+        }
+
+        // Criar novo perfil
+        const { error: insertError } = await supabase
             .from('perfis')
             .insert([
                 {
-                    id: user.id,
+                    usuario_id: user.id,
                     nome_completo: user.user_metadata.full_name || '',
-                    email: user.email,
                     data_criacao: new Date().toISOString()
                 }
             ]);
 
-        if (error) {
-            // Ignorar erro de duplicidade (código 23505)
-            if (error.code === '23505') {
-                console.log('Perfil já existe, ignorando criação...');
-                return true;
-            }
-            console.error('Erro ao criar perfil:', error);
+        if (insertError) {
+            console.error('Erro ao criar perfil:', insertError);
             return false;
         }
+        
         return true;
     } catch (error) {
         console.error('Erro inesperado ao criar perfil:', error);
@@ -1109,23 +1125,16 @@ async function createUserProfile(user) {
     }
 }
 
-// Carregar dados do usuário
+// Carregar dados do usuário - CORRIGIDA
 async function loadUserData(user) {
     try {
-        console.log('Iniciando carregamento de dados para:', user.id);
+        console.log('Iniciando carregamento de dados para usuario_id:', user.id);
         
-        // Verificar se user é válido
-        if (!user || !user.id) {
-            console.error('Usuário inválido:', user);
-            showNotification('Erro ao carregar dados do usuário.', false);
-            return;
-        }
-        
-        // Primeiro tenta buscar dados básicos
+        // Buscar dados do perfil baseado no usuario_id
         let { data: perfilData, error: perfilError } = await supabase
             .from('perfis')
             .select('*')
-            .eq('id', user.id)
+            .eq('usuario_id', user.id)
             .single();
 
         // Se não encontrar perfil, cria um novo
@@ -1137,7 +1146,7 @@ async function loadUserData(user) {
                 const { data: newPerfilData } = await supabase
                     .from('perfis')
                     .select('*')
-                    .eq('id', user.id)
+                    .eq('usuario_id', user.id)
                     .single();
                 perfilData = newPerfilData;
             } else {
@@ -1192,7 +1201,7 @@ async function loadUserData(user) {
     }
 }
 
-// Atualizar perfil do usuário
+// Atualizar perfil do usuário - CORRIGIDA
 async function updateUserProfile() {
     try {
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -1233,7 +1242,7 @@ async function updateUserProfile() {
         const { error } = await supabase
             .from('perfis')
             .update(updates)
-            .eq('id', session.user.id);
+            .eq('usuario_id', session.user.id);
 
         if (error) {
             console.error('Erro ao atualizar perfil:', error);
@@ -1247,30 +1256,29 @@ async function updateUserProfile() {
             return false;
         }
 
-       showNotification('Perfil atualizado com sucesso!', true);
+        showNotification('Perfil atualizado com sucesso!', true);
 
-// Atualizar a exibição
-userNameElement.textContent = nomeCompletoInput.value;
+        // Atualizar a exibição
+        userNameElement.textContent = nomeCompletoInput.value;
 
-if (apelidoPokerInput.value) {
-    userPokerNicknameElement.textContent = '"' + apelidoPokerInput.value + '"';
-} else {
-    userPokerNicknameElement.textContent = '';
-}
+        if (apelidoPokerInput.value) {
+            userPokerNicknameElement.textContent = '"' + apelidoPokerInput.value + '"';
+        } else {
+            userPokerNicknameElement.textContent = '';
+        }
 
-if (avatarId) {
-    await updateAvatarDisplay(avatarId);
-} else {
-    // Reset para avatar padrão se nenhum avatar foi selecionado
-    // BASE64 COMPLETA CORRIGIDA:
-    const defaultAvatar = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI2MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0iI2M4YjY1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
-    
-    // VERIFICAR SE O ELEMENTO EXISTE ANTES DE MODIFICAR
-    const profileImg = document.querySelector('.profile-picture img');
-    if (profileImg) {
-        profileImg.src = defaultAvatar;
-    }
-}
+        if (avatarId) {
+            await updateAvatarDisplay(avatarId);
+        } else {
+            // Reset para avatar padrão se nenhum avatar foi selecionado
+            const defaultAvatar = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTIwIDEyMCI+PHJlY3Qgd2lkdGg9IjEyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI2MCIgeT0iNjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0iI2M4YjY1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
+            
+            // VERIFICAR SE O ELEMENTO EXISTE ANTES DE MODIFICAR
+            const profileImg = document.querySelector('.profile-picture img');
+            if (profileImg) {
+                profileImg.src = defaultAvatar;
+            }
+        }
         
         originalValues = { ...updates, avatar_id: avatarId };
         currentAvatarId = avatarId;
@@ -1393,7 +1401,6 @@ async function loadAvatares() {
 }
 
 // Exibir avatares na interface
-// Exibir avatares na interface
 function displayAvatares(avatares) {
     const avatarOptions = document.getElementById('avatar-options-modal');
     avatarOptions.innerHTML = '';
@@ -1407,7 +1414,7 @@ function displayAvatares(avatares) {
         const avatarElement = document.createElement('div');
         avatarElement.className = 'avatar-option';
         avatarElement.dataset.id = avatar.id;
-        avatarElement.innerHTML = `<img src="${avatar.url_imagem}" alt="${avatar.nome}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2M4YjY1MyIgd极地战斧dGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">`;
+        avatarElement.innerHTML = `<img src="${avatar.url_imagem}" alt="${avatar.nome}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMxYzRjMjkiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2M4YjY1MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">`;
         
         avatarElement.addEventListener('click', () => {
             selectAvatar(avatar.id);
@@ -1421,6 +1428,7 @@ function displayAvatares(avatares) {
         avatarOptions.appendChild(avatarElement);
     });
 }
+
 // Selecionar um avatar
 function selectAvatar(avatarId) {
     document.querySelectorAll('.avatar-option').forEach(option => {
@@ -1501,6 +1509,5 @@ window.addEventListener('beforeunload', function() {
         clearInterval(authCheckInterval);
     }
 });
-</script>
 </body>
 </html>
