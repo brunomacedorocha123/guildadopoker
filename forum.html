@@ -368,17 +368,35 @@
                 right: 12px;
             }
         }
+
+        /* Loading indicator */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,204,0,.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <!-- Cabeçalho SEM botões de autenticação -->
     <header>
         <div class="header-left">
-            <div class="user-area" id="user-area">
+            <div class="user-area" id="user-area" style="display: none;">
                 <div class="user-avatar" id="user-avatar">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Mi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
                 </div>
-                <div class="user-nickname" id="user-nickname">PokerMaster</div>
+                <div class="user-nickname" id="user-nickname">
+                    <span class="loading" id="loading-indicator"></span>
+                    <span id="nickname-text"></span>
+                </div>
             </div>
         </div>
 
@@ -484,157 +502,86 @@
     </footer>
 
     <script>
-    // Menu hamburger
-    const hamburger = document.querySelector('.hamburger');
-    const menu = document.querySelector('.menu');
-
-    if (hamburger && menu) {
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            menu.classList.toggle('active');
-        });
-    }
-
-    // Fechar menu ao clicar em um link (mobile)
-    const menuLinks = document.querySelectorAll('.menu a');
-    menuLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (window.innerWidth <= 768) {
-                if (hamburger) hamburger.classList.remove('active');
-                if (menu) menu.classList.remove('active');
-            }
-        });
-    });
-
     // Configuração do Supabase
     const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true
-        }
+        auth: { persistSession: true, autoRefreshToken: true }
     });
 
-    // Função para carregar avatar do usuário
+    // URL base para os avatares
+    const AVATAR_BASE_URL = '/avatars/'; // ajuste se necessário
+
+    // Função para carregar o avatar do usuário pelo ID
     async function loadUserAvatar(avatarId) {
-        try {
-            if (!avatarId) {
-                console.log('Nenhum avatar_id fornecido');
-                return null;
-            }
-            
-            console.log('Buscando avatar com ID:', avatarId);
-            
-            const { data: avatarData, error: avatarError } = await supabase
-                .from('avatares')
-                .select('url_imagem')
-                .eq('id', avatarId)
-                .single();
+        if (!avatarId) return null;
+        const { data: avatarData, error: avatarError } = await supabase
+            .from('avatares')
+            .select('url_imagem')
+            .eq('id', avatarId)
+            .single();
 
-            if (avatarError) {
-                console.error('Erro ao carregar avatar:', avatarError);
-                return null;
-            }
+        if (avatarError || !avatarData) return null;
 
-            return avatarData.url_imagem;
-        } catch (error) {
-            console.error('Erro inesperado ao carregar avatar:', error);
-            return null;
-        }
+        return AVATAR_BASE_URL + avatarData.url_imagem;
     }
 
-    // Função para carregar dados do perfil do usuário
+    // Função para carregar o perfil do usuário
     async function loadUserProfile(userId) {
-        try {
-            console.log('Carregando perfil para usuário ID:', userId);
-            
-            const { data: perfilData, error: perfilError } = await supabase
-                .from('perfis')
-                .select('*')
-                .eq('usuario_id', userId)
-                .single();
+        const { data: perfilData, error: perfilError } = await supabase
+            .from('perfis')
+            .select('*')
+            .eq('usuario_id', userId)
+            .single();
 
-            if (perfilError) {
-                console.error('Erro ao carregar perfil:', perfilError);
-                return null;
-            }
-
-            console.log('Perfil carregado com sucesso:', perfilData);
-            return perfilData;
-        } catch (error) {
-            console.error('Erro inesperado ao carregar perfil:', error);
-            return null;
-        }
+        if (perfilError) return null;
+        return perfilData;
     }
 
-    // Atualizar UI com dados do usuário
+    // Atualizar a janelinha do usuário
     async function updateUserUI(user, profile) {
         const userAvatarImg = document.getElementById('avatar-img');
-        const userNicknameEl = document.getElementById('user-nickname');
-        
-        // Definir apelido (nickname)
-        if (profile && profile.apelido_poker) {
-            if (userNicknameEl) userNicknameEl.textContent = profile.apelido_poker;
-            console.log('Apelido definido:', profile.apelido_poker);
-        } else {
-            const username = user.email.split('@')[0];
-            if (userNicknameEl) userNicknameEl.textContent = username;
-            console.log('Usando email como apelido:', username);
+        const userNicknameEl = document.getElementById('nickname-text');
+        const loadingIndicator = document.getElementById('loading-indicator');
+
+        // esconder loading
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
+
+        // definir apelido
+        let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+        if (userNicknameEl) {
+            userNicknameEl.textContent = apelido;
+            userNicknameEl.style.display = 'inline';
         }
-        
-        // Carregar avatar
+
+        // carregar avatar
         let avatarUrl = null;
         if (profile && profile.avatar_id) {
-            console.log('Tentando carregar avatar com ID:', profile.avatar_id);
             avatarUrl = await loadUserAvatar(profile.avatar_id);
-        } else {
-            console.log('Nenhum avatar_id encontrado no perfil');
         }
-        
+
         if (avatarUrl && userAvatarImg) {
+            userAvatarImg.onerror = function () {
+                console.error('Erro ao carregar avatar, usando padrão');
+                this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+            };
             userAvatarImg.src = avatarUrl;
-            console.log('Avatar carregado com sucesso:', avatarUrl);
-        } else {
-            console.log('Usando avatar padrão - nenhum avatar personalizado encontrado');
-            // Maném o avatar padrão (SVG) já definido no HTML
         }
     }
 
-    // Verificar se usuário está logado ao carregar a página
-    document.addEventListener('DOMContentLoaded', async function() {
-        console.log('Página carregada, verificando autenticação...');
-        
+    // Verificar autenticação ao carregar página
+    document.addEventListener('DOMContentLoaded', async function () {
         const { data: { session } } = await supabase.auth.getSession();
-        
+
         if (session) {
-            console.log('Usuário logado:', session.user.email);
-            
-            // Carregar dados do perfil
-            const userProfile = await loadUserProfile(session.user.id);
-            
-            // Atualizar UI com dados do usuário
-            if (userProfile) {
-                await updateUserUI(session.user, userProfile);
-            } else {
-                console.log('Nenhum perfil encontrado para o usuário');
-                // Criar um perfil básico se não existir
-                const username = session.user.email.split('@')[0];
-                const userNicknameEl = document.getElementById('user-nickname');
-                if (userNicknameEl) userNicknameEl.textContent = username;
-            }
-            
-            // Mostrar área do usuário
             const userArea = document.getElementById('user-area');
             if (userArea) userArea.style.display = 'flex';
-        } else {
-            console.log('Usuário não logado');
-            // Esconder área do usuário se não estiver logado
-            const userArea = document.getElementById('user-area');
-            if (userArea) userArea.style.display = 'none';
+
+            const profile = await loadUserProfile(session.user.id);
+            await updateUserUI(session.user, profile);
         }
     });
-    </script>
+</script>
+
 </body>
 </html>
