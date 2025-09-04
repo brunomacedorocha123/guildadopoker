@@ -520,7 +520,12 @@
     // Função para carregar avatar do usuário
     async function loadUserAvatar(avatarId) {
         try {
-            if (!avatarId) return null;
+            if (!avatarId) {
+                console.log('Nenhum avatar_id fornecido');
+                return null;
+            }
+            
+            console.log('Buscando avatar com ID:', avatarId);
             
             const { data: avatarData, error: avatarError } = await supabase
                 .from('avatares')
@@ -543,6 +548,8 @@
     // Função para carregar dados do perfil do usuário
     async function loadUserProfile(userId) {
         try {
+            console.log('Carregando perfil para usuário ID:', userId);
+            
             const { data: perfilData, error: perfilError } = await supabase
                 .from('perfis')
                 .select('*')
@@ -554,6 +561,7 @@
                 return null;
             }
 
+            console.log('Perfil carregado com sucesso:', perfilData);
             return perfilData;
         } catch (error) {
             console.error('Erro inesperado ao carregar perfil:', error);
@@ -569,27 +577,35 @@
         // Definir apelido (nickname)
         if (profile && profile.apelido_poker) {
             if (userNicknameEl) userNicknameEl.textContent = profile.apelido_poker;
+            console.log('Apelido definido:', profile.apelido_poker);
         } else {
             const username = user.email.split('@')[0];
             if (userNicknameEl) userNicknameEl.textContent = username;
+            console.log('Usando email como apelido:', username);
         }
         
         // Carregar avatar
         let avatarUrl = null;
         if (profile && profile.avatar_id) {
+            console.log('Tentando carregar avatar com ID:', profile.avatar_id);
             avatarUrl = await loadUserAvatar(profile.avatar_id);
+        } else {
+            console.log('Nenhum avatar_id encontrado no perfil');
         }
         
         if (avatarUrl && userAvatarImg) {
             userAvatarImg.src = avatarUrl;
-            console.log('Avatar carregado:', avatarUrl);
+            console.log('Avatar carregado com sucesso:', avatarUrl);
         } else {
-            console.log('Nenhum avatar encontrado ou URL inválida');
+            console.log('Usando avatar padrão - nenhum avatar personalizado encontrado');
+            // Maném o avatar padrão (SVG) já definido no HTML
         }
     }
 
     // Verificar se usuário está logado ao carregar a página
     document.addEventListener('DOMContentLoaded', async function() {
+        console.log('Página carregada, verificando autenticação...');
+        
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session) {
@@ -597,11 +613,16 @@
             
             // Carregar dados do perfil
             const userProfile = await loadUserProfile(session.user.id);
-            console.log('Perfil carregado:', userProfile);
             
             // Atualizar UI com dados do usuário
             if (userProfile) {
                 await updateUserUI(session.user, userProfile);
+            } else {
+                console.log('Nenhum perfil encontrado para o usuário');
+                // Criar um perfil básico se não existir
+                const username = session.user.email.split('@')[0];
+                const userNicknameEl = document.getElementById('user-nickname');
+                if (userNicknameEl) userNicknameEl.textContent = username;
             }
             
             // Mostrar área do usuário
