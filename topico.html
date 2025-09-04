@@ -356,36 +356,35 @@
     const urlParams = new URLSearchParams(window.location.search);
     const topicoId = urlParams.get('id');
 
-    // Verificar autenticação do usuário
+    // Verificar autenticação do usuário - CORRIGIDO
     async function checkAuth() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
-        // Usuário está logado - mostrar perfil e formulário de comentário
         userProfileEl.style.display = 'flex';
         comentarioFormEl.style.display = 'block';
         loginPromptEl.style.display = 'none';
         
-        // Carregar informações do perfil
+        // CORRIGIDO: apelido_poker
         const { data: perfil, error } = await supabase
           .from('perfis')
-          .select('apelido, avatar_id')
+          .select('apelido_poker, avatar_id')
           .eq('id', user.id)
           .single();
           
         if (perfil) {
-          userNameEl.textContent = perfil.apelido || user.email;
+          userNameEl.textContent = perfil.apelido_poker || user.email;
           
-          // Carregar avatar se existir
+          // CORRIGIDO: url_imagem
           if (perfil.avatar_id) {
             const { data: avatar } = await supabase
               .from('avatares')
-              .select('url')
+              .select('url_imagem')
               .eq('id', perfil.avatar_id)
               .single();
               
             if (avatar) {
-              userAvatarEl.src = avatar.url;
+              userAvatarEl.src = avatar.url_imagem;
             } else {
               userAvatarEl.src = 'https://via.placeholder.com/40x40/2c2c2c/ffcc00?text=U';
             }
@@ -397,32 +396,38 @@
           userAvatarEl.src = 'https://via.placeholder.com/40x40/2c2c2c/ffcc00?text=U';
         }
       } else {
-        // Usuário não está logado - esconder perfil e formulário
         userProfileEl.style.display = 'none';
         comentarioFormEl.style.display = 'none';
         loginPromptEl.style.display = 'block';
       }
     }
 
-    // Carregar tópico
+    // Carregar tópico - CORRIGIDO (busca autor)
     async function carregarTopico() {
       try {
+        // CORRIGIDO: Agora busca informações do autor também
         const { data, error } = await supabase
           .from('topicos')
-          .select('*')
+          .select(`
+            *,
+            perfis (
+              apelido_poker,
+              avatar_id
+            )
+          `)
           .eq('id', topicoId)
           .single();
 
         if (error || !data) {
           topicTitleEl.textContent = "Tópico não encontrado";
-          topicBodyEl.innerHTML = '<p>Erro ao carregar o tópico. Tópico não existe ou você não tem permissão para visualizá-lo.</p>';
-          console.error("Erro ao carregar tópico:", error);
+          topicBodyEl.innerHTML = '<p>Erro ao carregar o tópico.</p>';
           return;
         }
 
         topicTitleEl.textContent = data.titulo;
         
-        // Formatar data
+        // CORRIGIDO: Mostra o autor
+        const autor = data.perfis?.apelido_poker || 'Administrador';
         const dataCriacao = new Date(data.criado_em || data.created_at);
         const dataFormatada = dataCriacao.toLocaleDateString('pt-BR', {
           day: '2-digit',
@@ -432,33 +437,32 @@
           minute: '2-digit'
         });
         
-        topicMetaEl.innerHTML = `Criado em: ${dataFormatada}`;
+        // CORRIGIDO: Agora mostra o autor
+        topicMetaEl.innerHTML = `Por: <strong>${autor}</strong> | Em: ${dataFormatada}`;
         topicBodyEl.innerHTML = `<p>${data.descricao || 'Sem descrição'}</p>`;
       } catch (err) {
-        console.error("Erro inesperado:", err);
-        topicBodyEl.innerHTML = '<p>Ocorreu um erro inesperado ao carregar o tópico.</p>';
+        console.error("Erro ao carregar tópico:", err);
+        topicBodyEl.innerHTML = '<p>Ocorreu um erro ao carregar o tópico.</p>';
       }
     }
 
-    // Carregar comentários
+    // Carregar comentários - CORRIGIDO
     async function carregarComentarios() {
       try {
-        // Primeiro tenta buscar com a estrutura de perfis
         let { data, error } = await supabase
           .from('respostas')
           .select(`
             *,
             perfis (
-              apelido,
+              apelido_poker,
               avatar_id
             )
           `)
           .eq('topico_id', topicoId)
           .order('criado_em', { ascending: true });
 
-        // Se der erro, tenta buscar sem a relação com perfis
         if (error) {
-          console.warn("Erro ao buscar com perfis, tentando sem:", error);
+          console.warn("Erro ao buscar comentários:", error);
           const { data: dataSimple, error: errorSimple } = await supabase
             .from('respostas')
             .select('*')
@@ -470,20 +474,18 @@
         }
 
         if (error) {
-          listaComentariosEl.innerHTML = '<p>Erro ao carregar comentários. Verifique as políticas de segurança do banco.</p>';
-          console.error("Erro ao carregar comentários:", error);
+          listaComentariosEl.innerHTML = '<p>Erro ao carregar comentários.</p>';
           return;
         }
 
         if (!data || data.length === 0) {
-          listaComentariosEl.innerHTML = '<p>Nenhum comentário ainda. Seja o primeiro a comentar!</p>';
+          listaComentariosEl.innerHTML = '<p>Nenhum comentário ainda.</p>';
           return;
         }
 
         listaComentariosEl.innerHTML = '';
         
         for (const comentario of data) {
-          // Formatar data
           const dataComentario = new Date(comentario.criado_em || comentario.created_at);
           const dataFormatada = dataComentario.toLocaleDateString('pt-BR', {
             day: '2-digit',
@@ -493,27 +495,24 @@
             minute: '2-digit'
           });
           
-          // Determinar autor
+          // CORRIGIDO: apelido_poker e url_imagem
           let autor = 'Anônimo';
           let avatarUrl = 'https://via.placeholder.com/40x40/2c2c2c/ffcc00?text=A';
           
-          if (comentario.perfis && comentario.perfis.apelido) {
-            autor = comentario.perfis.apelido;
+          if (comentario.perfis && comentario.perfis.apelido_poker) {
+            autor = comentario.perfis.apelido_poker;
             
-            // Buscar avatar se existir
             if (comentario.perfis.avatar_id) {
               const { data: avatar } = await supabase
                 .from('avatares')
-                .select('url')
+                .select('url_imagem')
                 .eq('id', comentario.perfis.avatar_id)
                 .single();
                 
               if (avatar) {
-                avatarUrl = avatar.url;
+                avatarUrl = avatar.url_imagem;
               }
             }
-          } else if (comentario.autor) {
-            autor = comentario.autor;
           }
           
           const conteudo = comentario.comentario || comentario.conteudo || 'Sem conteúdo';
@@ -530,8 +529,8 @@
           `;
         }
       } catch (err) {
-        console.error("Erro inesperado ao carregar comentários:", err);
-        listaComentariosEl.innerHTML = '<p>Ocorreu um erro inesperado ao carregar os comentários.</p>';
+        console.error("Erro ao carregar comentários:", err);
+        listaComentariosEl.innerHTML = '<p>Ocorreu um erro ao carregar os comentários.</p>';
       }
     }
 
@@ -541,7 +540,6 @@
       if (!conteudo) return alert('Digite seu comentário antes de enviar.');
 
       try {
-        // Verificar se o usuário está logado
         const { data: { user } } = await supabase.auth.getUser();
         
         if (!user) {
@@ -549,8 +547,7 @@
           return;
         }
 
-        // Primeiro tenta inserir com a estrutura atual
-        let { data, error } = await supabase
+        const { data, error } = await supabase
           .from('respostas')
           .insert([{ 
             topico_id: topicoId, 
@@ -558,23 +555,9 @@
             comentario: conteudo
           }]);
 
-        // Se der erro, tenta com estrutura alternativa
-        if (error) {
-          console.warn("Erro ao inserir comentário, tentando estrutura alternativa:", error);
-          const { data: dataAlt, error: errorAlt } = await supabase
-            .from('respostas')
-            .insert([{ 
-              topico_id: topicoId, 
-              user_id: user.id, 
-              conteudo: conteudo
-            }]);
-          
-          error = errorAlt;
-        }
-
         if (error) {
           console.error("Erro ao enviar comentário:", error);
-          return alert('Erro ao enviar comentário. Verifique o console para mais detalhes.');
+          return alert('Erro ao enviar comentário.');
         }
 
         document.getElementById('novo-comentario').value = '';
@@ -602,9 +585,8 @@
       return true;
     }
 
-    // Registrar novo usuário
+    // Registrar novo usuário - CORRIGIDO
     async function register(email, password, apelido) {
-      // Criar usuário no auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password
@@ -616,18 +598,17 @@
         return false;
       }
 
-      // Criar perfil do usuário
+      // CORRIGIDO: apelido_poker
       const { error: profileError } = await supabase
         .from('perfis')
         .insert([{ 
           id: authData.user.id, 
-          apelido: apelido,
+          apelido_poker: apelido,
           email: email
         }]);
 
       if (profileError) {
         console.error('Erro ao criar perfil:', profileError);
-        // Não mostrar erro para o usuário, pois a conta de auth foi criada
       }
 
       document.getElementById('register-success').textContent = 'Conta criada com sucesso! Você já pode fazer login.';
@@ -651,18 +632,15 @@
     document.addEventListener('DOMContentLoaded', async () => {
       if (!topicoId) {
         topicTitleEl.textContent = "Erro";
-        topicBodyEl.innerHTML = '<p>Nenhum tópico especificado. Volte ao fórum e selecione um tópico válido.</p>';
+        topicBodyEl.innerHTML = '<p>Nenhum tópico especificado.</p>';
         return;
       }
       
-      // Verificar autenticação
       await checkAuth();
-      
-      // Carregar conteúdo
-      await carregarTopico();
+      await carregarTopico(); // AGORA VAI MOSTRAR O AUTOR!
       await carregarComentarios();
       
-      // Adicionar event listeners
+      // Event listeners
       document.getElementById('btn-comentar').addEventListener('click', inserirComentario);
       btnLogoutEl.addEventListener('click', logout);
       loginLinkEl.addEventListener('click', (e) => {
@@ -702,14 +680,12 @@
         
         const success = await register(email, password, apelido);
         if (success) {
-          // Limpar formulário
           document.getElementById('register-email').value = '';
           document.getElementById('register-password').value = '';
           document.getElementById('register-apelido').value = '';
         }
       });
       
-      // Permitir enviar comentário com Enter (Ctrl+Enter para nova linha)
       document.getElementById('novo-comentario').addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.ctrlKey && !e.shiftKey) {
           e.preventDefault();
