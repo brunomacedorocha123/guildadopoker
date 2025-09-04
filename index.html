@@ -868,134 +868,106 @@
 
     <!-- Script do menu mobile -->
     <script>
-        // Menu hamburger
-        const hamburger = document.querySelector('.hamburger');
-        const menu = document.querySelector('.menu');
+    // Menu hamburger
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.menu');
 
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            menu.classList.toggle('active');
-        });
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        menu.classList.toggle('active');
+    });
 
-        // Fechar menu ao clicar em um link (mobile)
-        const menuLinks = document.querySelectorAll('.menu a');
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    hamburger.classList.remove('active');
-                    menu.classList.remove('active');
-                }
-            });
-        });
-
-        // Configuração do Supabase
-        const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsudXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true
+    // Fechar menu ao clicar em um link (mobile)
+    const menuLinks = document.querySelectorAll('.menu a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                hamburger.classList.remove('active');
+                menu.classList.remove('active');
             }
         });
+    });
 
-        // Verificar se usuário está logado ao carregar a página
-        document.addEventListener('DOMContentLoaded', async function() {
-            const { data: { session } } = await supabase.auth.getSession();
-            
-            if (session) {
-                console.log('Usuário logado:', session.user.email);
-                updateUIForLoggedInUser();
-            } else {
-                console.log('Usuário não logado');
-                updateUIForLoggedOutUser();
+    // Configuração do Supabase
+    const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsudXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true
+        }
+    });
+
+    // Verificar se usuário está logado ao carregar a página
+    document.addEventListener('DOMContentLoaded', async function() {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+            console.log('Usuário logado:', session.user.email);
+            updateUIForLoggedInUser();
+        } else {
+            console.log('Usuário não logado');
+            updateUIForLoggedOutUser();
+        }
+        
+        // Adicionar evento de clique para o botão de logout
+        document.getElementById('logout-button').addEventListener('click', logout);
+    });
+
+    // Atualizar UI para usuário logado - SEM SAUDAÇÃO
+    function updateUIForLoggedInUser() {
+        // Esconder botões de login/cadastro
+        document.getElementById('login-button').style.display = 'none';
+        document.getElementById('signup-button').style.display = 'none';
+        
+        // Mostrar botões de perfil/logout
+        document.getElementById('profile-button').style.display = 'block';
+        document.getElementById('logout-button').style.display = 'block';
+        
+        // ESCONDER COMPLETAMENTE A SAUDAÇÃO DO USUÁRIO
+        document.getElementById('user-greeting').style.display = 'none';
+        
+        // MOSTRAR BOTÃO DO FÓRUM
+        document.getElementById('forum-button-container').style.display = 'block';
+    }
+
+    // Atualizar UI para usuário não logado
+    function updateUIForLoggedOutUser() {
+        // Mostrar botões de login/cadastro
+        document.getElementById('login-button').style.display = 'block';
+        document.getElementById('signup-button').style.display = 'block';
+        
+        // Esconder botões de perfil/logout
+        document.getElementById('profile-button').style.display = 'none';
+        document.getElementById('logout-button').style.display = 'none';
+        
+        // Esconder saudação
+        document.getElementById('user-greeting').style.display = 'none';
+        
+        // ESCONDER BOTÃO DO FÓRUM
+        document.getElementById('forum-button-container').style.display = 'none';
+    }
+
+    // Função de logout
+    async function logout() {
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Erro ao fazer logout:', error);
+                alert('Erro ao fazer logout. Tente novamente.');
+                return;
             }
             
-            // Adicionar evento de clique para o botão de logout
-            document.getElementById('logout-button').addEventListener('click', logout);
-        });
-
-        // Atualizar UI para usuário logado - SEM SAUDAÇÃO
-        function updateUIForLoggedInUser() {
-            // Esconder botões de login/cadastro
-            document.getElementById('login-button').style.display = 'none';
-            document.getElementById('signup-button').style.display = 'none';
+            // Atualizar UI e recarregar
+            updateUIForLoggedOutUser();
+            window.location.reload();
             
-            // Mostrar botões de perfil/logout
-            document.getElementById('profile-button').style.display = 'block';
-            document.getElementById('logout-button').style.display = 'block';
-            
-            // ESCONDER COMPLETAMENTE A SAUDAÇÃO DO USUÁRIO
-            document.getElementById('user-greeting').style.display = 'none';
+        } catch (error) {
+            console.error('Erro inesperado no logout:', error);
+            alert('Erro inesperado. Tente novamente.');
         }
-
-        // Atualizar UI para usuário não logado
-        function updateUIForLoggedOutUser() {
-            // Mostrar botões de login/cadastro
-            document.getElementById('login-button').style.display = 'block';
-            document.getElementById('signup-button').style.display = 'block';
-            
-            // Esconder botões de perfil/logout
-            document.getElementById('profile-button').style.display = 'none';
-            document.getElementById('logout-button').style.display = 'none';
-            
-            // Esconder saudação
-            document.getElementById('user-greeting').style.display = 'none';
-        }
-
-        // Função de logout
-        async function logout() {
-            try {
-                const { error } = await supabase.auth.signOut();
-                if (error) {
-                    console.error('Erro ao fazer logout:', error);
-                    alert('Erro ao fazer logout. Tente novamente.');
-                    return;
-                }
-                
-                // Atualizar UI e recarregar
-                updateUIForLoggedOutUser();
-                window.location.reload();
-                
-            } catch (error) {
-                console.error('Erro inesperado no logout:', error);
-                alert('Erro inesperado. Tente novamente.');
-            }
-        }
-
-        // Atualizar UI para usuário logado - SEM SAUDAÇÃO
-function updateUIForLoggedInUser() {
-    // Esconder botões de login/cadastro
-    document.getElementById('login-button').style.display = 'none';
-    document.getElementById('signup-button').style.display = 'none';
-    
-    // Mostrar botões de perfil/logout
-    document.getElementById('profile-button').style.display = 'block';
-    document.getElementById('logout-button').style.display = 'block';
-    
-    // ESCONDER COMPLETAMENTE A SAUDAÇÃO DO USUÁRIO
-    document.getElementById('user-greeting').style.display = 'none';
-    
-    // MOSTRAR BOTÃO DO FÓRUM
-    document.getElementById('forum-button-container').style.display = 'block';
-}
-
-// Atualizar UI para usuário não logado
-function updateUIForLoggedOutUser() {
-    // Mostrar botões de login/cadastro
-    document.getElementById('login-button').style.display = 'block';
-    document.getElementById('signup-button').style.display = 'block';
-    
-    // Esconder botões de perfil/logout
-    document.getElementById('profile-button').style.display = 'none';
-    document.getElementById('logout-button').style.display = 'none';
-    
-    // Esconder saudação
-    document.getElementById('user-greeting').style.display = 'none';
-    
-    // ESCONDER BOTÃO DO FÓRUM
-    document.getElementById('forum-button-container').style.display = 'none';
-}
-    </script>
+    }
+</script>
 </body>
 </html>
