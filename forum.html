@@ -582,7 +582,7 @@
             <span class="close-modal" id="close-modal">&times;</span>
             <div class="profile-info">
                 <div class="profile-avatar">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwYzAsMTYuNTYtMTMuNDQsMzAtMzAsMzBzLTMwLTEzLjQ0LTMwLTMwUzc3LjQ0LDIwLDkwLDIwUzEzMCwzMy40NCwxMzAsNTB6IE05MCwxMzBjLTMzLjA4LDAtNjAsMjYuOTItNjAsNjBoMTIwQzE1MCwxNTYuOTIsMTIzLjA4LDEzMCw5MCwxMzB6Ii8+PC9zdmc+" alt="Avatar do Perfil" id="profile-avatar-img">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9sdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwYzAsMTYuNTYtMTMuNDQsMzAtMzAsMzBzLTMwLTEzLjQ0LTMwLTMwUzc3LjQ0LDIwLDkwLDIwUzEzMCwzMy40NCwxMzAsNTB6IE05MCwxMzBjLTMzLjA4LDAtNjAsMjYuOTItNjAsNjBoMTIwQzE1MCwxNTYuOTIsMTIzLjA4LDEzMCw5MCwxMzB6Ii8+PC9zdmc+" alt="Avatar do Perfil" id="profile-avatar-img">
                 </div>
                 <h2 class="profile-name" id="profile-name">PokerMaster</h2>
                 <div class="profile-stats">
@@ -701,18 +701,20 @@
         const hamburger = document.querySelector('.hamburger');
         const menu = document.querySelector('.menu');
 
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            menu.classList.toggle('active');
-        });
+        if (hamburger && menu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                menu.classList.toggle('active');
+            });
+        }
 
         // Fechar menu ao clicar em um link (mobile)
         const menuLinks = document.querySelectorAll('.menu a');
         menuLinks.forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth <= 768) {
-                    hamburger.classList.remove('active');
-                    menu.classList.remove('active');
+                    if (hamburger) hamburger.classList.remove('active');
+                    if (menu) menu.classList.remove('active');
                 }
             });
         });
@@ -722,21 +724,30 @@
         const closeModal = document.getElementById('close-modal');
         const userAvatar = document.getElementById('user-avatar');
         const userNickname = document.getElementById('user-nickname');
-        const profileAvatarImg = document.getElementById('profile-avatar-img');
-        const profileName = document.getElementById('profile-name');
 
         // Abrir modal ao clicar no avatar ou nickname
-        userAvatar.addEventListener('click', openProfileModal);
-        userNickname.addEventListener('click', openProfileModal);
+        if (userAvatar) {
+            userAvatar.addEventListener('click', openProfileModal);
+        }
+        
+        if (userNickname) {
+            userNickname.addEventListener('click', openProfileModal);
+        }
 
         function openProfileModal() {
-            profileModal.classList.add('active');
+            if (profileModal) {
+                profileModal.classList.add('active');
+            }
         }
 
         // Fechar modal
-        closeModal.addEventListener('click', () => {
-            profileModal.classList.remove('active');
-        });
+        if (closeModal) {
+            closeModal.addEventListener('click', () => {
+                if (profileModal) {
+                    profileModal.classList.remove('active');
+                }
+            });
+        }
 
         // Fechar modal ao clicar fora do conteúdo
         window.addEventListener('click', (event) => {
@@ -811,14 +822,14 @@
             
             // Definir apelido (nickname)
             if (profile && profile.apelido_poker) {
-                userNicknameEl.textContent = profile.apelido_poker;
-                userGreeting.textContent = `Olá, ${profile.apelido_poker}`;
-                profileNameEl.textContent = profile.apelido_poker;
+                if (userNicknameEl) userNicknameEl.textContent = profile.apelido_poker;
+                if (userGreeting) userGreeting.textContent = `Olá, ${profile.apelido_poker}`;
+                if (profileNameEl) profileNameEl.textContent = profile.apelido_poker;
             } else {
                 const username = user.email.split('@')[0];
-                userNicknameEl.textContent = username;
-                userGreeting.textContent = `Olá, ${username}`;
-                profileNameEl.textContent = username;
+                if (userNicknameEl) userNicknameEl.textContent = username;
+                if (userGreeting) userGreeting.textContent = `Olá, ${username}`;
+                if (profileNameEl) profileNameEl.textContent = username;
             }
             
             // Carregar avatar
@@ -828,8 +839,8 @@
             }
             
             if (avatarUrl) {
-                userAvatarImg.src = avatarUrl;
-                profileAvatarImgEl.src = avatarUrl;
+                if (userAvatarImg) userAvatarImg.src = avatarUrl;
+                if (profileAvatarImgEl) profileAvatarImgEl.src = avatarUrl;
             }
         }
 
@@ -853,33 +864,46 @@
             }
             
             // Adicionar evento de clique para o botão de logout
-            document.getElementById('logout-button').addEventListener('click', logout);
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', logout);
+            }
         });
 
         // Atualizar UI para usuário logado
         function updateUIForLoggedInUser() {
             // Mostrar botões de perfil/logout
-            document.getElementById('profile-button').style.display = 'block';
-            document.getElementById('logout-button').style.display = 'block';
+            const profileButton = document.getElementById('profile-button');
+            const logoutButton = document.getElementById('logout-button');
+            
+            if (profileButton) profileButton.style.display = 'block';
+            if (logoutButton) logoutButton.style.display = 'block';
             
             // Mostrar área do usuário
-            document.getElementById('user-area').style.display = 'flex';
+            const userArea = document.getElementById('user-area');
+            if (userArea) userArea.style.display = 'flex';
             
             // Mostrar saudação
-            document.getElementById('user-greeting').style.display = 'inline';
+            const userGreeting = document.getElementById('user-greeting');
+            if (userGreeting) userGreeting.style.display = 'inline';
         }
 
         // Atualizar UI para usuário não logado
         function updateUIForLoggedOutUser() {
             // Esconder botões de perfil/logout
-            document.getElementById('profile-button').style.display = 'none';
-            document.getElementById('logout-button').style.display = 'none';
+            const profileButton = document.getElementById('profile-button');
+            const logoutButton = document.getElementById('logout-button');
+            
+            if (profileButton) profileButton.style.display = 'none';
+            if (logoutButton) logoutButton.style.display = 'none';
             
             // Esconder área do usuário
-            document.getElementById('user-area').style.display = 'none';
+            const userArea = document.getElementById('user-area');
+            if (userArea) userArea.style.display = 'none';
             
             // Esconder saudação
-            document.getElementById('user-greeting').style.display = 'none';
+            const userGreeting = document.getElementById('user-greeting');
+            if (userGreeting) userGreeting.style.display = 'none';
         }
 
         // Função de logout
