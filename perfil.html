@@ -916,7 +916,7 @@ footer img {
  <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
  </div>
  </footer>
-
+ 
 <script>
 // Configuração do Supabase
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
@@ -1246,7 +1246,7 @@ function mostrarNotificacao(mensagem, sucesso = true) {
     }, 3000);
 }
 
-// Carregar avatares - VERSÃO CORRIGIDA
+// Carregar avatares - VERSÃO CORRIGIDA para funcionar com o banco de dados
 async function carregarAvatares() {
     try {
         const avatarOptions = document.getElementById('avatar-options-modal');
@@ -1254,47 +1254,26 @@ async function carregarAvatares() {
         
         console.log('Iniciando carregamento de avatares...');
         
-        // Buscar avatares do Supabase Storage
-        const { data: avataresList, error: listError } = await supabase
-            .storage
+        // Buscar avatares da tabela 'avatares' no banco de dados
+        const { data: avatares, error } = await supabase
             .from('avatares')
-            .list();
-            
-        if (listError) {
-            console.error('Erro ao listar avatares:', listError);
+            .select('id, nome, url_imagem')
+            .eq('ativo', true)
+            .order('id');
+        
+        if (error) {
+            console.error('Erro ao buscar avatares:', error);
             avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
             mostrarNotificacao('Erro ao carregar avatares', false);
             return;
         }
         
-        // Filtrar apenas arquivos de imagem
-        const imageFiles = avataresList.filter(file => 
-            file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)
-        );
-        
-        if (imageFiles.length === 0) {
-            avatarOptions.innerHTML = '<p>Nenhum avatar disponível.</p>';
-            mostrarNotificacao('Nenhum avatar encontrado', false);
+        if (!avatares || avatares.length === 0) {
+            avatarOptions.innerHTML = '<p>Nenhum avatar disponível no momento.</p>';
             return;
         }
         
-        // Gerar URLs públicas para as imagens
-        const avataresComUrls = await Promise.all(
-            imageFiles.map(async (file) => {
-                const { data: { publicUrl } } = supabase
-                    .storage
-                    .from('avatares')
-                    .getPublicUrl(file.name);
-                    
-                return {
-                    id: file.id,
-                    name: file.name.replace(/\.[^/.]+$/, ""), // Remove extensão do arquivo
-                    url_imagem: publicUrl
-                };
-            })
-        );
-        
-        exibirAvatares(avataresComUrls);
+        exibirAvatares(avatares);
         
     } catch (error) {
         console.error('Erro inesperado ao carregar avatares:', error);
@@ -1309,12 +1288,6 @@ function exibirAvatares(avatares) {
     const avatarOptions = document.getElementById('avatar-options-modal');
     avatarOptions.innerHTML = '';
 
-    // Verificar se há avatares
-    if (!avatares || avatares.length === 0) {
-        avatarOptions.innerHTML = '<p>Nenhum avatar disponível no momento.</p>';
-        return;
-    }
-
     avatares.forEach(avatar => {
         const avatarElement = document.createElement('div');
         avatarElement.className = 'avatar-option';
@@ -1325,9 +1298,9 @@ function exibirAvatares(avatares) {
         }
         
         avatarElement.innerHTML = `
-            <img src="${avatar.url_imagem}" alt="${avatar.name}" 
+            <img src="${avatar.url_imagem}" alt="${avatar.nome}" 
                  onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">
-            <div class="avatar-name">${avatar.name}</div>
+            <div class="avatar-name">${avatar.nome}</div>
         `;
         
         avatarElement.addEventListener('click', () => {
@@ -1363,27 +1336,23 @@ function selecionarAvatar(avatarId, avatarUrl) {
 // Atualizar exibição do avatar
 async function atualizarExibicaoAvatar(avatarId) {
     try {
-        // Buscar informações do arquivo no storage
-        const { data: fileInfo, error } = await supabase
-            .storage
+        // Buscar informações do avatar no banco de dados
+        const { data: avatar, error } = await supabase
             .from('avatares')
-            .list();
+            .select('url_imagem')
+            .eq('id', avatarId)
+            .single();
             
-        if (error || !fileInfo) return;
+        if (error) {
+            console.error('Erro ao buscar avatar:', error);
+            return;
+        }
         
-        // Encontrar o arquivo pelo ID
-        const avatarFile = fileInfo.find(file => file.id === avatarId);
-        if (!avatarFile) return;
-        
-        // Gerar URL pública
-        const { data: { publicUrl } } = supabase
-            .storage
-            .from('avatares')
-            .getPublicUrl(avatarFile.name);
-
-        const profileImg = document.querySelector('.profile-picture img');
-        if (profileImg && publicUrl) {
-            profileImg.src = publicUrl;
+        if (avatar && avatar.url_imagem) {
+            const profileImg = document.querySelector('.profile-picture img');
+            if (profileImg) {
+                profileImg.src = avatar.url_imagem;
+            }
         }
     } catch (error) {
         console.error('Erro ao atualizar avatar:', error);
