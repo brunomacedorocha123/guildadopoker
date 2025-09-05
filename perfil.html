@@ -1246,29 +1246,15 @@ function mostrarNotificacao(mensagem, sucesso = true) {
     }, 3000);
 }
 
-// Carregar avatares - VERSÃO CORRIGIDA E MELHORADA
+// Carregar avatares - VERSÃO CORRIGIDA
 async function carregarAvatares() {
     try {
         const avatarOptions = document.getElementById('avatar-options-modal');
         avatarOptions.innerHTML = '<div class="avatar-loading"><div class="loading-spinner"></div>Carregando avatares...</div>';
         
-        console.log('Iniciando carregamento de avatares...');
+        console.log('Carregando avatares...');
         
-        // Primeiro, verificar a estrutura da tabela avatares
-        const { data: tableInfo, error: infoError } = await supabase
-            .from('avatares')
-            .select('*')
-            .limit(1);
-            
-        if (infoError) {
-            console.error('Erro ao verificar estrutura da tabela:', infoError);
-            avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
-            mostrarNotificacao('Erro ao carregar avatares', false);
-            return;
-        }
-        
-        // Buscar avatares da tabela 'avatares' no banco de dados
-        // Usando uma consulta mais tolerante a diferenças na estrutura
+        // Buscar avatares da tabela 'avatares'
         const { data: avatares, error } = await supabase
             .from('avatares')
             .select('id, nome, url_imagem')
@@ -1276,29 +1262,8 @@ async function carregarAvatares() {
         
         if (error) {
             console.error('Erro ao buscar avatares:', error);
-            
-            // Tentar uma consulta alternativa caso a estrutura seja diferente
-            const { data: avataresAlt, error: errorAlt } = await supabase
-                .from('avatares')
-                .select('*')
-                .order('id');
-                
-            if (errorAlt) {
-                avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
-                mostrarNotificacao('Erro ao carregar avatares', false);
-                return;
-            }
-            
-            // Processar os dados alternativos
-            const avataresProcessados = avataresAlt.map(avatar => {
-                return {
-                    id: avatar.id,
-                    nome: avatar.nome || avatar.descricao || `Avatar ${avatar.id}`,
-                    url_imagem: avatar.url_imagem || avatar.imagem || avatar.url || ''
-                };
-            });
-            
-            exibirAvatares(avataresProcessados);
+            avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
+            mostrarNotificacao('Erro ao carregar avatares', false);
             return;
         }
         
