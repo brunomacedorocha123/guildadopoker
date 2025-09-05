@@ -916,7 +916,6 @@ footer img {
  <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
  </div>
  </footer>
-
 <script>
 // Configuração do Supabase
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
@@ -1196,43 +1195,43 @@ async function atualizarPerfilUsuario() {
             apelido_poker: apelidoPokerInput.value.trim(),
             plataforma_preferida: plataformaSelect.value,
             data_atualizacao: new Date().toISOString()
-        };
+    };
 
-        // Adicionar avatar_id se disponível
-        if (currentAvatarId) {
-            updates.avatar_id = currentAvatarId;
-        }
+    // Adicionar avatar_id se disponível
+    if (currentAvatarId) {
+        updates.avatar_id = currentAvatarId;
+    }
 
-        const { error } = await supabase
-            .from('perfis')
-            .update(updates)
-            .eq('usuario_id', session.user.id);
+    const { error } = await supabase
+        .from('perfis')
+        .update(updates)
+        .eq('usuario_id', session.user.id);
 
-        if (error) {
-            console.error('Erro ao atualizar perfil:', error);
-            mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
-            return false;
-        }
-
-        mostrarNotificacao('Perfil atualizado com sucesso!', true);
-
-        // Atualizar a exibição
-        userNameElement.textContent = nomeCompletoInput.value;
-
-        if (apelidoPokerInput.value) {
-            userPokerNicknameElement.textContent = '"' + apelidoPokerInput.value + '"';
-        } else {
-            userPokerNicknameElement.textContent = '';
-        }
-
-        originalValues = { ...updates, avatar_id: currentAvatarId };
-        
-        return true;
-    } catch (error) {
+    if (error) {
         console.error('Erro ao atualizar perfil:', error);
-        mostrarNotificacao('Erro inesperado. Tente novamente.', false);
+        mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
         return false;
     }
+
+    mostrarNotificacao('Perfil atualizado com sucesso!', true);
+
+    // Atualizar a exibição
+    userNameElement.textContent = nomeCompletoInput.value;
+
+    if (apelidoPokerInput.value) {
+        userPokerNicknameElement.textContent = '"' + apelidoPokerInput.value + '"';
+    } else {
+        userPokerNicknameElement.textContent = '';
+    }
+
+    originalValues = { ...updates, avatar_id: currentAvatarId };
+    
+    return true;
+} catch (error) {
+    console.error('Erro ao atualizar perfil:', error);
+    mostrarNotificacao('Erro inesperado. Tente novamente.', false);
+    return false;
+}
 }
 
 // Função para mostrar notificações
@@ -1246,7 +1245,7 @@ function mostrarNotificacao(mensagem, sucesso = true) {
     }, 3000);
 }
 
-// Carregar avatares
+// Carregar avatares - VERSÃO CORRIGIDA
 async function carregarAvatares() {
     try {
         const avatarOptions = document.getElementById('avatar-options-modal');
@@ -1284,10 +1283,16 @@ async function carregarAvatares() {
     }
 }
 
-// Exibir avatares na interface
+// Exibir avatares na interface - VERSÃO CORRIGIDA
 function exibirAvatares(avatares) {
     const avatarOptions = document.getElementById('avatar-options-modal');
     avatarOptions.innerHTML = '';
+
+    // Verificar se há avatares
+    if (!avatares || avatares.length === 0) {
+        avatarOptions.innerHTML = '<p>Nenhum avatar disponível no momento.</p>';
+        return;
+    }
 
     avatares.forEach(avatar => {
         const avatarElement = document.createElement('div');
@@ -1298,17 +1303,22 @@ function exibirAvatares(avatares) {
             avatarElement.classList.add('selected');
         }
         
+        // Criar a URL completa para a imagem
         const avatarFileName = avatar.url_imagem;
-        console.log('Carregando avatar:', avatarFileName);
+        const imageUrl = avatarFileName.startsWith('http') ? 
+            avatarFileName : 
+            window.location.origin + '/' + avatarFileName;
+        
+        console.log('Carregando avatar:', imageUrl);
         
         avatarElement.innerHTML = `
-            <img src="${avatarFileName}" alt="${avatar.nome}" 
+            <img src="${imageUrl}" alt="${avatar.nome}" 
                  onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">
             <div class="avatar-name">${avatar.nome}</div>
         `;
         
         avatarElement.addEventListener('click', () => {
-            selecionarAvatar(avatar.id, avatarFileName);
+            selecionarAvatar(avatar.id, imageUrl);
         });
         
         avatarOptions.appendChild(avatarElement);
@@ -1316,7 +1326,7 @@ function exibirAvatares(avatares) {
 }
 
 // Selecionar avatar
-function selecionarAvatar(avatarId, avatarFileName) {
+function selecionarAvatar(avatarId, avatarUrl) {
     document.querySelectorAll('.avatar-option').forEach(option => {
         option.classList.remove('selected');
     });
@@ -1327,7 +1337,7 @@ function selecionarAvatar(avatarId, avatarFileName) {
         currentAvatarId = avatarId;
         
         // Atualizar a imagem do perfil imediatamente
-        document.querySelector('.profile-picture img').src = avatarFileName;
+        document.querySelector('.profile-picture img').src = avatarUrl;
         
         // Fechar o modal após 1 segundo
         setTimeout(() => {
@@ -1348,9 +1358,14 @@ async function atualizarExibicaoAvatar(avatarId) {
 
         if (error || !data) return;
 
+        // Criar URL completa para a imagem
+        const imageUrl = data.url_imagem.startsWith('http') ? 
+            data.url_imagem : 
+            window.location.origin + '/' + data.url_imagem;
+
         const profileImg = document.querySelector('.profile-picture img');
         if (profileImg) {
-            profileImg.src = data.url_imagem;
+            profileImg.src = imageUrl;
         }
     } catch (error) {
         console.error('Erro ao atualizar avatar:', error);
