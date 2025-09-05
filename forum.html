@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fórum - Guilda do Poker</title>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <title>Guilda do Poker - Perfil</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -30,37 +28,28 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* ===== CABEÇALHO ===== */
-        header {
-            background: var(--bg-2);
-            padding: 15px 20px;
-            text-align: center;
-            border-bottom: 2px solid var(--gold);
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 70px;
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
         .user-area {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 10px;
+            background: var(--bg-2);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            max-width: 300px;
+            width: 100%;
         }
         
         .user-avatar {
-            width: 50px;
-            height: 50px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             background-color: var(--bg-3);
             border: 2px solid var(--gold);
@@ -71,6 +60,10 @@
             transition: transform 0.3s ease;
         }
         
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+        
         .user-avatar img {
             width: 100%;
             height: 100%;
@@ -79,297 +72,15 @@
         
         .user-nickname {
             color: var(--gold);
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            max-width: 120px;
+            text-align: center;
+            max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        /* ===== MENU DE NAVEGAÇÃO ===== */
-        nav {
-            background: var(--bg-3);
-            padding: 15px 0;
-            position: relative;
-            width: 100%;
-        }
-
-        .menu-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .menu {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .menu li {
-            margin: 0;
-        }
-
-        .menu a {
-            color: var(--gold);
-            padding: 14px 22px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: .2s;
-            display: block;
-            text-align: center;
-            font-size: 1.05rem;
-        }
-
-        .menu a:hover, .menu a.active {
-            color: #ffffff;
-            text-decoration: underline;
-            background-color: rgba(255, 204, 0, 0.15);
-            border-radius: 6px;
-        }
-
-        /* ===== BOTÃO HAMBÚRGUER ===== */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            justify-content: space-around;
-            width: 42px;
-            height: 36px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            position: absolute;
-            right: 25px;
-            top: 20px;
-            z-index: 1001;
-        }
-
-        .hamburger span {
-            width: 100%;
-            height: 4px;
-            background-color: var(--gold);
-            border-radius: 3px;
-            transition: all 0.3s linear;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        /* Fórum Intro */
-        .forum-intro {
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
-            background-size: cover;
-            margin-bottom: 30px;
-        }
-        
-        .forum-intro h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            color: var(--gold);
-        }
-        
-        .forum-intro p {
-            font-size: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            color: #e6e6e6;
-        }
-        
-        /* Categorias do Fórum */
-        .forum-categories {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        
-        .category {
-            background-color: var(--bg-3);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
-        }
-        
-        .category-header {
-            background-color: var(--gold);
-            padding: 15px 20px;
-        }
-        
-        .category-header h3 {
-            color: #121212;
-            font-size: 22px;
-            margin: 0;
-        }
-        
-        .topics-list {
-            padding: 20px;
-        }
-        
-        .topic {
-            padding: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .topic:last-child {
-            border-bottom: none;
-        }
-        
-        .topic-title {
-            color: var(--gold);
-            font-size: 18px;
-            text-decoration: none;
-            display: block;
-            transition: color 0.3s;
-        }
-        
-        .topic-title:hover {
-            color: #ffffff;
-            text-decoration: underline;
-        }
-        
-        /* ===== RODAPÉ ===== */
-        footer {
-            background: var(--bg-2);
-            text-align: center;
-            padding: 15px;
-            margin-top: 40px;
-            border-top: 2px solid var(--gold);
-            font-size: 14px;
-            color: #bbb;
-        }
-        
-        .aviso18 {
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .icone18 {
-            background: red;
-            color: white;
-            font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-
-        /* ===== RESPONSIVIDADE ===== */
-        @media (max-width: 992px) {
-            .menu a {
-                padding: 12px 18px;
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                padding: 12px 15px;
-                min-height: 60px;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            
-            .user-area {
-                display: none;
-            }
-            
-            nav {
-                padding: 0;
-                background: transparent;
-            }
-            
-            .hamburger {
-                display: flex;
-                width: 36px;
-                height: 30px;
-                right: 15px;
-                top: 15px;
-                transform: none;
-                position: absolute;
-            }
-
-            .hamburger span {
-                height: 3px;
-            }
-
-            .menu {
-                flex-direction: column;
-                width: 100%;
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                background-color: var(--bg-3);
-                z-index: 1000;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-                padding: 15px 0;
-                border-top: 2px solid var(--gold);
-            }
-
-            .menu.active {
-                display: flex;
-            }
-
-            .menu li {
-                width: 100%;
-                text-align: center;
-            }
-
-            .menu a {
-                padding: 16px;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-                font-size: 1.1rem;
-            }
-            
-            .menu a:last-child {
-                border-bottom: none;
-            }
-            
-            .menu-container {
-                padding: 0;
-            }
-            
-            .aviso18 {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header {
-                padding: 10px 12px;
-            }
-            
-            .hamburger {
-                width: 32px;
-                height: 28px;
-                right: 12px;
-            }
-        }
-
-        /* Loading indicator */
         .loading {
             display: inline-block;
             width: 20px;
@@ -383,225 +94,151 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #4caf50;
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .info-text {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            max-width: 400px;
+        }
     </style>
 </head>
 <body>
-    <!-- Cabeçalho SEM botões de autenticação -->
-    <header>
-        <div class="header-left">
-            <div class="user-area" id="user-area" style="display: none;">
-                <div class="user-avatar" id="user-avatar">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
-                </div>
-                <div class="user-nickname" id="user-nickname">
-                    <span class="loading" id="loading-indicator"></span>
-                    <span id="nickname-text"></span>
-                </div>
-            </div>
+    <div class="user-area" id="user-area">
+        <div class="user-avatar" id="user-avatar">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
         </div>
-
-        <!-- Apenas o menu hamburger -->
-        <button class="hamburger" aria-label="Abrir menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </header>
-
-    <!-- Navegação -->
-    <nav>
-        <div class="menu-container">
-            <ul class="menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="pppoker.html">PPPoker</a></li>
-                <li><a href="suprema.html">Suprema Poker</a></li>
-                <li><a href="torneios.html">Torneios</a></li>
-                <li><a href="regrasdopoker.html">Regras do Poker</a></li>
-                <li><a href="divulgacao.html">Divulgação</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="dicionario.html">Dicionário</a></li>
-                <li><a href="contato.html">Contato</a></li>
-            </ul>
+        <div class="user-nickname" id="user-nickname">
+            <span class="loading" id="loading-indicator"></span>
+            <span id="nickname-text"></span>
         </div>
-    </nav>
-
-    <section class="forum-intro">
-        <div class="container">
-            <h2>Fórum da Guilda do Poker</h2>
-            <p>Compartilhe conhecimentos, tire dúvidas e discuta estratégias com outros entusiastas do poker</p>
-        </div>
-    </section>
-
-    <div class="forum-categories">
-        <!-- Categoria 1: Cash Game PLO5 -->
-        <div class="category">
-            <div class="category-header">
-                <h3>Cash Game PLO5</h3>
-            </div>
-            <div class="topics-list">
-                <div class="topic">
-                    <a href="topico.html" class="topic-title">Como calcular pot odds no PLO5?</a>
-                </div>
-                <div class="topic">
-                    <a href="topico.html" class="topic-title">Estratégias para flop no PLO5</a>
-                </div>
-                <div class="topic">
-                    <a href="topico.html" class="topic-title">Melhores mesas de PLO5 na PPPoker</a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Categoria 2: Dúvidas sobre poker -->
-        <div class="category">
-            <div class="category-header">
-                <h3>Dúvidas sobre Poker</h3>
-            </div>
-            <div class="topics-list">
-                <div class="topic">
-                    <a href="topico.html" class="topic-title">Como funciona o sistema de rakeback?</a>
-                </div>
-                <div class="topic">
-                    <a href="topico.html" class="topic-title">Diferença entre Texas Hold'em and Omaha</a>
-                </div>
-                <div class="topic">
-                    <a href="topico.html" class="topic-title">Como escolher a mesa certa para jogar?</a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Categoria 3: Estratégias no Torneio -->
-        <div class="category">
-            <div class="category-header">
-                <h3>Estratégias no Torneio</h3>
-            </div>
-            <div class="topics-list">
-                <div class="topic">
-                    <a href="topico.html" class="topic-title">Estratégia de bolhas em torneios</a>
-                </div>
-                <div class="topic">
-                    <a href="topico.html" class="topic-title">Como ajustar o jogo conforme os blinds aumentam</a>
-                </div>
-                <div class="topic">
-                    <a href="topico.html" class="topic-title">Melhores horários para jogar torneios na Suprema Poker</a>
-                </div>
-            </div>
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span class="status-text" id="status-text">Conectado</span>
         </div>
     </div>
 
-    <!-- Rodapé -->
-    <footer>
-        <p>© 2025 Guilda do Poker - Todos os direitos reservados</p>
-        <div class="aviso18">
-            <span class="icone18">18+</span>
-            <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
-        </div>
-        <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-            <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
-            <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
-        </div>
-    </footer>
+    <div class="info-text">
+        <p>Esta é a janela de perfil que aparecerá no fórum, mostrando seu avatar e apelido.</p>
+        <p>O sistema utiliza autenticação do Supabase para identificar usuários logados.</p>
+    </div>
 
     <script>
-// Configuração do Supabase
-const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-const SUPABASE_KEY = 'SUA_CHAVE';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-    auth: { persistSession: true, autoRefreshToken: true }
-});
-
-// Função para carregar avatar pelo ID
-async function loadUserAvatar(avatarId) {
-    if (!avatarId) return null;
-    const { data: avatarData, error } = await supabase
-        .from('avatares')
-        .select('*')
-        .eq('id', avatarId)
-        .single();
-    if (error || !avatarData) return null;
-    return avatarData.url_imagem; // assumindo que a coluna com o nome da imagem é url_imagem
-}
-
-// Função para carregar perfil do usuário
-async function loadUserProfile(userId) {
-    const { data: perfilData, error } = await supabase
-        .from('perfis')
-        .select('*')
-        .eq('usuario_id', userId)
-        .single();
-    if (error) return null;
-    return perfilData;
-}
-
-// Atualiza a janela do usuário
-async function updateUserUI(user, profile) {
-    const userAvatarImg = document.getElementById('avatar-img');
-    const userNicknameEl = document.getElementById('nickname-text');
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const userArea = document.getElementById('user-area');
-
-    if (!userArea) return;
-    userArea.style.display = 'flex';
-
-    // esconder loading
-    if (loadingIndicator) loadingIndicator.style.display = 'none';
-
-    // definir apelido
-    let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
-    if (userNicknameEl) {
-        userNicknameEl.textContent = apelido;
-        userNicknameEl.style.display = 'inline';
-    }
-
-    // carregar avatar
-    if (profile && profile.avatar_id) {
-        const avatarUrl = await loadUserAvatar(profile.avatar_id);
-        if (avatarUrl && userAvatarImg) {
-            userAvatarImg.onerror = function () {
-                console.error('Erro ao carregar avatar, usando padrão');
-                this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
-            };
-            userAvatarImg.src = avatarUrl;
-        }
-    }
-
-    // Exibir lista de avatares (como antes)
-    const avatarList = document.getElementById('avatar-list');
-    if (avatarList) {
-        avatarList.innerHTML = ''; // limpa a lista
-        const avatares = [
-            'avatararqueiroh.jpg',
-            'avatarbersekerm.jpg',
-            'avatarelfam.jpg',
-            'avatarescudeiroh.jpg',
-            'avatarguerreiroh.jpg',
-            'avatarmagoh.jpg',
-            'avatarpaladinaM.jpg'
-        ];
-        avatares.forEach(av => {
-            const img = document.createElement('img');
-            img.src = av;
-            img.classList.add('avatar-option');
-            img.onclick = () => selectAvatar(av);
-            avatarList.appendChild(img);
+        // Configuração do Supabase
+        const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true }
         });
-    }
-}
 
-// Função para selecionar avatar
-function selectAvatar(avatar) {
-    const userAvatarImg = document.getElementById('avatar-img');
-    userAvatarImg.src = avatar;
-    // Aqui você podia atualizar no Supabase se quisesse
-}
+        // Função para carregar avatar pelo ID
+        async function loadUserAvatar(avatarId) {
+            if (!avatarId) return null;
+            try {
+                const { data: avatarData, error } = await supabase
+                    .from('avatares')
+                    .select('url_imagem')
+                    .eq('id', avatarId)
+                    .single();
+                    
+                if (error || !avatarData) return null;
+                return avatarData.url_imagem;
+            } catch (error) {
+                console.error('Erro ao carregar avatar:', error);
+                return null;
+            }
+        }
 
-// Verificar sessão e carregar perfil ao iniciar
-document.addEventListener('DOMContentLoaded', async function () {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-        const profile = await loadUserProfile(session.user.id);
-        await updateUserUI(session.user, profile);
-    }
-});
-</script>
+        // Função para carregar perfil do usuário
+        async function loadUserProfile(userId) {
+            try {
+                const { data: perfilData, error } = await supabase
+                    .from('perfis')
+                    .select('apelido_poker, avatar_id')
+                    .eq('usuario_id', userId)
+                    .single();
+                    
+                if (error) {
+                    console.error('Erro ao carregar perfil:', error);
+                    return null;
+                }
+                return perfilData;
+            } catch (error) {
+                console.error('Erro ao carregar perfil:', error);
+                return null;
+            }
+        }
+
+        // Atualiza a janela do usuário
+        async function updateUserUI(user, profile) {
+            const userAvatarImg = document.getElementById('avatar-img');
+            const userNicknameEl = document.getElementById('nickname-text');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const userArea = document.getElementById('user-area');
+
+            if (!userArea) return;
+
+            // esconder loading
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+
+            // definir apelido
+            let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+            if (userNicknameEl) {
+                userNicknameEl.textContent = apelido;
+                userNicknameEl.style.display = 'inline';
+            }
+
+            // carregar avatar
+            if (profile && profile.avatar_id) {
+                const avatarUrl = await loadUserAvatar(profile.avatar_id);
+                if (avatarUrl && userAvatarImg) {
+                    userAvatarImg.onerror = function () {
+                        console.error('Erro ao carregar avatar, usando padrão');
+                        this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+                    };
+                    userAvatarImg.src = avatarUrl;
+                }
+            }
+        }
+
+        // Verificar sessão e carregar perfil ao iniciar
+        document.addEventListener('DOMContentLoaded', async function () {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session) {
+                console.log('Usuário logado:', session.user.email);
+                const profile = await loadUserProfile(session.user.id);
+                await updateUserUI(session.user, profile);
+                
+                // Atualizar status
+                document.getElementById('status-text').textContent = "Conectado";
+            } else {
+                console.log('Usuário não logado');
+                document.getElementById('user-nickname').textContent = "Visitante";
+                document.getElementById('status-text').textContent = "Não conectado";
+                document.querySelector('.status-dot').style.backgroundColor = "#f44336";
+            }
+        });
+    </script>
 </body>
 </html>
