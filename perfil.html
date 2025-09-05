@@ -916,7 +916,7 @@ footer img {
  <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
  </div>
  </footer>
- 
+
 <script>
 // Configuração do Supabase
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
@@ -1246,11 +1246,13 @@ function mostrarNotificacao(mensagem, sucesso = true) {
     }, 3000);
 }
 
-// Carregar avatares - FUNÇÃO PRINCIPAL CORRIGIDA
+// Carregar avatares
 async function carregarAvatares() {
     try {
         const avatarOptions = document.getElementById('avatar-options-modal');
         avatarOptions.innerHTML = '<div class="avatar-loading"><div class="loading-spinner"></div>Carregando avatares...</div>';
+        
+        console.log('Iniciando carregamento de avatares...');
         
         const { data, error } = await supabase
             .from('avatares')
@@ -1260,29 +1262,32 @@ async function carregarAvatares() {
         if (error) {
             console.error('Erro ao carregar avatares:', error);
             avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
+            mostrarNotificacao('Erro ao carregar avatares', false);
             return;
         }
 
-        // Verificar se temos dados
         console.log('Avatares carregados:', data);
         
+        if (!data || data.length === 0) {
+            avatarOptions.innerHTML = '<p>Nenhum avatar disponível.</p>';
+            mostrarNotificacao('Nenhum avatar encontrado', false);
+            return;
+        }
+        
         exibirAvatares(data);
+        
     } catch (error) {
-        console.error('Erro ao carregar avatares:', error);
+        console.error('Erro inesperado ao carregar avatares:', error);
         const avatarOptions = document.getElementById('avatar-options-modal');
         avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
+        mostrarNotificacao('Erro inesperado', false);
     }
 }
 
-// Exibir avatares na interface - FUNÇÃO PRINCIPAL CORRIGIDA
+// Exibir avatares na interface
 function exibirAvatares(avatares) {
     const avatarOptions = document.getElementById('avatar-options-modal');
     avatarOptions.innerHTML = '';
-
-    if (!avatares || avatares.length === 0) {
-        avatarOptions.innerHTML = '<p>Nenhum avatar disponível.</p>';
-        return;
-    }
 
     avatares.forEach(avatar => {
         const avatarElement = document.createElement('div');
@@ -1293,8 +1298,8 @@ function exibirAvatares(avatares) {
             avatarElement.classList.add('selected');
         }
         
-        // CORREÇÃO: Usar apenas o nome do arquivo diretamente
         const avatarFileName = avatar.url_imagem;
+        console.log('Carregando avatar:', avatarFileName);
         
         avatarElement.innerHTML = `
             <img src="${avatarFileName}" alt="${avatar.nome}" 
@@ -1345,7 +1350,6 @@ async function atualizarExibicaoAvatar(avatarId) {
 
         const profileImg = document.querySelector('.profile-picture img');
         if (profileImg) {
-            // Usar apenas o nome do arquivo
             profileImg.src = data.url_imagem;
         }
     } catch (error) {
