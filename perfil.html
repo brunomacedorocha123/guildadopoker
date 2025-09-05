@@ -1304,11 +1304,21 @@ function exibirAvatares(avatares) {
             avatarElement.classList.add('selected');
         }
         
-        avatarElement.innerHTML = `
-            <img src="${avatar.url_imagem}" alt="${avatar.nome}" 
-                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">
-            <div class="avatar-name">${avatar.nome}</div>
-        `;
+        // Criar imagem com fallback para erro
+        const img = document.createElement('img');
+        img.src = avatar.url_imagem;
+        img.alt = avatar.nome;
+        img.onerror = function() {
+            this.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
+            this.onerror = null;
+        };
+        
+        const avatarName = document.createElement('div');
+        avatarName.className = 'avatar-name';
+        avatarName.textContent = avatar.nome;
+        
+        avatarElement.appendChild(img);
+        avatarElement.appendChild(avatarName);
         
         avatarElement.addEventListener('click', () => {
             selecionarAvatar(avatar.id, avatar.url_imagem);
@@ -1330,7 +1340,8 @@ function selecionarAvatar(avatarId, avatarUrl) {
         currentAvatarId = avatarId;
         
         // Atualizar a imagem do perfil imediatamente
-        document.querySelector('.profile-picture img').src = avatarUrl;
+        const profileImg = document.querySelector('.profile-picture img');
+        profileImg.src = avatarUrl;
         
         // Fechar o modal após 1 segundo
         setTimeout(() => {
