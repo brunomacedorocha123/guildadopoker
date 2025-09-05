@@ -916,6 +916,7 @@ footer img {
  <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
  </div>
  </footer>
+
 <script>
 // Configuração do Supabase
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
@@ -1195,43 +1196,43 @@ async function atualizarPerfilUsuario() {
             apelido_poker: apelidoPokerInput.value.trim(),
             plataforma_preferida: plataformaSelect.value,
             data_atualizacao: new Date().toISOString()
-    };
+        };
 
-    // Adicionar avatar_id se disponível
-    if (currentAvatarId) {
-        updates.avatar_id = currentAvatarId;
-    }
+        // Adicionar avatar_id se disponível
+        if (currentAvatarId) {
+            updates.avatar_id = currentAvatarId;
+        }
 
-    const { error } = await supabase
-        .from('perfis')
-        .update(updates)
-        .eq('usuario_id', session.user.id);
+        const { error } = await supabase
+            .from('perfis')
+            .update(updates)
+            .eq('usuario_id', session.user.id);
 
-    if (error) {
+        if (error) {
+            console.error('Erro ao atualizar perfil:', error);
+            mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
+            return false;
+        }
+
+        mostrarNotificacao('Perfil atualizado com sucesso!', true);
+
+        // Atualizar a exibição
+        userNameElement.textContent = nomeCompletoInput.value;
+
+        if (apelidoPokerInput.value) {
+            userPokerNicknameElement.textContent = '"' + apelidoPokerInput.value + '"';
+        } else {
+            userPokerNicknameElement.textContent = '';
+        }
+
+        originalValues = { ...updates, avatar_id: currentAvatarId };
+        
+        return true;
+    } catch (error) {
         console.error('Erro ao atualizar perfil:', error);
-        mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
+        mostrarNotificacao('Erro inesperado. Tente novamente.', false);
         return false;
     }
-
-    mostrarNotificacao('Perfil atualizado com sucesso!', true);
-
-    // Atualizar a exibição
-    userNameElement.textContent = nomeCompletoInput.value;
-
-    if (apelidoPokerInput.value) {
-        userPokerNicknameElement.textContent = '"' + apelidoPokerInput.value + '"';
-    } else {
-        userPokerNicknameElement.textContent = '';
-    }
-
-    originalValues = { ...updates, avatar_id: currentAvatarId };
-    
-    return true;
-} catch (error) {
-    console.error('Erro ao atualizar perfil:', error);
-    mostrarNotificacao('Erro inesperado. Tente novamente.', false);
-    return false;
-}
 }
 
 // Função para mostrar notificações
@@ -1253,27 +1254,47 @@ async function carregarAvatares() {
         
         console.log('Iniciando carregamento de avatares...');
         
-        const { data, error } = await supabase
+        // Buscar avatares do Supabase Storage
+        const { data: avataresList, error: listError } = await supabase
+            .storage
             .from('avatares')
-            .select('*')
-            .order('id');
-
-        if (error) {
-            console.error('Erro ao carregar avatares:', error);
+            .list();
+            
+        if (listError) {
+            console.error('Erro ao listar avatares:', listError);
             avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
             mostrarNotificacao('Erro ao carregar avatares', false);
             return;
         }
-
-        console.log('Avatares carregados:', data);
         
-        if (!data || data.length === 0) {
+        // Filtrar apenas arquivos de imagem
+        const imageFiles = avataresList.filter(file => 
+            file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)
+        );
+        
+        if (imageFiles.length === 0) {
             avatarOptions.innerHTML = '<p>Nenhum avatar disponível.</p>';
             mostrarNotificacao('Nenhum avatar encontrado', false);
             return;
         }
         
-        exibirAvatares(data);
+        // Gerar URLs públicas para as imagens
+        const avataresComUrls = await Promise.all(
+            imageFiles.map(async (file) => {
+                const { data: { publicUrl } } = supabase
+                    .storage
+                    .from('avatares')
+                    .getPublicUrl(file.name);
+                    
+                return {
+                    id: file.id,
+                    name: file.name.replace(/\.[^/.]+$/, ""), // Remove extensão do arquivo
+                    url_imagem: publicUrl
+                };
+            })
+        );
+        
+        exibirAvatares(avataresComUrls);
         
     } catch (error) {
         console.error('Erro inesperado ao carregar avatares:', error);
@@ -1303,22 +1324,14 @@ function exibirAvatares(avatares) {
             avatarElement.classList.add('selected');
         }
         
-        // Criar a URL completa para a imagem
-        const avatarFileName = avatar.url_imagem;
-        const imageUrl = avatarFileName.startsWith('http') ? 
-            avatarFileName : 
-            window.location.origin + '/' + avatarFileName;
-        
-        console.log('Carregando avatar:', imageUrl);
-        
         avatarElement.innerHTML = `
-            <img src="${imageUrl}" alt="${avatar.nome}" 
+            <img src="${avatar.url_imagem}" alt="${avatar.name}" 
                  onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">
-            <div class="avatar-name">${avatar.nome}</div>
+            <div class="avatar-name">${avatar.name}</div>
         `;
         
         avatarElement.addEventListener('click', () => {
-            selecionarAvatar(avatar.id, imageUrl);
+            selecionarAvatar(avatar.id, avatar.url_imagem);
         });
         
         avatarOptions.appendChild(avatarElement);
@@ -1350,22 +1363,27 @@ function selecionarAvatar(avatarId, avatarUrl) {
 // Atualizar exibição do avatar
 async function atualizarExibicaoAvatar(avatarId) {
     try {
-        const { data, error } = await supabase
+        // Buscar informações do arquivo no storage
+        const { data: fileInfo, error } = await supabase
+            .storage
             .from('avatares')
-            .select('url_imagem')
-            .eq('id', avatarId)
-            .single();
-
-        if (error || !data) return;
-
-        // Criar URL completa para a imagem
-        const imageUrl = data.url_imagem.startsWith('http') ? 
-            data.url_imagem : 
-            window.location.origin + '/' + data.url_imagem;
+            .list();
+            
+        if (error || !fileInfo) return;
+        
+        // Encontrar o arquivo pelo ID
+        const avatarFile = fileInfo.find(file => file.id === avatarId);
+        if (!avatarFile) return;
+        
+        // Gerar URL pública
+        const { data: { publicUrl } } = supabase
+            .storage
+            .from('avatares')
+            .getPublicUrl(avatarFile.name);
 
         const profileImg = document.querySelector('.profile-picture img');
-        if (profileImg) {
-            profileImg.src = imageUrl;
+        if (profileImg && publicUrl) {
+            profileImg.src = publicUrl;
         }
     } catch (error) {
         console.error('Erro ao atualizar avatar:', error);
