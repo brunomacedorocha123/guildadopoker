@@ -936,7 +936,6 @@ const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
 let editMode = false;
 let originalValues = {};
 let currentAvatarId = null;
-let avataresCarregados = false;
 let authCheckInterval;
 
 // Função para inicializar a aplicação quando o DOM estiver pronto
@@ -993,9 +992,7 @@ function adicionarEventListeners() {
     // Upload de foto
     uploadFoto.addEventListener('click', function() {
         document.getElementById('avatar-modal').style.display = 'block';
-        if (!avataresCarregados) {
-            carregarAvatares();
-        }
+        carregarAvatares();
     });
 
     // Fechar modal ao clicar fora dele
@@ -1317,7 +1314,6 @@ async function carregarAvatares() {
         }
 
         exibirAvatares(data);
-        avataresCarregados = true;
     } catch (error) {
         console.error('Erro ao carregar avatares:', error);
         const avatarOptions = document.getElementById('avatar-options-modal');
@@ -1344,14 +1340,17 @@ function exibirAvatares(avatares) {
             avatarElement.classList.add('selected');
         }
         
+        // Usar apenas o nome do arquivo (sem caminhos HTTP)
+        const avatarFileName = avatar.url_imagem;
+        
         avatarElement.innerHTML = `
-            <img src="${avatar.url_imagem}" alt="${avatar.nome}" 
-                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">
+            <img src="${avatarFileName}" alt="${avatar.nome}" 
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">
             <div class="avatar-name">${avatar.nome}</div>
         `;
         
         avatarElement.addEventListener('click', () => {
-            selecionarAvatar(avatar.id);
+            selecionarAvatar(avatar.id, avatarFileName);
         });
         
         avatarOptions.appendChild(avatarElement);
@@ -1359,7 +1358,7 @@ function exibirAvatares(avatares) {
 }
 
 // Selecionar avatar
-function selecionarAvatar(avatarId) {
+function selecionarAvatar(avatarId, avatarFileName) {
     document.querySelectorAll('.avatar-option').forEach(option => {
         option.classList.remove('selected');
     });
@@ -1370,14 +1369,12 @@ function selecionarAvatar(avatarId) {
         currentAvatarId = avatarId;
         
         // Atualizar a imagem do perfil imediatamente
-        const avatarImg = selectedAvatar.querySelector('img');
-        if (avatarImg) {
-            document.querySelector('.profile-picture img').src = avatarImg.src;
-        }
+        document.querySelector('.profile-picture img').src = avatarFileName;
         
         // Fechar o modal após 1 segundo
         setTimeout(() => {
             document.getElementById('avatar-modal').style.display = 'none';
+            mostrarNotificacao('Avatar selecionado com sucesso!', true);
         }, 1000);
     }
 }
@@ -1395,6 +1392,7 @@ async function atualizarExibicaoAvatar(avatarId) {
 
         const profileImg = document.querySelector('.profile-picture img');
         if (profileImg) {
+            // Usar apenas o nome do arquivo
             profileImg.src = data.url_imagem;
         }
     } catch (error) {
