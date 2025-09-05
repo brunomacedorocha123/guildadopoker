@@ -501,7 +501,7 @@
         </div>
     </footer>
 
-    <script>
+   <script>
     // Configuração do Supabase
     const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
@@ -509,8 +509,8 @@
         auth: { persistSession: true, autoRefreshToken: true }
     });
 
-    // URL base para os avatares
-    const AVATAR_BASE_URL = '/avatars/'; // ajuste se necessário
+    // URL base para os avatares (relativo ao HTML)
+    const AVATAR_BASE_URL = 'avatars/'; 
 
     // Função para carregar o avatar do usuário pelo ID
     async function loadUserAvatar(avatarId) {
@@ -528,6 +528,7 @@
 
     // Função para carregar o perfil do usuário
     async function loadUserProfile(userId) {
+        if (!userId) return null;
         const { data: perfilData, error: perfilError } = await supabase
             .from('perfis')
             .select('*')
@@ -538,50 +539,54 @@
         return perfilData;
     }
 
-    // Atualizar a janelinha do usuário
+    // Atualizar a interface do usuário
     async function updateUserUI(user, profile) {
         const userAvatarImg = document.getElementById('avatar-img');
         const userNicknameEl = document.getElementById('nickname-text');
         const loadingIndicator = document.getElementById('loading-indicator');
 
-        // esconder loading
         if (loadingIndicator) loadingIndicator.style.display = 'none';
 
-        // definir apelido
-        let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+        // Definir apelido
+        let apelido = (profile && profile.apelido_poker) ? profile.apelido_poker : (user.email ? user.email.split('@')[0] : 'Usuário');
         if (userNicknameEl) {
             userNicknameEl.textContent = apelido;
             userNicknameEl.style.display = 'inline';
         }
 
-        // carregar avatar
+        // Carregar avatar
         let avatarUrl = null;
         if (profile && profile.avatar_id) {
             avatarUrl = await loadUserAvatar(profile.avatar_id);
         }
 
-        if (avatarUrl && userAvatarImg) {
+        if (userAvatarImg) {
             userAvatarImg.onerror = function () {
                 console.error('Erro ao carregar avatar, usando padrão');
-                this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+                this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
             };
-            userAvatarImg.src = avatarUrl;
+            userAvatarImg.src = avatarUrl || userAvatarImg.src;
         }
     }
 
     // Verificar autenticação ao carregar página
     document.addEventListener('DOMContentLoaded', async function () {
-        const { data: { session } } = await supabase.auth.getSession();
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
 
-        if (session) {
-            const userArea = document.getElementById('user-area');
-            if (userArea) userArea.style.display = 'flex';
+            if (session && session.user) {
+                const userArea = document.getElementById('user-area');
+                if (userArea) userArea.style.display = 'flex';
 
-            const profile = await loadUserProfile(session.user.id);
-            await updateUserUI(session.user, profile);
+                const profile = await loadUserProfile(session.user.id);
+                await updateUserUI(session.user, profile);
+            }
+        } catch (err) {
+            console.error('Erro ao carregar perfil:', err);
         }
     });
 </script>
+
 
 </body>
 </html>
