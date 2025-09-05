@@ -1246,7 +1246,7 @@ function mostrarNotificacao(mensagem, sucesso = true) {
     }, 3000);
 }
 
-// Carregar avatares - VERSÃO CORRIGIDA
+// CARREGAR AVATARES - VERSÃO SIMPLIFICADA E FUNCIONAL
 async function carregarAvatares() {
     try {
         const avatarOptions = document.getElementById('avatar-options-modal');
@@ -1272,60 +1272,45 @@ async function carregarAvatares() {
             return;
         }
         
-        exibirAvatares(avatares);
-        
-    } catch (error) {
-        console.error('Erro inesperado ao carregar avatares:', error);
-        const avatarOptions = document.getElementById('avatar-options-modal');
-        avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
-        mostrarNotificacao('Erro inesperado', false);
-    }
-}
-
-// Exibir avatares na interface
-function exibirAvatares(avatares) {
-    const avatarOptions = document.getElementById('avatar-options-modal');
-    avatarOptions.innerHTML = '';
-
-    // Filtrar avatares com URL válida
-    const avataresValidos = avatares.filter(avatar => avatar.url_imagem && avatar.url_imagem.trim() !== '');
-    
-    if (avataresValidos.length === 0) {
-        avatarOptions.innerHTML = '<p>Nenhum avatar disponível no momento.</p>';
-        return;
-    }
-
-    avataresValidos.forEach(avatar => {
-        const avatarElement = document.createElement('div');
-        avatarElement.className = 'avatar-option';
-        avatarElement.dataset.id = avatar.id;
-        
-        if (avatar.id === currentAvatarId) {
-            avatarElement.classList.add('selected');
-        }
-        
-        // Criar imagem com fallback para erro
-        const img = document.createElement('img');
-        img.src = avatar.url_imagem;
-        img.alt = avatar.nome;
-        img.onerror = function() {
-            this.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
-            this.onerror = null;
-        };
-        
-        const avatarName = document.createElement('div');
-        avatarName.className = 'avatar-name';
-        avatarName.textContent = avatar.nome;
-        
-        avatarElement.appendChild(img);
-        avatarElement.appendChild(avatarName);
-        
-        avatarElement.addEventListener('click', () => {
-            selecionarAvatar(avatar.id, avatar.url_imagem);
+        // Exibir avatares
+        avatarOptions.innerHTML = '';
+        avatares.forEach(avatar => {
+            const avatarElement = document.createElement('div');
+            avatarElement.className = 'avatar-option';
+            avatarElement.dataset.id = avatar.id;
+            
+            if (avatar.id === currentAvatarId) {
+                avatarElement.classList.add('selected');
+            }
+            
+            const img = document.createElement('img');
+            img.src = avatar.url_imagem;
+            img.alt = avatar.nome;
+            img.onerror = function() {
+                // Fallback para SVG se a imagem não carregar
+                this.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
+            };
+            
+            const avatarName = document.createElement('div');
+            avatarName.className = 'avatar-name';
+            avatarName.textContent = avatar.nome;
+            
+            avatarElement.appendChild(img);
+            avatarElement.appendChild(avatarName);
+            
+            avatarElement.addEventListener('click', () => {
+                selecionarAvatar(avatar.id, avatar.url_imagem);
+            });
+            
+            avatarOptions.appendChild(avatarElement);
         });
         
-        avatarOptions.appendChild(avatarElement);
-    });
+    } catch (error) {
+        console.error('Erro ao carregar avatares:', error);
+        const avatarOptions = document.getElementById('avatar-options-modal');
+        avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
+        mostrarNotificacao('Erro ao carregar avatares', false);
+    }
 }
 
 // Selecionar avatar
@@ -1398,6 +1383,40 @@ window.addEventListener('beforeunload', function() {
         clearInterval(authCheckInterval);
     }
 });
+
+// Função de debug para verificar avatares
+async function debugAvatares() {
+    try {
+        console.log('🔍 Verificando avatares no banco...');
+        
+        const { data, error } = await supabase
+            .from('avatares')
+            .select('*');
+            
+        if (error) {
+            console.error('❌ Erro:', error);
+            return;
+        }
+        
+        console.log('📋 Avatares encontrados:', data);
+        
+        // Testar URLs
+        if (data && data.length > 0) {
+            data.forEach(avatar => {
+                console.log(`Testing: ${avatar.url_imagem}`);
+                const img = new Image();
+                img.onload = () => console.log(`✅ OK: ${avatar.url_imagem}`);
+                img.onerror = () => console.log(`❌ FALHA: ${avatar.url_imagem}`);
+                img.src = avatar.url_imagem;
+            });
+        }
+        
+    } catch (error) {
+        console.error('💥 Erro no debug:', error);
+    }
+}
+
+// Execute debugAvatares() no console se precisar diagnosticar
 </script>
 </body>
 </html>
