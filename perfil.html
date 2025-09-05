@@ -1212,7 +1212,13 @@ footer img {
                 console.error('Erro ao atualizar perfil:', error);
                 // Mostrar detalhes do erro para debug
                 console.error('Detalhes do erro:', error.message, error.details);
-                mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
+                
+                // Verificar se é erro de permissão
+                if (error.message && error.message.includes('permission')) {
+                    mostrarNotificacao('Erro de permissão. Entre em contato com o administrador.', false);
+                } else {
+                    mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
+                }
                 return false;
             }
 
