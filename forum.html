@@ -500,79 +500,69 @@
             <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
         </div>
     </footer>
-<script>
-   // Configuração do Supabase
+
+    <script>
+// Configuração do Supabase
 const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: { persistSession: true, autoRefreshToken: true }
 });
 
-// Função para carregar o avatar do usuário pelo ID
-async function loadUserAvatar(avatarId) {
-    if (!avatarId) return null;
+// Mapear avatar_id para link RAW do GitHub
+const AVATAR_RAW_URLS = {
+    1: 'https://raw.githubusercontent.com/brunomacedorocha123/guildadopoker/main/avatararqueiroh.jpg',
+    2: 'https://raw.githubusercontent.com/brunomacedorocha123/guildadopoker/main/avatarbersekerm.jpg',
+    3: 'https://raw.githubusercontent.com/brunomacedorocha123/guildadopoker/main/avatarelfam.jpg',
+    4: 'https://raw.githubusercontent.com/brunomacedorocha123/guildadopoker/main/avatarescudeiroh.jpg',
+    5: 'https://raw.githubusercontent.com/brunomacedorocha123/guildadopoker/main/avatarguerreiroh.jpg',
+    6: 'https://raw.githubusercontent.com/brunomacedorocha123/guildadopoker/main/avatarmagoh.jpg',
+    7: 'https://raw.githubusercontent.com/brunomacedorocha123/guildadopoker/main/avatarpaladinaM.jpg'
+};
 
-    const { data: avatarData, error: avatarError } = await supabase
-        .from('avatares')
-        .select('url_github') // nome correto da coluna no banco
-        .eq('id', avatarId)
-        .single();
-
-    if (avatarError || !avatarData) return null;
-
-    return avatarData.url_github; // retorna a URL completa do GitHub
-}
-
-// Função para carregar o perfil do usuário
+// Função para carregar perfil do usuário
 async function loadUserProfile(userId) {
-    const { data: perfilData, error: perfilError } = await supabase
+    const { data, error } = await supabase
         .from('perfis')
         .select('*')
         .eq('usuario_id', userId)
         .single();
-
-    if (perfilError) return null;
-    return perfilData;
+    if (error) {
+        console.error('Erro ao buscar perfil:', error);
+        return null;
+    }
+    return data;
 }
 
-// Atualizar a janelinha do usuário
+// Atualizar UI do usuário
 async function updateUserUI(user, profile) {
+    const userArea = document.getElementById('user-area');
     const userAvatarImg = document.getElementById('avatar-img');
     const userNicknameEl = document.getElementById('nickname-text');
     const loadingIndicator = document.getElementById('loading-indicator');
 
+    if (userArea) userArea.style.display = 'flex';
     if (loadingIndicator) loadingIndicator.style.display = 'none';
 
-    // definir apelido
-    let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
-    if (userNicknameEl) {
-        userNicknameEl.textContent = apelido;
-        userNicknameEl.style.display = 'inline';
-    }
+    // Apelido
+    const apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+    if (userNicknameEl) userNicknameEl.textContent = apelido;
 
-    // carregar avatar
-    let avatarUrl = null;
-    if (profile && profile.avatar_id) {
-        avatarUrl = await loadUserAvatar(profile.avatar_id);
-    }
-
-    if (avatarUrl && userAvatarImg) {
-        userAvatarImg.onerror = function () {
-            console.error('Erro ao carregar avatar, usando padrão');
-            this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+    // Avatar
+    let avatarUrl = AVATAR_RAW_URLS[profile?.avatar_id] || 'https://via.placeholder.com/50/ffcc00/000000?text=?';
+    if (userAvatarImg) {
+        userAvatarImg.onerror = () => {
+            console.warn('Erro ao carregar avatar, usando placeholder');
+            userAvatarImg.src = 'https://via.placeholder.com/50/ffcc00/000000?text=?';
         };
         userAvatarImg.src = avatarUrl;
     }
 }
 
 // Verificar autenticação ao carregar página
-document.addEventListener('DOMContentLoaded', async function () {
+document.addEventListener('DOMContentLoaded', async () => {
     const { data: { session } } = await supabase.auth.getSession();
-
     if (session) {
-        const userArea = document.getElementById('user-area');
-        if (userArea) userArea.style.display = 'flex';
-
         const profile = await loadUserProfile(session.user.id);
         await updateUserUI(session.user, profile);
     }
