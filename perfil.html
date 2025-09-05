@@ -916,11 +916,11 @@ footer img {
  <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
  </div>
  </footer>
-
+ 
 <script>
 // Configuração do Supabase
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
 // Inicializar Supabase
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
@@ -938,22 +938,14 @@ let originalValues = {};
 let currentAvatarId = null;
 let authCheckInterval;
 
-// Função para inicializar a aplicação quando o DOM estiver pronto
+// Inicialização quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM carregado - inicializando aplicação...');
-    
-    // Inicializar elementos DOM
     inicializarElementosDOM();
-    
-    // Verificar autenticação
     verificarAutenticacao();
 });
 
-// Inicializar todos os elementos DOM
+// Inicializar elementos DOM
 function inicializarElementosDOM() {
-    console.log('Inicializando elementos DOM...');
-    
-    // Elementos de perfil
     window.userNameElement = document.getElementById('user-name');
     window.userEmailElement = document.getElementById('user-email');
     window.userPokerNicknameElement = document.getElementById('user-poker-nickname');
@@ -963,39 +955,30 @@ function inicializarElementosDOM() {
     window.apelidoPokerInput = document.getElementById('apelido_poker');
     window.plataformaSelect = document.getElementById('plataforma_preferida');
     window.uploadFoto = document.getElementById('upload-foto');
-
-    // Botões
     window.btnEditar = document.getElementById('btn-editar');
     window.btnSalvar = document.getElementById('btn-salvar');
     window.btnCancelar = document.getElementById('btn-cancelar');
-
-    // Notificação
     window.notification = document.getElementById('notification');
     window.notificationMessage = document.getElementById('notification-message');
 
-    // Adicionar event listeners
     adicionarEventListeners();
 }
 
-// Adicionar todos os event listeners
+// Adicionar event listeners
 function adicionarEventListeners() {
-    // Botões de edição
     btnEditar.addEventListener('click', entrarModoEdicao);
     btnCancelar.addEventListener('click', sairModoEdicao);
     btnSalvar.addEventListener('click', salvarPerfil);
 
-    // Modal de avatar
     document.querySelector('.close-modal').addEventListener('click', function() {
         document.getElementById('avatar-modal').style.display = 'none';
     });
 
-    // Upload de foto
     uploadFoto.addEventListener('click', function() {
         document.getElementById('avatar-modal').style.display = 'block';
         carregarAvatares();
     });
 
-    // Fechar modal ao clicar fora dele
     window.addEventListener('click', function(event) {
         const modal = document.getElementById('avatar-modal');
         if (event.target === modal) {
@@ -1015,7 +998,6 @@ function adicionarEventListeners() {
         });
     }
 
-    // Tecla Enter no formulário
     document.getElementById('profile-form').addEventListener('keypress', function(e) {
         if (e.key === 'Enter' && editMode) {
             e.preventDefault();
@@ -1024,19 +1006,9 @@ function adicionarEventListeners() {
     });
 }
 
-// Função para verificar autenticação
+// Verificar autenticação
 async function verificarAutenticacao() {
     try {
-        console.log('Verificando autenticação...');
-        
-        // Verificar conexão primeiro
-        const conectado = await verificarConexaoSupabase();
-        if (!conectado) {
-            mostrarNotificacao('Sem conexão com o servidor.', false);
-            return;
-        }
-        
-        // Verificar sessão
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
@@ -1054,7 +1026,6 @@ async function verificarAutenticacao() {
 
         console.log('Usuário autenticado:', session.user.email);
         
-        // Criar ou carregar perfil
         const perfilCriado = await criarPerfilUsuario(session.user);
         if (perfilCriado) {
             await carregarDadosUsuario(session.user);
@@ -1066,25 +1037,9 @@ async function verificarAutenticacao() {
     }
 }
 
-// Verificar conexão com Supabase
-async function verificarConexaoSupabase() {
-    try {
-        const { error } = await supabase
-            .from('perfis')
-            .select('count')
-            .limit(1);
-        
-        return !error;
-    } catch (error) {
-        console.error('Erro ao testar conexão:', error);
-        return false;
-    }
-}
-
 // Criar perfil de usuário se não existir
 async function criarPerfilUsuario(user) {
     try {
-        // Verificar se perfil já existe
         const { data, error } = await supabase
             .from('perfis')
             .select('id')
@@ -1096,13 +1051,11 @@ async function criarPerfilUsuario(user) {
             return false;
         }
 
-        // Se perfil já existe, retornar sucesso
         if (data) {
             console.log('Perfil já existe');
             return true;
         }
 
-        // Criar novo perfil
         const { error: insertError } = await supabase
             .from('perfis')
             .insert([
@@ -1129,9 +1082,6 @@ async function criarPerfilUsuario(user) {
 // Carregar dados do usuário
 async function carregarDadosUsuario(user) {
     try {
-        console.log('Carregando dados do usuário...');
-        
-        // Buscar dados do perfil
         const { data: perfilData, error: perfilError } = await supabase
             .from('perfis')
             .select('*')
@@ -1296,7 +1246,7 @@ function mostrarNotificacao(mensagem, sucesso = true) {
     }, 3000);
 }
 
-// Carregar avatares
+// Carregar avatares - FUNÇÃO PRINCIPAL CORRIGIDA
 async function carregarAvatares() {
     try {
         const avatarOptions = document.getElementById('avatar-options-modal');
@@ -1313,6 +1263,9 @@ async function carregarAvatares() {
             return;
         }
 
+        // Verificar se temos dados
+        console.log('Avatares carregados:', data);
+        
         exibirAvatares(data);
     } catch (error) {
         console.error('Erro ao carregar avatares:', error);
@@ -1321,7 +1274,7 @@ async function carregarAvatares() {
     }
 }
 
-// Exibir avatares na interface
+// Exibir avatares na interface - FUNÇÃO PRINCIPAL CORRIGIDA
 function exibirAvatares(avatares) {
     const avatarOptions = document.getElementById('avatar-options-modal');
     avatarOptions.innerHTML = '';
@@ -1340,7 +1293,7 @@ function exibirAvatares(avatares) {
             avatarElement.classList.add('selected');
         }
         
-        // Usar apenas o nome do arquivo (sem caminhos HTTP)
+        // CORREÇÃO: Usar apenas o nome do arquivo diretamente
         const avatarFileName = avatar.url_imagem;
         
         avatarElement.innerHTML = `
@@ -1412,7 +1365,7 @@ function iniciarVerificacaoAutenticacao() {
             mostrarNotificacao('Sessão expirada. Redirecionando...', false);
             setTimeout(() => window.location.href = 'index.html', 2000);
         }
-    }, 30000); // Verificar a cada 30 segundos
+    }, 30000);
 }
 
 // Limpar intervalo ao sair da página
