@@ -937,6 +937,7 @@ footer img {
     let originalValues = {};
     let currentAvatarId = null;
     let authCheckInterval;
+    let currentUserId = null;
 
     // Inicialização quando o DOM estiver pronto
     document.addEventListener('DOMContentLoaded', function() {
@@ -1025,6 +1026,7 @@ footer img {
             }
 
             console.log('Usuário autenticado:', session.user.email);
+            currentUserId = session.user.id;
             
             const perfilCriado = await criarPerfilUsuario(session.user);
             if (perfilCriado) {
@@ -1203,6 +1205,8 @@ footer img {
                 updates.avatar_id = currentAvatarId;
             }
 
+            console.log('Tentando atualizar perfil com:', updates);
+
             const { error } = await supabase
                 .from('perfis')
                 .update(updates)
@@ -1210,12 +1214,13 @@ footer img {
 
             if (error) {
                 console.error('Erro ao atualizar perfil:', error);
-                // Mostrar detalhes do erro para debug
                 console.error('Detalhes do erro:', error.message, error.details);
                 
-                // Verificar se é erro de permissão
-                if (error.message && error.message.includes('permission')) {
-                    mostrarNotificacao('Erro de permissão. Entre em contato com o administrador.', false);
+                // Verificar tipo específico de erro
+                if (error.code === '42501') {
+                    mostrarNotificacao('Permissão negada. Você não tem permissão para atualizar o perfil.', false);
+                } else if (error.code === '23503') {
+                    mostrarNotificacao('Erro de referência. O avatar selecionado não existe.', false);
                 } else {
                     mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
                 }
@@ -1453,7 +1458,7 @@ footer img {
     });
 
     // FUNÇÃO DE DIAGNÓSTICO - Execute no console do navegador
-    async function diagnosticarAvatares() {
+    async function diagnosticarProblemas() {
         console.log('🔍 INICIANDO DIAGNÓSTICO COMPLETO');
         
         try {
@@ -1462,20 +1467,27 @@ footer img {
             const { data: session } = await supabase.auth.getSession();
             console.log('✅ Sessão:', session ? 'Ativa' : 'Inativa');
             
-            // 2. Testar acesso à tabela avatares
-            console.log('2. Testando acesso à tabela avatares...');
-            const { data, error, count } = await supabase
-                .from('avatares')
-                .select('*', { count: 'exact' });
+            // 2. Testar acesso à tabela perfis
+            console.log('2. Testando acesso à tabela perfis...');
+            const { data: perfilData, error: perfilError } = await supabase
+                .from('perfis')
+                .select('*')
+                .eq('usuario_id', currentUserId)
+                .maybeSingle();
             
-            console.log('📊 Resultado:', {
-                registros: count,
-                erro: error,
-                dados: data
-            });
+            console.log('📊 Perfil:', perfilData, 'Erro:', perfilError);
             
-            if (error) {
-                console.error('❌ Erro específico:', error);
+            // 3. Testar UPDATE na tabela perfis
+            console.log('3. Testando UPDATE na tabela perfis...');
+            const { error: updateError } = await supabase
+                .from('perfis')
+                .update({ data_atualizacao: new Date().toISOString() })
+                .eq('usuario_id', currentUserId);
+            
+            console.log('📊 Resultado UPDATE:', updateError);
+            
+            if (updateError) {
+                console.error('❌ Erro específico no UPDATE:', updateError);
                 return;
             }
         } catch (error) {
