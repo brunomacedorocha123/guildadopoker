@@ -918,650 +918,650 @@ footer img {
  </footer>
 
 <script>
-// Configuração do Supabase
-const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    // Configuração do Supabase
+    const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
 
-// Inicializar Supabase
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
-    auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        storage: localStorage
-    }
-});
-
-// Variáveis globais
-let editMode = false;
-let originalValues = {};
-let currentAvatarId = null;
-let authCheckInterval;
-
-// Inicialização quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', function() {
-    inicializarElementosDOM();
-    verificarAutenticacao();
-});
-
-// Inicializar elementos DOM
-function inicializarElementosDOM() {
-    window.userNameElement = document.getElementById('user-name');
-    window.userEmailElement = document.getElementById('user-email');
-    window.userPokerNicknameElement = document.getElementById('user-poker-nickname');
-    window.memberSinceElement = document.getElementById('member-since');
-    window.nomeCompletoInput = document.getElementById('nome_completo');
-    window.telefoneInput = document.getElementById('telefone');
-    window.apelidoPokerInput = document.getElementById('apelido_poker');
-    window.plataformaSelect = document.getElementById('plataforma_preferida');
-    window.uploadFoto = document.getElementById('upload-foto');
-    window.btnEditar = document.getElementById('btn-editar');
-    window.btnSalvar = document.getElementById('btn-salvar');
-    window.btnCancelar = document.getElementById('btn-cancelar');
-    window.notification = document.getElementById('notification');
-    window.notificationMessage = document.getElementById('notification-message');
-
-    adicionarEventListeners();
-}
-
-// Adicionar event listeners
-function adicionarEventListeners() {
-    btnEditar.addEventListener('click', entrarModoEdicao);
-    btnCancelar.addEventListener('click', sairModoEdicao);
-    btnSalvar.addEventListener('click', salvarPerfil);
-
-    document.querySelector('.close-modal').addEventListener('click', function() {
-        document.getElementById('avatar-modal').style.display = 'none';
-    });
-
-    uploadFoto.addEventListener('click', function() {
-        document.getElementById('avatar-modal').style.display = 'block';
-        carregarAvatares();
-    });
-
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('avatar-modal');
-        if (event.target === modal) {
-            modal.style.display = 'none';
+    // Inicializar Supabase
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storage: localStorage
         }
     });
 
-    // Menu mobile
-    const menuToggle = document.querySelector('.menu-toggle');
-    const menu = document.querySelector('.menu');
-    
-    if (menuToggle) {
-        menuToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            menu.classList.toggle('active');
-            menuToggle.classList.toggle('active');
+    // Variáveis globais
+    let editMode = false;
+    let originalValues = {};
+    let currentAvatarId = null;
+    let authCheckInterval;
+
+    // Inicialização quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+        inicializarElementosDOM();
+        verificarAutenticacao();
+    });
+
+    // Inicializar elementos DOM
+    function inicializarElementosDOM() {
+        window.userNameElement = document.getElementById('user-name');
+        window.userEmailElement = document.getElementById('user-email');
+        window.userPokerNicknameElement = document.getElementById('user-poker-nickname');
+        window.memberSinceElement = document.getElementById('member-since');
+        window.nomeCompletoInput = document.getElementById('nome_completo');
+        window.telefoneInput = document.getElementById('telefone');
+        window.apelidoPokerInput = document.getElementById('apelido_poker');
+        window.plataformaSelect = document.getElementById('plataforma_preferida');
+        window.uploadFoto = document.getElementById('upload-foto');
+        window.btnEditar = document.getElementById('btn-editar');
+        window.btnSalvar = document.getElementById('btn-salvar');
+        window.btnCancelar = document.getElementById('btn-cancelar');
+        window.notification = document.getElementById('notification');
+        window.notificationMessage = document.getElementById('notification-message');
+
+        adicionarEventListeners();
+    }
+
+    // Adicionar event listeners
+    function adicionarEventListeners() {
+        btnEditar.addEventListener('click', entrarModoEdicao);
+        btnCancelar.addEventListener('click', sairModoEdicao);
+        btnSalvar.addEventListener('click', salvarPerfil);
+
+        document.querySelector('.close-modal').addEventListener('click', function() {
+            document.getElementById('avatar-modal').style.display = 'none';
+        });
+
+        uploadFoto.addEventListener('click', function() {
+            document.getElementById('avatar-modal').style.display = 'block';
+            carregarAvatares();
+        });
+
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('avatar-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Menu mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menu = document.querySelector('.menu');
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menu.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            });
+        }
+
+        document.getElementById('profile-form').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && editMode) {
+                e.preventDefault();
+                btnSalvar.click();
+            }
         });
     }
 
-    document.getElementById('profile-form').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && editMode) {
-            e.preventDefault();
-            btnSalvar.click();
-        }
-    });
-}
-
-// Verificar autenticação
-async function verificarAutenticacao() {
-    try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) {
-            console.error('Erro ao obter sessão:', sessionError);
-            mostrarNotificacao('Erro de autenticação. Redirecionando...', false);
-            setTimeout(() => window.location.href = 'index.html', 2000);
-            return;
-        }
-
-        if (!session) {
-            mostrarNotificacao('Por favor, faça login primeiro', false);
-            setTimeout(() => window.location.href = 'index.html', 2000);
-            return;
-        }
-
-        console.log('Usuário autenticado:', session.user.email);
-        
-        const perfilCriado = await criarPerfilUsuario(session.user);
-        if (perfilCriado) {
-            await carregarDadosUsuario(session.user);
-            iniciarVerificacaoAutenticacao();
-        }
-    } catch (error) {
-        console.error('Erro na autenticação:', error);
-        mostrarNotificacao('Erro de conexão. Tente novamente.', false);
-    }
-}
-
-// Criar perfil de usuário se não existir
-async function criarPerfilUsuario(user) {
-    try {
-        const { data, error } = await supabase
-            .from('perfis')
-            .select('id')
-            .eq('usuario_id', user.id)
-            .maybeSingle();
-
-        if (error && error.code !== 'PGRST116') {
-            console.error('Erro ao verificar perfil:', error);
-            return false;
-        }
-
-        if (data) {
-            console.log('Perfil já existe');
-            return true;
-        }
-
-        const { error: insertError } = await supabase
-            .from('perfis')
-            .insert([
-                {
-                    usuario_id: user.id,
-                    nome_completo: user.user_metadata.full_name || '',
-                    data_criacao: new Date().toISOString()
-                }
-            ]);
-
-        if (insertError) {
-            console.error('Erro ao criar perfil:', insertError);
-            mostrarNotificacao('Erro ao criar perfil. Tente novamente.', false);
-            return false;
-        }
-        
-        return true;
-    } catch (error) {
-        console.error('Erro inesperado ao criar perfil:', error);
-        return false;
-    }
-}
-
-// Carregar dados do usuário
-async function carregarDadosUsuario(user) {
-    try {
-        const { data: perfilData, error: perfilError } = await supabase
-            .from('perfis')
-            .select('*')
-            .eq('usuario_id', user.id)
-            .single();
-
-        if (perfilError) {
-            console.error('Erro ao carregar perfil:', perfilError);
-            mostrarNotificacao('Erro ao carregar perfil.', false);
-            return;
-        }
-
-        // Preencher os dados na página
-        userNameElement.textContent = perfilData.nome_completo || user.user_metadata.full_name || 'Usuário';
-        userEmailElement.textContent = user.email;
-
-        if (perfilData.apelido_poker) {
-            userPokerNicknameElement.textContent = '"' + perfilData.apelido_poker + '"';
-        } else {
-            userPokerNicknameElement.textContent = '';
-        }
-
-        const createdDate = new Date(user.created_at);
-        memberSinceElement.textContent = createdDate.toLocaleDateString('pt-BR');
-
-        nomeCompletoInput.value = perfilData.nome_completo || '';
-        telefoneInput.value = perfilData.telefone || '';
-        apelidoPokerInput.value = perfilData.apelido_poker || '';
-        plataformaSelect.value = perfilData.plataforma_preferida || '';
-
-        // Carregar avatar se existir
-        if (perfilData.avatar_id) {
-            currentAvatarId = perfilData.avatar_id;
-            await atualizarExibicaoAvatar(perfilData.avatar_id);
-        }
-
-        // Salvar valores originais para possível cancelamento
-        originalValues = {
-            nome_completo: nomeCompletoInput.value,
-            telefone: telefoneInput.value,
-            apelido_poker: apelidoPokerInput.value,
-            plataforma_preferida: plataformaSelect.value,
-            avatar_id: currentAvatarId
-        };
-
-        console.log('Dados carregados com sucesso!');
-        
-    } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        mostrarNotificacao('Erro ao carregar dados do perfil.', false);
-    }
-}
-
-// Funções de modo de edição
-function entrarModoEdicao() {
-    editMode = true;
-    nomeCompletoInput.disabled = false;
-    telefoneInput.disabled = false;
-    apelidoPokerInput.disabled = false;
-    plataformaSelect.disabled = false;
-
-    btnEditar.classList.add('btn-hidden');
-    btnSalvar.classList.remove('btn-hidden');
-    btnCancelar.classList.remove('btn-hidden');
-}
-
-function sairModoEdicao() {
-    editMode = false;
-    nomeCompletoInput.disabled = true;
-    telefoneInput.disabled = true;
-    apelidoPokerInput.disabled = true;
-    plataformaSelect.disabled = true;
-    
-    // Restaurar valores originais
-    nomeCompletoInput.value = originalValues.nome_completo;
-    telefoneInput.value = originalValues.telefone;
-    apelidoPokerInput.value = originalValues.apelido_poker;
-    plataformaSelect.value = originalValues.plataforma_preferida;
-    
-    btnEditar.classList.remove('btn-hidden');  
-    btnSalvar.classList.add('btn-hidden');  
-    btnCancelar.classList.add('btn-hidden');  
-}
-
-// Salvar perfil
-async function salvarPerfil() {
-    const success = await atualizarPerfilUsuario();
-    if (success) {
-        sairModoEdicao();
-    }
-}
-
-// Atualizar perfil do usuário
-async function atualizarPerfilUsuario() {
-    try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError || !session) {
-            mostrarNotificacao('Sessão expirada. Faça login novamente.', false);
-            setTimeout(() => window.location.href = 'index.html', 2000);
-            return false;
-        }
-
-        if (!nomeCompletoInput.value.trim()) {
-            mostrarNotificacao('Por favor, informe seu nome completo.', false);
-            nomeCompletoInput.focus();
-            return false;
-        }
-
-        const updates = {
-            nome_completo: nomeCompletoInput.value.trim(),
-            telefone: telefoneInput.value.trim(),
-            apelido_poker: apelidoPokerInput.value.trim(),
-            plataforma_preferida: plataformaSelect.value,
-            data_atualizacao: new Date().toISOString()
-        };
-
-        // Adicionar avatar_id se disponível
-        if (currentAvatarId) {
-            updates.avatar_id = currentAvatarId;
-        }
-
-        const { error } = await supabase
-            .from('perfis')
-            .update(updates)
-            .eq('usuario_id', session.user.id);
-
-        if (error) {
-            console.error('Erro ao atualizar perfil:', error);
-            mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
-            return false;
-        }
-
-        mostrarNotificacao('Perfil atualizado com sucesso!', true);
-
-        // Atualizar a exibição
-        userNameElement.textContent = nomeCompletoInput.value;
-
-        if (apelidoPokerInput.value) {
-            userPokerNicknameElement.textContent = '"' + apelidoPokerInput.value + '"';
-        } else {
-            userPokerNicknameElement.textContent = '';
-        }
-
-        originalValues = { ...updates, avatar_id: currentAvatarId };
-        
-        return true;
-    } catch (error) {
-        console.error('Erro ao atualizar perfil:', error);
-        mostrarNotificacao('Erro inesperado. Tente novamente.', false);
-        return false;
-    }
-}
-
-// Função para mostrar notificações
-function mostrarNotificacao(mensagem, sucesso = true) {
-    notificationMessage.textContent = mensagem;
-    notification.className = sucesso ? 'notification success' : 'notification error';
-    notification.classList.add('show');
-
-    setTimeout(() => {
-        notification.classList.remove('show');
-    }, 3000);
-}
-
-// CARREGAR AVATARES - VERSÃO CORRIGIDA E SIMPLIFICADA
-async function carregarAvatares() {
-    try {
-        const avatarOptions = document.getElementById('avatar-options-modal');
-        avatarOptions.innerHTML = '<div class="avatar-loading"><div class="loading-spinner"></div>Carregando avatares...</div>';
-        
-        console.log('🔄 Iniciando carregamento de avatares...');
-        
-        // Primeiro, vamos testar a conexão com a tabela avatares
-        const { data: avatares, error, count } = await supabase
-            .from('avatares')
-            .select('*', { count: 'exact' });
-        
-        console.log('📊 Resultado da consulta:', { avatares, error, count });
-        
-        if (error) {
-            console.error('❌ Erro na consulta:', error);
+    // Verificar autenticação
+    async function verificarAutenticacao() {
+        try {
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
             
-            // Mostrar mensagem mais específica
-            if (error.code === '42P01') {
-                avatarOptions.innerHTML = `
-                    <p style="color: var(--error); text-align: center; padding: 20px;">
-                        Tabela 'avatares' não encontrada.<br>
-                        Verifique se a tabela existe no banco de dados.
-                    </p>
-                `;
-            } else {
-                avatarOptions.innerHTML = `
-                    <p style="color: var(--error); text-align: center; padding: 20px;">
-                        Erro de conexão: ${error.message}<br>
-                        Tente novamente mais tarde.
-                    </p>
-                `;
+            if (sessionError) {
+                console.error('Erro ao obter sessão:', sessionError);
+                mostrarNotificacao('Erro de autenticação. Redirecionando...', false);
+                setTimeout(() => window.location.href = 'index.html', 2000);
+                return;
             }
-            return;
+
+            if (!session) {
+                mostrarNotificacao('Por favor, faça login primeiro', false);
+                setTimeout(() => window.location.href = 'index.html', 2000);
+                return;
+            }
+
+            console.log('Usuário autenticado:', session.user.email);
+            
+            const perfilCriado = await criarPerfilUsuario(session.user);
+            if (perfilCriado) {
+                await carregarDadosUsuario(session.user);
+                iniciarVerificacaoAutenticacao();
+            }
+        } catch (error) {
+            console.error('Erro na autenticação:', error);
+            mostrarNotificacao('Erro de conexão. Tente novamente.', false);
         }
+    }
+
+    // Criar perfil de usuário se não existir
+    async function criarPerfilUsuario(user) {
+        try {
+            const { data, error } = await supabase
+                .from('perfis')
+                .select('id')
+                .eq('usuario_id', user.id)
+                .maybeSingle();
+
+            if (error && error.code !== 'PGRST116') {
+                console.error('Erro ao verificar perfil:', error);
+                return false;
+            }
+
+            if (data) {
+                console.log('Perfil já existe');
+                return true;
+            }
+
+            const { error: insertError } = await supabase
+                .from('perfis')
+                .insert([
+                    {
+                        usuario_id: user.id,
+                        nome_completo: user.user_metadata.full_name || '',
+                        data_criacao: new Date().toISOString()
+                    }
+                ]);
+
+            if (insertError) {
+                console.error('Erro ao criar perfil:', insertError);
+                mostrarNotificacao('Erro ao criar perfil. Tente novamente.', false);
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Erro inesperado ao criar perfil:', error);
+            return false;
+        }
+    }
+
+    // Carregar dados do usuário
+    async function carregarDadosUsuario(user) {
+        try {
+            const { data: perfilData, error: perfilError } = await supabase
+                .from('perfis')
+                .select('*')
+                .eq('usuario_id', user.id)
+                .single();
+
+            if (perfilError) {
+                console.error('Erro ao carregar perfil:', perfilError);
+                mostrarNotificacao('Erro ao carregar perfil.', false);
+                return;
+            }
+
+            // Preencher os dados na página
+            userNameElement.textContent = perfilData.nome_completo || user.user_metadata.full_name || 'Usuário';
+            userEmailElement.textContent = user.email;
+
+            if (perfilData.apelido_poker) {
+                userPokerNicknameElement.textContent = '"' + perfilData.apelido_poker + '"';
+            } else {
+                userPokerNicknameElement.textContent = '';
+            }
+
+            const createdDate = new Date(user.created_at);
+            memberSinceElement.textContent = createdDate.toLocaleDateString('pt-BR');
+
+            nomeCompletoInput.value = perfilData.nome_completo || '';
+            telefoneInput.value = perfilData.telefone || '';
+            apelidoPokerInput.value = perfilData.apelido_poker || '';
+            plataformaSelect.value = perfilData.plataforma_preferida || '';
+
+            // Carregar avatar se existir
+            if (perfilData.avatar_id) {
+                currentAvatarId = perfilData.avatar_id;
+                await atualizarExibicaoAvatar(perfilData.avatar_id);
+            }
+
+            // Salvar valores originais para possível cancelamento
+            originalValues = {
+                nome_completo: nomeCompletoInput.value,
+                telefone: telefoneInput.value,
+                apelido_poker: apelidoPokerInput.value,
+                plataforma_preferida: plataformaSelect.value,
+                avatar_id: currentAvatarId
+            };
+
+            console.log('Dados carregados com sucesso!');
+            
+        } catch (error) {
+            console.error('Erro ao carregar dados:', error);
+            mostrarNotificacao('Erro ao carregar dados do perfil.', false);
+        }
+    }
+
+    // Funções de modo de edição
+    function entrarModoEdicao() {
+        editMode = true;
+        nomeCompletoInput.disabled = false;
+        telefoneInput.disabled = false;
+        apelidoPokerInput.disabled = false;
+        plataformaSelect.disabled = false;
+
+        btnEditar.classList.add('btn-hidden');
+        btnSalvar.classList.remove('btn-hidden');
+        btnCancelar.classList.remove('btn-hidden');
+    }
+
+    function sairModoEdicao() {
+        editMode = false;
+        nomeCompletoInput.disabled = true;
+        telefoneInput.disabled = true;
+        apelidoPokerInput.disabled = true;
+        plataformaSelect.disabled = true;
         
-        if (!avatares || avatares.length === 0) {
-            console.log('ℹ️ Nenhum avatar encontrado na tabela');
+        // Restaurar valores originais
+        nomeCompletoInput.value = originalValues.nome_completo;
+        telefoneInput.value = originalValues.telefone;
+        apelidoPokerInput.value = originalValues.apelido_poker;
+        plataformaSelect.value = originalValues.plataforma_preferida;
+        
+        btnEditar.classList.remove('btn-hidden');  
+        btnSalvar.classList.add('btn-hidden');  
+        btnCancelar.classList.add('btn-hidden');  
+    }
+
+    // Salvar perfil
+    async function salvarPerfil() {
+        const success = await atualizarPerfilUsuario();
+        if (success) {
+            sairModoEdicao();
+        }
+    }
+
+    // Atualizar perfil do usuário
+    async function atualizarPerfilUsuario() {
+        try {
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            if (sessionError || !session) {
+                mostrarNotificacao('Sessão expirada. Faça login novamente.', false);
+                setTimeout(() => window.location.href = 'index.html', 2000);
+                return false;
+            }
+
+            if (!nomeCompletoInput.value.trim()) {
+                mostrarNotificacao('Por favor, informe seu nome completo.', false);
+                nomeCompletoInput.focus();
+                return false;
+            }
+
+            const updates = {
+                nome_completo: nomeCompletoInput.value.trim(),
+                telefone: telefoneInput.value.trim(),
+                apelido_poker: apelidoPokerInput.value.trim(),
+                plataforma_preferida: plataformaSelect.value,
+                data_atualizacao: new Date().toISOString()
+            };
+
+            // Adicionar avatar_id se disponível
+            if (currentAvatarId) {
+                updates.avatar_id = currentAvatarId;
+            }
+
+            const { error } = await supabase
+                .from('perfis')
+                .update(updates)
+                .eq('usuario_id', session.user.id);
+
+            if (error) {
+                console.error('Erro ao atualizar perfil:', error);
+                mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
+                return false;
+            }
+
+            mostrarNotificacao('Perfil atualizado com sucesso!', true);
+
+            // Atualizar a exibição
+            userNameElement.textContent = nomeCompletoInput.value;
+
+            if (apelidoPokerInput.value) {
+                userPokerNicknameElement.textContent = '"' + apelidoPokerInput.value + '"';
+            } else {
+                userPokerNicknameElement.textContent = '';
+            }
+
+            originalValues = { ...updates, avatar_id: currentAvatarId };
+            
+            return true;
+        } catch (error) {
+            console.error('Erro ao atualizar perfil:', error);
+            mostrarNotificacao('Erro inesperado. Tente novamente.', false);
+            return false;
+        }
+    }
+
+    // Função para mostrar notificações
+    function mostrarNotificacao(mensagem, sucesso = true) {
+        notificationMessage.textContent = mensagem;
+        notification.className = sucesso ? 'notification success' : 'notification error';
+        notification.classList.add('show');
+
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+
+    // CARREGAR AVATARES - VERSÃO CORRIGIDA E SIMPLIFICADA
+    async function carregarAvatares() {
+        try {
+            const avatarOptions = document.getElementById('avatar-options-modal');
+            avatarOptions.innerHTML = '<div class="avatar-loading"><div class="loading-spinner"></div>Carregando avatares...</div>';
+            
+            console.log('🔄 Iniciando carregamento de avatares...');
+            
+            // Primeiro, vamos testar a conexão com a tabela avatares
+            const { data: avatares, error, count } = await supabase
+                .from('avatares')
+                .select('*', { count: 'exact' });
+            
+            console.log('📊 Resultado da consulta:', { avatares, error, count });
+            
+            if (error) {
+                console.error('❌ Erro na consulta:', error);
+                
+                // Mostrar mensagem mais específica
+                if (error.code === '42P01') {
+                    avatarOptions.innerHTML = `
+                        <p style="color: var(--error); text-align: center; padding: 20px;">
+                            Tabela 'avatares' não encontrada.<br>
+                            Verifique se a tabela existe no banco de dados.
+                        </p>
+                    `;
+                } else {
+                    avatarOptions.innerHTML = `
+                        <p style="color: var(--error); text-align: center; padding: 20px;">
+                            Erro de conexão: ${error.message}<br>
+                            Tente novamente mais tarde.
+                        </p>
+                    `;
+                }
+                return;
+            }
+            
+            if (!avatares || avatares.length === 0) {
+                console.log('ℹ️ Nenhum avatar encontrado na tabela');
+                avatarOptions.innerHTML = `
+                    <p style="text-align: center; padding: 20px;">
+                        Nenhum avatar disponível no momento.<br>
+                        Entre em contato com o administrador.
+                    </p>
+                `;
+                return;
+            }
+            
+            console.log('✅ Avatares encontrados:', avatares);
+            
+            // Exibir os avatares
+            exibirAvatares(avatares);
+            
+        } catch (error) {
+            console.error('💥 Erro inesperado:', error);
+            const avatarOptions = document.getElementById('avatar-options-modal');
             avatarOptions.innerHTML = `
-                <p style="text-align: center; padding: 20px;">
-                    Nenhum avatar disponível no momento.<br>
-                    Entre em contato com o administrador.
+                <p style="color: var(--error); text-align: center; padding: 20px;">
+                    Erro inesperado ao carregar avatares.<br>
+                    ${error.message}
+                </p>
+            `;
+        }
+    }
+
+    // EXIBIR AVATARES - Versão corrigida
+    function exibirAvatares(avatares) {
+        const avatarOptions = document.getElementById('avatar-options-modal');
+        avatarOptions.innerHTML = '';
+        
+        // Filtrar avatares com URL válida
+        const avataresValidos = avatares.filter(avatar => avatar.url_imagem && avatar.url_imagem.trim() !== '');
+        
+        if (avataresValidos.length === 0) {
+            avatarOptions.innerHTML = `
+                <p style="color: var(--error); text-align: center; padding: 20px;">
+                    Avatares encontrados mas sem URLs válidas.<br>
+                    Verifique o banco de dados.
                 </p>
             `;
             return;
         }
         
-        console.log('✅ Avatares encontrados:', avatares);
+        console.log('🎨 Exibindo avatares válidos:', avataresValidos);
         
-        // Exibir os avatares
-        exibirAvatares(avatares);
-        
-    } catch (error) {
-        console.error('💥 Erro inesperado:', error);
-        const avatarOptions = document.getElementById('avatar-options-modal');
-        avatarOptions.innerHTML = `
-            <p style="color: var(--error); text-align: center; padding: 20px;">
-                Erro inesperado ao carregar avatares.<br>
-                ${error.message}
-            </p>
-        `;
-    }
-}
-
-// EXIBIR AVATARES - Versão corrigida
-function exibirAvatares(avatares) {
-    const avatarOptions = document.getElementById('avatar-options-modal');
-    avatarOptions.innerHTML = '';
-    
-    // Filtrar avatares com URL válida
-    const avataresValidos = avatares.filter(avatar => avatar.url_imagem && avatar.url_imagem.trim() !== '');
-    
-    if (avataresValidos.length === 0) {
-        avatarOptions.innerHTML = `
-            <p style="color: var(--error); text-align: center; padding: 20px;">
-                Avatares encontrados mas sem URLs válidas.<br>
-                Verifique o banco de dados.
-            </p>
-        `;
-        return;
-    }
-    
-    console.log('🎨 Exibindo avatares válidos:', avataresValidos);
-    
-    avataresValidos.forEach(avatar => {
-        const avatarElement = document.createElement('div');
-        avatarElement.className = 'avatar-option';
-        avatarElement.dataset.id = avatar.id;
-        avatarElement.title = avatar.nome || 'Avatar';
-        
-        if (avatar.id === currentAvatarId) {
-            avatarElement.classList.add('selected');
-        }
-        
-        const img = document.createElement('img');
-        img.src = avatar.url_imagem;
-        img.alt = avatar.nome || 'Avatar';
-        img.loading = 'lazy';
-        
-        // Fallback para imagem quebrada
-        img.onerror = function() {
-            console.log(`❌ Imagem não carregada: ${avatar.url_imagem}`);
-            this.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
-            this.onerror = null;
-        };
-        
-        img.onload = function() {
-            console.log(`✅ Imagem carregada: ${avatar.url_imagem}`);
-        };
-        
-        const avatarName = document.createElement('div');
-        avatarName.className = 'avatar-name';
-        avatarName.textContent = avatar.nome || 'Avatar';
-        
-        avatarElement.appendChild(img);
-        avatarElement.appendChild(avatarName);
-        
-        avatarElement.addEventListener('click', () => {
-            selecionarAvatar(avatar.id, avatar.url_imagem);
-        });
-        
-        avatarOptions.appendChild(avatarElement);
-    });
-}
-
-// Selecionar avatar
-function selecionarAvatar(avatarId, avatarUrl) {
-    document.querySelectorAll('.avatar-option').forEach(option => {
-        option.classList.remove('selected');
-    });
-    
-    const selectedAvatar = document.querySelector(`.avatar-option[data-id="${avatarId}"]`);
-    if (selectedAvatar) {
-        selectedAvatar.classList.add('selected');
-        currentAvatarId = avatarId;
-        
-        // Atualizar a imagem do perfil imediatamente
-        const profileImg = document.querySelector('.profile-picture img');
-        profileImg.src = avatarUrl;
-        
-        // Fechar o modal após 1 segundo
-        setTimeout(() => {
-            document.getElementById('avatar-modal').style.display = 'none';
-            mostrarNotificacao('Avatar selecionado com sucesso!', true);
-        }, 1000);
-    }
-}
-
-// Atualizar exibição do avatar
-async function atualizarExibicaoAvatar(avatarId) {
-    try {
-        // Buscar informações do avatar no banco de dados
-        const { data: avatar, error } = await supabase
-            .from('avatares')
-            .select('url_imagem')
-            .eq('id', avatarId)
-            .single();
+        avataresValidos.forEach(avatar => {
+            const avatarElement = document.createElement('div');
+            avatarElement.className = 'avatar-option';
+            avatarElement.dataset.id = avatar.id;
+            avatarElement.title = avatar.nome || 'Avatar';
             
-        if (error) {
-            console.error('Erro ao buscar avatar:', error);
-            return;
-        }
-        
-        if (avatar && avatar.url_imagem) {
-            const profileImg = document.querySelector('.profile-picture img');
-            if (profileImg) {
-                profileImg.src = avatar.url_imagem;
+            if (avatar.id === currentAvatarId) {
+                avatarElement.classList.add('selected');
             }
-        }
-    } catch (error) {
-        console.error('Erro ao atualizar avatar:', error);
-    }
-}
-
-// Verificação periódica de autenticação
-function iniciarVerificacaoAutenticacao() {
-    if (authCheckInterval) {
-        clearInterval(authCheckInterval);
-    }
-    
-    authCheckInterval = setInterval(async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            mostrarNotificacao('Sessão expirada. Redirecionando...', false);
-            setTimeout(() => window.location.href = 'index.html', 2000);
-        }
-    }, 30000);
-}
-
-// Limpar intervalo ao sair da página
-window.addEventListener('beforeunload', function() {
-    if (authCheckInterval) {
-        clearInterval(authCheckInterval);
-    }
-});
-
-// FUNÇÃO DE DIAGNÓSTICO - Execute no console do navegador
-async function diagnosticarAvatares() {
-    console.log('🔍 INICIANDO DIAGNÓSTICO COMPLETO');
-    
-    try {
-        // 1. Testar conexão com Supabase
-        console.log('1. Testando conexão com Supabase...');
-        const { data: session } = await supabase.auth.getSession();
-        console.log('✅ Sessão:', session ? 'Ativa' : 'Inativa');
-        
-        // 2. Testar acesso à tabela avatares
-        console.log('2. Testando acesso à tabela avatares...');
-        const { data, error, count } = await supabase
-            .from('avatares')
-            .select('*', { count: 'exact' });
-        
-        console.log('📊 Resultado:', {
-            registros: count,
-            erro: error,
-            dados: data
-        });
-        
-        if (error) {
-            console.error('❌ Erro específico:', error);
-            return;
-        }
-        
-        if (data && data.length > 0) {
-            // 3. Testar cada URL de imagem
-            console.log('3. Testando URLs das imagens...');
-            data.forEach((avatar, index) => {
-                const img = new Image();
-                img.onload = () => console.log(`✅ Avatar ${index + 1}: ${avatar.url_imagem} - OK`);
-                img.onerror = () => console.log(`❌ Avatar ${index + 1}: ${avatar.url_imagem} - FALHA`);
-                img.src = avatar.url_imagem;
+            
+            const img = document.createElement('img');
+            img.src = avatar.url_imagem;
+            img.alt = avatar.nome || 'Avatar';
+            img.loading = 'lazy';
+            
+            // Fallback para imagem quebrada
+            img.onerror = function() {
+                console.log(`❌ Imagem não carregada: ${avatar.url_imagem}`);
+                this.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
+                this.onerror = null;
+            };
+            
+            img.onload = function() {
+                console.log(`✅ Imagem carregada: ${avatar.url_imagem}`);
+            };
+            
+            const avatarName = document.createElement('div');
+            avatarName.className = 'avatar-name';
+            avatarName.textContent = avatar.nome || 'Avatar';
+            
+            avatarElement.appendChild(img);
+            avatarElement.appendChild(avatarName);
+            
+            avatarElement.addEventListener('click', () => {
+                selecionarAvatar(avatar.id, avatar.url_imagem);
             });
             
-            // 4. Mostrar dados completos
-            console.log('4. Dados completos dos avatares:', data);
-        }
-        
-    } catch (error) {
-        console.error('💥 Erro no diagnóstico:', error);
+            avatarOptions.appendChild(avatarElement);
+        });
     }
-    
-    console.log('🔍 DIAGNÓSTICO CONCLUÍDO');
-}
 
-// FUNÇÃO ALTERNATIVA - Carregar avatares locais se o banco falhar
-async function carregarAvataresAlternativo() {
-    console.log('🔄 Tentando carregar avatares alternativos...');
-    
-    const avataresLocais = [
-        {
-            id: '1',
-            nome: 'Guerreiro H',
-            url_imagem: 'img/avatarguerreiroh.jpg'
-        },
-        {
-            id: '2',
-            nome: 'Elfa M',
-            url_imagem: 'img/avatarelfam.jpg'
-        },
-        {
-            id: '3',
-            nome: 'Arqueiro H',
-            url_imagem: 'img/avatararqueiroh.jpg'
-        },
-        {
-            id: '4',
-            nome: 'Escudeiro H',
-            url_imagem: 'img/avatarescudeiroh.jpg'
-        },
-        {
-            id: '5',
-            nome: 'Paladina M',
-            url_imagem: 'img/avatarpaladinam.jpg'
-        },
-        {
-            id: '6',
-            nome: 'Berserker M',
-            url_imagem: 'img/avatarbersekerm.jpg'
-        },
-        {
-            id: '7',
-            nome: 'Mago H',
-            url_imagem: 'img/avatarmagoh.jpg'
+    // Selecionar avatar
+    function selecionarAvatar(avatarId, avatarUrl) {
+        document.querySelectorAll('.avatar-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        
+        const selectedAvatar = document.querySelector(`.avatar-option[data-id="${avatarId}"]`);
+        if (selectedAvatar) {
+            selectedAvatar.classList.add('selected');
+            currentAvatarId = avatarId;
+            
+            // Atualizar a imagem do perfil imediatamente
+            const profileImg = document.querySelector('.profile-picture img');
+            profileImg.src = avatarUrl;
+            
+            // Fechar o modal após 1 segundo
+            setTimeout(() => {
+                document.getElementById('avatar-modal').style.display = 'none';
+                mostrarNotificacao('Avatar selecionado com sucesso!', true);
+            }, 1000);
         }
-    ];
-    
-    exibirAvatares(avataresLocais);
-}
+    }
 
-// Modifique a função carregarAvatares para tentar alternativas
-async function carregarAvatares() {
-    try {
-        const avatarOptions = document.getElementById('avatar-options-modal');
-        avatarOptions.innerHTML = '<div class="avatar-loading"><div class="loading-spinner"></div>Carregando avatares...</div>';
+    // Atualizar exibição do avatar
+    async function atualizarExibicaoAvatar(avatarId) {
+        try {
+            // Buscar informações do avatar no banco de dados
+            const { data: avatar, error } = await supabase
+                .from('avatares')
+                .select('url_imagem')
+                .eq('id', avatarId)
+                .single();
+                
+            if (error) {
+                console.error('Erro ao buscar avatar:', error);
+                return;
+            }
+            
+            if (avatar && avatar.url_imagem) {
+                const profileImg = document.querySelector('.profile-picture img');
+                if (profileImg) {
+                    profileImg.src = avatar.url_imagem;
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar avatar:', error);
+        }
+    }
+
+    // Verificação periódica de autenticação
+    function iniciarVerificacaoAutenticacao() {
+        if (authCheckInterval) {
+            clearInterval(authCheckInterval);
+        }
         
-        // Tenta carregar do banco primeiro
-        const { data: avatares, error } = await supabase
-            .from('avatares')
-            .select('*');
+        authCheckInterval = setInterval(async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                mostrarNotificacao('Sessão expirada. Redirecionando...', false);
+                setTimeout(() => window.location.href = 'index.html', 2000);
+            }
+        }, 30000);
+    }
+
+    // Limpar intervalo ao sair da página
+    window.addEventListener('beforeunload', function() {
+        if (authCheckInterval) {
+            clearInterval(authCheckInterval);
+        }
+    });
+
+    // FUNÇÃO DE DIAGNÓSTICO - Execute no console do navegador
+    async function diagnosticarAvatares() {
+        console.log('🔍 INICIANDO DIAGNÓSTICO COMPLETO');
         
-        if (error || !avatares || avatares.length === 0) {
-            console.log('❌ Banco falhou, tentando avatares locais...');
-            // Se falhar, tenta carregar avatares locais
+        try {
+            // 1. Testar conexão com Supabase
+            console.log('1. Testando conexão com Supabase...');
+            const { data: session } = await supabase.auth.getSession();
+            console.log('✅ Sessão:', session ? 'Ativa' : 'Inativa');
+            
+            // 2. Testar acesso à tabela avatares
+            console.log('2. Testando acesso à tabela avatares...');
+            const { data, error, count } = await supabase
+                .from('avatares')
+                .select('*', { count: 'exact' });
+            
+            console.log('📊 Resultado:', {
+                registros: count,
+                erro: error,
+                dados: data
+            });
+            
+            if (error) {
+                console.error('❌ Erro específico:', error);
+                return;
+            }
+            
+            if (data && data.length > 0) {
+                // 3. Testar cada URL de imagem
+                console.log('3. Testando URLs das imagens...');
+                data.forEach((avatar, index) => {
+                    const img = new Image();
+                    img.onload = () => console.log(`✅ Avatar ${index + 1}: ${avatar.url_imagem} - OK`);
+                    img.onerror = () => console.log(`❌ Avatar ${index + 1}: ${avatar.url_imagem} - FALHA`);
+                    img.src = avatar.url_imagem;
+                });
+                
+                // 4. Mostrar dados completos
+                console.log('4. Dados completos dos avatares:', data);
+            }
+            
+        } catch (error) {
+            console.error('💥 Erro no diagnóstico:', error);
+        }
+        
+        console.log('🔍 DIAGNÓSTICO CONCLUÍDO');
+    }
+
+    // FUNÇÃO ALTERNATIVA - Carregar avatares locais se o banco falhar
+    async function carregarAvataresAlternativo() {
+        console.log('🔄 Tentando carregar avatares alternativos...');
+        
+        const avataresLocais = [
+            {
+                id: '1',
+                nome: 'Arqueiro H',
+                url_imagem: 'avatararqueiroh.jpg'
+            },
+            {
+                id: '2',
+                nome: 'Elfa M',
+                url_imagem: 'avatarelfam.jpg'
+            },
+            {
+                id: '3',
+                nome: 'Guerreiro H',
+                url_imagem: 'avatarguerreiroh.jpg'
+            },
+            {
+                id: '4',
+                nome: 'Mago H',
+                url_imagem: 'avatarmagoh.jpg'
+            },
+            {
+                id: '5',
+                nome: 'Escudeiro H',
+                url_imagem: 'avatarescudeiroh.jpg'
+            },
+            {
+                id: '6',
+                nome: 'Berserker M',
+                url_imagem: 'avatarbersekerm.jpg'
+            },
+            {
+                id: '7',
+                nome: 'Paladina M',
+                url_imagem: 'avatarpaladinam.jpg'
+            }
+        ];
+        
+        exibirAvatares(avataresLocais);
+    }
+
+    // Modifique a função carregarAvatares para tentar alternativas
+    async function carregarAvatares() {
+        try {
+            const avatarOptions = document.getElementById('avatar-options-modal');
+            avatarOptions.innerHTML = '<div class="avatar-loading"><div class="loading-spinner"></div>Carregando avatares...</div>';
+            
+            // Tenta carregar do banco primeiro
+            const { data: avatares, error } = await supabase
+                .from('avatares')
+                .select('*');
+            
+            if (error || !avatares || avatares.length === 0) {
+                console.log('❌ Banco falhou, tentando avatares locais...');
+                // Se falhar, tenta carregar avatares locais
+                await carregarAvataresAlternativo();
+                return;
+            }
+            
+            // Se conseguir do banco, exibe normalmente
+            exibirAvatares(avatares);
+            
+        } catch (error) {
+            console.error('Erro geral, tentando avatares locais...', error);
             await carregarAvataresAlternativo();
-            return;
         }
-        
-        // Se conseguir do banco, exibe normalmente
-        exibirAvatares(avatares);
-        
-    } catch (error) {
-        console.error('Erro geral, tentando avatares locais...', error);
-        await carregarAvataresAlternativo();
     }
-}
 </script>
 </body>
 </html>
