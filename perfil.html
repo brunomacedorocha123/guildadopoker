@@ -1207,26 +1207,30 @@ footer img {
 
             console.log('Tentando atualizar perfil com:', updates);
 
-            const { error } = await supabase
+            const { data, error } = await supabase
                 .from('perfis')
                 .update(updates)
-                .eq('usuario_id', session.user.id);
+                .eq('usuario_id', session.user.id)
+                .select(); // Adicionando .select() para debug
 
             if (error) {
                 console.error('Erro ao atualizar perfil:', error);
-                console.error('Detalhes do erro:', error.message, error.details);
+                console.error('Detalhes do erro:', error.message, error.details, error.hint);
                 
                 // Verificar tipo específico de erro
                 if (error.code === '42501') {
-                    mostrarNotificacao('Permissão negada. Você não tem permissão para atualizar o perfil.', false);
+                    mostrarNotificacao('Permissão negada. Você não tem permissão para atualizar o perfil. Execute o SQL de correção.', false);
                 } else if (error.code === '23503') {
                     mostrarNotificacao('Erro de referência. O avatar selecionado não existe.', false);
+                } else if (error.message.includes('permission')) {
+                    mostrarNotificacao('Erro de permissão. Execute o SQL de correção no Supabase.', false);
                 } else {
-                    mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
+                    mostrarNotificacao('Erro ao salvar alterações: ' + error.message, false);
                 }
                 return false;
             }
 
+            console.log('Perfil atualizado com sucesso:', data);
             mostrarNotificacao('Perfil atualizado com sucesso!', true);
 
             // Atualizar a exibição
@@ -1467,35 +1471,48 @@ footer img {
             const { data: session } = await supabase.auth.getSession();
             console.log('✅ Sessão:', session ? 'Ativa' : 'Inativa');
             
+            if (!session) {
+                console.error('❌ Nenhuma sessão ativa');
+                return;
+            }
+            
             // 2. Testar acesso à tabela perfis
             console.log('2. Testando acesso à tabela perfis...');
             const { data: perfilData, error: perfilError } = await supabase
                 .from('perfis')
                 .select('*')
-                .eq('usuario_id', currentUserId)
+                .eq('usuario_id', session.user.id)
                 .maybeSingle();
             
             console.log('📊 Perfil:', perfilData, 'Erro:', perfilError);
             
             // 3. Testar UPDATE na tabela perfis
             console.log('3. Testando UPDATE na tabela perfis...');
-            const { error: updateError } = await supabase
+            const { data: updateData, error: updateError } = await supabase
                 .from('perfis')
                 .update({ data_atualizacao: new Date().toISOString() })
-                .eq('usuario_id', currentUserId);
+                .eq('usuario_id', session.user.id)
+                .select();
             
-            console.log('📊 Resultado UPDATE:', updateError);
+            console.log('📊 Resultado UPDATE:', updateData, 'Erro:', updateError);
             
             if (updateError) {
                 console.error('❌ Erro específico no UPDATE:', updateError);
+                console.log('💡 Dica: Execute o SQL de correção de permissões no Supabase');
                 return;
             }
+            
+            console.log('✅ UPDATE funcionou corretamente');
+            
         } catch (error) {
             console.error('💥 Erro no diagnóstico:', error);
         }
         
         console.log('🔍 DIAGNÓSTICO CONCLUÍDO');
     }
+    
+    // Adicionar função de diagnóstico ao escopo global para acesso via console
+    window.diagnosticarProblemas = diagnosticarProblemas;
 </script>
 </body>
 </html>
