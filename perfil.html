@@ -916,7 +916,6 @@ footer img {
  <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
  </div>
  </footer>
-
 <script>
     // Configuração do Supabase
     const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
@@ -1224,7 +1223,7 @@ footer img {
         }
     }
 
-    // Atualizar perfil do usuário - CORREÇÃO DO ERRO
+    // Atualizar perfil do usuário
     async function atualizarPerfilUsuario() {
         try {
             // Verificar se o Supabase está disponível
@@ -1265,7 +1264,7 @@ footer img {
                 .from('perfis')
                 .update(updates)
                 .eq('usuario_id', session.user.id)
-                .select(); // Adicionando .select() para debug
+                .select();
 
             if (error) {
                 console.error('Erro ao atualizar perfil:', error);
@@ -1360,7 +1359,7 @@ footer img {
         }
     }
 
-    // EXIBIR AVATARES
+    // EXIBIR AVATARES - FUNÇÃO CORRIGIDA
     function exibirAvatares(avatares) {
         const avatarOptions = document.getElementById('avatar-options-modal');
         avatarOptions.innerHTML = '';
@@ -1384,7 +1383,8 @@ footer img {
             avatarElement.dataset.id = avatar.id;
             avatarElement.title = avatar.nome || 'Avatar';
             
-            if (avatar.id === currentAvatarId) {
+            // CORREÇÃO: Comparar UUIDs como strings
+            if (currentAvatarId && avatar.id.toString() === currentAvatarId.toString()) {
                 avatarElement.classList.add('selected');
             }
             
@@ -1415,12 +1415,13 @@ footer img {
         });
     }
 
-    // Selecionar avatar
+    // Selecionar avatar - FUNÇÃO CORRIGIDA
     function selecionarAvatar(avatarId, avatarUrl) {
         document.querySelectorAll('.avatar-option').forEach(option => {
             option.classList.remove('selected');
         });
         
+        // CORREÇÃO: Usar seletor por dataset.id
         const selectedAvatar = document.querySelector(`.avatar-option[data-id="${avatarId}"]`);
         if (selectedAvatar) {
             selectedAvatar.classList.add('selected');
@@ -1438,7 +1439,7 @@ footer img {
         }
     }
 
-    // Atualizar exibição do avatar
+    // Atualizar exibição do avatar - FUNÇÃO CORRIGIDA
     async function atualizarExibicaoAvatar(avatarId) {
         try {
             // Verificar se o Supabase está disponível
@@ -1588,6 +1589,30 @@ footer img {
     
     // Adicionar função de diagnóstico ao escopo global para acesso via console
     window.diagnosticarProblemas = diagnosticarProblemas;
+
+    // FUNÇÃO PARA DEBUG DE AVATARES
+    async function debugAvatares() {
+        try {
+            console.log('🔍 Debug: Verificando avatares no banco...');
+            const { data: avatares, error } = await supabase
+                .from('avatares')
+                .select('*');
+                
+            if (error) {
+                console.error('❌ Erro ao buscar avatares:', error);
+                return;
+            }
+            
+            console.log('📊 Avatares encontrados:', avatares);
+            console.log('🆔 Current Avatar ID:', currentAvatarId, 'Tipo:', typeof currentAvatarId);
+            
+        } catch (error) {
+            console.error('💥 Erro no debug:', error);
+        }
+    }
+    
+    // Adicionar função de debug ao escopo global
+    window.debugAvatares = debugAvatares;
 </script>
 </body>
 </html>
