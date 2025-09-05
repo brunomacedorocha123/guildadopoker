@@ -998,6 +998,14 @@ function adicionarEventListeners() {
         }
     });
 
+    // Fechar modal ao clicar fora dele
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('avatar-modal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
     // Menu mobile
     const menuToggle = document.querySelector('.menu-toggle');
     const menu = document.querySelector('.menu');
@@ -1294,14 +1302,17 @@ function mostrarNotificacao(mensagem, sucesso = true) {
 // Carregar avatares
 async function carregarAvatares() {
     try {
+        const avatarOptions = document.getElementById('avatar-options-modal');
+        avatarOptions.innerHTML = '<div class="avatar-loading"><div class="loading-spinner"></div>Carregando avatares...</div>';
+        
         const { data, error } = await supabase
             .from('avatares')
             .select('*')
-            .eq('ativo', true)
             .order('id');
 
         if (error) {
             console.error('Erro ao carregar avatares:', error);
+            avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
             return;
         }
 
@@ -1309,6 +1320,8 @@ async function carregarAvatares() {
         avataresCarregados = true;
     } catch (error) {
         console.error('Erro ao carregar avatares:', error);
+        const avatarOptions = document.getElementById('avatar-options-modal');
+        avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
     }
 }
 
@@ -1316,6 +1329,11 @@ async function carregarAvatares() {
 function exibirAvatares(avatares) {
     const avatarOptions = document.getElementById('avatar-options-modal');
     avatarOptions.innerHTML = '';
+
+    if (!avatares || avatares.length === 0) {
+        avatarOptions.innerHTML = '<p>Nenhum avatar disponível.</p>';
+        return;
+    }
 
     avatares.forEach(avatar => {
         const avatarElement = document.createElement('div');
@@ -1329,6 +1347,7 @@ function exibirAvatares(avatares) {
         avatarElement.innerHTML = `
             <img src="${avatar.url_imagem}" alt="${avatar.nome}" 
                  onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4='">
+            <div class="avatar-name">${avatar.nome}</div>
         `;
         
         avatarElement.addEventListener('click', () => {
@@ -1349,6 +1368,17 @@ function selecionarAvatar(avatarId) {
     if (selectedAvatar) {
         selectedAvatar.classList.add('selected');
         currentAvatarId = avatarId;
+        
+        // Atualizar a imagem do perfil imediatamente
+        const avatarImg = selectedAvatar.querySelector('img');
+        if (avatarImg) {
+            document.querySelector('.profile-picture img').src = avatarImg.src;
+        }
+        
+        // Fechar o modal após 1 segundo
+        setTimeout(() => {
+            document.getElementById('avatar-modal').style.display = 'none';
+        }, 1000);
     }
 }
 
