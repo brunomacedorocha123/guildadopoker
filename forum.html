@@ -500,88 +500,83 @@
             <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
         </div>
     </footer>
+<script>
+   // Configuração do Supabase
+const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true }
+});
 
-   <script>
-    // Configuração do Supabase
-    const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-        auth: { persistSession: true, autoRefreshToken: true }
-    });
+// Função para carregar o avatar do usuário pelo ID
+async function loadUserAvatar(avatarId) {
+    if (!avatarId) return null;
 
-    // URL base para os avatares (arquivos na raiz do repositório)
-    const AVATAR_BASE_URL = './'; // ajustado para a raiz
+    const { data: avatarData, error: avatarError } = await supabase
+        .from('avatares')
+        .select('url_github') // nome correto da coluna no banco
+        .eq('id', avatarId)
+        .single();
 
-    // Função para carregar o avatar do usuário pelo ID
-    async function loadUserAvatar(avatarId) {
-        if (!avatarId) return null;
-        const { data: avatarData, error: avatarError } = await supabase
-            .from('avatares')
-            .select('url_imagem')
-            .eq('id', avatarId)
-            .single();
+    if (avatarError || !avatarData) return null;
 
-        if (avatarError || !avatarData) return null;
+    return avatarData.url_github; // retorna a URL completa do GitHub
+}
 
-        // Retorna a URL completa do avatar
-        return AVATAR_BASE_URL + avatarData.url_imagem;
+// Função para carregar o perfil do usuário
+async function loadUserProfile(userId) {
+    const { data: perfilData, error: perfilError } = await supabase
+        .from('perfis')
+        .select('*')
+        .eq('usuario_id', userId)
+        .single();
+
+    if (perfilError) return null;
+    return perfilData;
+}
+
+// Atualizar a janelinha do usuário
+async function updateUserUI(user, profile) {
+    const userAvatarImg = document.getElementById('avatar-img');
+    const userNicknameEl = document.getElementById('nickname-text');
+    const loadingIndicator = document.getElementById('loading-indicator');
+
+    if (loadingIndicator) loadingIndicator.style.display = 'none';
+
+    // definir apelido
+    let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+    if (userNicknameEl) {
+        userNicknameEl.textContent = apelido;
+        userNicknameEl.style.display = 'inline';
     }
 
-    // Função para carregar o perfil do usuário
-    async function loadUserProfile(userId) {
-        const { data: perfilData, error: perfilError } = await supabase
-            .from('perfis')
-            .select('*')
-            .eq('usuario_id', userId)
-            .single();
-
-        if (perfilError) return null;
-        return perfilData;
+    // carregar avatar
+    let avatarUrl = null;
+    if (profile && profile.avatar_id) {
+        avatarUrl = await loadUserAvatar(profile.avatar_id);
     }
 
-    // Atualizar a janelinha do usuário
-    async function updateUserUI(user, profile) {
-        const userAvatarImg = document.getElementById('avatar-img');
-        const userNicknameEl = document.getElementById('nickname-text');
-        const loadingIndicator = document.getElementById('loading-indicator');
-
-        // esconder loading
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
-
-        // definir apelido
-        let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
-        if (userNicknameEl) {
-            userNicknameEl.textContent = apelido;
-            userNicknameEl.style.display = 'inline';
-        }
-
-        // carregar avatar
-        let avatarUrl = null;
-        if (profile && profile.avatar_id) {
-            avatarUrl = await loadUserAvatar(profile.avatar_id);
-        }
-
-        if (avatarUrl && userAvatarImg) {
-            userAvatarImg.onerror = function () {
-                console.error('Erro ao carregar avatar, usando padrão');
-                this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
-            };
-            userAvatarImg.src = avatarUrl;
-        }
+    if (avatarUrl && userAvatarImg) {
+        userAvatarImg.onerror = function () {
+            console.error('Erro ao carregar avatar, usando padrão');
+            this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+        };
+        userAvatarImg.src = avatarUrl;
     }
+}
 
-    // Verificar autenticação ao carregar página
-    document.addEventListener('DOMContentLoaded', async function () {
-        const { data: { session } } = await supabase.auth.getSession();
+// Verificar autenticação ao carregar página
+document.addEventListener('DOMContentLoaded', async function () {
+    const { data: { session } } = await supabase.auth.getSession();
 
-        if (session) {
-            const userArea = document.getElementById('user-area');
-            if (userArea) userArea.style.display = 'flex';
+    if (session) {
+        const userArea = document.getElementById('user-area');
+        if (userArea) userArea.style.display = 'flex';
 
-            const profile = await loadUserProfile(session.user.id);
-            await updateUserUI(session.user, profile);
-        }
-    });
+        const profile = await loadUserProfile(session.user.id);
+        await updateUserUI(session.user, profile);
+    }
+});
 </script>
 </body>
 </html>
