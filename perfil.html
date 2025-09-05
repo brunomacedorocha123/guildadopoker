@@ -916,7 +916,7 @@ footer img {
  <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
  </div>
  </footer>
- 
+
 <script>
 // Configuração do Supabase
 const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
@@ -1246,7 +1246,7 @@ function mostrarNotificacao(mensagem, sucesso = true) {
     }, 3000);
 }
 
-// Carregar avatares - VERSÃO CORRIGIDA para funcionar com o banco de dados
+// Carregar avatares - VERSÃO CORRIGIDA E MELHORADA
 async function carregarAvatares() {
     try {
         const avatarOptions = document.getElementById('avatar-options-modal');
@@ -1254,17 +1254,51 @@ async function carregarAvatares() {
         
         console.log('Iniciando carregamento de avatares...');
         
+        // Primeiro, verificar a estrutura da tabela avatares
+        const { data: tableInfo, error: infoError } = await supabase
+            .from('avatares')
+            .select('*')
+            .limit(1);
+            
+        if (infoError) {
+            console.error('Erro ao verificar estrutura da tabela:', infoError);
+            avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
+            mostrarNotificacao('Erro ao carregar avatares', false);
+            return;
+        }
+        
         // Buscar avatares da tabela 'avatares' no banco de dados
+        // Usando uma consulta mais tolerante a diferenças na estrutura
         const { data: avatares, error } = await supabase
             .from('avatares')
             .select('id, nome, url_imagem')
-            .eq('ativo', true)
             .order('id');
         
         if (error) {
             console.error('Erro ao buscar avatares:', error);
-            avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
-            mostrarNotificacao('Erro ao carregar avatares', false);
+            
+            // Tentar uma consulta alternativa caso a estrutura seja diferente
+            const { data: avataresAlt, error: errorAlt } = await supabase
+                .from('avatares')
+                .select('*')
+                .order('id');
+                
+            if (errorAlt) {
+                avatarOptions.innerHTML = '<p>Erro ao carregar avatares. Tente novamente.</p>';
+                mostrarNotificacao('Erro ao carregar avatares', false);
+                return;
+            }
+            
+            // Processar os dados alternativos
+            const avataresProcessados = avataresAlt.map(avatar => {
+                return {
+                    id: avatar.id,
+                    nome: avatar.nome || avatar.descricao || `Avatar ${avatar.id}`,
+                    url_imagem: avatar.url_imagem || avatar.imagem || avatar.url || ''
+                };
+            });
+            
+            exibirAvatares(avataresProcessados);
             return;
         }
         
@@ -1283,12 +1317,20 @@ async function carregarAvatares() {
     }
 }
 
-// Exibir avatares na interface - VERSÃO CORRIGIDA
+// Exibir avatares na interface
 function exibirAvatares(avatares) {
     const avatarOptions = document.getElementById('avatar-options-modal');
     avatarOptions.innerHTML = '';
 
-    avatares.forEach(avatar => {
+    // Filtrar avatares com URL válida
+    const avataresValidos = avatares.filter(avatar => avatar.url_imagem && avatar.url_imagem.trim() !== '');
+    
+    if (avataresValidos.length === 0) {
+        avatarOptions.innerHTML = '<p>Nenhum avatar disponível no momento.</p>';
+        return;
+    }
+
+    avataresValidos.forEach(avatar => {
         const avatarElement = document.createElement('div');
         avatarElement.className = 'avatar-option';
         avatarElement.dataset.id = avatar.id;
