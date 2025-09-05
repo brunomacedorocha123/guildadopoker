@@ -1174,7 +1174,7 @@ footer img {
         }
     }
 
-    // Atualizar perfil do usuário
+    // Atualizar perfil do usuário - CORREÇÃO DO ERRO
     async function atualizarPerfilUsuario() {
         try {
             const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -1210,6 +1210,8 @@ footer img {
 
             if (error) {
                 console.error('Erro ao atualizar perfil:', error);
+                // Mostrar detalhes do erro para debug
+                console.error('Detalhes do erro:', error.message, error.details);
                 mostrarNotificacao('Erro ao salvar alterações. Tente novamente.', false);
                 return false;
             }
@@ -1246,72 +1248,34 @@ footer img {
         }, 3000);
     }
 
-    // CARREGAR AVATARES - VERSÃO CORRIGIDA E SIMPLIFICADA
+    // CARREGAR AVATARES
     async function carregarAvatares() {
         try {
             const avatarOptions = document.getElementById('avatar-options-modal');
             avatarOptions.innerHTML = '<div class="avatar-loading"><div class="loading-spinner"></div>Carregando avatares...</div>';
             
-            console.log('🔄 Iniciando carregamento de avatares...');
-            
-            // Primeiro, vamos testar a conexão com a tabela avatares
-            const { data: avatares, error, count } = await supabase
+            // Tenta carregar do banco primeiro
+            const { data: avatares, error } = await supabase
                 .from('avatares')
-                .select('*', { count: 'exact' });
+                .select('*');
             
-            console.log('📊 Resultado da consulta:', { avatares, error, count });
-            
-            if (error) {
-                console.error('❌ Erro na consulta:', error);
-                
-                // Mostrar mensagem mais específica
-                if (error.code === '42P01') {
-                    avatarOptions.innerHTML = `
-                        <p style="color: var(--error); text-align: center; padding: 20px;">
-                            Tabela 'avatares' não encontrada.<br>
-                            Verifique se a tabela existe no banco de dados.
-                        </p>
-                    `;
-                } else {
-                    avatarOptions.innerHTML = `
-                        <p style="color: var(--error); text-align: center; padding: 20px;">
-                            Erro de conexão: ${error.message}<br>
-                            Tente novamente mais tarde.
-                        </p>
-                    `;
-                }
+            if (error || !avatares || avatares.length === 0) {
+                console.log('❌ Banco falhou, tentando avatares locais...');
+                // Se falhar, tenta carregar avatares locais
+                await carregarAvataresAlternativo();
                 return;
             }
             
-            if (!avatares || avatares.length === 0) {
-                console.log('ℹ️ Nenhum avatar encontrado na tabela');
-                avatarOptions.innerHTML = `
-                    <p style="text-align: center; padding: 20px;">
-                        Nenhum avatar disponível no momento.<br>
-                        Entre em contato com o administrador.
-                    </p>
-                `;
-                return;
-            }
-            
-            console.log('✅ Avatares encontrados:', avatares);
-            
-            // Exibir os avatares
+            // Se conseguir do banco, exibe normalmente
             exibirAvatares(avatares);
             
         } catch (error) {
-            console.error('💥 Erro inesperado:', error);
-            const avatarOptions = document.getElementById('avatar-options-modal');
-            avatarOptions.innerHTML = `
-                <p style="color: var(--error); text-align: center; padding: 20px;">
-                    Erro inesperado ao carregar avatares.<br>
-                    ${error.message}
-                </p>
-            `;
+            console.error('Erro geral, tentando avatares locais...', error);
+            await carregarAvataresAlternativo();
         }
     }
 
-    // EXIBIR AVATARES - Versão corrigida
+    // EXIBIR AVATARES
     function exibirAvatares(avatares) {
         const avatarOptions = document.getElementById('avatar-options-modal');
         avatarOptions.innerHTML = '';
@@ -1328,8 +1292,6 @@ footer img {
             `;
             return;
         }
-        
-        console.log('🎨 Exibindo avatares válidos:', avataresValidos);
         
         avataresValidos.forEach(avatar => {
             const avatarElement = document.createElement('div');
@@ -1349,12 +1311,8 @@ footer img {
             // Fallback para imagem quebrada
             img.onerror = function() {
                 console.log(`❌ Imagem não carregada: ${avatar.url_imagem}`);
-                this.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
+                this.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDgwIDgwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI0MCIgeT0iNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1iZGRsZSI+8J+SujwvdGV4dD48L3N2Zz4=';
                 this.onerror = null;
-            };
-            
-            img.onload = function() {
-                console.log(`✅ Imagem carregada: ${avatar.url_imagem}`);
             };
             
             const avatarName = document.createElement('div');
@@ -1421,6 +1379,51 @@ footer img {
         }
     }
 
+    // FUNÇÃO ALTERNATIVA - Carregar avatares locais se o banco falhar
+    async function carregarAvataresAlternativo() {
+        console.log('🔄 Carregando avatares alternativos...');
+        
+        const avataresLocais = [
+            {
+                id: '1',
+                nome: 'Arqueiro H',
+                url_imagem: 'avatararqueiroh.jpg'
+            },
+            {
+                id: '2',
+                nome: 'Elfa M',
+                url_imagem: 'avatarelfam.jpg'
+            },
+            {
+                id: '3',
+                nome: 'Guerreiro H',
+                url_imagem: 'avatarguerreiroh.jpg'
+            },
+            {
+                id: '4',
+                nome: 'Mago H',
+                url_imagem: 'avatarmagoh.jpg'
+            },
+            {
+                id: '5',
+                nome: 'Escudeiro H',
+                url_imagem: 'avatarescudeiroh.jpg'
+            },
+            {
+                id: '6',
+                nome: 'Berserker M',
+                url_imagem: 'avatarbersekerm.jpg'
+            },
+            {
+                id: '7',
+                nome: 'Paladina M',
+                url_imagem: 'avatarpaladinam.jpg'
+            }
+        ];
+        
+        exibirAvatares(avataresLocais);
+    }
+
     // Verificação periódica de autenticação
     function iniciarVerificacaoAutenticacao() {
         if (authCheckInterval) {
@@ -1469,98 +1472,11 @@ footer img {
                 console.error('❌ Erro específico:', error);
                 return;
             }
-            
-            if (data && data.length > 0) {
-                // 3. Testar cada URL de imagem
-                console.log('3. Testando URLs das imagens...');
-                data.forEach((avatar, index) => {
-                    const img = new Image();
-                    img.onload = () => console.log(`✅ Avatar ${index + 1}: ${avatar.url_imagem} - OK`);
-                    img.onerror = () => console.log(`❌ Avatar ${index + 1}: ${avatar.url_imagem} - FALHA`);
-                    img.src = avatar.url_imagem;
-                });
-                
-                // 4. Mostrar dados completos
-                console.log('4. Dados completos dos avatares:', data);
-            }
-            
         } catch (error) {
             console.error('💥 Erro no diagnóstico:', error);
         }
         
         console.log('🔍 DIAGNÓSTICO CONCLUÍDO');
-    }
-
-    // FUNÇÃO ALTERNATIVA - Carregar avatares locais se o banco falhar
-    async function carregarAvataresAlternativo() {
-        console.log('🔄 Tentando carregar avatares alternativos...');
-        
-        const avataresLocais = [
-            {
-                id: '1',
-                nome: 'Arqueiro H',
-                url_imagem: 'avatararqueiroh.jpg'
-            },
-            {
-                id: '2',
-                nome: 'Elfa M',
-                url_imagem: 'avatarelfam.jpg'
-            },
-            {
-                id: '3',
-                nome: 'Guerreiro H',
-                url_imagem: 'avatarguerreiroh.jpg'
-            },
-            {
-                id: '4',
-                nome: 'Mago H',
-                url_imagem: 'avatarmagoh.jpg'
-            },
-            {
-                id: '5',
-                nome: 'Escudeiro H',
-                url_imagem: 'avatarescudeiroh.jpg'
-            },
-            {
-                id: '6',
-                nome: 'Berserker M',
-                url_imagem: 'avatarbersekerm.jpg'
-            },
-            {
-                id: '7',
-                nome: 'Paladina M',
-                url_imagem: 'avatarpaladinam.jpg'
-            }
-        ];
-        
-        exibirAvatares(avataresLocais);
-    }
-
-    // Modifique a função carregarAvatares para tentar alternativas
-    async function carregarAvatares() {
-        try {
-            const avatarOptions = document.getElementById('avatar-options-modal');
-            avatarOptions.innerHTML = '<div class="avatar-loading"><div class="loading-spinner"></div>Carregando avatares...</div>';
-            
-            // Tenta carregar do banco primeiro
-            const { data: avatares, error } = await supabase
-                .from('avatares')
-                .select('*');
-            
-            if (error || !avatares || avatares.length === 0) {
-                console.log('❌ Banco falhou, tentando avatares locais...');
-                // Se falhar, tenta carregar avatares locais
-                await carregarAvataresAlternativo();
-                return;
-            }
-            
-            // Se conseguir do banco, exibe normalmente
-            exibirAvatares(avatares);
-            
-        } catch (error) {
-            console.error('Erro geral, tentando avatares locais...', error);
-            await carregarAvataresAlternativo();
-        }
     }
 </script>
 </body>
