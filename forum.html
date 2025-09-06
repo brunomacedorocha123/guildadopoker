@@ -440,13 +440,13 @@
       </div>
       <div class="topics-list">
         <div class="topic">
-          <a href="topico.html" class="topic-title">Como calcular pot odds no PLO5?</a>
+          <a href="topico.html?id=1" class="topic-title">Como calcular pot odds no PLO5?</a>
         </div>
         <div class="topic">
-          <a href="topico.html" class="topic-title">Estratégias para flop no PLO5</a>
+          <a href="topico.html?id=2" class="topic-title">Estratégias para flop no PLO5</a>
         </div>
         <div class="topic">
-          <a href="topico.html" class="topic-title">Melhores mesas de PLO5 na PPPoker</a>
+          <a href="topico.html?id=3" class="topic-title">Melhores mesas de PLO5 na PPPoker</a>
         </div>
       </div>
     </div>
@@ -458,13 +458,13 @@
       </div>
       <div class="topics-list">
         <div class="topic">
-          <a href="topico.html" class="topic-title">Como funciona o sistema de rakeback?</a>
+          <a href="topico.html?id=4" class="topic-title">Como funciona o sistema de rakeback?</a>
         </div>
         <div class="topic">
-          <a href="topico.html" class="topic-title">Diferença entre Texas Hold'em and Omaha</a>
+          <a href="topico.html?id=5" class="topic-title">Diferença entre Texas Hold'em and Omaha</a>
         </div>
         <div class="topic">
-          <a href="topico.html" class="topic-title">Como escolher a mesa certa para jogar?</a>
+          <a href="topico.html?id=6" class="topic-title">Como escolher a mesa certa para jogar?</a>
         </div>
       </div>
     </div>
@@ -476,13 +476,13 @@
       </div>
       <div class="topics-list">
         <div class="topic">
-          <a href="topico.html" class="topic-title">Estratégia de bolhas em torneios</a>
+          <a href="topico.html?id=7" class="topic-title">Estratégia de bolhas em torneios</a>
         </div>
         <div class="topic">
-          <a href="topico.html" class="topic-title">Como ajustar o jogo conforme os blinds aumentam</a>
+          <a href="topico.html?id=8" class="topic-title">Como ajustar o jogo conforme os blinds aumentam</a>
         </div>
         <div class="topic">
-          <a href="topico.html" class="topic-title">Melhores horários para jogar torneios na Suprema Poker</a>
+          <a href="topico.html?id=9" class="topic-title">Melhores horários para jogar torneios na Suprema Poker</a>
         </div>
       </div>
     </div>
@@ -507,108 +507,223 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
     
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true }
+        auth: { persistSession: true, autoRefreshToken: true }
     });
 
-    // Função para carregar avatar pelo ID
-    async function loadUserAvatar(avatarId) {
-      if (!avatarId) return null;
-      try {
-        const { data: avatarData, error } = await supabase
-          .from('avatares')
-          .select('url_imagem')
-          .eq('id', avatarId)
-          .single();
-          
-        if (error || !avatarData) return null;
-        return avatarData.url_imagem;
-      } catch (error) {
-        console.error('Erro ao carregar avatar:', error);
-        return null;
-      }
-    }
-
-    // Função para carregar perfil do usuário
-    async function loadUserProfile(userId) {
-      try {
-        const { data: perfilData, error } = await supabase
-          .from('perfis')
-          .select('apelido_poker, avatar_id')
-          .eq('usuario_id', userId)
-          .single();
-          
-        if (error) {
-          console.error('Erro ao carregar perfil:', error);
-          return null;
-        }
-        return perfilData;
-      } catch (error) {
-        console.error('Erro ao carregar perfil:', error);
-        return null;
-      }
-    }
-
-    // Atualiza a janela do usuário
-    async function updateUserUI(user, profile) {
-      const userAvatarImg = document.getElementById('avatar-img');
-      const userNicknameEl = document.getElementById('nickname-text');
-      const loadingIndicator = document.getElementById('loading-indicator');
-      const userArea = document.getElementById('user-area');
-
-      if (!userArea) return;
-      userArea.style.display = 'flex';
-
-      // esconder loading
-      if (loadingIndicator) loadingIndicator.style.display = 'none';
-
-      // definir apelido
-      let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
-      if (userNicknameEl) {
-        userNicknameEl.textContent = apelido;
-        userNicknameEl.style.display = 'inline';
-      }
-
-      // carregar avatar
-      if (profile && profile.avatar_id) {
-        const avatarUrl = await loadUserAvatar(profile.avatar_id);
-        if (avatarUrl && userAvatarImg) {
-          userAvatarImg.onerror = function () {
-            console.error('Erro ao carregar avatar, usando padrão');
-            this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
-          };
-          userAvatarImg.src = avatarUrl;
-        }
-      }
-    }
-
-    // Menu hamburger
+    // Elementos DOM
+    const userArea = document.getElementById('user-area');
+    const userAvatarImg = document.getElementById('avatar-img');
+    const userNicknameEl = document.getElementById('nickname-text');
+    const loadingIndicator = document.getElementById('loading-indicator');
     const hamburger = document.querySelector('.hamburger');
     const menu = document.querySelector('.menu');
 
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active');
-      menu.classList.toggle('active');
-    });
+    // Menu hamburger
+    if (hamburger) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            menu.classList.toggle('active');
+        });
+    }
 
     // Fechar menu ao clicar em um link (mobile)
     const menuLinks = document.querySelectorAll('.menu a');
     menuLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-          hamburger.classList.remove('active');
-          menu.classList.remove('active');
-        }
-      });
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                hamburger.classList.remove('active');
+                menu.classList.remove('active');
+            }
+        });
     });
+
+    // Função para carregar avatar pelo ID
+    async function loadUserAvatar(avatarId) {
+        if (!avatarId) return null;
+        try {
+            const { data: avatarData, error } = await supabase
+                .from('avatares')
+                .select('url_imagem')
+                .eq('id', avatarId)
+                .single();
+                
+            if (error || !avatarData) return null;
+            return avatarData.url_imagem;
+        } catch (error) {
+            console.error('Erro ao carregar avatar:', error);
+            return null;
+        }
+    }
+
+    // Função para carregar perfil do usuário
+    async function loadUserProfile(userId) {
+        try {
+            const { data: perfilData, error } = await supabase
+                .from('perfis')
+                .select('apelido_poker, avatar_id')
+                .eq('usuario_id', userId)
+                .single();
+                
+            if (error) {
+                console.error('Erro ao carregar perfil:', error);
+                return null;
+            }
+            return perfilData;
+        } catch (error) {
+            console.error('Erro ao carregar perfil:', error);
+            return null;
+        }
+    }
+
+    // Atualiza a janela do usuário
+    async function updateUserUI(user, profile) {
+        if (!userArea) return;
+        userArea.style.display = 'flex';
+
+        // esconder loading
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
+
+        // definir apelido
+        let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+        if (userNicknameEl) {
+            userNicknameEl.textContent = apelido;
+            userNicknameEl.style.display = 'inline';
+        }
+
+        // carregar avatar
+        if (profile && profile.avatar_id) {
+            const avatarUrl = await loadUserAvatar(profile.avatar_id);
+            if (avatarUrl && userAvatarImg) {
+                userAvatarImg.onerror = function () {
+                    console.error('Erro ao carregar avatar, usando padrão');
+                    this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+                };
+                userAvatarImg.src = avatarUrl;
+            }
+        }
+    }
+
+    // Carregar tópicos do fórum
+    async function loadForumTopics() {
+        try {
+            // Buscar tópicos por categoria
+            const { data: topics, error } = await supabase
+                .from('topicos')
+                .select(`
+                    id,
+                    titulo,
+                    categoria,
+                    criado_em,
+                    autor_id,
+                    perfis (apelido_poker)
+                `)
+                .order('criado_em', { ascending: false });
+                
+            if (error) {
+                console.error('Erro ao carregar tópicos:', error);
+                return;
+            }
+            
+            // Organizar tópicos por categoria
+            organizeTopicsByCategory(topics);
+            
+        } catch (err) {
+            console.error('Erro inesperado ao carregar tópicos:', err);
+        }
+    }
+
+    // Organizar tópicos por categoria
+    function organizeTopicsByCategory(topics) {
+        if (!topics || topics.length === 0) return;
+        
+        const categories = {
+            'Cash Game PLO5': [],
+            'Dúvidas sobre Poker': [],
+            'Estratégias no Torneio': []
+        };
+        
+        // Agrupar tópicos por categoria
+        topics.forEach(topic => {
+            if (categories[topic.categoria]) {
+                categories[topic.categoria].push(topic);
+            }
+        });
+        
+        // Renderizar tópicos em cada categoria
+        renderTopics(categories);
+    }
+
+    // Renderizar tópicos na página
+    function renderTopics(categories) {
+        const forumCategories = document.querySelector('.forum-categories');
+        if (!forumCategories) return;
+        
+        let categoriesHTML = '';
+        
+        for (const [categoryName, topics] of Object.entries(categories)) {
+            if (topics.length === 0) continue;
+            
+            let topicsHTML = '';
+            
+            topics.slice(0, 3).forEach(topic => {
+                const topicDate = new Date(topic.criado_em).toLocaleDateString('pt-BR');
+                const authorName = topic.perfis?.apelido_poker || 'Usuário';
+                
+                topicsHTML += `
+                    <div class="topic">
+                        <a href="topico.html?id=${topic.id}" class="topic-title">${escapeHtml(topic.titulo)}</a>
+                        <div style="font-size: 12px; color: #bbb; margin-top: 5px;">
+                            Por ${authorName} • ${topicDate}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            categoriesHTML += `
+                <div class="category">
+                    <div class="category-header">
+                        <h3>${categoryName}</h3>
+                    </div>
+                    <div class="topics-list">
+                        ${topicsHTML}
+                    </div>
+                </div>
+            `;
+        }
+        
+        forumCategories.innerHTML = categoriesHTML;
+    }
+
+    // Função auxiliar para evitar XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
 
     // Verificar sessão e carregar perfil ao iniciar
     document.addEventListener('DOMContentLoaded', async function () {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        const profile = await loadUserProfile(session.user.id);
-        await updateUserUI(session.user, profile);
-      }
+        try {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            
+            if (error) {
+                console.error('Erro ao verificar sessão:', error);
+                return;
+            }
+            
+            if (session) {
+                const profile = await loadUserProfile(session.user.id);
+                await updateUserUI(session.user, profile);
+            }
+            
+            // Carregar tópicos do fórum
+            await loadForumTopics();
+            
+        } catch (error) {
+            console.error('Erro ao inicializar página:', error);
+        }
     });
-  </script>
+</script>
 </body>
 </html>
+
