@@ -69,17 +69,31 @@
       gap: 10px;
     }
     
-    .user-avatar img {
+    .user-avatar {
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      background-color: var(--bg-primary);
       border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
     
     .user-nickname {
       font-weight: bold;
       color: var(--accent);
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     
     /* Conteúdo principal */
@@ -112,10 +126,19 @@
       font-size: 14px;
     }
     
-    .topic-author-avatar img {
+    .topic-author-avatar {
       width: 30px;
       height: 30px;
       border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .topic-author-avatar img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
     
@@ -153,10 +176,16 @@
       margin-bottom: 10px;
     }
     
-    .comment-avatar img {
+    .comment-avatar {
       width: 30px;
       height: 30px;
       border-radius: 50%;
+      overflow: hidden;
+    }
+    
+    .comment-avatar img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
     
@@ -296,12 +325,13 @@
       <a href="forum.html" class="back-button">
         ← Voltar ao Fórum
       </a>
-      <div class="user-area" id="user-area">
+      <div class="user-area" id="user-area" style="display: none;">
         <div class="user-avatar" id="user-avatar">
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg�IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
         </div>
         <div class="user-nickname" id="user-nickname">
-          <span id="nickname-text">Carregando...</span>
+          <span class="loading" id="loading-indicator"></span>
+          <span id="nickname-text"></span>
         </div>
       </div>
     </div>
@@ -361,6 +391,7 @@
     const userArea = document.getElementById('user-area');
     const userAvatarImg = document.getElementById('avatar-img');
     const userNicknameEl = document.getElementById('nickname-text');
+    const loadingIndicator = document.getElementById('loading-indicator');
     const topicTitle = document.getElementById('topic-title');
     const topicMeta = document.getElementById('topic-meta');
     const topicContent = document.getElementById('topic-content');
@@ -394,20 +425,38 @@
       }
     }
 
+    // Função para carregar avatar pelo ID
+    async function loadUserAvatar(avatarId) {
+        if (!avatarId) return null;
+        try {
+            const { data: avatarData, error } = await supabase
+                .from('avatares')
+                .select('url_imagem')
+                .eq('id', avatarId)
+                .single();
+                
+            if (error || !avatarData) return null;
+            return avatarData.url_imagem;
+        } catch (error) {
+            console.error('Erro ao carregar avatar:', error);
+            return null;
+        }
+    }
+
     // Função para carregar perfil do usuário
     async function loadUserProfile(userId) {
         try {
-            const { data: profileData, error } = await supabase
-                .from('profiles')
-                .select('username, avatar_url')
-                .eq('id', userId)
+            const { data: perfilData, error } = await supabase
+                .from('perfis')
+                .select('apelido_poker, avatar_id')
+                .eq('usuario_id', userId)
                 .single();
                 
             if (error) {
                 console.error('Erro ao carregar perfil:', error);
                 return null;
             }
-            return profileData;
+            return perfilData;
         } catch (error) {
             console.error('Erro ao carregar perfil:', error);
             return null;
@@ -417,28 +466,27 @@
     // Atualiza a janela do usuário
     async function updateUserUI(user, profile) {
         if (!userArea) return;
-        
-        if (user) {
-            currentUser = user;
+        userArea.style.display = 'flex';
 
-            // definir username
-            let username = profile && profile.username ? profile.username : `Usuário_${user.id.substring(0, 8)}`;
-            if (userNicknameEl) {
-                userNicknameEl.textContent = username;
-            }
+        // esconder loading
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
 
-            // carregar avatar
-            if (profile && profile.avatar_url && userAvatarImg) {
+        // definir apelido
+        let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+        if (userNicknameEl) {
+            userNicknameEl.textContent = apelido;
+            userNicknameEl.style.display = 'inline';
+        }
+
+        // carregar avatar
+        if (profile && profile.avatar_id) {
+            const avatarUrl = await loadUserAvatar(profile.avatar_id);
+            if (avatarUrl && userAvatarImg) {
                 userAvatarImg.onerror = function () {
                     console.error('Erro ao carregar avatar, usando padrão');
                     this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
                 };
-                userAvatarImg.src = profile.avatar_url;
-            }
-        } else {
-            // Se não há usuário, apenas mostra como "Convidado"
-            if (userNicknameEl) {
-                userNicknameEl.textContent = "Convidado";
+                userAvatarImg.src = avatarUrl;
             }
         }
     }
@@ -454,14 +502,14 @@
 
         try {
             const { data: topic, error } = await supabase
-                .from('topics')
+                .from('topicos')
                 .select(`
                     id,
-                    title,
-                    content,
-                    created_at,
-                    author_id,
-                    profiles (username, avatar_url)
+                    titulo,
+                    conteudo,
+                    criado_em,
+                    autor_id,
+                    perfis (apelido_poker, avatar_id)
                 `)
                 .eq('id', topicId)
                 .single();
@@ -480,18 +528,21 @@
             }
             
             // Preencher informações do tópico
-            topicTitle.textContent = topic.title;
-            topicContent.textContent = topic.content || 'Sem conteúdo...';
+            topicTitle.textContent = topic.titulo;
+            topicContent.textContent = topic.conteudo || 'Sem conteúdo...';
             
             // Carregar avatar do autor
             let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
             
-            if (topic.profiles && topic.profiles.avatar_url) {
-                authorAvatarUrl = topic.profiles.avatar_url;
+            if (topic.perfis && topic.perfis.avatar_id) {
+                const avatarUrl = await loadUserAvatar(topic.perfis.avatar_id);
+                if (avatarUrl) {
+                    authorAvatarUrl = avatarUrl;
+                }
             }
             
-            const authorName = topic.profiles?.username || 'Usuário';
-            const topicDate = new Date(topic.created_at).toLocaleDateString('pt-BR');
+            const authorName = topic.perfis?.apelido_poker || 'Usuário';
+            const topicDate = new Date(topic.criado_em).toLocaleDateString('pt-BR');
             
             topicMeta.innerHTML = `
                 <div class="topic-author-avatar">
@@ -515,17 +566,17 @@
         
         try {
             const { data: comments, error } = await supabase
-                .from('comments')
+                .from('comentarios')
                 .select(`
                     id,
-                    content,
-                    created_at,
-                    user_id,
+                    conteudo,
+                    criado_em,
+                    usuario_id,
                     parent_id,
-                    profiles (username, avatar_url)
+                    perfis (apelido_poker, avatar_id)
                 `)
-                .eq('topic_id', topicId)
-                .order('created_at', { ascending: true });
+                .eq('topico_id', topicId)
+                .order('criado_em', { ascending: true });
                 
             if (error) {
                 console.error('Erro ao carregar comentários:', error);
@@ -561,12 +612,15 @@
         // Carregar avatar do autor do comentário
         let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
         
-        if (comment.profiles && comment.profiles.avatar_url) {
-            authorAvatarUrl = comment.profiles.avatar_url;
+        if (comment.perfis && comment.perfis.avatar_id) {
+            const avatarUrl = await loadUserAvatar(comment.perfis.avatar_id);
+            if (avatarUrl) {
+                authorAvatarUrl = avatarUrl;
+            }
         }
         
-        const authorName = comment.profiles?.username || 'Usuário';
-        const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
+        const authorName = comment.perfis?.apelido_poker || 'Usuário';
+        const commentDate = new Date(comment.criado_em).toLocaleDateString('pt-BR');
         
         let commentHTML = `
             <div class="comment" id="comment-${comment.id}">
@@ -577,7 +631,7 @@
                     <div class="comment-author">${escapeHtml(authorName)}</div>
                     <div class="comment-date">${commentDate}</div>
                 </div>
-                <div class="comment-content">${escapeHtml(comment.content)}</div>
+                <div class="comment-content">${escapeHtml(comment.conteudo)}</div>
         `;
         
         // Botão de resposta (só mostra se usuário estiver logado)
@@ -641,11 +695,11 @@
         
         try {
             const { error } = await supabase
-                .from('comments')
+                .from('comentarios')
                 .insert([{
-                    content: content,
-                    topic_id: topicId,
-                    user_id: currentUser.id
+                    conteudo: content,
+                    topico_id: topicId,
+                    usuario_id: currentUser.id
                 }]);
                 
             if (error) {
@@ -687,11 +741,11 @@
         
         try {
             const { error } = await supabase
-                .from('comments')
+                .from('comentarios')
                 .insert([{
-                    content: replyText,
-                    topic_id: topicId,
-                    user_id: currentUser.id,
+                    conteudo: replyText,
+                    topico_id: topicId,
+                    usuario_id: currentUser.id,
                     parent_id: commentId
                 }]);
                 
@@ -731,6 +785,7 @@
             
             if (user) {
                 profile = await loadUserProfile(user.id);
+                currentUser = user;
             }
             
             await updateUserUI(user, profile);
