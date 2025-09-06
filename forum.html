@@ -207,17 +207,25 @@
       overflow: hidden;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       margin-bottom: 30px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .category:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
     
     .category-header {
       background-color: var(--gold);
-      padding: 15px 20px;
+      padding: 12px 20px;
+      cursor: pointer;
     }
     
     .category-header h3 {
       color: #121212;
-      font-size: 22px;
+      font-size: 20px;
       margin: 0;
+      text-align: center;
     }
     
     .topics-list {
@@ -355,6 +363,14 @@
         flex-direction: column;
         text-align: center;
       }
+      
+      .forum-intro h2 {
+        font-size: 28px;
+      }
+      
+      .forum-intro p {
+        font-size: 16px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -366,6 +382,10 @@
         width: 32px;
         height: 28px;
         right: 12px;
+      }
+      
+      .category-header h3 {
+        font-size: 18px;
       }
     }
 
@@ -433,22 +453,13 @@
   </section>
 
   <div class="forum-categories">
-    <!-- Categoria 1: Cash Game PLO5 -->
+    <!-- Categoria 1: Cash Game PLO5 - MODIFICADA -->
     <div class="category">
-      <div class="category-header">
-        <h3>Cash Game PLO5</h3>
-      </div>
-      <div class="topics-list">
-        <div class="topic">
-          <a href="topico.html?id=1" class="topic-title">Como calcular pot odds no PLO5?</a>
+      <a href="topico_cashgameplo.html" style="text-decoration: none;">
+        <div class="category-header">
+          <h3>Cash Game PLO</h3>
         </div>
-        <div class="topic">
-          <a href="topico.html?id=2" class="topic-title">Estratégias para flop no PLO5</a>
-        </div>
-        <div class="topic">
-          <a href="topico.html?id=3" class="topic-title">Melhores mesas de PLO5 na PPPoker</a>
-        </div>
-      </div>
+      </a>
     </div>
     
     <!-- Categoria 2: Dúvidas sobre poker -->
@@ -723,7 +734,6 @@
             console.error('Erro ao inicializar página:', error);
         }
     });
-</script>
+  </script>
 </body>
 </html>
-
