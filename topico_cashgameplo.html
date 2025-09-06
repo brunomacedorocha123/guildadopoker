@@ -296,6 +296,15 @@
       border-left: 3px solid #ff6b6b;
     }
     
+    .success-message {
+      color: #4caf50;
+      padding: 10px;
+      background-color: rgba(76, 175, 80, 0.1);
+      border-radius: 5px;
+      border-left: 3px solid #4caf50;
+      margin-bottom: 15px;
+    }
+    
     /* Responsividade */
     @media (max-width: 768px) {
       .container {
@@ -357,6 +366,7 @@
 
       <div class="add-comment" id="add-comment">
         <h3>Deixe seu comentário</h3>
+        <div id="comment-message"></div>
         <div class="comment-form">
           <textarea id="new-comment" placeholder="Escreva seu comentário..."></textarea>
           <button id="submit-comment">Comentar</button>
@@ -399,6 +409,7 @@
     const addCommentSection = document.getElementById('add-comment');
     const newCommentTextarea = document.getElementById('new-comment');
     const submitCommentButton = document.getElementById('submit-comment');
+    const commentMessage = document.getElementById('comment-message');
 
     let topicId = new URLSearchParams(window.location.search).get('id');
     let currentUser = null;
@@ -532,7 +543,7 @@
             topicContent.textContent = topic.conteudo || 'Sem conteúdo...';
             
             // Carregar avatar do autor
-            let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+            let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBk�JNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
             
             if (topic.perfis && topic.perfis.avatar_id) {
                 const avatarUrl = await loadUserAvatar(topic.perfis.avatar_id);
@@ -626,7 +637,7 @@
             <div class="comment" id="comment-${comment.id}">
                 <div class="comment-header">
                     <div class="comment-avatar">
-                        <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTM0QzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
+                        <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw5MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTM0QzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
                     </div>
                     <div class="comment-author">${escapeHtml(authorName)}</div>
                     <div class="comment-date">${commentDate}</div>
@@ -704,17 +715,18 @@
                 
             if (error) {
                 console.error('Erro ao publicar comentário:', error);
-                alert('Erro ao publicar comentário. Tente novamente.');
+                showMessage('Erro ao publicar comentário. Tente novamente.', 'error');
                 return;
             }
             
             // Limpar campo e recarregar comentários
             newCommentTextarea.value = '';
+            showMessage('Comentário publicado com sucesso!', 'success');
             await loadComments();
             
         } catch (error) {
             console.error('Erro ao publicar comentário:', error);
-            alert('Erro ao publicar comentário. Tente novamente.');
+            showMessage('Erro ao publicar comentário. Tente novamente.', 'error');
         } finally {
             submitCommentButton.disabled = false;
             submitCommentButton.textContent = 'Comentar';
@@ -751,21 +763,34 @@
                 
             if (error) {
                 console.error('Erro ao publicar resposta:', error);
-                alert('Erro ao publicar resposta. Tente novamente.');
+                showMessage('Erro ao publicar resposta. Tente novamente.', 'error');
                 return;
             }
             
             // Ocultar formulário e recarregar comentários
             hideReplyForm(commentId);
+            showMessage('Resposta publicada com sucesso!', 'success');
             await loadComments();
             
         } catch (error) {
             console.error('Erro ao publicar resposta:', error);
-            alert('Erro ao publicar resposta. Tente novamente.');
+            showMessage('Erro ao publicar resposta. Tente novamente.', 'error');
         } finally {
             replyButton.disabled = false;
             replyButton.textContent = originalText;
         }
+    }
+
+    // Mostrar mensagem de status
+    function showMessage(message, type) {
+        if (!commentMessage) return;
+        
+        commentMessage.innerHTML = `<div class="${type === 'error' ? 'error-message' : 'success-message'}">${message}</div>`;
+        
+        // Remover a mensagem após 5 segundos
+        setTimeout(() => {
+            commentMessage.innerHTML = '';
+        }, 5000);
     }
 
     // Função auxiliar para evitar XSS
