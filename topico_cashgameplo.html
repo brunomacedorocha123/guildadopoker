@@ -3,19 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tópico - Guilda do Poker</title>
+  <title>Fórum - Guilda do Poker</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* Estilos básicos */
     :root {
       --bg-primary: #121212;
       --bg-secondary: #1a1a1a;
+      --bg-tertiary: #2a2a2a;
       --text-primary: #ffffff;
       --text-secondary: #bbbbbb;
       --accent: #ffcc00;
       --border: #333333;
+      --success: #4caf50;
+      --error: #f44336;
     }
     
     * {
@@ -145,6 +147,7 @@
     .topic-content {
       line-height: 1.8;
       margin-top: 20px;
+      white-space: pre-line;
     }
     
     /* Seção de comentários */
@@ -201,6 +204,7 @@
     
     .comment-content {
       line-height: 1.6;
+      white-space: pre-line;
     }
     
     .replies {
@@ -289,19 +293,20 @@
     }
     
     .error-message {
-      color: #ff6b6b;
+      color: var(--error);
       padding: 10px;
-      background-color: rgba(255, 107, 107, 0.1);
+      background-color: rgba(244, 67, 54, 0.1);
       border-radius: 5px;
-      border-left: 3px solid #ff6b6b;
+      border-left: 3px solid var(--error);
+      margin-bottom: 15px;
     }
     
     .success-message {
-      color: #4caf50;
+      color: var(--success);
       padding: 10px;
       background-color: rgba(76, 175, 80, 0.1);
       border-radius: 5px;
-      border-left: 3px solid #4caf50;
+      border-left: 3px solid var(--success);
       margin-bottom: 15px;
     }
     
@@ -388,7 +393,7 @@
     </div>
   </footer>
 
-  <script>
+     <script>
     // Configuração do Supabase
     const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
@@ -413,6 +418,52 @@
 
     let topicId = new URLSearchParams(window.location.search).get('id');
     let currentUser = null;
+
+    // Dados dos tópicos fixos
+    const fixedTopics = {
+      1: {
+        id: 1,
+        titulo: "Como funciona o sistema de rakeback?",
+        conteudo: "O rakeback é uma forma de os jogadores receberem de volta uma porcentagem do rake que pagam nas mesas. É uma maneira das salas de poker recompensarem os jogadores mais ativos. Alguém tem experiência com diferentes sistemas de rakeback?",
+        autor: "Admin",
+        data: "2023-10-15"
+      },
+      2: {
+        id: 2,
+        titulo: "Diferença entre Texas Hold'em e Omaha",
+        conteudo: "Quais são as principais diferenças estratégicas entre Texas Hold'em e Omaha? No Omaha, cada jogador recebe quatro cartas em vez de duas, o que muda completamente a dinâmica do jogo e as possibilidades de formação de mãos.",
+        autor: "Admin",
+        data: "2023-10-16"
+      },
+      3: {
+        id: 3,
+        titulo: "Como escolher a mesa certa para jogar?",
+        conteudo: "Escolher a mesa certa é crucial para ser bem-sucedido no poker. Devemos observar fatores como o tamanho médio do pote, porcentagem de jogadores que entram na mão e agressividade geral da mesa. Quais critérios vocês usam?",
+        autor: "Admin",
+        data: "2023-10-17"
+      },
+      4: {
+        id: 4,
+        titulo: "Estratégia de bolhas em torneios",
+        conteudo: "A fase de bolha é uma das partes mais importantes de um torneio, onde muitos jogadores ficam conservadores esperando chegar no money. Como vocês ajustam sua estratégia durante a bolha?",
+        autor: "Admin",
+        data: "2023-10-18"
+      },
+      5: {
+        id: 5,
+        titulo: "Como ajustar o jogo conforme os blinds aumentam",
+        conteudo: "Conforme os blinds aumentam em um torneio, é preciso ajustar a estratégia. A pressão dos blinds força ações diferentes. Como vocês se adaptam a essa mudança?",
+        autor: "Admin",
+        data: "2023-10-19"
+      },
+      6: {
+        id: 6,
+        titulo: "Melhores horários para jogar torneios na Suprema Poker",
+        conteudo: "Quais são os melhores horários para encontrar torneios com bons prizepools e estrutura na Suprema Poker? Compartilhem suas experiências!",
+        autor: "Admin",
+        data: "2023-10-20"
+      }
+    };
 
     // Função para obter o usuário atual da sessão
     async function getCurrentUser() {
@@ -511,6 +562,29 @@
             return;
         }
 
+        // Verificar se é um tópico fixo
+        if (fixedTopics[topicId]) {
+            const topic = fixedTopics[topicId];
+            
+            // Preencher informações do tópico
+            topicTitle.textContent = topic.titulo;
+            topicContent.textContent = topic.conteudo;
+            
+            const topicDate = new Date(topic.data).toLocaleDateString('pt-BR');
+            
+            topicMeta.innerHTML = `
+                <div class="topic-author-avatar">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="${topic.autor}">
+                </div>
+                <div class="topic-author-name">${escapeHtml(topic.autor)}</div>
+                <div>•</div>
+                <div>${topicDate}</div>
+            `;
+            
+            return;
+        }
+
+        // Se não for um tópico fixo, tentar carregar do Supabase
         try {
             const { data: topic, error } = await supabase
                 .from('topicos')
@@ -543,7 +617,7 @@
             topicContent.textContent = topic.conteudo || 'Sem conteúdo...';
             
             // Carregar avatar do autor
-            let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBk�JNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+            let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw6Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
             
             if (topic.perfis && topic.perfis.avatar_id) {
                 const avatarUrl = await loadUserAvatar(topic.perfis.avatar_id);
@@ -557,7 +631,7 @@
             
             topicMeta.innerHTML = `
                 <div class="topic-author-avatar">
-                    <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
+                    <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MC,xNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
                 </div>
                 <div class="topic-author-name">${escapeHtml(authorName)}</div>
                 <div>•</div>
@@ -637,7 +711,7 @@
             <div class="comment" id="comment-${comment.id}">
                 <div class="comment-header">
                     <div class="comment-avatar">
-                        <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw5MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTM0QzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
+                        <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw5MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM7LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTM0QzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
                     </div>
                     <div class="comment-author">${escapeHtml(authorName)}</div>
                     <div class="comment-date">${commentDate}</div>
