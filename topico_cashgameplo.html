@@ -8,177 +8,142 @@
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    /* Estilos básicos */
     :root {
-      --bg: #121212;
-      --bg-2: #1c1c1c;
-      --bg-3: #2c2c2c;
-      --gold: #ffcc00;
-      --text: #f5f5f5;
+      --bg-primary: #121212;
+      --bg-secondary: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #bbbbbb;
+      --accent: #ffcc00;
+      --border: #333333;
     }
-
+    
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
-
+    
     body {
-      font-family: Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
+      font-family: 'Arial', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
       line-height: 1.6;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
     }
-
-    /* ===== CABEÇALHO ===== */
+    
+    /* Cabeçalho */
     header {
-      background: var(--bg-2);
+      background-color: var(--bg-secondary);
       padding: 15px 20px;
-      text-align: center;
-      border-bottom: 2px solid var(--gold);
-      position: relative;
+      border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      min-height: 70px;
     }
     
     .header-left {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
     }
     
+    .back-button {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 15px;
+      border: 1px solid var(--accent);
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+    
+    .back-button:hover {
+      background-color: var(--accent);
+      color: var(--bg-primary);
+    }
+    
+    /* Área do usuário */
     .user-area {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 5px;
-    }
-    
-    .user-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background-color: var(--bg-3);
-      border: 2px solid var(--gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      transition: transform 0.3s ease;
+      gap: 10px;
     }
     
     .user-avatar img {
-      width: 100%;
-      height: 100%;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
       object-fit: cover;
     }
     
     .user-nickname {
-      color: var(--gold);
-      font-size: 16px;
       font-weight: bold;
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* Botão Voltar */
-    .back-button {
-      background-color: var(--gold);
-      color: #121212;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: background-color 0.3s;
+      color: var(--accent);
     }
     
-    .back-button:hover {
-      background-color: #e6b800;
-    }
-
-    /* ===== CONTEÚDO PRINCIPAL ===== */
+    /* Conteúdo principal */
     .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-      width: 100%;
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 0 20px;
     }
-
+    
     .topic-header {
-      background-color: var(--bg-3);
+      background-color: var(--bg-secondary);
       padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 30px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
     }
     
     .topic-title {
-      font-size: 28px;
-      color: var(--gold);
-      margin-bottom: 10px;
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 24px;
     }
     
     .topic-meta {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 10px;
       margin-bottom: 15px;
+      color: var(--text-secondary);
       font-size: 14px;
-      color: #bbb;
-    }
-    
-    .topic-author-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      overflow: hidden;
     }
     
     .topic-author-avatar img {
-      width: 100%;
-      height: 100%;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
       object-fit: cover;
     }
     
-    .topic-author-name {
-      color: var(--gold);
-      font-weight: bold;
-    }
-    
     .topic-content {
-      font-size: 16px;
-      line-height: 1.6;
+      line-height: 1.8;
       margin-top: 20px;
     }
-
-    /* Comentários */
+    
+    /* Seção de comentários */
     .comments-section {
-      margin-top: 40px;
+      background-color: var(--bg-secondary);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
     }
     
     .comments-title {
-      font-size: 24px;
-      color: var(--gold);
+      color: var(--accent);
       margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--gold);
+      font-size: 20px;
     }
     
     .comment {
-      background-color: var(--bg-3);
-      border-radius: 8px;
+      background-color: var(--bg-primary);
       padding: 15px;
-      margin-bottom: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid var(--border);
     }
     
     .comment-header {
@@ -188,156 +153,138 @@
       margin-bottom: 10px;
     }
     
-    .comment-avatar {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      overflow: hidden;
-    }
-    
     .comment-avatar img {
-      width: 100%;
-      height: 100%;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
       object-fit: cover;
     }
     
     .comment-author {
-      color: var(--gold);
       font-weight: bold;
+      color: var(--accent);
     }
     
     .comment-date {
-      color: #bbb;
+      color: var(--text-secondary);
       font-size: 12px;
-      margin-left: auto;
     }
     
     .comment-content {
-      font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
     
-    .reply {
-      margin-left: 50px;
+    .replies {
+      margin-left: 30px;
       margin-top: 15px;
-      border-left: 3px solid var(--gold);
+      border-left: 2px solid var(--accent);
       padding-left: 15px;
     }
-
+    
     /* Formulário de comentário */
     .add-comment {
-      margin-top: 40px;
-      background-color: var(--bg-3);
-      padding: 20px;
-      border-radius: 8px;
+      margin-top: 30px;
     }
     
     .add-comment h3 {
-      color: var(--gold);
       margin-bottom: 15px;
+      color: var(--accent);
     }
     
     .comment-form textarea {
       width: 100%;
-      padding: 12px;
-      background-color: var(--bg-2);
-      border: 1px solid #444;
-      border-radius: 5px;
-      color: var(--text);
-      font-family: Arial, sans-serif;
-      font-size: 15px;
-      resize: vertical;
       min-height: 100px;
-      margin-bottom: 15px;
+      padding: 12px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      margin-bottom: 10px;
+      resize: vertical;
     }
     
     .comment-form button {
-      background-color: var(--gold);
-      color: #121212;
+      background-color: var(--accent);
+      color: var(--bg-primary);
       border: none;
       padding: 10px 20px;
       border-radius: 5px;
-      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s;
+      font-weight: bold;
+      transition: opacity 0.3s;
     }
     
     .comment-form button:hover {
-      background-color: #e6b800;
+      opacity: 0.9;
     }
     
-    .comment-form button:disabled {
-      background-color: #666;
-      cursor: not-allowed;
-    }
-
-    /* ===== RODAPÉ ===== */
+    /* Rodapé */
     footer {
-      background: var(--bg-2);
+      background-color: var(--bg-secondary);
+      padding: 20px;
       text-align: center;
-      padding: 15px;
       margin-top: 40px;
-      border-top: 2px solid var(--gold);
-      font-size: 14px;
-      color: #bbb;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
     }
     
     .aviso18 {
-      margin-top: 10px;
       display: flex;
-      justify-content: center;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
     }
     
     .icone18 {
-      background: red;
-      color: white;
+      background-color: var(--accent);
+      color: var(--bg-primary);
       font-weight: bold;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 3px;
     }
-
-    /* Loading indicator */
+    
+    /* Estados de loading e erro */
     .loading {
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 3px solid rgba(255,204,0,.3);
+      border: 3px solid rgba(255, 204, 0, 0.3);
       border-radius: 50%;
-      border-top-color: var(--gold);
+      border-top-color: var(--accent);
       animation: spin 1s ease-in-out infinite;
     }
-
+    
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-
-    /* Mensagem de erro */
+    
     .error-message {
-      background-color: #ff4444;
-      color: white;
+      color: #ff6b6b;
       padding: 10px;
+      background-color: rgba(255, 107, 107, 0.1);
       border-radius: 5px;
-      margin: 15px 0;
-      text-align: center;
+      border-left: 3px solid #ff6b6b;
     }
-
+    
     /* Responsividade */
     @media (max-width: 768px) {
-      .topic-title {
-        font-size: 24px;
+      .container {
+        padding: 0 15px;
       }
       
-      .reply {
-        margin-left: 20px;
+      .topic-meta {
+        flex-wrap: wrap;
       }
       
-      .back-button {
-        padding: 8px 15px;
-        font-size: 14px;
+      .replies {
+        margin-left: 15px;
+      }
+      
+      header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
       }
     }
   </style>
@@ -349,13 +296,12 @@
       <a href="forum.html" class="back-button">
         ← Voltar ao Fórum
       </a>
-      <div class="user-area" id="user-area" style="display: none;">
+      <div class="user-area" id="user-area">
         <div class="user-avatar" id="user-avatar">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg�IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
         </div>
         <div class="user-nickname" id="user-nickname">
-          <span class="loading" id="loading-indicator"></span>
-          <span id="nickname-text"></span>
+          <span id="nickname-text">Carregando...</span>
         </div>
       </div>
     </div>
@@ -379,7 +325,7 @@
         <div class="loading"></div>
       </div>
 
-      <div class="add-comment" id="add-comment" style="display: none;">
+      <div class="add-comment" id="add-comment">
         <h3>Deixe seu comentário</h3>
         <div class="comment-form">
           <textarea id="new-comment" placeholder="Escreva seu comentário..."></textarea>
@@ -415,7 +361,6 @@
     const userArea = document.getElementById('user-area');
     const userAvatarImg = document.getElementById('avatar-img');
     const userNicknameEl = document.getElementById('nickname-text');
-    const loadingIndicator = document.getElementById('loading-indicator');
     const topicTitle = document.getElementById('topic-title');
     const topicMeta = document.getElementById('topic-meta');
     const topicContent = document.getElementById('topic-content');
@@ -426,6 +371,28 @@
 
     let topicId = new URLSearchParams(window.location.search).get('id');
     let currentUser = null;
+
+    // Função para obter o usuário atual da sessão
+    async function getCurrentUser() {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Erro ao obter sessão:', error);
+          return null;
+        }
+        
+        if (!session) {
+          console.error('Nenhuma sessão encontrada');
+          return null;
+        }
+        
+        return session.user;
+      } catch (error) {
+        console.error('Erro ao obter usuário atual:', error);
+        return null;
+      }
+    }
 
     // Função para carregar perfil do usuário
     async function loadUserProfile(userId) {
@@ -452,17 +419,12 @@
         if (!userArea) return;
         
         if (user) {
-            userArea.style.display = 'flex';
             currentUser = user;
 
-            // esconder loading
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-
             // definir username
-            let username = profile && profile.username ? profile.username : user.email.split('@')[0];
+            let username = profile && profile.username ? profile.username : `Usuário_${user.id.substring(0, 8)}`;
             if (userNicknameEl) {
                 userNicknameEl.textContent = username;
-                userNicknameEl.style.display = 'inline';
             }
 
             // carregar avatar
@@ -473,16 +435,10 @@
                 };
                 userAvatarImg.src = profile.avatar_url;
             }
-            
-            // Mostrar seção de comentários se usuário estiver logado
-            if (addCommentSection) {
-                addCommentSection.style.display = 'block';
-            }
         } else {
-            // Usuário não está logado, ocultar área do usuário e seção de comentários
-            userArea.style.display = 'none';
-            if (addCommentSection) {
-                addCommentSection.style.display = 'none';
+            // Se não há usuário, apenas mostra como "Convidado"
+            if (userNicknameEl) {
+                userNicknameEl.textContent = "Convidado";
             }
         }
     }
@@ -539,7 +495,7 @@
             
             topicMeta.innerHTML = `
                 <div class="topic-author-avatar">
-                    <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBk=">
+                    <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
                 </div>
                 <div class="topic-author-name">${escapeHtml(authorName)}</div>
                 <div>•</div>
@@ -603,7 +559,7 @@
     // Renderizar comentário e suas respostas
     async function renderComment(comment, allReplies, depth = 0) {
         // Carregar avatar do autor do comentário
-        let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw6Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+        let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
         
         if (comment.profiles && comment.profiles.avatar_url) {
             authorAvatarUrl = comment.profiles.avatar_url;
@@ -616,7 +572,7 @@
             <div class="comment" id="comment-${comment.id}">
                 <div class="comment-header">
                     <div class="comment-avatar">
-                        <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTM0QzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
+                        <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTM0QzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
                     </div>
                     <div class="comment-author">${escapeHtml(authorName)}</div>
                     <div class="comment-date">${commentDate}</div>
@@ -624,13 +580,13 @@
                 <div class="comment-content">${escapeHtml(comment.content)}</div>
         `;
         
-        // Mostrar botão de resposta apenas se o usuário estiver logado
+        // Botão de resposta (só mostra se usuário estiver logado)
         if (currentUser) {
             commentHTML += `
-                <button onclick="showReplyForm(${comment.id})" style="margin-top: 10px; background: var(--gold); color: #121212; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Responder</button>
+                <button onclick="showReplyForm(${comment.id})" style="margin-top: 10px; background: var(--accent); color: #121212; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Responder</button>
                 <div id="reply-form-${comment.id}" class="reply-form" style="display: none; margin-top: 10px;">
-                    <textarea id="reply-text-${comment.id}" placeholder="Escreva sua resposta..." style="width: 100%; padding: 8px; margin-bottom: 8px; background: var(--bg-2); color: var(--text); border: 1px solid #444; border-radius: 5px;"></textarea>
-                    <button onclick="postReply(${comment.id})" style="background: var(--gold); color: #121212; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Enviar Resposta</button>
+                    <textarea id="reply-text-${comment.id}" placeholder="Escreva sua resposta..." style="width: 100%; padding: 8px; margin-bottom: 8px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 5px;"></textarea>
+                    <button onclick="postReply(${comment.id})" style="background: var(--accent); color: #121212; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Enviar Resposta</button>
                     <button onclick="hideReplyForm(${comment.id})" style="background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 5px;">Cancelar</button>
                 </div>
             `;
@@ -670,7 +626,7 @@
     // Postar comentário principal
     async function postComment() {
         if (!currentUser) {
-            alert('Você precisa estar logado para comentar');
+            alert('Você precisa estar logado para comentar.');
             return;
         }
         
@@ -714,7 +670,7 @@
     // Postar resposta
     async function postReply(commentId) {
         if (!currentUser) {
-            alert('Você precisa estar logado para responder');
+            alert('Você precisa estar logado para responder.');
             return;
         }
         
@@ -769,24 +725,23 @@
     // Verificar sessão e carregar dados ao iniciar
     document.addEventListener('DOMContentLoaded', async function () {
         try {
-            // Carregar tópico e comentários imediatamente (sem verificação de login)
+            // Obter usuário atual da sessão
+            const user = await getCurrentUser();
+            let profile = null;
+            
+            if (user) {
+                profile = await loadUserProfile(user.id);
+            }
+            
+            await updateUserUI(user, profile);
+            
+            // Carregar tópico e comentários
             await loadTopic();
             await loadComments();
             
-            // Verificar se há usuário logado, mas sem redirecionar se não houver
-            const { data: { session }, error } = await supabase.auth.getSession();
-            
-            if (error) {
-                console.error('Erro ao verificar sessão:', error);
-                // Não redirecionar, apenas continuar sem usuário logado
-            }
-            
-            if (session) {
-                const profile = await loadUserProfile(session.user.id);
-                await updateUserUI(session.user, profile);
-            } else {
-                // Atualizar UI para estado não logado
-                await updateUserUI(null, null);
+            // Se não há usuário logado, esconder formulário de comentário
+            if (!user) {
+                addCommentSection.style.display = 'none';
             }
             
         } catch (error) {
