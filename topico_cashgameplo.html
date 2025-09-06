@@ -325,41 +325,6 @@
       text-align: center;
     }
 
-    /* Mensagem de não autenticado */
-    .auth-message {
-      text-align: center;
-      padding: 40px;
-      background-color: var(--bg-3);
-      border-radius: 10px;
-      margin: 20px 0;
-    }
-    
-    .auth-message h2 {
-      color: var(--gold);
-      margin-bottom: 15px;
-    }
-    
-    .auth-message p {
-      margin-bottom: 20px;
-    }
-    
-    .auth-button {
-      background-color: var(--gold);
-      color: #121212;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: background-color 0.3s;
-    }
-    
-    .auth-button:hover {
-      background-color: #e6b800;
-    }
-
     /* Responsividade */
     @media (max-width: 768px) {
       .topic-title {
@@ -398,12 +363,6 @@
 
   <!-- Conteúdo Principal -->
   <main class="container">
-    <div id="auth-message" class="auth-message" style="display: none;">
-      <h2>Acesso Restrito</h2>
-      <p>Você precisa estar logado para visualizar este tópico.</p>
-      <a href="forum.html" class="auth-button">Voltar ao Fórum</a>
-    </div>
-
     <div id="topic-container">
       <div class="topic-header">
         <h1 class="topic-title" id="topic-title">Carregando tópico...</h1>
@@ -424,7 +383,7 @@
         <h3>Deixe seu comentário</h3>
         <div class="comment-form">
           <textarea id="new-comment" placeholder="Escreva seu comentário..."></textarea>
-          <button id="submit-comment" onclick="postComment()">Comentar</button>
+          <button id="submit-comment">Comentar</button>
         </div>
       </div>
     </div>
@@ -446,7 +405,7 @@
   <script>
     // Configuração do Supabase
     const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
     
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
         auth: { persistSession: true, autoRefreshToken: true }
@@ -464,9 +423,6 @@
     const addCommentSection = document.getElementById('add-comment');
     const newCommentTextarea = document.getElementById('new-comment');
     const submitCommentButton = document.getElementById('submit-comment');
-    const authMessage = document.getElementById('auth-message');
-    const topicContainer = document.getElementById('topic-container');
-    const commentsSection = document.querySelector('.comments-section');
 
     let topicId = new URLSearchParams(window.location.search).get('id');
     let currentUser = null;
@@ -513,7 +469,7 @@
             if (profile && profile.avatar_url && userAvatarImg) {
                 userAvatarImg.onerror = function () {
                     console.error('Erro ao carregar avatar, usando padrão');
-                    this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzwsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+                    this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
                 };
                 userAvatarImg.src = profile.avatar_url;
             }
@@ -522,22 +478,12 @@
             if (addCommentSection) {
                 addCommentSection.style.display = 'block';
             }
-            
-            // Mostrar conteúdo do tópico e comentários
-            if (topicContainer) topicContainer.style.display = 'block';
-            if (commentsSection) commentsSection.style.display = 'block';
-            if (authMessage) authMessage.style.display = 'none';
         } else {
             // Usuário não está logado, ocultar área do usuário e seção de comentários
             userArea.style.display = 'none';
             if (addCommentSection) {
                 addCommentSection.style.display = 'none';
             }
-            
-            // Mostrar mensagem de autenticação necessária
-            if (topicContainer) topicContainer.style.display = 'none';
-            if (commentsSection) commentsSection.style.display = 'none';
-            if (authMessage) authMessage.style.display = 'block';
         }
     }
 
@@ -593,7 +539,7 @@
             
             topicMeta.innerHTML = `
                 <div class="topic-author-avatar">
-                    <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
+                    <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBk=">
                 </div>
                 <div class="topic-author-name">${escapeHtml(authorName)}</div>
                 <div>•</div>
@@ -657,7 +603,7 @@
     // Renderizar comentário e suas respostas
     async function renderComment(comment, allReplies, depth = 0) {
         // Carregar avatar do autor do comentário
-        let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg=";
+        let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw6Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
         
         if (comment.profiles && comment.profiles.avatar_url) {
             authorAvatarUrl = comment.profiles.avatar_url;
@@ -823,22 +769,21 @@
     // Verificar sessão e carregar dados ao iniciar
     document.addEventListener('DOMContentLoaded', async function () {
         try {
-            // Verificar se há usuário logado
+            // Carregar tópico e comentários imediatamente (sem verificação de login)
+            await loadTopic();
+            await loadComments();
+            
+            // Verificar se há usuário logado, mas sem redirecionar se não houver
             const { data: { session }, error } = await supabase.auth.getSession();
             
             if (error) {
                 console.error('Erro ao verificar sessão:', error);
-                await updateUserUI(null, null);
-                return;
+                // Não redirecionar, apenas continuar sem usuário logado
             }
             
             if (session) {
                 const profile = await loadUserProfile(session.user.id);
                 await updateUserUI(session.user, profile);
-                
-                // Carregar tópico e comentários apenas se autenticado
-                await loadTopic();
-                await loadComments();
             } else {
                 // Atualizar UI para estado não logado
                 await updateUserUI(null, null);
@@ -846,7 +791,11 @@
             
         } catch (error) {
             console.error('Erro ao inicializar página:', error);
-            await updateUserUI(null, null);
+        }
+        
+        // Adicionar event listener para o botão de comentário
+        if (submitCommentButton) {
+            submitCommentButton.addEventListener('click', postComment);
         }
     });
   </script>
