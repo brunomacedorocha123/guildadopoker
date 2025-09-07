@@ -172,7 +172,7 @@
         .comment-avatar {
             width: 40px;
             height: 40px;
-            borderRadius: 50%;
+            border-radius: 50%;
             background-color: var(--bg-3);
             border: 2px solid var(--gold);
             overflow: hidden;
@@ -281,7 +281,7 @@
         <div class="header-left">
             <div class="user-area" id="user-area">
                 <div class="user-avatar" id="user-avatar">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBk=" alt="Avatar" id="avatar-img">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
                 </div>
                 <div class="user-nickname" id="user-nickname">
                     <span class="loading" id="loading-indicator"></span>
@@ -328,7 +328,7 @@
 
     <script>
     const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMDAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
     
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
         auth: { persistSession: true, autoRefreshToken: true }
@@ -341,48 +341,55 @@
     const commentsList = document.getElementById('comments-list');
     const commentForm = document.getElementById('comment-form');
 
-    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzwsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2iudGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2iudGg9IjIiLz48L3N2Zz4=";
 
-    // Função para carregar perfil do usuário
     async function loadUserProfile(userId) {
+        if (!userId) return null;
         try {
             const { data: perfilData, error } = await supabase
                 .from('perfis')
                 .select('apelido_poker, url_imagem')
                 .eq('id', userId)
                 .single();
-                
             if (error) {
                 console.error('Erro ao carregar perfil:', error);
                 return null;
             }
             return perfilData;
         } catch (error) {
-            console.error('Erro ao carregar perfil:', error);
+            console.error('Erro inesperado ao carregar perfil:', error);
             return null;
         }
     }
 
-    // Atualiza a janela do usuário
-    async function updateUserUI(user, profile) {
+    async function updateUserUI(user) {
         if (!userArea) return;
-        userArea.style.display = 'flex';
 
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
+        if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
+        if (userNicknameEl) userNicknameEl.textContent = '';
+        userAvatarImg.src = DEFAULT_AVATAR_SVG;
 
-        let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
-        if (userNicknameEl) {
-            userNicknameEl.textContent = apelido;
-        }
+        if (user) {
+            const profile = await loadUserProfile(user.id);
+            
+            let nickname = profile?.apelido_poker || user.email.split('@')[0];
+            
+            if (userNicknameEl) {
+                userNicknameEl.textContent = nickname;
+            }
 
-        if (profile && profile.url_imagem) {
-            userAvatarImg.onerror = function () {
-                this.src = DEFAULT_AVATAR_SVG;
-            };
-            userAvatarImg.src = profile.url_imagem;
+            if (profile?.url_imagem) {
+                userAvatarImg.src = profile.url_imagem;
+                userAvatarImg.onerror = () => {
+                    userAvatarImg.src = DEFAULT_AVATAR_SVG;
+                };
+            }
         } else {
+            if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
             userAvatarImg.src = DEFAULT_AVATAR_SVG;
         }
+
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
     }
 
     async function loadComments() {
@@ -394,6 +401,7 @@
                 .order('created_at', { ascending: true });
 
             if (error) {
+                console.error('Erro ao carregar comentários:', error);
                 commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro ao carregar comentários.</p>`;
                 return;
             }
@@ -429,6 +437,7 @@
                 commentsList.innerHTML += commentHTML;
             }
         } catch (err) {
+            console.error('Erro inesperado ao carregar comentários:', err);
             commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro inesperado ao carregar comentários.</p>`;
         }
     }
@@ -457,13 +466,12 @@
                     .insert([{
                         content: commentContent,
                         topic_id: 'cashgame-plo',
-                        user_id: session.user.id,
-                        created_at: new Date().toISOString()
+                        user_id: session.user.id
                     }]);
                 
                 if (insertError) {
                     console.error('Erro ao inserir comentário:', insertError);
-                    alert('Erro ao enviar comentário. Tente novamente.');
+                    alert('Erro ao enviar comentário. Verifique o console para detalhes.');
                     return;
                 }
                 
@@ -471,13 +479,12 @@
                 await loadComments();
                 
             } catch (error) {
-                console.error('Erro ao enviar comentário:', error);
-                alert('Erro ao enviar comentário. Tente novamente.');
+                console.error('Erro completo:', error);
+                alert('Erro ao enviar comentário. Verifique o console para detalhes.');
             }
         });
     }
 
-    // Verificar sessão e carregar perfil ao iniciar
     document.addEventListener('DOMContentLoaded', async function () {
         try {
             if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
@@ -486,19 +493,18 @@
             
             if (error) {
                 console.error('Erro ao verificar sessão:', error);
+                await updateUserUI(null);
+                await loadComments();
                 return;
             }
             
-            if (session) {
-                const profile = await loadUserProfile(session.user.id);
-                await updateUserUI(session.user, profile);
-            }
-            
-            // Carregar comentários
+            await updateUserUI(session?.user || null);
             await loadComments();
             
         } catch (error) {
             console.error('Erro ao inicializar página:', error);
+            await updateUserUI(null);
+            await loadComments();
         }
     });
     </script>
