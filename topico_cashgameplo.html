@@ -476,17 +476,16 @@
                 return;
             }
 
-            // Mapear os comentários e buscar os perfis de forma assíncrona
-            const commentsWithAuthors = await Promise.all(comments.map(async (comment) => {
+            const commentPromises = comments.map(async (comment) => {
                 const authorProfile = await loadUserProfile(comment.user_id);
                 return {
                     ...comment,
                     authorName: authorProfile?.username || 'Usuário',
                     avatarUrl: authorProfile?.avatar_url || DEFAULT_AVATAR_SVG
                 };
-            }));
+            });
+            const commentsWithAuthors = await Promise.all(commentPromises);
 
-            // Renderizar todos os comentários após carregar todos os perfis
             commentsWithAuthors.forEach(comment => {
                 const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
                 const commentHTML = `
