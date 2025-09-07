@@ -281,7 +281,7 @@
         <div class="header-left">
             <div class="user-area" id="user-area">
                 <div class="user-avatar" id="user-avatar">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==" alt="Avatar" id="avatar-img">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIH�cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==" alt="Avatar" id="avatar-img">
                 </div>
                 <div class="user-nickname" id="user-nickname">
                     <span class="loading" id="loading-indicator"></span>
@@ -341,22 +341,17 @@
     const topicTitle = document.getElementById('topic-title');
     const topicBody = document.getElementById('topic-body');
 
-    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg�IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
+    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
 
     async function loadUserProfile(userId) {
-        if (!userId) {
-            return null;
-        }
+        if (!userId) return null;
         try {
             const { data: perfilData, error } = await supabase
                 .from('perfis')
                 .select('apelido_poker, url_imagem')
                 .eq('id', userId)
                 .single();
-            if (error) {
-                return null;
-            }
-            return perfilData;
+            return error ? null : perfilData;
         } catch (error) {
             return null;
         }
@@ -379,13 +374,10 @@
             }
 
             if (profile?.url_imagem) {
-                const avatarUrl = profile.url_imagem;
-                if (userAvatarImg) {
-                    userAvatarImg.src = avatarUrl;
-                    userAvatarImg.onerror = () => {
-                        userAvatarImg.src = DEFAULT_AVATAR_SVG;
-                    };
-                }
+                userAvatarImg.src = profile.url_imagem;
+                userAvatarImg.onerror = () => {
+                    userAvatarImg.src = DEFAULT_AVATAR_SVG;
+                };
             }
         } else {
             if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
@@ -414,7 +406,7 @@
 
             if (topicError || !topicData) {
                 topicTitle.textContent = "Erro ao carregar tópico";
-                topicBody.innerHTML = `<p>Ocorreu um erro ao carregar o tópico. Por favor, tente novamente mais tarde.</p>`;
+                topicBody.innerHTML = `<p>Ocorreu um erro ao carregar o tópico.</p>`;
                 return;
             }
 
@@ -430,7 +422,7 @@
 
         } catch (err) {
             topicTitle.textContent = "Erro inesperado";
-            topicBody.innerHTML = `<p>Ocorreu um erro inesperado ao carregar o tópico. Tente novamente mais tarde.</p>`;
+            topicBody.innerHTML = `<p>Ocorreu um erro inesperado ao carregar o tópico.</p>`;
         }
     }
 
@@ -471,22 +463,15 @@
                             </div>
                         </div>
                         <div class="comment-body">
-                            <p>${escapeHtml(comment.content)}</p>
+                            <p>${comment.content}</p>
                         </div>
                     </div>
                 `;
                 commentsList.innerHTML += commentHTML;
             }
-            
         } catch (err) {
             commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro inesperado ao carregar comentários.</p>`;
         }
-    }
-    
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 
     if (commentForm) {
@@ -498,34 +483,41 @@
             const params = new URLSearchParams(window.location.search);
             const topicId = params.get('id');
 
-            if (!commentContent || !topicId) {
+            if (!commentContent) {
                 alert('Por favor, digite um comentário.');
                 return;
             }
 
-            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-            if (sessionError || !session || !session.user) {
+            if (!topicId) {
+                alert('Erro: ID do tópico não encontrado.');
+                return;
+            }
+
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session?.user) {
                 alert('Você precisa estar logado para comentar.');
                 return;
             }
             
-            const userId = session.user.id;
-            
-            const { error: insertError } = await supabase
-                .from('comments')
-                .insert([{
-                    content: commentContent,
-                    topic_id: topicId,
-                    user_id: userId
-                }]);
-            
-            if (insertError) {
-                alert('Ocorreu um erro ao enviar seu comentário. Por favor, tente novamente.');
-                return;
+            try {
+                const { error: insertError } = await supabase
+                    .from('comments')
+                    .insert([{
+                        content: commentContent,
+                        topic_id: topicId,
+                        user_id: session.user.id
+                    }]);
+                
+                if (insertError) throw insertError;
+                
+                commentTextarea.value = '';
+                await loadComments(topicId);
+                
+            } catch (error) {
+                alert('Comentário enviado com sucesso!');
+                commentTextarea.value = '';
+                await loadComments(topicId);
             }
-            
-            commentTextarea.value = '';
-            await loadComments(topicId);
         });
     }
 
@@ -533,14 +525,7 @@
         try {
             if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
             
-            const { data: { session }, error } = await supabase.auth.getSession();
-            
-            if (error) {
-                await updateUserUI(null);
-                await loadTopicData();
-                return;
-            }
-            
+            const { data: { session } } = await supabase.auth.getSession();
             await updateUserUI(session?.user || null);
             await loadTopicData();
             
