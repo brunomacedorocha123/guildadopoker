@@ -393,7 +393,7 @@
     </div>
   </footer>
 
-     <script>
+    <script>
     // Configuração do Supabase
     const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
@@ -419,88 +419,49 @@
     let topicId = new URLSearchParams(window.location.search).get('id');
     let currentUser = null;
 
-    // Dados dos tópicos fixos
+    // Dados dos tópicos fixos de Cash Game PLO
     const fixedTopics = {
-      1: {
-        id: 1,
-        titulo: "Como funciona o sistema de rakeback?",
-        conteudo: "O rakeback é uma forma de os jogadores receberem de volta uma porcentagem do rake que pagam nas mesas. É uma maneira das salas de poker recompensarem os jogadores mais ativos. Alguém tem experiência com diferentes sistemas de rakeback?",
-        autor: "Admin",
-        data: "2023-10-15"
-      },
-      2: {
-        id: 2,
-        titulo: "Diferença entre Texas Hold'em e Omaha",
-        conteudo: "Quais são as principais diferenças estratégicas entre Texas Hold'em e Omaha? No Omaha, cada jogador recebe quatro cartas em vez de duas, o que muda completamente a dinâmica do jogo e as possibilidades de formação de mãos.",
-        autor: "Admin",
-        data: "2023-10-16"
-      },
-      3: {
-        id: 3,
-        titulo: "Como escolher a mesa certa para jogar?",
-        conteudo: "Escolher a mesa certa é crucial para ser bem-sucedido no poker. Devemos observar fatores como o tamanho médio do pote, porcentagem de jogadores que entram na mão e agressividade geral da mesa. Quais critérios vocês usam?",
-        autor: "Admin",
-        data: "2023-10-17"
-      },
-      4: {
-        id: 4,
-        titulo: "Estratégia de bolhas em torneios",
-        conteudo: "A fase de bolha é uma das partes mais importantes de um torneio, onde muitos jogadores ficam conservadores esperando chegar no money. Como vocês ajustam sua estratégia durante a bolha?",
-        autor: "Admin",
-        data: "2023-10-18"
-      },
-      5: {
-        id: 5,
-        titulo: "Como ajustar o jogo conforme os blinds aumentam",
-        conteudo: "Conforme os blinds aumentam em um torneio, é preciso ajustar a estratégia. A pressão dos blinds força ações diferentes. Como vocês se adaptam a essa mudança?",
-        autor: "Admin",
-        data: "2023-10-19"
-      },
-      6: {
-        id: 6,
-        titulo: "Melhores horários para jogar torneios na Suprema Poker",
-        conteudo: "Quais são os melhores horários para encontrar torneios com bons prizepools e estrutura na Suprema Poker? Compartilhem suas experiências!",
-        autor: "Admin",
-        data: "2023-10-20"
-      }
+        1: {
+            id: 1,
+            titulo: "Estratégias de abertura no PLO cash game",
+            conteudo: "",
+            autor: "Admin",
+            data: "2023-11-01"
+        },
+        2: {
+            id: 2,
+            titulo: "Importância da posição no PLO",
+            conteudo: "",
+            autor: "Admin",
+            data: "2023-11-01"
+        },
+        3: {
+            id: 3,
+            titulo: "Como lidar com variância em cash game PLO",
+            conteudo: "",
+            autor: "Admin",
+            data: "2023-11-01"
+        }
     };
 
     // Função para obter o usuário atual da sessão
     async function getCurrentUser() {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Erro ao obter sessão:', error);
-          return null;
-        }
-        
-        if (!session) {
-          console.error('Nenhuma sessão encontrada');
-          return null;
-        }
-        
-        return session.user;
-      } catch (error) {
-        console.error('Erro ao obter usuário atual:', error);
-        return null;
-      }
-    }
-
-    // Função para carregar avatar pelo ID
-    async function loadUserAvatar(avatarId) {
-        if (!avatarId) return null;
         try {
-            const { data: avatarData, error } = await supabase
-                .from('avatares')
-                .select('url_imagem')
-                .eq('id', avatarId)
-                .single();
-                
-            if (error || !avatarData) return null;
-            return avatarData.url_imagem;
+            const { data: { session }, error } = await supabase.auth.getSession();
+            
+            if (error) {
+                console.error('Erro ao obter sessão:', error);
+                return null;
+            }
+            
+            if (!session) {
+                console.log('Nenhuma sessão encontrada - usuário não logado');
+                return null;
+            }
+            
+            return session.user;
         } catch (error) {
-            console.error('Erro ao carregar avatar:', error);
+            console.error('Erro ao obter usuário atual:', error);
             return null;
         }
     }
@@ -509,9 +470,9 @@
     async function loadUserProfile(userId) {
         try {
             const { data: perfilData, error } = await supabase
-                .from('perfis')
-                .select('apelido_poker, avatar_id')
-                .eq('usuario_id', userId)
+                .from('profiles')
+                .select('username, avatar_url')
+                .eq('id', userId)
                 .single();
                 
             if (error) {
@@ -528,28 +489,30 @@
     // Atualiza a janela do usuário
     async function updateUserUI(user, profile) {
         if (!userArea) return;
-        userArea.style.display = 'flex';
+        
+        if (user) {
+            userArea.style.display = 'flex';
+            
+            // esconder loading
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
 
-        // esconder loading
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
+            // definir apelido
+            let apelido = profile && profile.username ? profile.username : user.email.split('@')[0];
+            if (userNicknameEl) {
+                userNicknameEl.textContent = apelido;
+                userNicknameEl.style.display = 'inline';
+            }
 
-        // definir apelido
-        let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
-        if (userNicknameEl) {
-            userNicknameEl.textContent = apelido;
-            userNicknameEl.style.display = 'inline';
-        }
-
-        // carregar avatar
-        if (profile && profile.avatar_id) {
-            const avatarUrl = await loadUserAvatar(profile.avatar_id);
-            if (avatarUrl && userAvatarImg) {
+            // carregar avatar
+            if (profile && profile.avatar_url) {
                 userAvatarImg.onerror = function () {
                     console.error('Erro ao carregar avatar, usando padrão');
                     this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
                 };
-                userAvatarImg.src = avatarUrl;
+                userAvatarImg.src = profile.avatar_url;
             }
+        } else {
+            userArea.style.display = 'none';
         }
     }
 
@@ -568,7 +531,7 @@
             
             // Preencher informações do tópico
             topicTitle.textContent = topic.titulo;
-            topicContent.textContent = topic.conteudo;
+            topicContent.textContent = topic.conteudo || 'Este tópico ainda não tem conteúdo. Seja o primeiro a comentar!';
             
             const topicDate = new Date(topic.data).toLocaleDateString('pt-BR');
             
@@ -587,14 +550,14 @@
         // Se não for um tópico fixo, tentar carregar do Supabase
         try {
             const { data: topic, error } = await supabase
-                .from('topicos')
+                .from('topics')
                 .select(`
                     id,
-                    titulo,
-                    conteudo,
-                    criado_em,
-                    autor_id,
-                    perfis (apelido_poker, avatar_id)
+                    title,
+                    content,
+                    created_at,
+                    author_id,
+                    profiles (username, avatar_url)
                 `)
                 .eq('id', topicId)
                 .single();
@@ -613,25 +576,22 @@
             }
             
             // Preencher informações do tópico
-            topicTitle.textContent = topic.titulo;
-            topicContent.textContent = topic.conteudo || 'Sem conteúdo...';
+            topicTitle.textContent = topic.title;
+            topicContent.textContent = topic.content || 'Este tópico ainda não tem conteúdo. Seja o primeiro a comentar!';
             
             // Carregar avatar do autor
-            let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw6Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+            let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw6Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzcy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
             
-            if (topic.perfis && topic.perfis.avatar_id) {
-                const avatarUrl = await loadUserAvatar(topic.perfis.avatar_id);
-                if (avatarUrl) {
-                    authorAvatarUrl = avatarUrl;
-                }
+            if (topic.profiles && topic.profiles.avatar_url) {
+                authorAvatarUrl = topic.profiles.avatar_url;
             }
             
-            const authorName = topic.perfis?.apelido_poker || 'Usuário';
-            const topicDate = new Date(topic.criado_em).toLocaleDateString('pt-BR');
+            const authorName = topic.profiles?.username || 'Usuário';
+            const topicDate = new Date(topic.created_at).toLocaleDateString('pt-BR');
             
             topicMeta.innerHTML = `
                 <div class="topic-author-avatar">
-                    <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MC,xNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
+                    <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
                 </div>
                 <div class="topic-author-name">${escapeHtml(authorName)}</div>
                 <div>•</div>
@@ -651,17 +611,17 @@
         
         try {
             const { data: comments, error } = await supabase
-                .from('comentarios')
+                .from('comments')
                 .select(`
                     id,
-                    conteudo,
-                    criado_em,
-                    usuario_id,
+                    content,
+                    created_at,
+                    user_id,
                     parent_id,
-                    perfis (apelido_poker, avatar_id)
+                    profiles (username, avatar_url)
                 `)
-                .eq('topico_id', topicId)
-                .order('criado_em', { ascending: true });
+                .eq('topic_id', topicId)
+                .order('created_at', { ascending: true });
                 
             if (error) {
                 console.error('Erro ao carregar comentários:', error);
@@ -695,28 +655,25 @@
     // Renderizar comentário e suas respostas
     async function renderComment(comment, allReplies, depth = 0) {
         // Carregar avatar do autor do comentário
-        let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+        let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA4MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
         
-        if (comment.perfis && comment.perfis.avatar_id) {
-            const avatarUrl = await loadUserAvatar(comment.perfis.avatar_id);
-            if (avatarUrl) {
-                authorAvatarUrl = avatarUrl;
-            }
+        if (comment.profiles && comment.profiles.avatar_url) {
+            authorAvatarUrl = comment.profiles.avatar_url;
         }
         
-        const authorName = comment.perfis?.apelido_poker || 'Usuário';
-        const commentDate = new Date(comment.criado_em).toLocaleDateString('pt-BR');
+        const authorName = comment.profiles?.username || 'Usuário';
+        const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
         
         let commentHTML = `
             <div class="comment" id="comment-${comment.id}">
                 <div class="comment-header">
                     <div class="comment-avatar">
-                        <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw5MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM7LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTM0QzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
+                        <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw5MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTM0QzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE5MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
                     </div>
                     <div class="comment-author">${escapeHtml(authorName)}</div>
                     <div class="comment-date">${commentDate}</div>
                 </div>
-                <div class="comment-content">${escapeHtml(comment.conteudo)}</div>
+                <div class="comment-content">${escapeHtml(comment.content)}</div>
         `;
         
         // Botão de resposta (só mostra se usuário estiver logado)
@@ -780,11 +737,11 @@
         
         try {
             const { error } = await supabase
-                .from('comentarios')
+                .from('comments')
                 .insert([{
-                    conteudo: content,
-                    topico_id: topicId,
-                    usuario_id: currentUser.id
+                    content: content,
+                    topic_id: topicId,
+                    user_id: currentUser.id
                 }]);
                 
             if (error) {
@@ -827,11 +784,11 @@
         
         try {
             const { error } = await supabase
-                .from('comentarios')
+                .from('comments')
                 .insert([{
-                    conteudo: replyText,
-                    topico_id: topicId,
-                    usuario_id: currentUser.id,
+                    content: replyText,
+                    topic_id: topicId,
+                    user_id: currentUser.id,
                     parent_id: commentId
                 }]);
                 
@@ -907,6 +864,6 @@
             submitCommentButton.addEventListener('click', postComment);
         }
     });
-  </script>
+</script>
 </body>
 </html>
