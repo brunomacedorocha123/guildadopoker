@@ -32,7 +32,6 @@
             min-height: 100vh;
         }
 
-        /* ===== CABEÇALHO ===== */
         header {
             background: var(--bg-2);
             padding: 15px 20px;
@@ -87,7 +86,6 @@
             white-space: nowrap;
         }
 
-        /* Botão Voltar */
         .back-button {
             background-color: var(--gold);
             color: var(--bg-2);
@@ -107,7 +105,6 @@
             background-color: #e6b800;
         }
 
-        /* Conteúdo do Tópico */
         .topic-container {
             max-width: 900px;
             margin: 40px auto;
@@ -202,7 +199,6 @@
             color: #e6e6e6;
         }
 
-        /* Formulário de Comentário */
         .comment-form {
             margin-top: 20px;
             padding-top: 20px;
@@ -236,7 +232,6 @@
             background-color: #e6b800;
         }
 
-        /* ===== RODAPÉ ===== */
         footer {
             background: var(--bg-2);
             text-align: center;
@@ -330,7 +325,6 @@
     </footer>
 
     <script>
-    // Configuração do Supabase
     const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
     
@@ -338,7 +332,6 @@
         auth: { persistSession: true, autoRefreshToken: true }
     });
 
-    // Elementos DOM
     const userArea = document.getElementById('user-area');
     const userAvatarImg = document.getElementById('avatar-img');
     const userNicknameEl = document.getElementById('nickname-text');
@@ -348,8 +341,7 @@
     const topicTitle = document.getElementById('topic-title');
     const topicBody = document.getElementById('topic-body');
 
-    // Avatar padrão para usuários sem um avatar customizado
-    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
+    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg�IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
 
     async function loadUserProfile(userId) {
         if (!userId) {
@@ -362,12 +354,10 @@
                 .eq('id', userId)
                 .single();
             if (error) {
-                console.error('Erro ao carregar perfil:', error);
                 return null;
             }
             return perfilData;
         } catch (error) {
-            console.error('Erro inesperado em loadUserProfile:', error);
             return null;
         }
     }
@@ -418,17 +408,11 @@
         try {
             const { data: topicData, error: topicError } = await supabase
                 .from('topics') 
-                .select(`
-                    title,
-                    content,
-                    created_at,
-                    user_id
-                `)
+                .select('title, content, created_at, user_id')
                 .eq('id', topicId)
                 .single();
 
             if (topicError || !topicData) {
-                console.error("Erro ao carregar tópico:", topicError);
                 topicTitle.textContent = "Erro ao carregar tópico";
                 topicBody.innerHTML = `<p>Ocorreu um erro ao carregar o tópico. Por favor, tente novamente mais tarde.</p>`;
                 return;
@@ -445,7 +429,6 @@
             await loadComments(topicId);
 
         } catch (err) {
-            console.error('Erro inesperado em loadTopicData:', err);
             topicTitle.textContent = "Erro inesperado";
             topicBody.innerHTML = `<p>Ocorreu um erro inesperado ao carregar o tópico. Tente novamente mais tarde.</p>`;
         }
@@ -455,16 +438,11 @@
         try {
             const { data: comments, error } = await supabase
                 .from('comments')
-                .select(`
-                    content,
-                    created_at,
-                    user_id
-                `)
+                .select('content, created_at, user_id')
                 .eq('topic_id', topicId)
                 .order('created_at', { ascending: true });
 
             if (error) {
-                console.error('Erro ao carregar comentários:', error);
                 commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro ao carregar comentários.</p>`;
                 return;
             }
@@ -475,26 +453,20 @@
                 return;
             }
 
-            const commentPromises = comments.map(async (comment) => {
+            for (const comment of comments) {
                 const authorProfile = await loadUserProfile(comment.user_id);
-                return {
-                    ...comment,
-                    authorName: authorProfile?.apelido_poker || 'Usuário',
-                    avatarUrl: authorProfile?.url_imagem || DEFAULT_AVATAR_SVG
-                };
-            });
-            const commentsWithAuthors = await Promise.all(commentPromises);
-
-            commentsWithAuthors.forEach(comment => {
+                const authorName = authorProfile?.apelido_poker || 'Usuário';
+                const avatarUrl = authorProfile?.url_imagem || DEFAULT_AVATAR_SVG;
                 const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
+                
                 const commentHTML = `
                     <div class="comment">
                         <div class="comment-meta">
                             <div class="comment-avatar">
-                                <img src="${comment.avatarUrl}" alt="Avatar" onerror="this.src='${DEFAULT_AVATAR_SVG}'">
+                                <img src="${avatarUrl}" alt="Avatar" onerror="this.src='${DEFAULT_AVATAR_SVG}'">
                             </div>
                             <div style="flex-grow: 1;">
-                                <span class="comment-author">${comment.authorName}</span>
+                                <span class="comment-author">${authorName}</span>
                                 <span class="comment-date">em ${commentDate}</span>
                             </div>
                         </div>
@@ -504,10 +476,9 @@
                     </div>
                 `;
                 commentsList.innerHTML += commentHTML;
-            });
+            }
             
         } catch (err) {
-            console.error('Erro inesperado em loadComments:', err);
             commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro inesperado ao carregar comentários.</p>`;
         }
     }
@@ -549,7 +520,6 @@
                 }]);
             
             if (insertError) {
-                console.error('Erro ao inserir comentário:', insertError);
                 alert('Ocorreu um erro ao enviar seu comentário. Por favor, tente novamente.');
                 return;
             }
@@ -566,7 +536,6 @@
             const { data: { session }, error } = await supabase.auth.getSession();
             
             if (error) {
-                console.error('Erro ao verificar sessão:', error);
                 await updateUserUI(null);
                 await loadTopicData();
                 return;
@@ -576,11 +545,10 @@
             await loadTopicData();
             
         } catch (error) {
-            console.error('Erro ao inicializar página:', error);
             await updateUserUI(null);
             await loadTopicData();
         }
     });
-</script>
+    </script>
 </body>
 </html>
