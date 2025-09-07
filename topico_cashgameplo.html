@@ -172,7 +172,7 @@
         .comment-avatar {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+            borderRadius: 50%;
             background-color: var(--bg-3);
             border: 2px solid var(--gold);
             overflow: hidden;
@@ -301,14 +301,6 @@
 
         <section class="topic-body" id="topic-body">
             <p>Bem-vindos à discussão sobre Cash Game PLO! Aqui podemos compartilhar estratégias, hand histories e dúvidas sobre Pot Limit Omaha.</p>
-            <p>PLO é um jogo de ação intensa com muitas possibilidades. Vamos discutir:</p>
-            <ul>
-                <li>Estratégias pré-flop</li>
-                <li>Leitura de board textures</li>
-                <li>Gerenciamento de bankroll</li>
-                <li>Melhores práticas para PLO cash games</li>
-            </ul>
-            <p>Compartilhe suas experiências e vamos aprender juntos!</p>
         </section>
 
         <section class="comments-section">
@@ -348,36 +340,16 @@
     const loadingIndicator = document.getElementById('loading-indicator');
     const commentsList = document.getElementById('comments-list');
     const commentForm = document.getElementById('comment-form');
-    const topicTitle = document.getElementById('topic-title');
-    const topicBody = document.getElementById('topic-body');
 
-    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
-
-    // Função para carregar avatar pelo ID
-    async function loadUserAvatar(avatarId) {
-        if (!avatarId) return null;
-        try {
-            const { data: avatarData, error } = await supabase
-                .from('avatares')
-                .select('url_imagem')
-                .eq('id', avatarId)
-                .single();
-                
-            if (error || !avatarData) return null;
-            return avatarData.url_imagem;
-        } catch (error) {
-            console.error('Erro ao carregar avatar:', error);
-            return null;
-        }
-    }
+    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzwsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
 
     // Função para carregar perfil do usuário
     async function loadUserProfile(userId) {
         try {
             const { data: perfilData, error } = await supabase
                 .from('perfis')
-                .select('apelido_poker, avatar_id')
-                .eq('usuario_id', userId)
+                .select('apelido_poker, url_imagem')
+                .eq('id', userId)
                 .single();
                 
             if (error) {
@@ -396,26 +368,20 @@
         if (!userArea) return;
         userArea.style.display = 'flex';
 
-        // esconder loading
         if (loadingIndicator) loadingIndicator.style.display = 'none';
 
-        // definir apelido
         let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
         if (userNicknameEl) {
             userNicknameEl.textContent = apelido;
-            userNicknameEl.style.display = 'inline';
         }
 
-        // carregar avatar
-        if (profile && profile.avatar_id) {
-            const avatarUrl = await loadUserAvatar(profile.avatar_id);
-            if (avatarUrl && userAvatarImg) {
-                userAvatarImg.onerror = function () {
-                    console.error('Erro ao carregar avatar, usando padrão');
-                    this.src = DEFAULT_AVATAR_SVG;
-                };
-                userAvatarImg.src = avatarUrl;
-            }
+        if (profile && profile.url_imagem) {
+            userAvatarImg.onerror = function () {
+                this.src = DEFAULT_AVATAR_SVG;
+            };
+            userAvatarImg.src = profile.url_imagem;
+        } else {
+            userAvatarImg.src = DEFAULT_AVATAR_SVG;
         }
     }
 
@@ -441,14 +407,14 @@
             for (const comment of comments) {
                 const authorProfile = await loadUserProfile(comment.user_id);
                 const authorName = authorProfile?.apelido_poker || 'Usuário';
-                const avatarUrl = authorProfile?.avatar_id ? await loadUserAvatar(authorProfile.avatar_id) : DEFAULT_AVATAR_SVG;
+                const avatarUrl = authorProfile?.url_imagem || DEFAULT_AVATAR_SVG;
                 const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
                 
                 const commentHTML = `
                     <div class="comment">
                         <div class="comment-meta">
                             <div class="comment-avatar">
-                                <img src="${avatarUrl || DEFAULT_AVATAR_SVG}" alt="Avatar" onerror="this.src='${DEFAULT_AVATAR_SVG}'">
+                                <img src="${avatarUrl}" alt="Avatar" onerror="this.src='${DEFAULT_AVATAR_SVG}'">
                             </div>
                             <div style="flex-grow: 1;">
                                 <span class="comment-author">${authorName}</span>
@@ -491,7 +457,8 @@
                     .insert([{
                         content: commentContent,
                         topic_id: 'cashgame-plo',
-                        user_id: session.user.id
+                        user_id: session.user.id,
+                        created_at: new Date().toISOString()
                     }]);
                 
                 if (insertError) {
@@ -513,6 +480,8 @@
     // Verificar sessão e carregar perfil ao iniciar
     document.addEventListener('DOMContentLoaded', async function () {
         try {
+            if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
+            
             const { data: { session }, error } = await supabase.auth.getSession();
             
             if (error) {
