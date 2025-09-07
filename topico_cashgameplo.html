@@ -281,7 +281,7 @@
         <div class="header-left">
             <div class="user-area" id="user-area">
                 <div class="user-avatar" id="user-avatar">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIH�cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==" alt="Avatar" id="avatar-img">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==" alt="Avatar" id="avatar-img">
                 </div>
                 <div class="user-nickname" id="user-nickname">
                     <span class="loading" id="loading-indicator"></span>
@@ -341,7 +341,7 @@
     const topicTitle = document.getElementById('topic-title');
     const topicBody = document.getElementById('topic-body');
 
-    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
+    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw7Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
 
     async function loadUserProfile(userId) {
         if (!userId) return null;
@@ -508,15 +508,18 @@
                         user_id: session.user.id
                     }]);
                 
-                if (insertError) throw insertError;
+                if (insertError) {
+                    console.error('Erro ao inserir comentário:', insertError);
+                    alert('Erro ao enviar comentário. Tente novamente.');
+                    return;
+                }
                 
                 commentTextarea.value = '';
                 await loadComments(topicId);
                 
             } catch (error) {
-                alert('Comentário enviado com sucesso!');
-                commentTextarea.value = '';
-                await loadComments(topicId);
+                console.error('Erro ao enviar comentário:', error);
+                alert('Erro ao enviar comentário. Tente novamente.');
             }
         });
     }
@@ -530,6 +533,7 @@
             await loadTopicData();
             
         } catch (error) {
+            console.error('Erro ao carregar página:', error);
             await updateUserUI(null);
             await loadTopicData();
         }
