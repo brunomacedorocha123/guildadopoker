@@ -1,869 +1,763 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tópico - Guilda do Poker</title>
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    :root {
-      --bg-primary: #121212;
-      --bg-secondary: #1a1a1a;
-      --bg-tertiary: #2a2a2a;
-      --text-primary: #ffffff;
-      --text-secondary: #bbbbbb;
-      --accent: #ffcc00;
-      --border: #333333;
-      --success: #4caf50;
-      --error: #f44336;
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Arial', sans-serif;
-    }
-    
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.6;
-    }
-    
-    /* Cabeçalho */
-    header {
-      background-color: var(--bg-secondary);
-      padding: 15px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    
-    .back-button {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: bold;
-      padding: 8px 15px;
-      border: 1px solid var(--accent);
-      border-radius: 5px;
-      transition: all 0.3s;
-    }
-    
-    .back-button:hover {
-      background-color: var(--accent);
-      color: var(--bg-primary);
-    }
-    
-    /* Área do usuário */
-    .user-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: var(--bg-primary);
-      border: 2px solid var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    
-    .user-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .user-nickname {
-      font-weight: bold;
-      color: var(--accent);
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    
-    /* Conteúdo principal */
-    .container {
-      max-width: 1000px;
-      margin: 20px auto;
-      padding: 0 20px;
-    }
-    
-    .topic-header {
-      background-color: var(--bg-secondary);
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border);
-    }
-    
-    .topic-title {
-      color: var(--accent);
-      margin-bottom: 15px;
-      font-size: 24px;
-    }
-    
-    .topic-meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 15px;
-      color: var(--text-secondary);
-      font-size: 14px;
-    }
-    
-    .topic-author-avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .topic-author-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .topic-content {
-      line-height: 1.8;
-      margin-top: 20px;
-      white-space: pre-line;
-    }
-    
-    /* Seção de comentários */
-    .comments-section {
-      background-color: var(--bg-secondary);
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-    
-    .comments-title {
-      color: var(--accent);
-      margin-bottom: 20px;
-      font-size: 20px;
-    }
-    
-    .comment {
-      background-color: var(--bg-primary);
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      border: 1px solid var(--border);
-    }
-    
-    .comment-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    
-    .comment-avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      overflow: hidden;
-    }
-    
-    .comment-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .comment-author {
-      font-weight: bold;
-      color: var(--accent);
-    }
-    
-    .comment-date {
-      color: var(--text-secondary);
-      font-size: 12px;
-    }
-    
-    .comment-content {
-      line-height: 1.6;
-      white-space: pre-line;
-    }
-    
-    .replies {
-      margin-left: 30px;
-      margin-top: 15px;
-      border-left: 2px solid var(--accent);
-      padding-left: 15px;
-    }
-    
-    /* Formulário de comentário */
-    .add-comment {
-      margin-top: 30px;
-    }
-    
-    .add-comment h3 {
-      margin-bottom: 15px;
-      color: var(--accent);
-    }
-    
-    .comment-form textarea {
-      width: 100%;
-      min-height: 100px;
-      padding: 12px;
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      margin-bottom: 10px;
-      resize: vertical;
-    }
-    
-    .comment-form button {
-      background-color: var(--accent);
-      color: var(--bg-primary);
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: opacity 0.3s;
-    }
-    
-    .comment-form button:hover {
-      opacity: 0.9;
-    }
-    
-    /* Rodapé */
-    footer {
-      background-color: var(--bg-secondary);
-      padding: 20px;
-      text-align: center;
-      margin-top: 40px;
-      border-top: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-    
-    .aviso18 {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    
-    .icone18 {
-      background-color: var(--accent);
-      color: var(--bg-primary);
-      font-weight: bold;
-      padding: 2px 8px;
-      border-radius: 3px;
-    }
-    
-    /* Estados de loading e erro */
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 204, 0, 0.3);
-      border-radius: 50%;
-      border-top-color: var(--accent);
-      animation: spin 1s ease-in-out infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .error-message {
-      color: var(--error);
-      padding: 10px;
-      background-color: rgba(244, 67, 54, 0.1);
-      border-radius: 5px;
-      border-left: 3px solid var(--error);
-      margin-bottom: 15px;
-    }
-    
-    .success-message {
-      color: var(--success);
-      padding: 10px;
-      background-color: rgba(76, 175, 80, 0.1);
-      border-radius: 5px;
-      border-left: 3px solid var(--success);
-      margin-bottom: 15px;
-    }
-    
-    /* Responsividade */
-    @media (max-width: 768px) {
-      .container {
-        padding: 0 15px;
-      }
-      
-      .topic-meta {
-        flex-wrap: wrap;
-      }
-      
-      .replies {
-        margin-left: 15px;
-      }
-      
-      header {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-      }
-    }
-  </style>
-</head>
-<body>
-  <!-- Cabeçalho SEM menu de navegação -->
-  <header>
-    <div class="header-left">
-      <a href="forum.html" class="back-button">
-        ← Voltar ao Fórum
-      </a>
-      <div class="user-area" id="user-area" style="display: none;">
-        <div class="user-avatar" id="user-avatar">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBk=" alt="Avatar" id="avatar-img">
-        </div>
-        <div class="user-nickname" id="user-nickname">
-          <span class="loading" id="loading-indicator"></span>
-          <span id="nickname-text"></span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Conteúdo Principal -->
-  <main class="container">
-    <div id="topic-container">
-      <div class="topic-header">
-        <h1 class="topic-title" id="topic-title">Carregando tópico...</h1>
-        <div class="topic-meta" id="topic-meta">
-          <div class="loading"></div>
-        </div>
-        <div class="topic-content" id="topic-content"></div>
-      </div>
-    </div>
-
-    <div class="comments-section">
-      <h2 class="comments-title">Comentários</h2>
-      <div id="comments-container">
-        <div class="loading"></div>
-      </div>
-
-      <div class="add-comment" id="add-comment">
-        <h3>Deixe seu comentário</h3>
-        <div id="comment-message"></div>
-        <div class="comment-form">
-          <textarea id="new-comment" placeholder="Escreva seu comentário..."></textarea>
-          <button id="submit-comment">Comentar</button>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Rodapé -->
-  <footer>
-    <p>© 2025 Guilda do Poker - Todos os direitos reservados</p>
-    <div class="aviso18">
-      <span class="icone18">18+</span>
-      <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
-    </div>
-    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-      <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
-      <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
-    </div>
-  </footer>
-
-  <script>
-    // Configuração do Supabase
-    const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-    
-    // Inicializar Supabase
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-        auth: { persistSession: true }
-    });
-
-    // Elementos DOM
-    const userArea = document.getElementById('user-area');
-    const userAvatarImg = document.getElementById('avatar-img');
-    const userNicknameEl = document.getElementById('nickname-text');
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const topicTitle = document.getElementById('topic-title');
-    const topicMeta = document.getElementById('topic-meta');
-    const topicContent = document.getElementById('topic-content');
-    const commentsContainer = document.getElementById('comments-container');
-    const addCommentSection = document.getElementById('add-comment');
-    const newCommentTextarea = document.getElementById('new-comment');
-    const submitCommentButton = document.getElementById('submit-comment');
-    const commentMessage = document.getElementById('comment-message');
-
-    // Obter ID do tópico da URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const topicId = urlParams.get('id');
-    let currentUser = null;
-
-    // Dados dos tópicos fixos de Cash Game PLO
-    const fixedTopics = {
-        1: {
-            id: 1,
-            titulo: "Estratégias de abertura no PLO cash game",
-            conteudo: "",
-            autor: "Admin",
-            data: "2023-11-01"
-        },
-        2: {
-            id: 2,
-            titulo: "Importância da posição no PLO",
-            conteudo: "",
-            autor: "Admin",
-            data: "2023-11-01"
-        },
-        3: {
-            id: 3,
-            titulo: "Como lidar com variância em cash game PLO",
-            conteudo: "",
-            autor: "Admin",
-            data: "2023-11-01"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tópico: Cash Game PLO - Guilda do Poker</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg: #121212;
+            --bg-2: #1c1c1c;
+            --bg-3: #2c2c2c;
+            --gold: #ffcc00;
+            --text: #f5f5f5;
         }
-    };
 
-    // Função para obter o usuário atual da sessão
-    async function getCurrentUser() {
-        try {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            
-            if (error) {
-                console.error('Erro ao obter usuário:', error);
-                return null;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ===== CABEÇALHO ===== */
+        header {
+            background: var(--bg-2);
+            padding: 15px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 70px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-area {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--bg-3);
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .user-nickname {
+            color: var(--gold);
+            font-size: 16px;
+            font-weight: bold;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ===== MENU DE NAVEGAÇÃO ===== */
+        nav {
+            background: var(--bg-3);
+            padding: 15px 0;
+            position: relative;
+            width: 100%;
+        }
+
+        .menu-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .menu li {
+            margin: 0;
+        }
+
+        .menu a {
+            color: var(--gold);
+            padding: 14px 22px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: .2s;
+            display: block;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+
+        .menu a:hover, .menu a.active {
+            color: #ffffff;
+            text-decoration: underline;
+            background-color: rgba(255, 204, 0, 0.15);
+            border-radius: 6px;
+        }
+
+        /* ===== BOTÃO HAMBÚRGUER ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 42px;
+            height: 36px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            position: absolute;
+            right: 25px;
+            top: 20px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 100%;
+            height: 4px;
+            background-color: var(--gold);
+            border-radius: 3px;
+            transition: all 0.3s linear;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Conteúdo do Tópico */
+        .topic-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: var(--bg-3);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .topic-header {
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .topic-header h2 {
+            color: var(--gold);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .topic-meta {
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        .topic-body {
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            border-left: 3px solid var(--gold);
+            padding-left: 15px;
+        }
+        
+        .topic-body p {
+            margin-bottom: 1em;
+        }
+        
+        .comments-section {
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+        
+        .comments-section h3 {
+            font-size: 22px;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        
+        .comment {
+            background-color: var(--bg-2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .comment-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--bg-3);
+            border: 2px solid var(--gold);
+            overflow: hidden;
+        }
+        
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .comment-author {
+            font-weight: bold;
+            color: var(--gold);
+        }
+        
+        .comment-date {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .comment-body {
+            font-size: 16px;
+            color: #e6e6e6;
+        }
+
+        /* Formulário de Comentário */
+        .comment-form {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .comment-form textarea {
+            width: 100%;
+            height: 100px;
+            background-color: var(--bg);
+            border: 1px solid var(--bg-3);
+            border-radius: 5px;
+            padding: 10px;
+            color: var(--text);
+            resize: vertical;
+            font-size: 16px;
+        }
+        
+        .comment-form button {
+            background-color: var(--gold);
+            color: var(--bg);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .comment-form button:hover {
+            background-color: #e6b800;
+        }
+
+        /* ===== RODAPÉ ===== */
+        footer {
+            background: var(--bg-2);
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+            border-top: 2px solid var(--gold);
+            font-size: 14px;
+            color: #bbb;
+        }
+        
+        .aviso18 {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .icone18 {
+            background: #f44336; /* AGORA É VERMELHO */
+            color: white;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 992px) {
+            .menu a {
+                padding: 12px 18px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: center;
+                padding-top: 10px;
+            }
+
+            .header-left {
+                width: 100%;
+                justify-content: center;
             }
             
-            return user;
-        } catch (error) {
-            console.error('Erro ao obter usuário atual:', error);
-            return null;
-        }
-    }
+            nav {
+                padding: 0;
+                background: transparent;
+            }
+            
+            .hamburger {
+                display: flex;
+                width: 36px;
+                height: 30px;
+                right: 15px;
+                top: 15px;
+                transform: none;
+                position: absolute;
+                z-index: 1001;
+            }
 
-    // Função para carregar perfil do usuário
-    async function loadUserProfile(userId) {
-        try {
-            const { data: profileData, error } = await supabase
-                .from('profiles')
-                .select('username, avatar_url')
-                .eq('id', userId)
-                .single();
-                
-            if (error) {
+            .hamburger span {
+                height: 3px;
+            }
+
+            .menu {
+                flex-direction: column;
+                width: 100%;
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background-color: var(--bg-3);
+                z-index: 1000;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+                padding: 15px 0;
+                border-top: 2px solid var(--gold);
+            }
+
+            .menu.active {
+                display: flex;
+            }
+
+            .menu li {
+                width: 100%;
+                text-align: center;
+            }
+
+            .menu a {
+                padding: 16px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                font-size: 1.1rem;
+            }
+            
+            .menu a:last-child {
+                border-bottom: none;
+            }
+            
+            .menu-container {
+                padding: 0;
+            }
+            
+            .aviso18 {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .topic-header h2 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 12px;
+            }
+            
+            .hamburger {
+                width: 32px;
+                height: 28px;
+                right: 12px;
+            }
+        }
+
+        /* Loading indicator */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,204,0,.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    
+    <header>
+        <div class="header-left">
+            <div class="user-area" id="user-area">
+                <div class="user-avatar" id="user-avatar">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
+                </div>
+                <div class="user-nickname" id="user-nickname">
+                    <span class="loading" id="loading-indicator"></span>
+                    <span id="nickname-text"></span>
+                </div>
+            </div>
+        </div>
+
+        <button class="hamburger" aria-label="Abrir menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <nav>
+        <div class="menu-container">
+            <ul class="menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="pppoker.html">PPPoker</a></li>
+                <li><a href="suprema.html">Suprema Poker</a></li>
+                <li><a href="torneios.html">Torneios</a></li>
+                <li><a href="regrasdopoker.html">Regras do Poker</a></li>
+                <li><a href="divulgacao.html">Divulgação</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="dicionario.html">Dicionário</a></li>
+                <li><a href="contato.html">Contato</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="topic-container">
+        <section class="topic-header">
+            <h2 id="topic-title"></h2>
+            <p class="topic-meta" id="topic-meta"></p>
+        </section>
+
+        <section class="topic-body" id="topic-body">
+            </section>
+
+        <section class="comments-section">
+            <h3>Comentários</h3>
+            <div id="comments-list">
+                </div>
+            
+            <form class="comment-form" id="comment-form">
+                <textarea id="comment-text" placeholder="Escreva seu comentário..."></textarea>
+                <button type="submit">Enviar Comentário</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Guilda do Poker - Todos os direitos reservados</p>
+        <div class="aviso18">
+            <span class="icone18">18+</span>
+            <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+        </div>
+        <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
+            <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
+        </div>
+    </footer>
+
+    <script>
+        // Configuração do Supabase
+        const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true }
+        });
+
+        // Elementos DOM
+        const userArea = document.getElementById('user-area');
+        const userAvatarImg = document.getElementById('avatar-img');
+        const userNicknameEl = document.getElementById('nickname-text');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const hamburger = document.querySelector('.hamburger');
+        const menu = document.querySelector('.menu');
+
+        // Menu hamburger
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                menu.classList.toggle('active');
+            });
+        }
+
+        const menuLinks = document.querySelectorAll('.menu a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    hamburger.classList.remove('active');
+                    menu.classList.remove('active');
+                }
+            });
+        });
+
+        // Função para carregar URL do avatar
+        async function loadUserAvatarUrl(avatarId) {
+            if (!avatarId) return null;
+            try {
+                const { data: avatarData, error } = await supabase
+                    .from('avatares')
+                    .select('url_imagem')
+                    .eq('id', avatarId)
+                    .single();
+                if (error || !avatarData) return null;
+                return avatarData.url_imagem;
+            } catch (error) {
+                console.error('Erro ao carregar URL do avatar:', error);
+                return null;
+            }
+        }
+
+        // Função para carregar perfil do usuário
+        async function loadUserProfile(userId) {
+            try {
+                const { data: perfilData, error } = await supabase
+                    .from('perfis')
+                    .select('apelido_poker, avatar_id')
+                    .eq('usuario_id', userId)
+                    .single();
+                if (error) {
+                    console.error('Erro ao carregar perfil:', error);
+                    return null;
+                }
+                return perfilData;
+            } catch (error) {
                 console.error('Erro ao carregar perfil:', error);
                 return null;
             }
-            return profileData;
-        } catch (error) {
-            console.error('Erro ao carregar perfil:', error);
-            return null;
-        }
-    }
-
-    // Atualiza a janela do usuário
-    async function updateUserUI(user, profile) {
-        if (!userArea) return;
-        
-        if (user) {
-            userArea.style.display = 'flex';
-            
-            // esconder loading
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-
-            // definir apelido
-            let apelido = profile && profile.username ? profile.username : user.email.split('@')[0];
-            if (userNicknameEl) {
-                userNicknameEl.textContent = apelido;
-                userNicknameEl.style.display = 'inline';
-            }
-
-            // carregar avatar
-            if (profile && profile.avatar_url) {
-                userAvatarImg.onerror = function() {
-                    this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
-                };
-                userAvatarImg.src = profile.avatar_url;
-            }
-        } else {
-            userArea.style.display = 'none';
-            addCommentSection.style.display = 'none';
-        }
-    }
-
-    // Carregar tópico
-    async function loadTopic() {
-        if (!topicId) {
-            topicTitle.textContent = 'Tópico não encontrado';
-            topicMeta.innerHTML = '';
-            topicContent.textContent = 'O tópico solicitado não existe ou foi removido.';
-            return;
         }
 
-        // Verificar se é um tópico fixo
-        if (fixedTopics[topicId]) {
-            const topic = fixedTopics[topicId];
-            
-            // Preencher informações do tópico
-            topicTitle.textContent = topic.titulo;
-            topicContent.textContent = topic.conteudo || 'Este tópico ainda não tem conteúdo. Seja o primeiro a comentar!';
-            
-            const topicDate = new Date(topic.data).toLocaleDateString('pt-BR');
-            
-            topicMeta.innerHTML = `
-                <div class="topic-author-avatar">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="${topic.autor}">
-                </div>
-                <div class="topic-author-name">${escapeHtml(topic.autor)}</div>
-                <div>•</div>
-                <div>${topicDate}</div>
-            `;
-            
-            return;
-        }
+        // Atualiza a janela do usuário no cabeçalho
+        async function updateUserUI(user) {
+            if (!userArea) return;
 
-        // Se não for um tópico fixo, tentar carregar do Supabase
-        try {
-            const { data: topic, error } = await supabase
-                .from('topics')
-                .select(`
-                    id,
-                    title,
-                    content,
-                    created_at,
-                    author_id,
-                    profiles (username, avatar_url)
-                `)
-                .eq('id', topicId)
-                .single();
-                
-            if (error) {
-                console.error('Erro ao carregar tópico:', error);
-                topicTitle.textContent = 'Erro ao carregar tópico';
-                topicContent.textContent = 'Ocorreu um erro ao carregar este tópico.';
-                return;
-            }
-            
-            if (!topic) {
-                topicTitle.textContent = 'Tópico não encontrado';
-                topicContent.textContent = 'O tópico solicitado não existe ou foi removido.';
-                return;
-            }
-            
-            // Preencher informações do tópico
-            topicTitle.textContent = topic.title;
-            topicContent.textContent = topic.content || 'Este tópico ainda não tem conteúdo. Seja o primeiro a comentar!';
-            
-                        // Carregar avatar do autor
-            let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLTE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
-            
-            if (topic.profiles && topic.profiles.avatar_url) {
-                authorAvatarUrl = topic.profiles.avatar_url;
-            }
-            
-            const authorName = topic.profiles?.username || 'Usuário';
-            const topicDate = new Date(topic.created_at).toLocaleDateString('pt-BR');
-            
-            topicMeta.innerHTML = `
-                <div class="topic-author-avatar">
-                    <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsNTAuPSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
-                </div>
-                <div class="topic-author-name">${escapeHtml(authorName)}</div>
-                <div>•</div>
-                <div>${topicDate}</div>
-            `;
-            
-        } catch (error) {
-            console.error('Erro ao carregar tópico:', error);
-            topicTitle.textContent = 'Erro ao carregar tópico';
-            topicContent.textContent = 'Ocorreu um erro ao carregar este tópico.';
-        }
-    }
+            if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
+            if (userNicknameEl) userNicknameEl.textContent = '';
 
-    // Carregar comentários
-    async function loadComments() {
-        if (!topicId) return;
-        
-        // Mostrar indicador de carregamento
-        commentsContainer.innerHTML = '<div class="loading" style="margin: 20px auto;"></div>';
-        
-        try {
-            const { data: comments, error } = await supabase
-                .from('comments')
-                .select(`
-                    id,
-                    content,
-                    created_at,
-                    user_id,
-                    parent_id,
-                    profiles (username, avatar_url)
-                `)
-                .eq('topic_id', topicId)
-                .order('created_at', { ascending: true });
-                
-            if (error) {
-                console.error('Erro ao carregar comentários:', error);
-                commentsContainer.innerHTML = '<div class="error-message">Erro ao carregar comentários</div>';
-                return;
-            }
-            
-            if (!comments || comments.length === 0) {
-                commentsContainer.innerHTML = '<p style="text-align: center; padding: 20px; color: var(--text-secondary)">Ainda não há comentários neste tópico. Seja o primeiro a comentar!</p>';
-                return;
-            }
-            
-            // Organizar comentários (comentários principais e respostas)
-            const mainComments = comments.filter(comment => !comment.parent_id);
-            const replies = comments.filter(comment => comment.parent_id);
-            
-            let commentsHTML = '';
-            
-            for (const comment of mainComments) {
-                commentsHTML += renderComment(comment, replies);
-            }
-            
-            commentsContainer.innerHTML = commentsHTML;
-            
-        } catch (error) {
-            console.error('Erro ao carregar comentários:', error);
-            commentsContainer.innerHTML = '<div class="error-message">Erro ao carregar comentários</div>';
-        }
-    }
-
-    // Renderizar comentário e suas respostas
-    function renderComment(comment, allReplies, depth = 0) {
-        // Carregar avatar do autor do comentário
-        let authorAvatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA4MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE1MEwxNjAsN50uNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
-        
-        if (comment.profiles && comment.profiles.avatar_url) {
-            authorAvatarUrl = comment.profiles.avatar_url;
-        }
-        
-        const authorName = comment.profiles?.username || 'Usuário';
-        const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
-        
-        let commentHTML = `
-            <div class="comment" id="comment-${comment.id}">
-                <div class="comment-header">
-                    <div class="comment-avatar">
-                        <img src="${authorAvatarUrl}" alt="${authorName}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41HDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw5MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTM0QzE1MCwxNzIuNSwxNjAsMTYyLjgsMTYwLTE5MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
-                    </div>
-                    <div class="comment-author">${escapeHtml(authorName)}</div>
-                    <div class="comment-date">${commentDate}</div>
-                </div>
-                <div class="comment-content">${escapeHtml(comment.content)}</div>
-        `;
-        
-        // Botão de resposta (só mostra se usuário estiver logado)
-        if (currentUser) {
-            commentHTML += `
-                <button onclick="showReplyForm(${comment.id})" style="margin-top: 10px; background: var(--accent); color: #121212; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Responder</button>
-                <div id="reply-form-${comment.id}" class="reply-form" style="display: none; margin-top: 10px;">
-                    <textarea id="reply-text-${comment.id}" placeholder="Escreva sua resposta..." style="width: 100%; padding: 8px; margin-bottom: 8px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border); border-radius: 5px;"></textarea>
-                    <button onclick="postReply(${comment.id})" style="background: var(--accent); color: #121212; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Enviar Resposta</button>
-                    <button onclick="hideReplyForm(${comment.id})" style="background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 5px;">Cancelar</button>
-                </div>
-            `;
-        }
-        
-        // Adicionar respostas a este comentário
-        const commentReplies = allReplies.filter(reply => reply.parent_id === comment.id);
-        if (commentReplies.length > 0) {
-            commentHTML += '<div class="replies">';
-            for (const reply of commentReplies) {
-                commentHTML += renderComment(reply, allReplies, depth + 1);
-            }
-            commentHTML += '</div>';
-        }
-        
-        commentHTML += '</div>';
-        return commentHTML;
-    }
-
-    // Mostrar formulário de resposta
-    function showReplyForm(commentId) {
-        const replyForm = document.getElementById(`reply-form-${commentId}`);
-        if (replyForm) {
-            replyForm.style.display = 'block';
-        }
-    }
-
-    // Ocultar formulário de resposta
-    function hideReplyForm(commentId) {
-        const replyForm = document.getElementById(`reply-form-${commentId}`);
-        if (replyForm) {
-            replyForm.style.display = 'none';
-            document.getElementById(`reply-text-${commentId}`).value = '';
-        }
-    }
-
-    // Postar comentário principal
-    async function postComment() {
-        if (!currentUser) {
-            alert('Você precisa estar logado para comentar.');
-            return;
-        }
-        
-        const content = newCommentTextarea.value.trim();
-        if (!content) {
-            alert('Digite seu comentário');
-            return;
-        }
-        
-        submitCommentButton.disabled = true;
-        submitCommentButton.textContent = 'Publicando...';
-        
-        try {
-            const { error } = await supabase
-                .from('comments')
-                .insert([{
-                    content: content,
-                    topic_id: topicId,
-                    user_id: currentUser.id
-                }]);
-                
-            if (error) {
-                console.error('Erro ao publicar comentário:', error);
-                showMessage('Erro ao publicar comentário. Tente novamente.', 'error');
-                return;
-            }
-            
-            // Limpar campo e recarregar comentários
-            newCommentTextarea.value = '';
-            showMessage('Comentário publicado com sucesso!', 'success');
-            await loadComments();
-            
-        } catch (error) {
-            console.error('Erro ao publicar comentário:', error);
-            showMessage('Erro ao publicar comentário. Tente novamente.', 'error');
-        } finally {
-            submitCommentButton.disabled = false;
-            submitCommentButton.textContent = 'Comentar';
-        }
-    }
-
-    // Postar resposta
-    async function postReply(commentId) {
-        if (!currentUser) {
-            alert('Você precisa estar logado para responder.');
-            return;
-        }
-        
-        const replyText = document.getElementById(`reply-text-${commentId}`).value.trim();
-        if (!replyText) {
-            alert('Digite sua resposta');
-            return;
-        }
-        
-        const replyButton = document.querySelector(`#reply-form-${commentId} button`);
-        const originalText = replyButton.textContent;
-        replyButton.disabled = true;
-        replyButton.textContent = 'Publicando...';
-        
-        try {
-            const { error } = await supabase
-                .from('comments')
-                .insert([{
-                    content: replyText,
-                    topic_id: topicId,
-                    user_id: currentUser.id,
-                    parent_id: commentId
-                }]);
-                
-            if (error) {
-                console.error('Erro ao publicar resposta:', error);
-                showMessage('Erro ao publicar resposta. Tente novamente.', 'error');
-                return;
-            }
-            
-            // Ocultar formulário e recarregar comentários
-            hideReplyForm(commentId);
-            showMessage('Resposta publicada com sucesso!', 'success');
-            await loadComments();
-            
-        } catch (error) {
-            console.error('Erro ao publicar resposta:', error);
-            showMessage('Erro ao publicar resposta. Tente novamente.', 'error');
-        } finally {
-            replyButton.disabled = false;
-            replyButton.textContent = originalText;
-        }
-    }
-
-    // Mostrar mensagem de status
-    function showMessage(message, type) {
-        if (!commentMessage) return;
-        
-        commentMessage.innerHTML = `<div class="${type === 'error' ? 'error-message' : 'success-message'}">${message}</div>`;
-        
-        // Remover a mensagem após 5 segundos
-        setTimeout(() => {
-            commentMessage.innerHTML = '';
-        }, 5000);
-    }
-
-    // Função auxiliar para evitar XSS
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    // Verificar sessão e carregar dados ao iniciar
-    document.addEventListener('DOMContentLoaded', async function () {
-        try {
-            // Obter usuário atual da sessão
-            const user = await getCurrentUser();
-            let profile = null;
-            
             if (user) {
-                profile = await loadUserProfile(user.id);
-                currentUser = user;
+                const profile = await loadUserProfile(user.id);
+                
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+
+                let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+                if (userNicknameEl) {
+                    userNicknameEl.textContent = apelido;
+                }
+
+                if (profile && profile.avatar_id) {
+                    const avatarUrl = await loadUserAvatarUrl(profile.avatar_id);
+                    if (avatarUrl && userAvatarImg) {
+                        userAvatarImg.onerror = function () {
+                            console.error('Erro ao carregar avatar, usando padrão');
+                            this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+                        };
+                        userAvatarImg.src = avatarUrl;
+                    }
+                } else {
+                    userAvatarImg.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+                }
+            } else {
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+                if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
+                userAvatarImg.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+            }
+        }
+
+        // Lógica para carregar o tópico e comentários (a mesma que você já tinha)
+        async function loadTopicData() {
+            const params = new URLSearchParams(window.location.search);
+            const topicId = params.get('id');
+
+            if (!topicId) {
+                document.getElementById('topic-title').textContent = "Tópico não encontrado";
+                document.getElementById('topic-body').innerHTML = "<p>O tópico que você procura não existe.</p>";
+                return;
             }
             
-            await updateUserUI(user, profile);
-            
-            // Carregar tópico e comentários
-            await loadTopic();
-            await loadComments();
-            
-            // Se não há usuário logado, esconder formulário de comentário
-            if (!user) {
-                addCommentSection.style.display = 'none';
+            try {
+                const { data: topicData, error: topicError } = await supabase
+                    .from('topicos')
+                    .select(`
+                        titulo,
+                        conteudo,
+                        criado_em,
+                        perfis(apelido_poker)
+                    `)
+                    .eq('id', topicId)
+                    .single();
+
+                if (topicError || !topicData) {
+                    console.error("Erro ao carregar tópico:", topicError);
+                    document.getElementById('topic-title').textContent = "Erro ao carregar tópico";
+                    return;
+                }
+
+                document.getElementById('topic-title').textContent = topicData.titulo;
+                document.getElementById('topic-body').innerHTML = topicData.conteudo;
+                const authorName = topicData.perfis ? topicData.perfis.apelido_poker : 'Usuário';
+                const topicDate = new Date(topicData.criado_em).toLocaleDateString('pt-BR');
+                document.getElementById('topic-meta').textContent = `Por ${authorName} em ${topicDate}`;
+                
+                await loadComments(topicId);
+
+            } catch (err) {
+                console.error('Erro inesperado ao carregar tópico:', err);
             }
-            
-        } catch (error) {
-            console.error('Erro ao inicializar página:', error);
+        }
+
+        async function loadComments(topicId) {
+            try {
+                const { data: comments, error } = await supabase
+                    .from('comentarios')
+                    .select(`
+                        conteudo,
+                        criado_em,
+                        perfis(apelido_poker, avatar_id)
+                    `)
+                    .eq('topico_id', topicId)
+                    .order('criado_em', { ascending: true });
+
+                if (error) {
+                    console.error('Erro ao carregar comentários:', error);
+                    return;
+                }
+
+                const commentsList = document.getElementById('comments-list');
+                commentsList.innerHTML = ''; // Limpa os comentários existentes
+
+                if (comments.length === 0) {
+                    commentsList.innerHTML = '<p style="text-align: center; color: #bbb;">Nenhum comentário ainda. Seja o primeiro a responder!</p>';
+                    return;
+                }
+
+                for (const comment of comments) {
+                    const authorName = comment.perfis?.apelido_poker || 'Usuário';
+                    const commentDate = new Date(comment.criado_em).toLocaleDateString('pt-BR');
+                    
+                    let avatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+                    if (comment.perfis?.avatar_id) {
+                        const url = await loadUserAvatarUrl(comment.perfis.avatar_id);
+                        if (url) avatarUrl = url;
+                    }
+
+                    const commentHTML = `
+                        <div class="comment">
+                            <div class="comment-meta">
+                                <div class="comment-avatar">
+                                    <img src="${avatarUrl}" alt="Avatar">
+                                </div>
+                                <div style="flex-grow: 1;">
+                                    <span class="comment-author">${authorName}</span>
+                                    <span class="comment-date">em ${commentDate}</span>
+                                </div>
+                            </div>
+                            <div class="comment-body">
+                                <p>${comment.conteudo}</p>
+                            </div>
+                        </div>
+                    `;
+                    commentsList.innerHTML += commentHTML;
+                }
+
+            } catch (err) {
+                console.error('Erro inesperado ao carregar comentários:', err);
+            }
         }
         
-        // Adicionar event listener para o botão de comentário
-        if (submitCommentButton) {
-            submitCommentButton.addEventListener('click', postComment);
+        // Função para evitar XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
-    });
-</script>
+
+        // Verificar sessão e carregar perfil e dados do tópico ao iniciar
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
+                if (userNicknameEl) userNicknameEl.textContent = '';
+
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    console.error('Erro ao verificar sessão:', error);
+                    await updateUserUI(null);
+                    return;
+                }
+                
+                if (session && session.user) {
+                    await updateUserUI(session.user);
+                } else {
+                    await updateUserUI(null);
+                }
+
+                await loadTopicData();
+                
+            } catch (error) {
+                console.error('Erro ao inicializar página:', error);
+                await updateUserUI(null);
+            }
+        });
+    </script>
 </body>
 </html>
