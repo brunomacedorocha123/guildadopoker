@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tópico: Cash Game PLO - Guilda do Poker</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="favicon.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -87,89 +87,24 @@
             white-space: nowrap;
         }
 
-        /* ===== MENU DE NAVEGAÇÃO ===== */
-        nav {
-            background: var(--bg-3);
-            padding: 15px 0;
-            position: relative;
-            width: 100%;
-        }
-
-        .menu-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .menu {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .menu li {
-            margin: 0;
-        }
-
-        .menu a {
-            color: var(--gold);
-            padding: 14px 22px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: .2s;
-            display: block;
-            text-align: center;
-            font-size: 1.05rem;
-        }
-
-        .menu a:hover, .menu a.active {
-            color: #ffffff;
-            text-decoration: underline;
-            background-color: rgba(255, 204, 0, 0.15);
-            border-radius: 6px;
-        }
-
-        /* ===== BOTÃO HAMBÚRGUER ===== */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            justify-content: space-around;
-            width: 42px;
-            height: 36px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            position: absolute;
-            right: 25px;
-            top: 20px;
-            z-index: 1001;
-        }
-
-        .hamburger span {
-            width: 100%;
-            height: 4px;
+        /* Botão Voltar */
+        .back-button {
             background-color: var(--gold);
-            border-radius: 3px;
-            transition: all 0.3s linear;
+            color: var(--bg-2);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            margin: 20px auto 0 auto; /* Centraliza e adiciona margem superior */
+            display: block; /* Para ocupar a largura e permitir margin: auto */
+            max-width: fit-content; /* Ajusta a largura ao conteúdo */
+            transition: background-color 0.2s ease;
         }
 
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
+        .back-button:hover {
+            background-color: #e6b800;
         }
 
         /* Conteúdo do Tópico */
@@ -322,111 +257,12 @@
         }
         
         .icone18 {
-            background: #f44336; /* AGORA É VERMELHO */
+            background: #f44336;
             color: white;
             font-weight: bold;
             padding: 4px 8px;
             border-radius: 6px;
             font-size: 13px;
-        }
-
-        /* ===== RESPONSIVIDADE ===== */
-        @media (max-width: 992px) {
-            .menu a {
-                padding: 12px 18px;
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                align-items: center;
-                padding-top: 10px;
-            }
-
-            .header-left {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            nav {
-                padding: 0;
-                background: transparent;
-            }
-            
-            .hamburger {
-                display: flex;
-                width: 36px;
-                height: 30px;
-                right: 15px;
-                top: 15px;
-                transform: none;
-                position: absolute;
-                z-index: 1001;
-            }
-
-            .hamburger span {
-                height: 3px;
-            }
-
-            .menu {
-                flex-direction: column;
-                width: 100%;
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                background-color: var(--bg-3);
-                z-index: 1000;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-                padding: 15px 0;
-                border-top: 2px solid var(--gold);
-            }
-
-            .menu.active {
-                display: flex;
-            }
-
-            .menu li {
-                width: 100%;
-                text-align: center;
-            }
-
-            .menu a {
-                padding: 16px;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-                font-size: 1.1rem;
-            }
-            
-            .menu a:last-child {
-                border-bottom: none;
-            }
-            
-            .menu-container {
-                padding: 0;
-            }
-            
-            .aviso18 {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .topic-header h2 {
-                font-size: 24px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header {
-                padding: 10px 12px;
-            }
-            
-            .hamburger {
-                width: 32px;
-                height: 28px;
-                right: 12px;
-            }
         }
 
         /* Loading indicator */
@@ -451,7 +287,7 @@
         <div class="header-left">
             <div class="user-area" id="user-area">
                 <div class="user-avatar" id="user-avatar">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==" alt="Avatar" id="avatar-img">
                 </div>
                 <div class="user-nickname" id="user-nickname">
                     <span class="loading" id="loading-indicator"></span>
@@ -459,29 +295,9 @@
                 </div>
             </div>
         </div>
+        </header>
 
-        <button class="hamburger" aria-label="Abrir menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </header>
-
-    <nav>
-        <div class="menu-container">
-            <ul class="menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="pppoker.html">PPPoker</a></li>
-                <li><a href="suprema.html">Suprema Poker</a></li>
-                <li><a href="torneios.html">Torneios</a></li>
-                <li><a href="regrasdopoker.html">Regras do Poker</a></li>
-                <li><a href="divulgacao.html">Divulgação</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="dicionario.html">Dicionário</a></li>
-                <li><a href="contato.html">Contato</a></li>
-            </ul>
-        </div>
-    </nav>
+    <button class="back-button" onclick="window.history.back();">Voltar ao Fórum</button>
 
     <main class="topic-container">
         <section class="topic-header">
@@ -489,13 +305,11 @@
             <p class="topic-meta" id="topic-meta"></p>
         </section>
 
-        <section class="topic-body" id="topic-body">
-            </section>
+        <section class="topic-body" id="topic-body"></section>
 
         <section class="comments-section">
             <h3>Comentários</h3>
-            <div id="comments-list">
-                </div>
+            <div id="comments-list"></div>
             
             <form class="comment-form" id="comment-form">
                 <textarea id="comment-text" placeholder="Escreva seu comentário..."></textarea>
@@ -530,26 +344,15 @@
         const userAvatarImg = document.getElementById('avatar-img');
         const userNicknameEl = document.getElementById('nickname-text');
         const loadingIndicator = document.getElementById('loading-indicator');
-        const hamburger = document.querySelector('.hamburger');
-        const menu = document.querySelector('.menu');
+        const commentsList = document.getElementById('comments-list');
+        const commentForm = document.getElementById('comment-form');
+        const topicTitle = document.getElementById('topic-title');
+        const topicBody = document.getElementById('topic-body');
 
-        // Menu hamburger
-        if (hamburger) {
-            hamburger.addEventListener('click', () => {
-                hamburger.classList.toggle('active');
-                menu.classList.toggle('active');
-            });
-        }
-
-        const menuLinks = document.querySelectorAll('.menu a');
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    hamburger.classList.remove('active');
-                    menu.classList.remove('active');
-                }
-            });
-        });
+        // Avatar padrão para usuários sem um avatar customizado
+        const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
+        
+        // A lógica do hamburger menu e seus event listeners foram removidos.
 
         // Função para carregar URL do avatar
         async function loadUserAvatarUrl(avatarId) {
@@ -560,10 +363,13 @@
                     .select('url_imagem')
                     .eq('id', avatarId)
                     .single();
-                if (error || !avatarData) return null;
+                if (error || !avatarData) {
+                    console.error('Erro ao carregar URL do avatar:', error);
+                    return null;
+                }
                 return avatarData.url_imagem;
             } catch (error) {
-                console.error('Erro ao carregar URL do avatar:', error);
+                console.error('Erro inesperado ao carregar URL do avatar:', error);
                 return null;
             }
         }
@@ -582,7 +388,7 @@
                 }
                 return perfilData;
             } catch (error) {
-                console.error('Erro ao carregar perfil:', error);
+                console.error('Erro inesperado ao carregar perfil:', error);
                 return null;
             }
         }
@@ -593,44 +399,42 @@
 
             if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
             if (userNicknameEl) userNicknameEl.textContent = '';
+            userAvatarImg.src = DEFAULT_AVATAR_SVG;
 
             if (user) {
                 const profile = await loadUserProfile(user.id);
                 
-                if (loadingIndicator) loadingIndicator.style.display = 'none';
-
-                let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+                let nickname = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+                
                 if (userNicknameEl) {
-                    userNicknameEl.textContent = apelido;
+                    userNicknameEl.textContent = nickname;
                 }
 
                 if (profile && profile.avatar_id) {
                     const avatarUrl = await loadUserAvatarUrl(profile.avatar_id);
                     if (avatarUrl && userAvatarImg) {
-                        userAvatarImg.onerror = function () {
-                            console.error('Erro ao carregar avatar, usando padrão');
-                            this.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
-                        };
                         userAvatarImg.src = avatarUrl;
+                        userAvatarImg.onerror = () => {
+                            userAvatarImg.src = DEFAULT_AVATAR_SVG;
+                        };
                     }
-                } else {
-                    userAvatarImg.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
                 }
             } else {
-                if (loadingIndicator) loadingIndicator.style.display = 'none';
                 if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
-                userAvatarImg.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+                userAvatarImg.src = DEFAULT_AVATAR_SVG;
             }
+
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
         }
 
-        // Lógica para carregar o tópico e comentários (a mesma que você já tinha)
+        // Função para carregar o tópico e comentários
         async function loadTopicData() {
             const params = new URLSearchParams(window.location.search);
             const topicId = params.get('id');
 
             if (!topicId) {
-                document.getElementById('topic-title').textContent = "Tópico não encontrado";
-                document.getElementById('topic-body').innerHTML = "<p>O tópico que você procura não existe.</p>";
+                topicTitle.textContent = "Tópico não encontrado";
+                topicBody.innerHTML = "<p>O tópico que você procura não existe.</p>";
                 return;
             }
             
@@ -648,13 +452,14 @@
 
                 if (topicError || !topicData) {
                     console.error("Erro ao carregar tópico:", topicError);
-                    document.getElementById('topic-title').textContent = "Erro ao carregar tópico";
+                    topicTitle.textContent = "Erro ao carregar tópico";
+                    topicBody.innerHTML = `<p>Ocorreu um erro ao carregar o tópico. Por favor, tente novamente mais tarde.</p>`;
                     return;
                 }
 
-                document.getElementById('topic-title').textContent = topicData.titulo;
-                document.getElementById('topic-body').innerHTML = topicData.conteudo;
-                const authorName = topicData.perfis ? topicData.perfis.apelido_poker : 'Usuário';
+                topicTitle.textContent = topicData.titulo;
+                topicBody.innerHTML = topicData.conteudo;
+                const authorName = topicData.perfis ? topicData.perfis.apelido_poker : 'Usuário Desconhecido';
                 const topicDate = new Date(topicData.criado_em).toLocaleDateString('pt-BR');
                 document.getElementById('topic-meta').textContent = `Por ${authorName} em ${topicDate}`;
                 
@@ -662,6 +467,8 @@
 
             } catch (err) {
                 console.error('Erro inesperado ao carregar tópico:', err);
+                topicTitle.textContent = "Erro inesperado";
+                topicBody.innerHTML = `<p>Ocorreu um erro inesperado ao carregar o tópico. Tente novamente mais tarde.</p>`;
             }
         }
 
@@ -679,12 +486,11 @@
 
                 if (error) {
                     console.error('Erro ao carregar comentários:', error);
+                    commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro ao carregar comentários.</p>`;
                     return;
                 }
 
-                const commentsList = document.getElementById('comments-list');
-                commentsList.innerHTML = ''; // Limpa os comentários existentes
-
+                commentsList.innerHTML = '';
                 if (comments.length === 0) {
                     commentsList.innerHTML = '<p style="text-align: center; color: #bbb;">Nenhum comentário ainda. Seja o primeiro a responder!</p>';
                     return;
@@ -694,7 +500,7 @@
                     const authorName = comment.perfis?.apelido_poker || 'Usuário';
                     const commentDate = new Date(comment.criado_em).toLocaleDateString('pt-BR');
                     
-                    let avatarUrl = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+                    let avatarUrl = DEFAULT_AVATAR_SVG;
                     if (comment.perfis?.avatar_id) {
                         const url = await loadUserAvatarUrl(comment.perfis.avatar_id);
                         if (url) avatarUrl = url;
@@ -712,7 +518,7 @@
                                 </div>
                             </div>
                             <div class="comment-body">
-                                <p>${comment.conteudo}</p>
+                                <p>${escapeHtml(comment.conteudo)}</p>
                             </div>
                         </div>
                     `;
@@ -721,6 +527,7 @@
 
             } catch (err) {
                 console.error('Erro inesperado ao carregar comentários:', err);
+                commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro inesperado ao carregar comentários.</p>`;
             }
         }
         
@@ -731,12 +538,53 @@
             return div.innerHTML;
         }
 
+        // Evento para submeter o formulário de comentário
+        if (commentForm) {
+            commentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const commentTextarea = document.getElementById('comment-text');
+                const commentContent = commentTextarea.value.trim();
+                const params = new URLSearchParams(window.location.search);
+                const topicId = params.get('id');
+
+                if (!commentContent || !topicId) {
+                    alert('Por favor, digite um comentário.');
+                    return;
+                }
+
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                if (sessionError || !session || !session.user) {
+                    alert('Você precisa estar logado para comentar.');
+                    return;
+                }
+                
+                const userId = session.user.id;
+                
+                const { error: insertError } = await supabase
+                    .from('comentarios')
+                    .insert([{
+                        conteudo: commentContent,
+                        topico_id: topicId,
+                        autor_id: userId
+                    }]);
+                
+                if (insertError) {
+                    console.error('Erro ao inserir comentário:', insertError);
+                    alert('Ocorreu um erro ao enviar seu comentário. Por favor, tente novamente.');
+                    return;
+                }
+                
+                commentTextarea.value = '';
+                await loadComments(topicId); // Recarrega os comentários para mostrar o novo
+            });
+        }
+
         // Verificar sessão e carregar perfil e dados do tópico ao iniciar
         document.addEventListener('DOMContentLoaded', async function () {
             try {
                 if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
-                if (userNicknameEl) userNicknameEl.textContent = '';
-
+                
                 const { data: { session }, error } = await supabase.auth.getSession();
                 
                 if (error) {
@@ -745,12 +593,7 @@
                     return;
                 }
                 
-                if (session && session.user) {
-                    await updateUserUI(session.user);
-                } else {
-                    await updateUserUI(null);
-                }
-
+                await updateUserUI(session?.user || null);
                 await loadTopicData();
                 
             } catch (error) {
