@@ -265,7 +265,6 @@
             font-size: 13px;
         }
 
-        /* Loading indicator */
         .loading {
             display: inline-block;
             width: 20px;
@@ -406,7 +405,7 @@
             } else {
                 console.log('Nenhum usuário logado. Mostrando "Convidado".');
                 if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
-                userAvatarImg.src = DEFAULT_AVATARE_SVG;
+                userAvatarImg.src = DEFAULT_AVATAR_SVG;
             }
 
             if (loadingIndicator) loadingIndicator.style.display = 'none';
@@ -433,7 +432,7 @@
                         title,
                         content,
                         created_at,
-                        author_id
+                        user_id
                     `)
                     .eq('id', topicId)
                     .single();
@@ -446,7 +445,7 @@
                 }
 
                 console.log('Tópico encontrado:', topicData);
-                const authorProfile = await loadUserProfile(topicData.author_id);
+                const authorProfile = await loadUserProfile(topicData.user_id);
                 const authorName = authorProfile ? authorProfile.username : 'Usuário Desconhecido';
                 
                 topicTitle.textContent = topicData.title;
