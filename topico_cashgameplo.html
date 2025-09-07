@@ -97,9 +97,9 @@
             cursor: pointer;
             font-weight: bold;
             font-size: 1rem;
-            margin: 20px auto 0 auto; /* Centraliza e adiciona margem superior */
-            display: block; /* Para ocupar a largura e permitir margin: auto */
-            max-width: fit-content; /* Ajusta a largura ao conteúdo */
+            margin: 20px auto 0 auto;
+            display: block;
+            max-width: fit-content;
             transition: background-color 0.2s ease;
         }
 
@@ -352,7 +352,6 @@
     const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
 
     async function loadUserProfile(userId) {
-        console.log('Tentando carregar perfil para o ID:', userId);
         if (!userId) {
             console.warn('loadUserProfile: ID do usuário é nulo ou indefinido.');
             return null;
@@ -367,7 +366,6 @@
                 console.error('Erro ao carregar perfil:', error);
                 return null;
             }
-            console.log('Perfil carregado com sucesso:', perfilData);
             return perfilData;
         } catch (error) {
             console.error('Erro inesperado em loadUserProfile:', error);
@@ -376,7 +374,6 @@
     }
 
     async function updateUserUI(user) {
-        console.log('Iniciando updateUserUI com o usuário:', user);
         if (!userArea) return;
 
         if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
@@ -384,18 +381,17 @@
         userAvatarImg.src = DEFAULT_AVATAR_SVG;
 
         if (user) {
-            console.log('Usuário logado. Buscando perfil...');
             const profile = await loadUserProfile(user.id);
             
-            let nickname = profile && profile.username ? profile.username : user.email.split('@')[0];
+            let nickname = profile?.username || user.email.split('@')[0];
             
             if (userNicknameEl) {
                 userNicknameEl.textContent = nickname;
             }
 
-            if (profile && profile.avatar_url) {
+            if (profile?.avatar_url) {
                 const avatarUrl = profile.avatar_url;
-                if (avatarUrl && userAvatarImg) {
+                if (userAvatarImg) {
                     userAvatarImg.src = avatarUrl;
                     userAvatarImg.onerror = () => {
                         userAvatarImg.src = DEFAULT_AVATAR_SVG;
@@ -403,29 +399,24 @@
                 }
             }
         } else {
-            console.log('Nenhum usuário logado. Mostrando "Convidado".');
             if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
             userAvatarImg.src = DEFAULT_AVATAR_SVG;
         }
 
         if (loadingIndicator) loadingIndicator.style.display = 'none';
-        console.log('updateUserUI concluído.');
     }
 
     async function loadTopicData() {
         const params = new URLSearchParams(window.location.search);
         const topicId = params.get('id');
-        console.log('ID do tópico da URL:', topicId);
 
         if (!topicId) {
-            console.log('ID do tópico não encontrado na URL.');
             topicTitle.textContent = "Tópico não encontrado";
             topicBody.innerHTML = "<p>O tópico que você procura não existe.</p>";
             return;
         }
         
         try {
-            console.log('Buscando tópico com ID:', topicId);
             const { data: topicData, error: topicError } = await supabase
                 .from('topics') 
                 .select(`
@@ -444,9 +435,8 @@
                 return;
             }
 
-            console.log('Tópico encontrado:', topicData);
             const authorProfile = await loadUserProfile(topicData.user_id);
-            const authorName = authorProfile ? authorProfile.username : 'Usuário Desconhecido';
+            const authorName = authorProfile?.username || 'Usuário Desconhecido';
             
             topicTitle.textContent = topicData.title;
             topicBody.innerHTML = topicData.content;
@@ -463,7 +453,6 @@
     }
 
     async function loadComments(topicId) {
-        console.log('Buscando comentários para o tópico:', topicId);
         try {
             const { data: comments, error } = await supabase
                 .from('comments')
@@ -481,27 +470,33 @@
                 return;
             }
 
-            console.log('Comentários encontrados:', comments);
             commentsList.innerHTML = '';
             if (comments.length === 0) {
                 commentsList.innerHTML = '<p style="text-align: center; color: #bbb;">Nenhum comentário ainda. Seja o primeiro a responder!</p>';
                 return;
             }
 
-            for (const comment of comments) {
+            // Mapear os comentários e buscar os perfis de forma assíncrona
+            const commentsWithAuthors = await Promise.all(comments.map(async (comment) => {
                 const authorProfile = await loadUserProfile(comment.user_id);
-                const authorName = authorProfile ? authorProfile.username : 'Usuário';
-                const avatarUrl = authorProfile ? authorProfile.avatar_url : DEFAULT_AVATAR_SVG;
+                return {
+                    ...comment,
+                    authorName: authorProfile?.username || 'Usuário',
+                    avatarUrl: authorProfile?.avatar_url || DEFAULT_AVATAR_SVG
+                };
+            }));
+
+            // Renderizar todos os comentários após carregar todos os perfis
+            commentsWithAuthors.forEach(comment => {
                 const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
-                
                 const commentHTML = `
                     <div class="comment">
                         <div class="comment-meta">
                             <div class="comment-avatar">
-                                <img src="${avatarUrl}" alt="Avatar">
+                                <img src="${comment.avatarUrl}" alt="Avatar" onerror="this.src='${DEFAULT_AVATAR_SVG}'">
                             </div>
                             <div style="flex-grow: 1;">
-                                <span class="comment-author">${authorName}</span>
+                                <span class="comment-author">${comment.authorName}</span>
                                 <span class="comment-date">em ${commentDate}</span>
                             </div>
                         </div>
@@ -511,9 +506,8 @@
                     </div>
                 `;
                 commentsList.innerHTML += commentHTML;
-            }
-            console.log('Comentários renderizados.');
-
+            });
+            
         } catch (err) {
             console.error('Erro inesperado em loadComments:', err);
             commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro inesperado ao carregar comentários.</p>`;
@@ -568,7 +562,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', async function () {
-        console.log('Página carregada. Verificando a sessão do usuário...');
         try {
             if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
             
@@ -580,8 +573,6 @@
                 await loadTopicData();
                 return;
             }
-            
-            console.log('Sessão encontrada:', session);
             
             await updateUserUI(session?.user || null);
             await loadTopicData();
