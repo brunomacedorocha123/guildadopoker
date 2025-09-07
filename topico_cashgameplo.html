@@ -357,15 +357,15 @@
             if (!avatarId) return null;
             try {
                 const { data: avatarData, error } = await supabase
-                    .from('avatares')
-                    .select('url_imagem')
+                    .from('profiles')
+                    .select('avatar_url')
                     .eq('id', avatarId)
                     .single();
                 if (error || !avatarData) {
                     console.error('Erro ao carregar URL do avatar:', error);
                     return null;
                 }
-                return avatarData.url_imagem;
+                return avatarData.avatar_url;
             } catch (error) {
                 console.error('Erro inesperado ao carregar URL do avatar:', error);
                 return null;
@@ -376,9 +376,9 @@
         async function loadUserProfile(userId) {
             try {
                 const { data: perfilData, error } = await supabase
-                    .from('perfis')
-                    .select('apelido_poker, avatar_id')
-                    .eq('usuario_id', userId)
+                    .from('profiles')
+                    .select('username, avatar_url')
+                    .eq('id', userId)
                     .single();
                 if (error) {
                     console.error('Erro ao carregar perfil:', error);
@@ -402,14 +402,14 @@
             if (user) {
                 const profile = await loadUserProfile(user.id);
                 
-                let nickname = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+                let nickname = profile && profile.username ? profile.username : user.email.split('@')[0];
                 
                 if (userNicknameEl) {
                     userNicknameEl.textContent = nickname;
                 }
 
-                if (profile && profile.avatar_id) {
-                    const avatarUrl = await loadUserAvatarUrl(profile.avatar_id);
+                if (profile && profile.avatar_url) {
+                    const avatarUrl = profile.avatar_url;
                     if (avatarUrl && userAvatarImg) {
                         userAvatarImg.src = avatarUrl;
                         userAvatarImg.onerror = () => {
@@ -437,14 +437,14 @@
             }
             
             try {
-                // CORREÇÃO: Usando o nome da tabela 'topics' conforme o SQL
+                // CORREÇÃO: Selecionando apenas o author_id para depois buscar o perfil
                 const { data: topicData, error: topicError } = await supabase
                     .from('topics') 
                     .select(`
                         title,
                         content,
                         created_at,
-                        profiles(username)
+                        author_id
                     `)
                     .eq('id', topicId)
                     .single();
@@ -456,9 +456,12 @@
                     return;
                 }
 
+                // Busca o perfil do autor separadamente
+                const authorProfile = await loadUserProfile(topicData.author_id);
+                const authorName = authorProfile ? authorProfile.username : 'Usuário Desconhecido';
+                
                 topicTitle.textContent = topicData.title;
                 topicBody.innerHTML = topicData.content;
-                const authorName = topicData.profiles ? topicData.profiles.username : 'Usuário Desconhecido';
                 const topicDate = new Date(topicData.created_at).toLocaleDateString('pt-BR');
                 document.getElementById('topic-meta').textContent = `Por ${authorName} em ${topicDate}`;
                 
@@ -473,13 +476,13 @@
 
         async function loadComments(topicId) {
             try {
-                // CORREÇÃO: Usando o nome da tabela 'comments' e 'profiles' conforme o SQL
+                // Seleciona os comentários com o user_id
                 const { data: comments, error } = await supabase
                     .from('comments')
                     .select(`
                         content,
                         created_at,
-                        profiles(username, avatar_url)
+                        user_id
                     `)
                     .eq('topic_id', topicId)
                     .order('created_at', { ascending: true });
@@ -496,16 +499,13 @@
                     return;
                 }
 
+                // Para cada comentário, busca o perfil do autor
                 for (const comment of comments) {
-                    const authorName = comment.profiles?.username || 'Usuário';
+                    const authorProfile = await loadUserProfile(comment.user_id);
+                    const authorName = authorProfile ? authorProfile.username : 'Usuário';
+                    const avatarUrl = authorProfile ? authorProfile.avatar_url : DEFAULT_AVATAR_SVG;
                     const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
                     
-                    let avatarUrl = comment.profiles?.avatar_url || DEFAULT_AVATAR_SVG;
-                    if (comment.profiles?.avatar_url) {
-                        const url = comment.profiles.avatar_url;
-                        if (url) avatarUrl = url;
-                    }
-
                     const commentHTML = `
                         <div class="comment">
                             <div class="comment-meta">
@@ -561,7 +561,6 @@
                 
                 const userId = session.user.id;
                 
-                // CORREÇÃO: Usando os nomes das colunas 'content', 'topic_id', 'user_id' conforme o SQL
                 const { error: insertError } = await supabase
                     .from('comments')
                     .insert([{
