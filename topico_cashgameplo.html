@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tópico: Cash Game PLO - Guilda do Poker</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="/favicon.ico" type="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -295,7 +295,7 @@
                 </div>
             </div>
         </div>
-        </header>
+    </header>
 
     <button class="back-button" onclick="window.history.back();">Voltar ao Fórum</button>
 
@@ -351,8 +351,6 @@
 
         // Avatar padrão para usuários sem um avatar customizado
         const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
-        
-        // A lógica do hamburger menu e seus event listeners foram removidos.
 
         // Função para carregar URL do avatar
         async function loadUserAvatarUrl(avatarId) {
@@ -439,13 +437,14 @@
             }
             
             try {
+                // CORREÇÃO: Usando o nome da tabela 'topics' conforme o SQL
                 const { data: topicData, error: topicError } = await supabase
-                    .from('topicos')
+                    .from('topics') 
                     .select(`
-                        titulo,
-                        conteudo,
-                        criado_em,
-                        perfis(apelido_poker)
+                        title,
+                        content,
+                        created_at,
+                        profiles(username)
                     `)
                     .eq('id', topicId)
                     .single();
@@ -457,10 +456,10 @@
                     return;
                 }
 
-                topicTitle.textContent = topicData.titulo;
-                topicBody.innerHTML = topicData.conteudo;
-                const authorName = topicData.perfis ? topicData.perfis.apelido_poker : 'Usuário Desconhecido';
-                const topicDate = new Date(topicData.criado_em).toLocaleDateString('pt-BR');
+                topicTitle.textContent = topicData.title;
+                topicBody.innerHTML = topicData.content;
+                const authorName = topicData.profiles ? topicData.profiles.username : 'Usuário Desconhecido';
+                const topicDate = new Date(topicData.created_at).toLocaleDateString('pt-BR');
                 document.getElementById('topic-meta').textContent = `Por ${authorName} em ${topicDate}`;
                 
                 await loadComments(topicId);
@@ -474,15 +473,16 @@
 
         async function loadComments(topicId) {
             try {
+                // CORREÇÃO: Usando o nome da tabela 'comments' e 'profiles' conforme o SQL
                 const { data: comments, error } = await supabase
-                    .from('comentarios')
+                    .from('comments')
                     .select(`
-                        conteudo,
-                        criado_em,
-                        perfis(apelido_poker, avatar_id)
+                        content,
+                        created_at,
+                        profiles(username, avatar_url)
                     `)
-                    .eq('topico_id', topicId)
-                    .order('criado_em', { ascending: true });
+                    .eq('topic_id', topicId)
+                    .order('created_at', { ascending: true });
 
                 if (error) {
                     console.error('Erro ao carregar comentários:', error);
@@ -497,12 +497,12 @@
                 }
 
                 for (const comment of comments) {
-                    const authorName = comment.perfis?.apelido_poker || 'Usuário';
-                    const commentDate = new Date(comment.criado_em).toLocaleDateString('pt-BR');
+                    const authorName = comment.profiles?.username || 'Usuário';
+                    const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
                     
-                    let avatarUrl = DEFAULT_AVATAR_SVG;
-                    if (comment.perfis?.avatar_id) {
-                        const url = await loadUserAvatarUrl(comment.perfis.avatar_id);
+                    let avatarUrl = comment.profiles?.avatar_url || DEFAULT_AVATAR_SVG;
+                    if (comment.profiles?.avatar_url) {
+                        const url = comment.profiles.avatar_url;
                         if (url) avatarUrl = url;
                     }
 
@@ -518,7 +518,7 @@
                                 </div>
                             </div>
                             <div class="comment-body">
-                                <p>${escapeHtml(comment.conteudo)}</p>
+                                <p>${escapeHtml(comment.content)}</p>
                             </div>
                         </div>
                     `;
@@ -561,12 +561,13 @@
                 
                 const userId = session.user.id;
                 
+                // CORREÇÃO: Usando os nomes das colunas 'content', 'topic_id', 'user_id' conforme o SQL
                 const { error: insertError } = await supabase
-                    .from('comentarios')
+                    .from('comments')
                     .insert([{
-                        conteudo: commentContent,
-                        topico_id: topicId,
-                        autor_id: userId
+                        content: commentContent,
+                        topic_id: topicId,
+                        user_id: userId
                     }]);
                 
                 if (insertError) {
