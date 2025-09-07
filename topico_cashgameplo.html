@@ -353,13 +353,12 @@
 
     async function loadUserProfile(userId) {
         if (!userId) {
-            console.warn('loadUserProfile: ID do usuário é nulo ou indefinido.');
             return null;
         }
         try {
             const { data: perfilData, error } = await supabase
-                .from('profiles')
-                .select('username, avatar_url')
+                .from('perfis')
+                .select('apelido_poker, url_imagem')
                 .eq('id', userId)
                 .single();
             if (error) {
@@ -383,14 +382,14 @@
         if (user) {
             const profile = await loadUserProfile(user.id);
             
-            let nickname = profile?.username || user.email.split('@')[0];
+            let nickname = profile?.apelido_poker || user.email.split('@')[0];
             
             if (userNicknameEl) {
                 userNicknameEl.textContent = nickname;
             }
 
-            if (profile?.avatar_url) {
-                const avatarUrl = profile.avatar_url;
+            if (profile?.url_imagem) {
+                const avatarUrl = profile.url_imagem;
                 if (userAvatarImg) {
                     userAvatarImg.src = avatarUrl;
                     userAvatarImg.onerror = () => {
@@ -436,7 +435,7 @@
             }
 
             const authorProfile = await loadUserProfile(topicData.user_id);
-            const authorName = authorProfile?.username || 'Usuário Desconhecido';
+            const authorName = authorProfile?.apelido_poker || 'Usuário Desconhecido';
             
             topicTitle.textContent = topicData.title;
             topicBody.innerHTML = topicData.content;
@@ -480,8 +479,8 @@
                 const authorProfile = await loadUserProfile(comment.user_id);
                 return {
                     ...comment,
-                    authorName: authorProfile?.username || 'Usuário',
-                    avatarUrl: authorProfile?.avatar_url || DEFAULT_AVATAR_SVG
+                    authorName: authorProfile?.apelido_poker || 'Usuário',
+                    avatarUrl: authorProfile?.url_imagem || DEFAULT_AVATAR_SVG
                 };
             });
             const commentsWithAuthors = await Promise.all(commentPromises);
