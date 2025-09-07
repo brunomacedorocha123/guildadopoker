@@ -281,7 +281,7 @@
         <div class="header-left">
             <div class="user-area" id="user-area">
                 <div class="user-avatar" id="user-avatar">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==" alt="Avatar" id="avatar-img">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBk=" alt="Avatar" id="avatar-img">
                 </div>
                 <div class="user-nickname" id="user-nickname">
                     <span class="loading" id="loading-indicator"></span>
@@ -295,11 +295,21 @@
 
     <main class="topic-container">
         <section class="topic-header">
-            <h2 id="topic-title"></h2>
-            <p class="topic-meta" id="topic-meta"></p>
+            <h2 id="topic-title">Cash Game PLO - Estratégias e Discussões</h2>
+            <p class="topic-meta" id="topic-meta">Por Admin em 01/01/2025</p>
         </section>
 
-        <section class="topic-body" id="topic-body"></section>
+        <section class="topic-body" id="topic-body">
+            <p>Bem-vindos à discussão sobre Cash Game PLO! Aqui podemos compartilhar estratégias, hand histories e dúvidas sobre Pot Limit Omaha.</p>
+            <p>PLO é um jogo de ação intensa com muitas possibilidades. Vamos discutir:</p>
+            <ul>
+                <li>Estratégias pré-flop</li>
+                <li>Leitura de board textures</li>
+                <li>Gerenciamento de bankroll</li>
+                <li>Melhores práticas para PLO cash games</li>
+            </ul>
+            <p>Compartilhe suas experiências e vamos aprender juntos!</p>
+        </section>
 
         <section class="comments-section">
             <h3>Comentários</h3>
@@ -341,97 +351,80 @@
     const topicTitle = document.getElementById('topic-title');
     const topicBody = document.getElementById('topic-body');
 
-    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw7Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
+    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
 
-    async function loadUserProfile(userId) {
-        if (!userId) return null;
+    // Função para carregar avatar pelo ID
+    async function loadUserAvatar(avatarId) {
+        if (!avatarId) return null;
         try {
-            const { data: perfilData, error } = await supabase
-                .from('perfis')
-                .select('apelido_poker, url_imagem')
-                .eq('id', userId)
+            const { data: avatarData, error } = await supabase
+                .from('avatares')
+                .select('url_imagem')
+                .eq('id', avatarId)
                 .single();
-            return error ? null : perfilData;
+                
+            if (error || !avatarData) return null;
+            return avatarData.url_imagem;
         } catch (error) {
+            console.error('Erro ao carregar avatar:', error);
             return null;
         }
     }
 
-    async function updateUserUI(user) {
-        if (!userArea) return;
-
-        if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
-        if (userNicknameEl) userNicknameEl.textContent = '';
-        userAvatarImg.src = DEFAULT_AVATAR_SVG;
-
-        if (user) {
-            const profile = await loadUserProfile(user.id);
-            
-            let nickname = profile?.apelido_poker || user.email.split('@')[0];
-            
-            if (userNicknameEl) {
-                userNicknameEl.textContent = nickname;
-            }
-
-            if (profile?.url_imagem) {
-                userAvatarImg.src = profile.url_imagem;
-                userAvatarImg.onerror = () => {
-                    userAvatarImg.src = DEFAULT_AVATAR_SVG;
-                };
-            }
-        } else {
-            if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
-            userAvatarImg.src = DEFAULT_AVATAR_SVG;
-        }
-
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
-    }
-
-    async function loadTopicData() {
-        const params = new URLSearchParams(window.location.search);
-        const topicId = params.get('id');
-
-        if (!topicId) {
-            topicTitle.textContent = "Tópico não encontrado";
-            topicBody.innerHTML = "<p>O tópico que você procura não existe.</p>";
-            return;
-        }
-        
+    // Função para carregar perfil do usuário
+    async function loadUserProfile(userId) {
         try {
-            const { data: topicData, error: topicError } = await supabase
-                .from('topics') 
-                .select('title, content, created_at, user_id')
-                .eq('id', topicId)
+            const { data: perfilData, error } = await supabase
+                .from('perfis')
+                .select('apelido_poker, avatar_id')
+                .eq('usuario_id', userId)
                 .single();
-
-            if (topicError || !topicData) {
-                topicTitle.textContent = "Erro ao carregar tópico";
-                topicBody.innerHTML = `<p>Ocorreu um erro ao carregar o tópico.</p>`;
-                return;
+                
+            if (error) {
+                console.error('Erro ao carregar perfil:', error);
+                return null;
             }
-
-            const authorProfile = await loadUserProfile(topicData.user_id);
-            const authorName = authorProfile?.apelido_poker || 'Usuário Desconhecido';
-            
-            topicTitle.textContent = topicData.title;
-            topicBody.innerHTML = topicData.content;
-            const topicDate = new Date(topicData.created_at).toLocaleDateString('pt-BR');
-            document.getElementById('topic-meta').textContent = `Por ${authorName} em ${topicDate}`;
-            
-            await loadComments(topicId);
-
-        } catch (err) {
-            topicTitle.textContent = "Erro inesperado";
-            topicBody.innerHTML = `<p>Ocorreu um erro inesperado ao carregar o tópico.</p>`;
+            return perfilData;
+        } catch (error) {
+            console.error('Erro ao carregar perfil:', error);
+            return null;
         }
     }
 
-    async function loadComments(topicId) {
+    // Atualiza a janela do usuário
+    async function updateUserUI(user, profile) {
+        if (!userArea) return;
+        userArea.style.display = 'flex';
+
+        // esconder loading
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
+
+        // definir apelido
+        let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
+        if (userNicknameEl) {
+            userNicknameEl.textContent = apelido;
+            userNicknameEl.style.display = 'inline';
+        }
+
+        // carregar avatar
+        if (profile && profile.avatar_id) {
+            const avatarUrl = await loadUserAvatar(profile.avatar_id);
+            if (avatarUrl && userAvatarImg) {
+                userAvatarImg.onerror = function () {
+                    console.error('Erro ao carregar avatar, usando padrão');
+                    this.src = DEFAULT_AVATAR_SVG;
+                };
+                userAvatarImg.src = avatarUrl;
+            }
+        }
+    }
+
+    async function loadComments() {
         try {
             const { data: comments, error } = await supabase
                 .from('comments')
                 .select('content, created_at, user_id')
-                .eq('topic_id', topicId)
+                .eq('topic_id', 'cashgame-plo')
                 .order('created_at', { ascending: true });
 
             if (error) {
@@ -440,7 +433,7 @@
             }
 
             commentsList.innerHTML = '';
-            if (comments.length === 0) {
+            if (!comments || comments.length === 0) {
                 commentsList.innerHTML = '<p style="text-align: center; color: #bbb;">Nenhum comentário ainda. Seja o primeiro a responder!</p>';
                 return;
             }
@@ -448,14 +441,14 @@
             for (const comment of comments) {
                 const authorProfile = await loadUserProfile(comment.user_id);
                 const authorName = authorProfile?.apelido_poker || 'Usuário';
-                const avatarUrl = authorProfile?.url_imagem || DEFAULT_AVATAR_SVG;
+                const avatarUrl = authorProfile?.avatar_id ? await loadUserAvatar(authorProfile.avatar_id) : DEFAULT_AVATAR_SVG;
                 const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
                 
                 const commentHTML = `
                     <div class="comment">
                         <div class="comment-meta">
                             <div class="comment-avatar">
-                                <img src="${avatarUrl}" alt="Avatar" onerror="this.src='${DEFAULT_AVATAR_SVG}'">
+                                <img src="${avatarUrl || DEFAULT_AVATAR_SVG}" alt="Avatar" onerror="this.src='${DEFAULT_AVATAR_SVG}'">
                             </div>
                             <div style="flex-grow: 1;">
                                 <span class="comment-author">${authorName}</span>
@@ -480,16 +473,9 @@
             
             const commentTextarea = document.getElementById('comment-text');
             const commentContent = commentTextarea.value.trim();
-            const params = new URLSearchParams(window.location.search);
-            const topicId = params.get('id');
 
             if (!commentContent) {
                 alert('Por favor, digite um comentário.');
-                return;
-            }
-
-            if (!topicId) {
-                alert('Erro: ID do tópico não encontrado.');
                 return;
             }
 
@@ -504,7 +490,7 @@
                     .from('comments')
                     .insert([{
                         content: commentContent,
-                        topic_id: topicId,
+                        topic_id: 'cashgame-plo',
                         user_id: session.user.id
                     }]);
                 
@@ -515,7 +501,7 @@
                 }
                 
                 commentTextarea.value = '';
-                await loadComments(topicId);
+                await loadComments();
                 
             } catch (error) {
                 console.error('Erro ao enviar comentário:', error);
@@ -524,18 +510,26 @@
         });
     }
 
+    // Verificar sessão e carregar perfil ao iniciar
     document.addEventListener('DOMContentLoaded', async function () {
         try {
-            if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
+            const { data: { session }, error } = await supabase.auth.getSession();
             
-            const { data: { session } } = await supabase.auth.getSession();
-            await updateUserUI(session?.user || null);
-            await loadTopicData();
+            if (error) {
+                console.error('Erro ao verificar sessão:', error);
+                return;
+            }
+            
+            if (session) {
+                const profile = await loadUserProfile(session.user.id);
+                await updateUserUI(session.user, profile);
+            }
+            
+            // Carregar comentários
+            await loadComments();
             
         } catch (error) {
-            console.error('Erro ao carregar página:', error);
-            await updateUserUI(null);
-            await loadTopicData();
+            console.error('Erro ao inicializar página:', error);
         }
     });
     </script>
