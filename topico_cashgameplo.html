@@ -352,28 +352,12 @@
         // Avatar padrão para usuários sem um avatar customizado
         const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTNDMTUwLDE3Mi41IDE2MCwxNjIuOCAxNjAsMTUwTDE2MCw1MC41IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==";
 
-        // Função para carregar URL do avatar
-        async function loadUserAvatarUrl(avatarId) {
-            if (!avatarId) return null;
-            try {
-                const { data: avatarData, error } = await supabase
-                    .from('profiles')
-                    .select('avatar_url')
-                    .eq('id', avatarId)
-                    .single();
-                if (error || !avatarData) {
-                    console.error('Erro ao carregar URL do avatar:', error);
-                    return null;
-                }
-                return avatarData.avatar_url;
-            } catch (error) {
-                console.error('Erro inesperado ao carregar URL do avatar:', error);
+        async function loadUserProfile(userId) {
+            console.log('Tentando carregar perfil para o ID:', userId);
+            if (!userId) {
+                console.warn('loadUserProfile: ID do usuário é nulo ou indefinido.');
                 return null;
             }
-        }
-
-        // Função para carregar perfil do usuário
-        async function loadUserProfile(userId) {
             try {
                 const { data: perfilData, error } = await supabase
                     .from('profiles')
@@ -384,15 +368,16 @@
                     console.error('Erro ao carregar perfil:', error);
                     return null;
                 }
+                console.log('Perfil carregado com sucesso:', perfilData);
                 return perfilData;
             } catch (error) {
-                console.error('Erro inesperado ao carregar perfil:', error);
+                console.error('Erro inesperado em loadUserProfile:', error);
                 return null;
             }
         }
 
-        // Atualiza a janela do usuário no cabeçalho
         async function updateUserUI(user) {
+            console.log('Iniciando updateUserUI com o usuário:', user);
             if (!userArea) return;
 
             if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
@@ -400,6 +385,7 @@
             userAvatarImg.src = DEFAULT_AVATAR_SVG;
 
             if (user) {
+                console.log('Usuário logado. Buscando perfil...');
                 const profile = await loadUserProfile(user.id);
                 
                 let nickname = profile && profile.username ? profile.username : user.email.split('@')[0];
@@ -418,26 +404,29 @@
                     }
                 }
             } else {
+                console.log('Nenhum usuário logado. Mostrando "Convidado".');
                 if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
-                userAvatarImg.src = DEFAULT_AVATAR_SVG;
+                userAvatarImg.src = DEFAULT_AVATARE_SVG;
             }
 
             if (loadingIndicator) loadingIndicator.style.display = 'none';
+            console.log('updateUserUI concluído.');
         }
 
-        // Função para carregar o tópico e comentários
         async function loadTopicData() {
             const params = new URLSearchParams(window.location.search);
             const topicId = params.get('id');
+            console.log('ID do tópico da URL:', topicId);
 
             if (!topicId) {
+                console.log('ID do tópico não encontrado na URL.');
                 topicTitle.textContent = "Tópico não encontrado";
                 topicBody.innerHTML = "<p>O tópico que você procura não existe.</p>";
                 return;
             }
             
             try {
-                // CORREÇÃO: Selecionando apenas o author_id para depois buscar o perfil
+                console.log('Buscando tópico com ID:', topicId);
                 const { data: topicData, error: topicError } = await supabase
                     .from('topics') 
                     .select(`
@@ -456,7 +445,7 @@
                     return;
                 }
 
-                // Busca o perfil do autor separadamente
+                console.log('Tópico encontrado:', topicData);
                 const authorProfile = await loadUserProfile(topicData.author_id);
                 const authorName = authorProfile ? authorProfile.username : 'Usuário Desconhecido';
                 
@@ -468,15 +457,15 @@
                 await loadComments(topicId);
 
             } catch (err) {
-                console.error('Erro inesperado ao carregar tópico:', err);
+                console.error('Erro inesperado em loadTopicData:', err);
                 topicTitle.textContent = "Erro inesperado";
                 topicBody.innerHTML = `<p>Ocorreu um erro inesperado ao carregar o tópico. Tente novamente mais tarde.</p>`;
             }
         }
 
         async function loadComments(topicId) {
+            console.log('Buscando comentários para o tópico:', topicId);
             try {
-                // Seleciona os comentários com o user_id
                 const { data: comments, error } = await supabase
                     .from('comments')
                     .select(`
@@ -493,13 +482,13 @@
                     return;
                 }
 
+                console.log('Comentários encontrados:', comments);
                 commentsList.innerHTML = '';
                 if (comments.length === 0) {
                     commentsList.innerHTML = '<p style="text-align: center; color: #bbb;">Nenhum comentário ainda. Seja o primeiro a responder!</p>';
                     return;
                 }
 
-                // Para cada comentário, busca o perfil do autor
                 for (const comment of comments) {
                     const authorProfile = await loadUserProfile(comment.user_id);
                     const authorName = authorProfile ? authorProfile.username : 'Usuário';
@@ -524,21 +513,20 @@
                     `;
                     commentsList.innerHTML += commentHTML;
                 }
+                console.log('Comentários renderizados.');
 
             } catch (err) {
-                console.error('Erro inesperado ao carregar comentários:', err);
+                console.error('Erro inesperado em loadComments:', err);
                 commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro inesperado ao carregar comentários.</p>`;
             }
         }
         
-        // Função para evitar XSS
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // Evento para submeter o formulário de comentário
         if (commentForm) {
             commentForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -576,12 +564,12 @@
                 }
                 
                 commentTextarea.value = '';
-                await loadComments(topicId); // Recarrega os comentários para mostrar o novo
+                await loadComments(topicId);
             });
         }
 
-        // Verificar sessão e carregar perfil e dados do tópico ao iniciar
         document.addEventListener('DOMContentLoaded', async function () {
+            console.log('Página carregada. Verificando a sessão do usuário...');
             try {
                 if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
                 
@@ -592,6 +580,7 @@
                     await updateUserUI(null);
                     return;
                 }
+                console.log('Sessão encontrada:', session);
                 
                 await updateUserUI(session?.user || null);
                 await loadTopicData();
