@@ -273,6 +273,15 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -281,7 +290,7 @@
         <div class="header-left">
             <div class="user-area" id="user-area">
                 <div class="user-avatar" id="user-avatar">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzcy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
                 </div>
                 <div class="user-nickname" id="user-nickname">
                     <span class="loading" id="loading-indicator"></span>
@@ -343,37 +352,70 @@
 
     const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
 
-    // Função para carregar avatar pelo ID (igual ao fórum)
-    async function loadUserAvatar(avatarId) {
-        if (!avatarId) return null;
+    // DEBUG: Função para verificar estrutura das tabelas
+    async function debugTables() {
         try {
-            const { data: avatarData, error } = await supabase
-                .from('avatares')
-                .select('url_imagem')
-                .eq('id', avatarId)
-                .single();
+            console.log("Verificando tabelas...");
+            
+            // Verificar tabela de perfis
+            const { data: profilesData, error: profilesError } = await supabase
+                .from('profiles')
+                .select('*')
+                .limit(1);
                 
-            if (error || !avatarData) return null;
-            return avatarData.url_imagem;
+            if (profilesError) {
+                console.error("Erro ao acessar tabela profiles:", profilesError);
+            } else {
+                console.log("Estrutura da tabela profiles:", profilesData);
+            }
+            
+            // Verificar tabela de tópicos
+            const { data: topicsData, error: topicsError } = await supabase
+                .from('topics')
+                .select('*')
+                .limit(1);
+                
+            if (topicsError) {
+                console.error("Erro ao acessar tabela topics:", topicsError);
+            } else {
+                console.log("Estrutura da tabela topics:", topicsData);
+            }
+            
         } catch (error) {
-            console.error('Erro ao carregar avatar:', error);
-            return null;
+            console.error("Erro no debug:", error);
         }
     }
 
-    // Função para carregar perfil do usuário (igual ao fórum)
+    // Função para carregar perfil do usuário (baseado no código do fórum)
     async function loadUserProfile(userId) {
         try {
-            const { data: perfilData, error } = await supabase
-                .from('perfis')
-                .select('apelido_poker, avatar_id')
-                .eq('usuario_id', userId)
+            console.log("Carregando perfil para userId:", userId);
+            
+            // Primeiro, tenta acessar a tabela 'profiles' (estrutura internacional)
+            let { data: perfilData, error } = await supabase
+                .from('profiles')
+                .select('username, avatar_url')
+                .eq('id', userId)
                 .single();
                 
             if (error) {
-                console.error('Erro ao carregar perfil:', error);
-                return null;
+                console.log("Tentativa 1 falhou, tentando 'perfis'...", error);
+                
+                // Se falhar, tenta acessar a tabela 'perfis' (estrutura em português)
+                const { data: perfilDataPT, error: errorPT } = await supabase
+                    .from('perfis')
+                    .select('apelido_poker, avatar_id')
+                    .eq('usuario_id', userId)
+                    .single();
+                    
+                if (errorPT) {
+                    console.error("Erro ao carregar perfil:", errorPT);
+                    return null;
+                }
+                
+                return perfilDataPT;
             }
+            
             return perfilData;
         } catch (error) {
             console.error('Erro ao carregar perfil:', error);
@@ -381,34 +423,74 @@
         }
     }
 
-    // Atualiza a UI do usuário (igual ao fórum)
+    // Função para carregar avatar (baseado no código do fórum)
+    async function loadUserAvatar(avatarId) {
+        if (!avatarId) return null;
+        try {
+            console.log("Carregando avatar para avatarId:", avatarId);
+            
+            // Tenta acessar a tabela 'avatares'
+            const { data: avatarData, error } = await supabase
+                .from('avatares')
+                .select('url_imagem')
+                .eq('id', avatarId)
+                .single();
+                
+            if (error) {
+                console.error("Erro ao carregar avatar:", error);
+                return null;
+            }
+            
+            return avatarData.url_imagem;
+        } catch (error) {
+            console.error('Erro ao carregar avatar:', error);
+            return null;
+        }
+    }
+
+    // Atualiza a UI do usuário (baseado no código do fórum)
     async function updateUserUI(user, profile) {
         if (!userArea) return;
-        userArea.style.display = 'flex';
+        
+        console.log("Atualizando UI com:", { user, profile });
 
         // Esconder loading
         if (loadingIndicator) loadingIndicator.style.display = 'none';
 
-        // Definir apelido
-        let apelido = profile && profile.apelido_poker ? profile.apelido_poker : user.email.split('@')[0];
-        if (userNicknameEl) {
-            userNicknameEl.textContent = apelido;
-            userNicknameEl.style.display = 'inline';
-        }
+        // Mostrar área do usuário
+        userArea.style.display = 'flex';
 
-        // Carregar avatar
-        if (profile && profile.avatar_id) {
-            const avatarUrl = await loadUserAvatar(profile.avatar_id);
-            if (avatarUrl && userAvatarImg) {
-                userAvatarImg.onerror = function () {
-                    console.error('Erro ao carregar avatar, usando padrão');
-                    this.src = DEFAULT_AVATAR_SVG;
-                };
-                userAvatarImg.src = avatarUrl;
+        // Verificar se temos um perfil válido
+        if (profile) {
+            // Definir apelido - verifica ambas as estruturas possíveis
+            let apelido = profile.username || profile.apelido_poker || user.email.split('@')[0];
+            
+            if (userNicknameEl) {
+                userNicknameEl.textContent = apelido;
+            }
+
+            // Carregar avatar - verifica ambas as estruturas possíveis
+            const avatarId = profile.avatar_url || profile.avatar_id;
+            
+            if (avatarId) {
+                const avatarUrl = await loadUserAvatar(avatarId);
+                if (avatarUrl && userAvatarImg) {
+                    userAvatarImg.onerror = function () {
+                        console.error('Erro ao carregar avatar, usando padrão');
+                        this.src = DEFAULT_AVATAR_SVG;
+                    };
+                    userAvatarImg.src = avatarUrl;
+                } else {
+                    userAvatarImg.src = DEFAULT_AVATAR_SVG;
+                }
             } else {
                 userAvatarImg.src = DEFAULT_AVATAR_SVG;
             }
         } else {
+            // Se não tem perfil, usa dados básicos do usuário
+            if (userNicknameEl) {
+                userNicknameEl.textContent = user.email.split('@')[0];
+            }
             userAvatarImg.src = DEFAULT_AVATAR_SVG;
         }
     }
@@ -425,30 +507,66 @@
         }
         
         try {
-            const { data: topicData, error: topicError } = await supabase
-                .from('topicos') 
+            console.log("Carregando tópico ID:", topicId);
+            
+            // Tenta carregar com a estrutura internacional primeiro
+            let { data: topicData, error: topicError } = await supabase
+                .from('topics') 
                 .select(`
-                    titulo,
-                    conteudo,
-                    criado_em,
-                    autor_id,
-                    perfis (apelido_poker)
+                    title,
+                    content,
+                    created_at,
+                    user_id,
+                    profiles (username)
                 `)
                 .eq('id', topicId)
                 .single();
 
-            if (topicError || !topicData) {
-                console.error("Erro ao carregar tópico:", topicError);
-                topicTitle.textContent = "Erro ao carregar tópico";
-                topicBody.innerHTML = `<p>Ocorreu um erro ao carregar o tópico. Por favor, tente novamente mais tarde.</p>`;
+            if (topicError) {
+                console.log("Tentativa 1 falhou, tentando estrutura em português...", topicError);
+                
+                // Se falhar, tenta a estrutura em português
+                const { data: topicDataPT, error: topicErrorPT } = await supabase
+                    .from('topicos') 
+                    .select(`
+                        titulo,
+                        conteudo,
+                        criado_em,
+                        autor_id,
+                        perfis (apelido_poker)
+                    `)
+                    .eq('id', topicId)
+                    .single();
+                    
+                if (topicErrorPT) {
+                    console.error("Erro ao carregar tópico:", topicErrorPT);
+                    topicTitle.textContent = "Erro ao carregar tópico";
+                    topicBody.innerHTML = `<p>Ocorreu um erro ao carregar o tópico. Por favor, tente novamente mais tarde.</p>`;
+                    return;
+                }
+                
+                topicData = topicDataPT;
+            }
+
+            if (!topicData) {
+                topicTitle.textContent = "Tópico não encontrado";
+                topicBody.innerHTML = "<p>O tópico que você procura não existe.</p>";
                 return;
             }
             
-            const authorName = topicData.perfis?.apelido_poker || 'Usuário Desconhecido';
+            // Extrai informações do tópico (ambas as estruturas)
+            const title = topicData.title || topicData.titulo;
+            const content = topicData.content || topicData.conteudo;
+            const createdAt = topicData.created_at || topicData.criado_em;
+            const authorId = topicData.user_id || topicData.autor_id;
             
-            topicTitle.textContent = topicData.titulo;
-            topicBody.innerHTML = topicData.conteudo;
-            const topicDate = new Date(topicData.criado_em).toLocaleDateString('pt-BR');
+            // Carrega informações do autor
+            const authorProfile = await loadUserProfile(authorId);
+            const authorName = authorProfile?.username || authorProfile?.apelido_poker || 'Usuário Desconhecido';
+            
+            topicTitle.textContent = title;
+            topicBody.innerHTML = content;
+            const topicDate = new Date(createdAt).toLocaleDateString('pt-BR');
             document.getElementById('topic-meta').textContent = `Por ${authorName} em ${topicDate}`;
             
             await loadComments(topicId);
@@ -463,40 +581,70 @@
     // Função para carregar comentários
     async function loadComments(topicId) {
         try {
-            const { data: comments, error } = await supabase
-                .from('comentarios')
+            console.log("Carregando comentários para tópico ID:", topicId);
+            
+            // Tenta carregar com a estrutura internacional primeiro
+            let { data: comments, error } = await supabase
+                .from('comments')
                 .select(`
-                    conteudo,
-                    criado_em,
-                    usuario_id,
-                    perfis (apelido_poker, avatar_id)
+                    content,
+                    created_at,
+                    user_id,
+                    profiles (username, avatar_url)
                 `)
-                .eq('topico_id', topicId)
-                .order('criado_em', { ascending: true });
+                .eq('topic_id', topicId)
+                .order('created_at', { ascending: true });
 
             if (error) {
-                console.error('Erro ao carregar comentários:', error);
-                commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro ao carregar comentários.</p>`;
-                return;
+                console.log("Tentativa 1 falhou, tentando estrutura em português...", error);
+                
+                // Se falhar, tenta a estrutura em português
+                const { data: commentsPT, error: errorPT } = await supabase
+                    .from('comentarios')
+                    .select(`
+                        conteudo,
+                        criado_em,
+                        usuario_id,
+                        perfis (apelido_poker, avatar_id)
+                    `)
+                    .eq('topico_id', topicId)
+                    .order('criado_em', { ascending: true });
+                    
+                if (errorPT) {
+                    console.error('Erro ao carregar comentários:', errorPT);
+                    commentsList.innerHTML = `<p class="error-message">Erro ao carregar comentários.</p>`;
+                    return;
+                }
+                
+                comments = commentsPT;
             }
 
             commentsList.innerHTML = '';
-            if (comments.length === 0) {
+            if (!comments || comments.length === 0) {
                 commentsList.innerHTML = '<p style="text-align: center; color: #bbb;">Nenhum comentário ainda. Seja o primeiro a responder!</p>';
                 return;
             }
 
-            // Processar comentários para carregar avatares
+            // Processa cada comentário
             for (const comment of comments) {
-                const commentDate = new Date(comment.criado_em).toLocaleDateString('pt-BR');
-                const authorName = comment.perfis?.apelido_poker || 'Usuário';
+                const content = comment.content || comment.conteudo;
+                const createdAt = comment.created_at || comment.criado_em;
+                const userId = comment.user_id || comment.usuario_id;
+                const commentDate = new Date(createdAt).toLocaleDateString('pt-BR');
                 
-                // Carregar avatar do autor do comentário
+                // Carrega perfil do autor do comentário
+                const authorProfile = await loadUserProfile(userId);
+                const authorName = authorProfile?.username || authorProfile?.apelido_poker || 'Usuário';
+                
+                // Determina URL do avatar
                 let avatarUrl = DEFAULT_AVATAR_SVG;
-                if (comment.perfis?.avatar_id) {
-                    const loadedAvatarUrl = await loadUserAvatar(comment.perfis.avatar_id);
-                    if (loadedAvatarUrl) {
-                        avatarUrl = loadedAvatarUrl;
+                if (authorProfile) {
+                    const avatarId = authorProfile.avatar_url || authorProfile.avatar_id;
+                    if (avatarId) {
+                        const loadedAvatarUrl = await loadUserAvatar(avatarId);
+                        if (loadedAvatarUrl) {
+                            avatarUrl = loadedAvatarUrl;
+                        }
                     }
                 }
                 
@@ -512,7 +660,7 @@
                             </div>
                         </div>
                         <div class="comment-body">
-                            <p>${escapeHtml(comment.conteudo)}</p>
+                            <p>${escapeHtml(content)}</p>
                         </div>
                     </div>
                 `;
@@ -521,12 +669,13 @@
             
         } catch (err) {
             console.error('Erro inesperado em loadComments:', err);
-            commentsList.innerHTML = `<p style="text-align: center; color: #888;">Erro inesperado ao carregar comentários.</p>`;
+            commentsList.innerHTML = `<p class="error-message">Erro inesperado ao carregar comentários.</p>`;
         }
     }
     
     // Função para escapar HTML (prevenção XSS)
     function escapeHtml(text) {
+        if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
@@ -555,16 +704,35 @@
             
             const userId = session.user.id;
             
-            const { error: insertError } = await supabase
-                .from('comentarios')
+            // Tenta inserir com estrutura internacional primeiro
+            let error = null;
+            let { error: insertError } = await supabase
+                .from('comments')
                 .insert([{
-                    conteudo: commentContent,
-                    topico_id: topicId,
-                    usuario_id: userId
+                    content: commentContent,
+                    topic_id: topicId,
+                    user_id: userId
                 }]);
-            
+                
             if (insertError) {
-                console.error('Erro ao inserir comentário:', insertError);
+                console.log("Tentativa 1 falhou, tentando estrutura em português...", insertError);
+                
+                // Se falhar, tenta com estrutura em português
+                const { error: insertErrorPT } = await supabase
+                    .from('comentarios')
+                    .insert([{
+                        conteudo: commentContent,
+                        topico_id: topicId,
+                        usuario_id: userId
+                    }]);
+                    
+                error = insertErrorPT;
+            } else {
+                error = insertError;
+            }
+            
+            if (error) {
+                console.error('Erro ao inserir comentário:', error);
                 alert('Ocorreu um erro ao enviar seu comentário. Por favor, tente novamente.');
                 return;
             }
@@ -579,21 +747,26 @@
         try {
             if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
             
-            // Verificar sessão e carregar perfil (igual ao fórum)
+            // Executa debug para verificar estrutura das tabelas
+            await debugTables();
+            
+            // Verificar sessão e carregar perfil
             const { data: { session }, error } = await supabase.auth.getSession();
             
             if (error) {
                 console.error('Erro ao verificar sessão:', error);
                 userArea.style.display = 'flex';
-                userNicknameEl.textContent = 'Convidado';
+                if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
                 userAvatarImg.src = DEFAULT_AVATAR_SVG;
                 if (loadingIndicator) loadingIndicator.style.display = 'none';
-            } else if (session) {
+            } else if (session && session.user) {
+                console.log("Usuário logado:", session.user);
                 const profile = await loadUserProfile(session.user.id);
                 await updateUserUI(session.user, profile);
             } else {
+                console.log("Nenhuma sessão ativa");
                 userArea.style.display = 'flex';
-                userNicknameEl.textContent = 'Convidado';
+                if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
                 userAvatarImg.src = DEFAULT_AVATAR_SVG;
                 if (loadingIndicator) loadingIndicator.style.display = 'none';
             }
