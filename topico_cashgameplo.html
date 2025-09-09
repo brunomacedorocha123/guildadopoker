@@ -333,7 +333,7 @@
         </div>
     </footer>
 
-    <script>
+  <script>
     const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
     
@@ -341,20 +341,134 @@
         auth: { persistSession: true, autoRefreshToken: true }
     });
 
-    // IDs dos tópicos (definidos manualmente conforme seu SQL)
-    const TOPIC_IDS = {
-        CASH_GAME_PLO: 1001,
-        TORNEIOS_SEMANAIS: 1002
-    };
+    const userArea = document.getElementById('user-area');
+    const userAvatarImg = document.getElementById('avatar-img');
+    const userNicknameEl = document.getElementById('nickname-text');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const commentsList = document.getElementById('comments-list');
+    const commentForm = document.getElementById('comment-form');
+    const topicTitle = document.getElementById('topic-title');
+    const topicBody = document.getElementById('topic-body');
 
-    // Função para carregar dados do tópico
+    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
+
+    // Função para carregar perfil do usuário (MANTIDO ORIGINAL)
+    async function loadUserProfile(userId) {
+        try {
+            console.log("Carregando perfil para userId:", userId);
+            
+            // Primeiro, tenta acessar a tabela 'profiles' (estrutura internacional)
+            let { data: perfilData, error } = await supabase
+                .from('profiles')
+                .select('username, avatar_url')
+                .eq('id', userId)
+                .single();
+                
+            if (error) {
+                console.log("Tentativa 1 falhou, tentando 'perfis'...", error);
+                
+                // Se falhar, tenta acessar a tabela 'perfis' (estrutura em português)
+                const { data: perfilDataPT, error: errorPT } = await supabase
+                    .from('perfis')
+                    .select('apelido_poker, avatar_id')
+                    .eq('usuario_id', userId)
+                    .single();
+                    
+                if (errorPT) {
+                    console.error("Erro ao carregar perfil:", errorPT);
+                    return null;
+                }
+                
+                return perfilDataPT;
+            }
+            
+            return perfilData;
+        } catch (error) {
+            console.error('Erro ao carregar perfil:', error);
+            return null;
+        }
+    }
+
+    // Função para carregar avatar (MANTIDO ORIGINAL)
+    async function loadUserAvatar(avatarId) {
+        if (!avatarId) return null;
+        try {
+            console.log("Carregando avatar para avatarId:", avatarId);
+            
+            // Tenta acessar a tabela 'avatares'
+            const { data: avatarData, error } = await supabase
+                .from('avatares')
+                .select('url_imagem')
+                .eq('id', avatarId)
+                .single();
+                
+            if (error) {
+                console.error("Erro ao carregar avatar:", error);
+                return null;
+            }
+            
+            return avatarData.url_imagem;
+        } catch (error) {
+            console.error('Erro ao carregar avatar:', error);
+            return null;
+        }
+    }
+
+    // Atualiza a UI do usuário (MANTIDO ORIGINAL)
+    async function updateUserUI(user, profile) {
+        if (!userArea) return;
+        
+        console.log("Atualizando UI com:", { user, profile });
+
+        // Esconder loading
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
+
+        // Mostrar área do usuário
+        userArea.style.display = 'flex';
+
+        // Verificar se temos um perfil válido
+        if (profile) {
+            // Definir apelido - verifica ambas as estruturas possíveis
+            let apelido = profile.username || profile.apelido_poker || user.email.split('@')[0];
+            
+            if (userNicknameEl) {
+                userNicknameEl.textContent = apelido;
+            }
+
+            // Carregar avatar - verifica ambas as estruturas possíveis
+            const avatarId = profile.avatar_url || profile.avatar_id;
+            
+            if (avatarId) {
+                const avatarUrl = await loadUserAvatar(avatarId);
+                if (avatarUrl && userAvatarImg) {
+                    userAvatarImg.onerror = function () {
+                        console.error('Erro ao carregar avatar, usando padrão');
+                        this.src = DEFAULT_AVATAR_SVG;
+                    };
+                    userAvatarImg.src = avatarUrl;
+                } else {
+                    userAvatarImg.src = DEFAULT_AVATAR_SVG;
+                }
+            } else {
+                userAvatarImg.src = DEFAULT_AVATAR_SVG;
+            }
+        } else {
+            // Se não tem perfil, usa dados básicos do usuário
+            if (userNicknameEl) {
+                userNicknameEl.textContent = user.email.split('@')[0];
+            }
+            userAvatarImg.src = DEFAULT_AVATAR_SVG;
+        }
+    }
+
+    // Função para carregar dados do tópico (CORRIGIDA)
     async function loadTopicData() {
         const params = new URLSearchParams(window.location.search);
         const topicId = params.get('id');
 
         if (!topicId) {
-            document.getElementById('topic-title').textContent = "Tópico não encontrado";
-            document.getElementById('topic-body').innerHTML = "<p>O tópico que você procura não existe.</p>";
+            topicTitle.textContent = "Tópico não encontrado";
+            topicBody.innerHTML = "<p>O tópico que você procura não existe.</p>";
             return;
         }
         
@@ -370,23 +484,23 @@
 
             if (topicError) {
                 console.error("Erro ao carregar tópico:", topicError);
-                document.getElementById('topic-title').textContent = "Erro ao carregar tópico";
-                document.getElementById('topic-body').innerHTML = `<p>Ocorreu um erro ao carregar o tópico. Por favor, tente novamente mais tarde.</p>`;
+                topicTitle.textContent = "Erro ao carregar tópico";
+                topicBody.innerHTML = `<p>Ocorreu um erro ao carregar o tópico. Verifique se o ID (${topicId}) está correto.</p>`;
                 return;
             }
 
             if (!topicData) {
-                document.getElementById('topic-title').textContent = "Tópico não encontrado";
-                document.getElementById('topic-body').innerHTML = "<p>O tópico que você procura não existe.</p>";
+                topicTitle.textContent = "Tópico não encontrado";
+                topicBody.innerHTML = "<p>O tópico que você procura não existe.</p>";
                 return;
             }
             
             // Carrega informações do autor
             const authorProfile = await loadUserProfile(topicData.user_id);
-            const authorName = authorProfile?.username || 'Usuário Desconhecido';
+            const authorName = authorProfile?.username || authorProfile?.apelido_poker || 'Usuário Desconhecido';
             
-            document.getElementById('topic-title').textContent = topicData.title;
-            document.getElementById('topic-body').innerHTML = topicData.content;
+            topicTitle.textContent = topicData.title;
+            topicBody.innerHTML = topicData.content;
             const topicDate = new Date(topicData.created_at).toLocaleDateString('pt-BR');
             document.getElementById('topic-meta').textContent = `Por ${authorName} em ${topicDate}`;
             
@@ -394,15 +508,13 @@
 
         } catch (err) {
             console.error('Erro inesperado em loadTopicData:', err);
-            document.getElementById('topic-title').textContent = "Erro inesperado";
-            document.getElementById('topic-body').innerHTML = `<p>Ocorreu um erro inesperado ao carregar o tópico. Tente novamente mais tarde.</p>`;
+            topicTitle.textContent = "Erro inesperado";
+            topicBody.innerHTML = `<p>Ocorreu um erro inesperado ao carregar o tópico. Tente novamente mais tarde.</p>`;
         }
     }
 
-    // Função para carregar comentários
+    // Função para carregar comentários (CORRIGIDA)
     async function loadComments(topicId) {
-        const commentsList = document.getElementById('comments-list');
-        
         try {
             console.log("Carregando comentários para tópico ID:", topicId);
             
@@ -467,8 +579,8 @@
         return div.innerHTML;
     }
 
-    // Event listener para o formulário de comentários
-    document.getElementById('comment-form').addEventListener('submit', async (e) => {
+    // Event listener para o formulário de comentários (CORRIGIDO)
+    commentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const commentTextarea = document.getElementById('comment-text');
@@ -476,8 +588,13 @@
         const params = new URLSearchParams(window.location.search);
         const topicId = params.get('id');
 
-        if (!commentContent || !topicId) {
+        if (!commentContent) {
             alert('Por favor, digite um comentário.');
+            return;
+        }
+
+        if (!topicId) {
+            alert('Erro: ID do tópico não encontrado.');
             return;
         }
 
@@ -506,14 +623,38 @@
         await loadComments(topicId);
     });
 
-    // Inicialização da página
+    // Inicialização da página (MANTIDO ORIGINAL)
     document.addEventListener('DOMContentLoaded', async function () {
         try {
+            if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
+            
+            // Verificar sessão e carregar perfil
+            const { data: { session }, error } = await supabase.auth.getSession();
+            
+            if (error) {
+                console.error('Erro ao verificar sessão:', error);
+                userArea.style.display = 'flex';
+                if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
+                userAvatarImg.src = DEFAULT_AVATAR_SVG;
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+            } else if (session && session.user) {
+                console.log("Usuário logado:", session.user);
+                const profile = await loadUserProfile(session.user.id);
+                await updateUserUI(session.user, profile);
+            } else {
+                console.log("Nenhuma sessão ativa");
+                userArea.style.display = 'flex';
+                if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
+                userAvatarImg.src = DEFAULT_AVATAR_SVG;
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+            }
+            
             // Carregar dados do tópico
             await loadTopicData();
             
         } catch (error) {
             console.error('Erro ao inicializar página:', error);
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
         }
     });
 </script>
