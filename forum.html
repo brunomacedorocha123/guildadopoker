@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fórum - Guilda do Poker</title>
+  <title>Chat - Guilda do Poker</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -172,8 +172,8 @@
       transform: rotate(-45deg) translate(7px, -7px);
     }
 
-    /* Fórum Intro */
-    .forum-intro {
+    /* Chat Intro */
+    .chat-intro {
       text-align: center;
       padding: 40px 20px;
       background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
@@ -181,77 +181,89 @@
       margin-bottom: 30px;
     }
     
-    .forum-intro h2 {
+    .chat-intro h2 {
       font-size: 36px;
       margin-bottom: 20px;
       color: var(--gold);
     }
     
-    .forum-intro p {
+    .chat-intro p {
       font-size: 20px;
       max-width: 800px;
       margin: 0 auto;
       color: #e6e6e6;
     }
     
-    /* Categorias do Fórum */
-    .forum-categories {
-      max-width: 1200px;
+    /* Área do Chat */
+    .chat-container {
+      max-width: 1000px;
       margin: 40px auto;
       padding: 0 20px;
     }
     
-    .category {
+    .chat-card {
       background-color: var(--bg-3);
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       margin-bottom: 30px;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      padding: 40px;
     }
     
-    .category:hover {
+    .chat-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
     
-    .category-header {
-      background-color: var(--gold);
-      padding: 12px 20px;
-      cursor: pointer;
-    }
-    
-    .category-header h3 {
-      color: #121212;
-      font-size: 20px;
-      margin: 0;
+    .chat-icon {
+      font-size: 60px;
+      color: var(--gold);
+      margin-bottom: 20px;
       text-align: center;
     }
     
-    .topics-list {
-      padding: 20px;
-    }
-    
-    .topic {
-      padding: 15px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .topic:last-child {
-      border-bottom: none;
-    }
-    
-    .topic-title {
-      color: var(--gold);
+    .chat-description {
+      margin-bottom: 30px;
+      line-height: 1.6;
+      text-align: justify;
       font-size: 18px;
-      text-decoration: none;
-      display: block;
-      transition: color 0.3s;
     }
     
-    .topic-title:hover {
-      color: #ffffff;
-      text-decoration: underline;
+    .chat-description ul {
+      padding-left: 20px;
+      margin: 20px 0;
+    }
+    
+    .chat-description li {
+      margin-bottom: 10px;
+    }
+    
+    .chat-button {
+      display: inline-block;
+      background-color: var(--gold);
+      color: #121212;
+      padding: 15px 40px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      border: 2px solid var(--gold);
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .chat-button:hover {
+      background-color: transparent;
+      color: var(--gold);
+    }
+    
+    .chat-title {
+      color: var(--gold);
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 25px;
     }
     
     /* ===== RODAPÉ ===== */
@@ -364,12 +376,33 @@
         text-align: center;
       }
       
-      .forum-intro h2 {
+      .chat-intro h2 {
         font-size: 28px;
       }
       
-      .forum-intro p {
+      .chat-intro p {
         font-size: 16px;
+      }
+      
+      .chat-icon {
+        font-size: 40px;
+      }
+      
+      .chat-button {
+        padding: 12px 30px;
+        font-size: 16px;
+      }
+      
+      .chat-card {
+        padding: 25px;
+      }
+      
+      .chat-description {
+        font-size: 16px;
+      }
+      
+      .chat-title {
+        font-size: 24px;
       }
     }
 
@@ -384,8 +417,8 @@
         right: 12px;
       }
       
-      .category-header h3 {
-        font-size: 18px;
+      .chat-card {
+        padding: 20px;
       }
     }
 
@@ -409,9 +442,9 @@
   <!-- Cabeçalho SEM botões de autenticação -->
   <header>
     <div class="header-left">
-      <div class="user-area" id="user-area" style="display: none;">
+      <div class="user-area" id="user-area">
         <div class="user-avatar" id="user-avatar">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" alt="Avatar" id="avatar-img">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Yi41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBk=" alt="Avatar" id="avatar-img">
         </div>
         <div class="user-nickname" id="user-nickname">
           <span class="loading" id="loading-indicator"></span>
@@ -445,56 +478,28 @@
     </div>
   </nav>
 
-  <section class="forum-intro">
+  <section class="chat-intro">
     <div class="container">
-      <h2>Fórum da Guilda do Poker</h2>
-      <p>Compartilhe conhecimentos, tire dúvidas e discuta estratégias com outros entusiastas do poker</p>
+      <h2>Chat da Guilda do Poker</h2>
+      <p>Este é o espaço oficial para todos os entusiastas do poker se conectarem em tempo real</p>
     </div>
   </section>
 
-  <div class="forum-categories">
-    <!-- Categoria 1: Cash Game PLO5 - MODIFICADA -->
-    <div class="category">
-      <a href="topico_cashgameplo.html" style="text-decoration: none;">
-        <div class="category-header">
-          <h3>Cash Game PLO</h3>
-        </div>
-      </a>
-    </div>
-    
-    <!-- Categoria 2: Dúvidas sobre poker -->
-    <div class="category">
-      <div class="category-header">
-        <h3>Dúvidas sobre Poker</h3>
+  <div class="chat-container">
+    <div class="chat-card">
+      <div class="chat-icon">💬</div>
+      <h3 class="chat-title">Converse com outros jogadores</h3>
+      <div class="chat-description">
+        <p>Bem-vindo ao Chat da Guilda do Poker! Este é o espaço oficial para todos os entusiastas do poker se conectarem em tempo real. Aqui você pode:</p>
+        <ul>
+          <li>Conversar sobre estratégias, dicas e experiências em cash games ou torneios</li>
+          <li>Tirar dúvidas e compartilhar conhecimento com outros jogadores</li>
+          <li>Interagir com membros da comunidade sem precisar criar tópicos ou posts</li>
+        </ul>
+        <p>Todas as mensagens são temporárias e visíveis apenas enquanto você estiver na sala. Aproveite para se conectar, aprender e se divertir!</p>
       </div>
-      <div class="topics-list">
-        <div class="topic">
-          <a href="topico.html?id=4" class="topic-title">Como funciona o sistema de rakeback?</a>
-        </div>
-        <div class="topic">
-          <a href="topico.html?id=5" class="topic-title">Diferença entre Texas Hold'em and Omaha</a>
-        </div>
-        <div class="topic">
-          <a href="topico.html?id=6" class="topic-title">Como escolher a mesa certa para jogar?</a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Categoria 3: Estratégias no Torneio -->
-    <div class="category">
-      <div class="category-header">
-        <h3>Estratégias no Torneio</h3>
-      </div>
-      <div class="topics-list">
-        <div class="topic">
-          <a href="topico.html?id=7" class="topic-title">Estratégia de bolhas em torneios</a>
-        </div>
-        <div class="topic">
-          <a href="topico.html?id=8" class="topic-title">Como ajustar o jogo conforme os blinds aumentam</a>
-        </div>
-        <div class="topic">
-          <a href="topico.html?id=9" class="topic-title">Melhores horários para jogar torneios na Suprema Poker</a>
-        </div>
+      <div style="text-align: center;">
+        <a href="chat-sala.html" class="chat-button">Entrar no Chat</a>
       </div>
     </div>
   </div>
@@ -515,7 +520,7 @@
   <script>
     // Configuração do Supabase
     const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMDAyNDAsImV4cCI6MjA3MTg2NjI0MH0.abcdefghijklmnopqrstuvwxyz123456';
     
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
         auth: { persistSession: true, autoRefreshToken: true }
@@ -589,6 +594,8 @@
     // Atualiza a janela do usuário
     async function updateUserUI(user, profile) {
         if (!userArea) return;
+        
+        // Mostrar a área do usuário
         userArea.style.display = 'flex';
 
         // esconder loading
@@ -611,105 +618,13 @@
                 };
                 userAvatarImg.src = avatarUrl;
             }
-        }
-    }
-
-    // Carregar tópicos do fórum
-    async function loadForumTopics() {
-        try {
-            // Buscar tópicos por categoria
-            const { data: topics, error } = await supabase
-                .from('topicos')
-                .select(`
-                    id,
-                    titulo,
-                    categoria,
-                    criado_em,
-                    autor_id,
-                    perfis (apelido_poker)
-                `)
-                .order('criado_em', { ascending: false });
-                
-            if (error) {
-                console.error('Erro ao carregar tópicos:', error);
-                return;
+        } else {
+            // Se não houver perfil, mostrar apenas o email do usuário
+            if (userNicknameEl) {
+                userNicknameEl.textContent = user.email.split('@')[0];
+                userNicknameEl.style.display = 'inline';
             }
-            
-            // Organizar tópicos por categoria
-            organizeTopicsByCategory(topics);
-            
-        } catch (err) {
-            console.error('Erro inesperado ao carregar tópicos:', err);
         }
-    }
-
-    // Organizar tópicos por categoria
-    function organizeTopicsByCategory(topics) {
-        if (!topics || topics.length === 0) return;
-        
-        const categories = {
-            'Cash Game PLO5': [],
-            'Dúvidas sobre Poker': [],
-            'Estratégias no Torneio': []
-        };
-        
-        // Agrupar tópicos por categoria
-        topics.forEach(topic => {
-            if (categories[topic.categoria]) {
-                categories[topic.categoria].push(topic);
-            }
-        });
-        
-        // Renderizar tópicos em cada categoria
-        renderTopics(categories);
-    }
-
-    // Renderizar tópicos na página
-    function renderTopics(categories) {
-        const forumCategories = document.querySelector('.forum-categories');
-        if (!forumCategories) return;
-        
-        let categoriesHTML = '';
-        
-        for (const [categoryName, topics] of Object.entries(categories)) {
-            if (topics.length === 0) continue;
-            
-            let topicsHTML = '';
-            
-            topics.slice(0, 3).forEach(topic => {
-                const topicDate = new Date(topic.criado_em).toLocaleDateString('pt-BR');
-                const authorName = topic.perfis?.apelido_poker || 'Usuário';
-                
-                topicsHTML += `
-                    <div class="topic">
-                        <a href="topico.html?id=${topic.id}" class="topic-title">${escapeHtml(topic.titulo)}</a>
-                        <div style="font-size: 12px; color: #bbb; margin-top: 5px;">
-                            Por ${authorName} • ${topicDate}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            categoriesHTML += `
-                <div class="category">
-                    <div class="category-header">
-                        <h3>${categoryName}</h3>
-                    </div>
-                    <div class="topics-list">
-                        ${topicsHTML}
-                    </div>
-                </div>
-            `;
-        }
-        
-        forumCategories.innerHTML = categoriesHTML;
-    }
-
-    // Função auxiliar para evitar XSS
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 
     // Verificar sessão e carregar perfil ao iniciar
@@ -722,16 +637,17 @@
                 return;
             }
             
-            if (session) {
+            if (session && session.user) {
                 const profile = await loadUserProfile(session.user.id);
                 await updateUserUI(session.user, profile);
+            } else {
+                // Se não houver sessão, esconder a área do usuário
+                userArea.style.display = 'none';
             }
-            
-            // Carregar tópicos do fórum
-            await loadForumTopics();
             
         } catch (error) {
             console.error('Erro ao inicializar página:', error);
+            userArea.style.display = 'none';
         }
     });
   </script>
