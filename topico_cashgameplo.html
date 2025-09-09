@@ -341,159 +341,11 @@
         auth: { persistSession: true, autoRefreshToken: true }
     });
 
-    const userArea = document.getElementById('user-area');
-    const userAvatarImg = document.getElementById('avatar-img');
-    const userNicknameEl = document.getElementById('nickname-text');
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const commentsList = document.getElementById('comments-list');
-    const commentForm = document.getElementById('comment-form');
-    const topicTitle = document.getElementById('topic-title');
-    const topicBody = document.getElementById('topic-body');
-
-    const DEFAULT_AVATAR_SVG = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZmZjYzAwIj48cGF0aCBkPSJNMTMwLDUwQzEzMCw2Mi44IDEyMCw3Mi41IDEwMCw3Ni41SDcwQzUwLDcyLjUgNDAsNjIuOCA0MCw1MEM0MCwzNy4yIDUwLDI3LjUgNzAsMjcuNUgxMDBDMTIwLDI3LjUgMTMwLDM3LjIgMTMwLDUwWiIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNNDAsNTAuNUw0MCwxNTBDNDAsMTYyLjggNTAsMTcyLjUgNzAsMTcyLjVIMTMwQzE1MCwxNzIuNSAxNjAsMTYyLjggMTYwLDE1MEwxNjAsNTAuNSIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=";
-
-    // DEBUG: Função para verificar estrutura das tabelas
-    async function debugTables() {
-        try {
-            console.log("Verificando tabelas...");
-            
-            // Verificar tabela de perfis
-            const { data: profilesData, error: profilesError } = await supabase
-                .from('profiles')
-                .select('*')
-                .limit(1);
-                
-            if (profilesError) {
-                console.error("Erro ao acessar tabela profiles:", profilesError);
-            } else {
-                console.log("Estrutura da tabela profiles:", profilesData);
-            }
-            
-            // Verificar tabela de tópicos
-            const { data: topicsData, error: topicsError } = await supabase
-                .from('topics')
-                .select('*')
-                .limit(1);
-                
-            if (topicsError) {
-                console.error("Erro ao acessar tabela topics:", topicsError);
-            } else {
-                console.log("Estrutura da tabela topics:", topicsData);
-            }
-            
-        } catch (error) {
-            console.error("Erro no debug:", error);
-        }
-    }
-
-    // Função para carregar perfil do usuário (baseado no código do fórum)
-    async function loadUserProfile(userId) {
-        try {
-            console.log("Carregando perfil para userId:", userId);
-            
-            // Primeiro, tenta acessar a tabela 'profiles' (estrutura internacional)
-            let { data: perfilData, error } = await supabase
-                .from('profiles')
-                .select('username, avatar_url')
-                .eq('id', userId)
-                .single();
-                
-            if (error) {
-                console.log("Tentativa 1 falhou, tentando 'perfis'...", error);
-                
-                // Se falhar, tenta acessar a tabela 'perfis' (estrutura em português)
-                const { data: perfilDataPT, error: errorPT } = await supabase
-                    .from('perfis')
-                    .select('apelido_poker, avatar_id')
-                    .eq('usuario_id', userId)
-                    .single();
-                    
-                if (errorPT) {
-                    console.error("Erro ao carregar perfil:", errorPT);
-                    return null;
-                }
-                
-                return perfilDataPT;
-            }
-            
-            return perfilData;
-        } catch (error) {
-            console.error('Erro ao carregar perfil:', error);
-            return null;
-        }
-    }
-
-    // Função para carregar avatar (baseado no código do fórum)
-    async function loadUserAvatar(avatarId) {
-        if (!avatarId) return null;
-        try {
-            console.log("Carregando avatar para avatarId:", avatarId);
-            
-            // Tenta acessar a tabela 'avatares'
-            const { data: avatarData, error } = await supabase
-                .from('avatares')
-                .select('url_imagem')
-                .eq('id', avatarId)
-                .single();
-                
-            if (error) {
-                console.error("Erro ao carregar avatar:", error);
-                return null;
-            }
-            
-            return avatarData.url_imagem;
-        } catch (error) {
-            console.error('Erro ao carregar avatar:', error);
-            return null;
-        }
-    }
-
-    // Atualiza a UI do usuário (baseado no código do fórum)
-    async function updateUserUI(user, profile) {
-        if (!userArea) return;
-        
-        console.log("Atualizando UI com:", { user, profile });
-
-        // Esconder loading
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
-
-        // Mostrar área do usuário
-        userArea.style.display = 'flex';
-
-        // Verificar se temos um perfil válido
-        if (profile) {
-            // Definir apelido - verifica ambas as estruturas possíveis
-            let apelido = profile.username || profile.apelido_poker || user.email.split('@')[0];
-            
-            if (userNicknameEl) {
-                userNicknameEl.textContent = apelido;
-            }
-
-            // Carregar avatar - verifica ambas as estruturas possíveis
-            const avatarId = profile.avatar_url || profile.avatar_id;
-            
-            if (avatarId) {
-                const avatarUrl = await loadUserAvatar(avatarId);
-                if (avatarUrl && userAvatarImg) {
-                    userAvatarImg.onerror = function () {
-                        console.error('Erro ao carregar avatar, usando padrão');
-                        this.src = DEFAULT_AVATAR_SVG;
-                    };
-                    userAvatarImg.src = avatarUrl;
-                } else {
-                    userAvatarImg.src = DEFAULT_AVATAR_SVG;
-                }
-            } else {
-                userAvatarImg.src = DEFAULT_AVATAR_SVG;
-            }
-        } else {
-            // Se não tem perfil, usa dados básicos do usuário
-            if (userNicknameEl) {
-                userNicknameEl.textContent = user.email.split('@')[0];
-            }
-            userAvatarImg.src = DEFAULT_AVATAR_SVG;
-        }
-    }
+    // IDs dos tópicos (definidos manualmente conforme seu SQL)
+    const TOPIC_IDS = {
+        CASH_GAME_PLO: 1001,
+        TORNEIOS_SEMANAIS: 1002
+    };
 
     // Função para carregar dados do tópico
     async function loadTopicData() {
@@ -501,122 +353,73 @@
         const topicId = params.get('id');
 
         if (!topicId) {
-            topicTitle.textContent = "Tópico não encontrado";
-            topicBody.innerHTML = "<p>O tópico que você procura não existe.</p>";
+            document.getElementById('topic-title').textContent = "Tópico não encontrado";
+            document.getElementById('topic-body').innerHTML = "<p>O tópico que você procura não existe.</p>";
             return;
         }
         
         try {
             console.log("Carregando tópico ID:", topicId);
             
-            // Tenta carregar com a estrutura internacional primeiro
-            let { data: topicData, error: topicError } = await supabase
+            // Busca o tópico pelo ID
+            const { data: topicData, error: topicError } = await supabase
                 .from('topics') 
-                .select(`
-                    title,
-                    content,
-                    created_at,
-                    user_id,
-                    profiles (username)
-                `)
+                .select('*')
                 .eq('id', topicId)
                 .single();
 
             if (topicError) {
-                console.log("Tentativa 1 falhou, tentando estrutura em português...", topicError);
-                
-                // Se falhar, tenta a estrutura em português
-                const { data: topicDataPT, error: topicErrorPT } = await supabase
-                    .from('topicos') 
-                    .select(`
-                        titulo,
-                        conteudo,
-                        criado_em,
-                        autor_id,
-                        perfis (apelido_poker)
-                    `)
-                    .eq('id', topicId)
-                    .single();
-                    
-                if (topicErrorPT) {
-                    console.error("Erro ao carregar tópico:", topicErrorPT);
-                    topicTitle.textContent = "Erro ao carregar tópico";
-                    topicBody.innerHTML = `<p>Ocorreu um erro ao carregar o tópico. Por favor, tente novamente mais tarde.</p>`;
-                    return;
-                }
-                
-                topicData = topicDataPT;
+                console.error("Erro ao carregar tópico:", topicError);
+                document.getElementById('topic-title').textContent = "Erro ao carregar tópico";
+                document.getElementById('topic-body').innerHTML = `<p>Ocorreu um erro ao carregar o tópico. Por favor, tente novamente mais tarde.</p>`;
+                return;
             }
 
             if (!topicData) {
-                topicTitle.textContent = "Tópico não encontrado";
-                topicBody.innerHTML = "<p>O tópico que você procura não existe.</p>";
+                document.getElementById('topic-title').textContent = "Tópico não encontrado";
+                document.getElementById('topic-body').innerHTML = "<p>O tópico que você procura não existe.</p>";
                 return;
             }
             
-            // Extrai informações do tópico (ambas as estruturas)
-            const title = topicData.title || topicData.titulo;
-            const content = topicData.content || topicData.conteudo;
-            const createdAt = topicData.created_at || topicData.criado_em;
-            const authorId = topicData.user_id || topicData.autor_id;
-            
             // Carrega informações do autor
-            const authorProfile = await loadUserProfile(authorId);
-            const authorName = authorProfile?.username || authorProfile?.apelido_poker || 'Usuário Desconhecido';
+            const authorProfile = await loadUserProfile(topicData.user_id);
+            const authorName = authorProfile?.username || 'Usuário Desconhecido';
             
-            topicTitle.textContent = title;
-            topicBody.innerHTML = content;
-            const topicDate = new Date(createdAt).toLocaleDateString('pt-BR');
+            document.getElementById('topic-title').textContent = topicData.title;
+            document.getElementById('topic-body').innerHTML = topicData.content;
+            const topicDate = new Date(topicData.created_at).toLocaleDateString('pt-BR');
             document.getElementById('topic-meta').textContent = `Por ${authorName} em ${topicDate}`;
             
             await loadComments(topicId);
 
         } catch (err) {
             console.error('Erro inesperado em loadTopicData:', err);
-            topicTitle.textContent = "Erro inesperado";
-            topicBody.innerHTML = `<p>Ocorreu um erro inesperado ao carregar o tópico. Tente novamente mais tarde.</p>`;
+            document.getElementById('topic-title').textContent = "Erro inesperado";
+            document.getElementById('topic-body').innerHTML = `<p>Ocorreu um erro inesperado ao carregar o tópico. Tente novamente mais tarde.</p>`;
         }
     }
 
     // Função para carregar comentários
     async function loadComments(topicId) {
+        const commentsList = document.getElementById('comments-list');
+        
         try {
             console.log("Carregando comentários para tópico ID:", topicId);
             
-            // Tenta carregar com a estrutura internacional primeiro
-            let { data: comments, error } = await supabase
+            // Busca comentários do tópico
+            const { data: comments, error } = await supabase
                 .from('comments')
                 .select(`
-                    content,
-                    created_at,
-                    user_id,
+                    *,
                     profiles (username, avatar_url)
                 `)
                 .eq('topic_id', topicId)
                 .order('created_at', { ascending: true });
 
             if (error) {
-                console.log("Tentativa 1 falhou, tentando estrutura em português...", error);
-                
-                // Se falhar, tenta a estrutura em português
-                const { data: commentsPT, error: errorPT } = await supabase
-                    .from('comentarios')
-                    .select(`
-                        conteudo,
-                        criado_em,
-                        usuario_id,
-                        perfis (apelido_poker, avatar_id)
-                    `)
-                    .eq('topico_id', topicId)
-                    .order('criado_em', { ascending: true });
-                    
-                if (errorPT) {
-                    console.error('Erro ao carregar comentários:', errorPT);
-                    commentsList.innerHTML = `<p class="error-message">Erro ao carregar comentários.</p>`;
-                    return;
-                }
-                
-                comments = commentsPT;
+                console.error('Erro ao carregar comentários:', error);
+                commentsList.innerHTML = `<p class="error-message">Erro ao carregar comentários.</p>`;
+                return;
             }
 
             commentsList.innerHTML = '';
@@ -627,26 +430,9 @@
 
             // Processa cada comentário
             for (const comment of comments) {
-                const content = comment.content || comment.conteudo;
-                const createdAt = comment.created_at || comment.criado_em;
-                const userId = comment.user_id || comment.usuario_id;
-                const commentDate = new Date(createdAt).toLocaleDateString('pt-BR');
-                
-                // Carrega perfil do autor do comentário
-                const authorProfile = await loadUserProfile(userId);
-                const authorName = authorProfile?.username || authorProfile?.apelido_poker || 'Usuário';
-                
-                // Determina URL do avatar
-                let avatarUrl = DEFAULT_AVATAR_SVG;
-                if (authorProfile) {
-                    const avatarId = authorProfile.avatar_url || authorProfile.avatar_id;
-                    if (avatarId) {
-                        const loadedAvatarUrl = await loadUserAvatar(avatarId);
-                        if (loadedAvatarUrl) {
-                            avatarUrl = loadedAvatarUrl;
-                        }
-                    }
-                }
+                const commentDate = new Date(comment.created_at).toLocaleDateString('pt-BR');
+                const authorName = comment.profiles?.username || 'Usuário';
+                const avatarUrl = comment.profiles?.avatar_url || DEFAULT_AVATAR_SVG;
                 
                 const commentHTML = `
                     <div class="comment">
@@ -660,7 +446,7 @@
                             </div>
                         </div>
                         <div class="comment-body">
-                            <p>${escapeHtml(content)}</p>
+                            <p>${escapeHtml(comment.content)}</p>
                         </div>
                     </div>
                 `;
@@ -682,101 +468,52 @@
     }
 
     // Event listener para o formulário de comentários
-    if (commentForm) {
-        commentForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const commentTextarea = document.getElementById('comment-text');
-            const commentContent = commentTextarea.value.trim();
-            const params = new URLSearchParams(window.location.search);
-            const topicId = params.get('id');
+    document.getElementById('comment-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const commentTextarea = document.getElementById('comment-text');
+        const commentContent = commentTextarea.value.trim();
+        const params = new URLSearchParams(window.location.search);
+        const topicId = params.get('id');
 
-            if (!commentContent || !topicId) {
-                alert('Por favor, digite um comentário.');
-                return;
-            }
+        if (!commentContent || !topicId) {
+            alert('Por favor, digite um comentário.');
+            return;
+        }
 
-            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-            if (sessionError || !session || !session.user) {
-                alert('Você precisa estar logado para comentar.');
-                return;
-            }
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError || !session || !session.user) {
+            alert('Você precisa estar logado para comentar.');
+            return;
+        }
+        
+        // Insere o comentário
+        const { error: insertError } = await supabase
+            .from('comments')
+            .insert([{
+                content: commentContent,
+                topic_id: topicId,
+                user_id: session.user.id
+            }]);
             
-            const userId = session.user.id;
-            
-            // Tenta inserir com estrutura internacional primeiro
-            let error = null;
-            let { error: insertError } = await supabase
-                .from('comments')
-                .insert([{
-                    content: commentContent,
-                    topic_id: topicId,
-                    user_id: userId
-                }]);
-                
-            if (insertError) {
-                console.log("Tentativa 1 falhou, tentando estrutura em português...", insertError);
-                
-                // Se falhar, tenta com estrutura em português
-                const { error: insertErrorPT } = await supabase
-                    .from('comentarios')
-                    .insert([{
-                        conteudo: commentContent,
-                        topico_id: topicId,
-                        usuario_id: userId
-                    }]);
-                    
-                error = insertErrorPT;
-            } else {
-                error = insertError;
-            }
-            
-            if (error) {
-                console.error('Erro ao inserir comentário:', error);
-                alert('Ocorreu um erro ao enviar seu comentário. Por favor, tente novamente.');
-                return;
-            }
-            
-            commentTextarea.value = '';
-            await loadComments(topicId);
-        });
-    }
+        if (insertError) {
+            console.error('Erro ao inserir comentário:', insertError);
+            alert('Ocorreu um erro ao enviar seu comentário. Por favor, tente novamente.');
+            return;
+        }
+        
+        commentTextarea.value = '';
+        await loadComments(topicId);
+    });
 
     // Inicialização da página
     document.addEventListener('DOMContentLoaded', async function () {
         try {
-            if (loadingIndicator) loadingIndicator.style.display = 'inline-block';
-            
-            // Executa debug para verificar estrutura das tabelas
-            await debugTables();
-            
-            // Verificar sessão e carregar perfil
-            const { data: { session }, error } = await supabase.auth.getSession();
-            
-            if (error) {
-                console.error('Erro ao verificar sessão:', error);
-                userArea.style.display = 'flex';
-                if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
-                userAvatarImg.src = DEFAULT_AVATAR_SVG;
-                if (loadingIndicator) loadingIndicator.style.display = 'none';
-            } else if (session && session.user) {
-                console.log("Usuário logado:", session.user);
-                const profile = await loadUserProfile(session.user.id);
-                await updateUserUI(session.user, profile);
-            } else {
-                console.log("Nenhuma sessão ativa");
-                userArea.style.display = 'flex';
-                if (userNicknameEl) userNicknameEl.textContent = 'Convidado';
-                userAvatarImg.src = DEFAULT_AVATAR_SVG;
-                if (loadingIndicator) loadingIndicator.style.display = 'none';
-            }
-            
             // Carregar dados do tópico
             await loadTopicData();
             
         } catch (error) {
             console.error('Erro ao inicializar página:', error);
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
         }
     });
 </script>
