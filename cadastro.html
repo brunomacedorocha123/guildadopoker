@@ -12,6 +12,8 @@
             --bg-3: #2c2c2c;
             --gold: #ffcc00;
             --text: #f5f5f5;
+            --success: #4caf50;
+            --error: #f44336;
         }
         
         * {
@@ -28,50 +30,52 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
         }
         
         .container {
             background-color: var(--bg-2);
             border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 500px;
-            padding: 30px;
+            max-width: 400px;
+            padding: 25px;
             border: 1px solid var(--gold);
         }
         
         .logo {
             text-align: center;
             color: var(--gold);
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
         }
         
         h1 {
             color: var(--gold);
             text-align: center;
             margin-bottom: 20px;
+            font-size: 22px;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
         
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: var(--text);
+            font-size: 14px;
         }
         
         input {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #444;
             border-radius: 5px;
             background-color: var(--bg-3);
             color: var(--text);
-            font-size: 16px;
+            font-size: 14px;
         }
         
         input:focus {
@@ -86,10 +90,10 @@
             color: var(--bg);
             border: none;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s;
+            margin-top: 5px;
         }
         
         button:hover {
@@ -100,6 +104,7 @@
             text-align: center;
             margin-top: 20px;
             color: #bbb;
+            font-size: 14px;
         }
         
         .login-link a {
@@ -116,6 +121,7 @@
             border-radius: 5px;
             margin-bottom: 15px;
             text-align: center;
+            font-size: 14px;
         }
         
         .success {
@@ -140,17 +146,48 @@
             margin-top: 15px;
             color: var(--gold);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
         }
         
         .back-button:hover {
             text-decoration: underline;
         }
         
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .password-strength {
+            height: 4px;
+            background-color: #444;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+        
+        .password-weak .strength-fill {
+            width: 33%;
+            background-color: #dc3545;
+        }
+        
+        .password-medium .strength-fill {
+            width: 66%;
+            background-color: #ffcc00;
+        }
+        
+        .password-strong .strength-fill {
+            width: 100%;
+            background-color: #28a745;
+        }
+        
+        .password-text {
+            font-size: 11px;
+            margin-top: 3px;
+            text-align: right;
+            color: #bbb;
         }
     </style>
 </head>
@@ -164,23 +201,26 @@
         <form id="cadastro-form">
             <div class="form-group">
                 <label for="email">E-mail</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" required placeholder="seu@email.com">
             </div>
             
             <div class="form-group">
                 <label for="password">Senha</label>
-                <input type="password" id="password" required minlength="6">
+                <input type="password" id="password" required minlength="6" placeholder="Mínimo 6 caracteres">
+                <div class="password-strength">
+                    <div class="strength-fill"></div>
+                </div>
+                <div class="password-text" id="password-strength-text"></div>
             </div>
             
             <div class="form-group">
                 <label for="confirm-password">Confirmar Senha</label>
-                <input type="password" id="confirm-password" required>
+                <input type="password" id="confirm-password" required placeholder="Digite novamente sua senha">
             </div>
             
-            <div class="button-container">
-                <button type="submit">Criar Conta</button>
-                <a href="index.html" class="back-button">Voltar para a página inicial</a>
-            </div>
+            <button type="submit">Criar Conta</button>
+            
+            <a href="index.html" class="back-button">Voltar para a página inicial</a>
         </form>
         
         <div class="login-link">
@@ -200,6 +240,32 @@
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
         const confirmPasswordInput = document.getElementById('confirm-password');
+        const passwordStrengthText = document.getElementById('password-strength-text');
+        const passwordStrengthBar = document.querySelector('.password-strength');
+        
+        // Verificar força da senha
+        passwordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            let text = '';
+            
+            if (password.length > 0) {
+                if (password.length < 6) {
+                    text = 'Senha fraca';
+                    passwordStrengthBar.className = 'password-strength password-weak';
+                } else if (password.length < 10) {
+                    text = 'Senha média';
+                    passwordStrengthBar.className = 'password-strength password-medium';
+                } else {
+                    text = 'Senha forte';
+                    passwordStrengthBar.className = 'password-strength password-strong';
+                }
+            } else {
+                passwordStrengthBar.className = 'password-strength';
+                text = '';
+            }
+            
+            passwordStrengthText.textContent = text;
+        });
         
         // Processar o formulário de cadastro
         cadastroForm.addEventListener('submit', async function(e) {
@@ -229,27 +295,36 @@
             }
             
             try {
+                // Mostrar mensagem de processamento
+                showMessage('Processando seu cadastro...', 'success');
+                
                 // Cadastrar usuário
                 const { data, error } = await supabase.auth.signUp({
                     email: email,
                     password: password,
                     options: {
-                        emailRedirectTo: 'https://guidadopoker.com.br/callback.html'
+                        emailRedirectTo: window.location.origin + '/callback.html'
                     }
                 });
 
                 if (error) {
-                    showMessage('Erro no cadastro: ' + error.message, 'error');
+                    if (error.message.includes('already registered')) {
+                        showMessage('Este e-mail já está cadastrado.', 'error');
+                    } else {
+                        showMessage('Erro no cadastro: ' + error.message, 'error');
+                    }
                     return;
                 }
 
                 // Sucesso
-                showMessage('Cadastro realizado com sucesso! Redirecionando para login...', 'success');
+                showMessage('Cadastro realizado! Verifique seu e-mail.', 'success');
                 
-                // Redirecionar após 2 segundos
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
+                // Limpar formulário
+                emailInput.value = '';
+                passwordInput.value = '';
+                confirmPasswordInput.value = '';
+                passwordStrengthText.textContent = '';
+                passwordStrengthBar.className = 'password-strength';
                 
             } catch (error) {
                 showMessage('Erro inesperado: ' + error.message, 'error');
