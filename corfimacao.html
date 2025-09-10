@@ -148,6 +148,23 @@
       text-decoration: underline;
     }
 
+    .email-input-container {
+      margin: 20px 0;
+      display: none;
+    }
+    
+    .email-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px 15px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: var(--bg-3);
+      color: var(--text);
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
     footer{
       text-align:center;
       padding:25px;
@@ -255,15 +272,20 @@
 
   <main>
     <div class="confirmation-container">
-      <div class="icon">✉️</div>
-      <h1>Verifique seu e-mail</h1>
+      <div class="icon" id="statusIcon">✉️</div>
+      <h1 id="statusTitle">Verificando status...</h1>
       
-      <div class="message">
-        <p>Enviamos um link de confirmação para o seu endereço de e-mail.</p>
-        <p>Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta.</p>
+      <div class="message" id="statusMessage">
+        <p>Verificando status da sua conta...</p>
       </div>
       
-      <div class="resend">
+      <div class="email-input-container" id="emailInputContainer">
+        <p>Informe seu e-mail para reenviar a confirmação:</p>
+        <input type="email" class="email-input" id="emailInput" placeholder="Seu endereço de e-mail">
+        <button id="submitEmailButton">Enviar confirmação</button>
+      </div>
+      
+      <div class="resend" id="resendSection" style="display: none;">
         <p>Não recebeu o e-mail?</p>
         <button id="resendButton">Reenviar e-mail de confirmação</button>
         <div id="resendSuccess" style="display:none; color:var(--success); margin-top:10px;">
@@ -274,7 +296,7 @@
         </div>
       </div>
       
-      <div class="login-link">
+      <div class="login-link" id="loginLink" style="display: none;">
         Já confirmou sua conta? <a href="login.html">Faça login aqui</a>
       </div>
     </div>
@@ -299,193 +321,260 @@
   </footer>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-  // Inicializa o Supabase
-  const supabaseUrl = 'https://dabzautqymohyqbxaubr.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhYnphdXRxeW1vaHlxYnhhdWJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MzA1NDgsImV4cCI6MjA3MzEwNjU0OH0.UUNytj3JvV4ltdIM6B-EZ_Fr51xfCJ9WTqmH6r8YJA0';
-  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+  <script>
+    // Inicializa o Supabase
+    const supabaseUrl = 'https://dabzautqymohyqbxaubr.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhYnphdXRxeW1vaHlxYnhhdWJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MzA1NDgsImV4cCI6MjA3MzEwNjU0OH0.UUNytj3JvV4ltdIM6B-EZ_Fr51xfCJ9WTqmH6r8YJA0';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-  // Elementos do DOM
-  const resendButton = document.getElementById('resendButton');
-  const resendSuccess = document.getElementById('resendSuccess');
-  const resendError = document.getElementById('resendError');
-  const messageDiv = document.querySelector('.message');
+    // Elementos do DOM
+    const statusIcon = document.getElementById('statusIcon');
+    const statusTitle = document.getElementById('statusTitle');
+    const statusMessage = document.getElementById('statusMessage');
+    const emailInputContainer = document.getElementById('emailInputContainer');
+    const emailInput = document.getElementById('emailInput');
+    const submitEmailButton = document.getElementById('submitEmailButton');
+    const resendSection = document.getElementById('resendSection');
+    const resendButton = document.getElementById('resendButton');
+    const resendSuccess = document.getElementById('resendSuccess');
+    const resendError = document.getElementById('resendError');
+    const loginLink = document.getElementById('loginLink');
 
-  // Mostrar mensagem de erro
-  function showError(message) {
-    resendError.innerHTML = `<span style="font-weight: bold;">⚠️ Erro:</span> ${message}`;
-    resendError.style.display = 'block';
-    resendSuccess.style.display = 'none';
-    
-    setTimeout(() => {
-      resendError.style.display = 'none';
-    }, 7000);
-  }
-
-  // Mostrar mensagem de sucesso
-  function showSuccess(message) {
-    resendSuccess.innerHTML = `<span style="font-weight: bold;">✅ Sucesso:</span> ${message}`;
-    resendSuccess.style.display = 'block';
-    resendError.style.display = 'none';
-    
-    setTimeout(() => {
+    // Mostrar mensagem de erro
+    function showError(message, element = resendError) {
+      element.textContent = message;
+      element.style.display = 'block';
       resendSuccess.style.display = 'none';
-    }, 7000);
-  }
-
-  // Verificar status do usuário
-  async function checkUserStatus() {
-    try {
-      const email = localStorage.getItem('signup_email');
-      if (!email) {
-        showError('E-mail não encontrado. Por favor, faça o cadastro novamente.');
-        resendButton.disabled = true;
-        return;
-      }
-
-      // Verificar se o usuário já confirmou o email
-      const { data: userData, error: userError } = await supabase
-        .from('usuarios')
-        .select('email_confirmado, nickname')
-        .eq('email', email)
-        .single();
-
-      if (userError && userError.code !== 'PGRST116') {
-        console.error('Erro ao verificar usuário:', userError);
-        return;
-      }
-
-      if (userData && userData.email_confirmado) {
-        showSuccess('Seu e-mail já foi confirmado! Você pode fazer login.');
-        resendButton.disabled = true;
-        
-        // Atualizar mensagem principal
-        messageDiv.innerHTML = `
-          <p>Seu e-mail já foi confirmado com sucesso!</p>
-          <p>Seu nickname: <strong>${userData.nickname || 'a definir'}</strong></p>
-          <p>Você já pode acessar sua conta e começar a jogar.</p>
-        `;
-      }
-    } catch (error) {
-      console.error('Erro ao verificar status:', error);
-    }
-  }
-
-  // Reenviar e-mail de confirmação
-  async function resendConfirmationEmail() {
-    try {
-      const email = localStorage.getItem('signup_email');
       
-      if (!email) {
-        throw new Error('E-mail não encontrado. Por favor, faça o cadastro novamente.');
-      }
-
-      // Mostrar estado de carregamento
-      resendButton.disabled = true;
-      resendButton.innerHTML = '<span class="loading-spinner"></span> Enviando...';
-      resendError.style.display = 'none';
-
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/login.html?confirmed=true`
-        }
-      });
-
-      if (error) {
-        if (error.message.includes('already confirmed')) {
-          await checkUserStatus(); // Verificar status atual
-          throw new Error('Este e-mail já foi confirmado. Você pode fazer login.');
-        } else if (error.message.includes('rate limit')) {
-          throw new Error('Muitas tentativas. Aguarde 1 minuto antes de tentar novamente.');
-        } else if (error.message.includes('not found')) {
-          throw new Error('E-mail não encontrado no sistema. Faça o cadastro novamente.');
-        } else {
-          throw error;
-        }
-      }
-
-      // Sucesso
-      showSuccess('E-mail de confirmação reenviado! Verifique sua caixa de entrada e spam.');
-      resendButton.innerHTML = '✓ E-mail reenviado!';
-      
-    } catch (error) {
-      console.error('Erro ao reenviar e-mail:', error);
-      showError(error.message);
-      resendButton.innerHTML = 'Tentar novamente';
-    } finally {
       setTimeout(() => {
-        resendButton.disabled = false;
-        resendButton.innerHTML = 'Reenviar e-mail de confirmação';
-      }, 3000);
-    }
-  }
-
-  // Inicializar página
-  window.addEventListener('load', async function() {
-    console.log('Página de confirmação carregada');
-    
-    // Verificar se há um e-mail salvo
-    const signupEmail = localStorage.getItem('signup_email');
-    const signupTime = localStorage.getItem('signup_time');
-    
-    if (!signupEmail) {
-      resendButton.disabled = true;
-      resendButton.textContent = 'E-mail não disponível';
-      showError('E-mail não encontrado. Por favor, faça o cadastro novamente.');
-      return;
+        element.style.display = 'none';
+      }, 5000);
     }
 
-    // Verificar se o e-mail expirou (24 horas)
-    const now = new Date().getTime();
-    const twentyFourHours = 24 * 60 * 60 * 1000;
-    
-    if (signupTime && now - parseInt(signupTime) > twentyFourHours) {
-      localStorage.removeItem('signup_email');
-      localStorage.removeItem('signup_time');
-      resendButton.disabled = true;
-      resendButton.textContent = 'Link expirado';
-      showError('O link expirou. Por favor, faça o cadastro novamente.');
-      return;
+    // Mostrar mensagem de sucesso
+    function showSuccess(message) {
+      resendSuccess.textContent = message;
+      resendSuccess.style.display = 'block';
+      resendError.style.display = 'none';
+      
+      setTimeout(() => {
+        resendSuccess.style.display = 'none';
+      }, 5000);
     }
 
     // Verificar status do usuário
-    await checkUserStatus();
-    
-    // Configurar evento de clique no botão
-    resendButton.addEventListener('click', resendConfirmationEmail);
-    
-    // Verificar se veio de um redirecionamento de sucesso
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('signup_success')) {
-      showSuccess('Cadastro realizado com sucesso! Verifique seu e-mail.');
-    }
-  });
+    async function checkUserStatus() {
+      try {
+        // Obter sessão atual
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          throw new Error('Erro ao verificar sessão: ' + sessionError.message);
+        }
 
-  // Adicionar estilos para o spinner de loading
-  const style = document.createElement('style');
-  style.textContent = `
-    .loading-spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #f3f3f3;
-      border-top: 2px solid #ffcc00;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-  document.head.appendChild(style);
-</script>
+        if (!session || !session.user) {
+          // Verificar se temos email no localStorage (caso o usuário tenha acabado de se cadastrar)
+          const signupEmail = localStorage.getItem('signup_email');
+          
+          if (signupEmail) {
+            // Usuário acabou de se cadastrar, mas não está logado ainda
+            showUnconfirmedState(signupEmail);
+            return;
+          } else {
+            // Usuário não está logado e não temos email salvo
+            showSessionExpiredState();
+            return;
+          }
+        }
 
+        const user = session.user;
+        
+        // Verificar se o email foi confirmado
+        if (user.email_confirmed_at) {
+          // Email confirmado - atualizar a tabela usuarios
+          await updateUserConfirmation(user.id);
+          
+          // Mostrar estado confirmado
+          showConfirmedState(user.email);
+        } else {
+          // Email não confirmado
+          showUnconfirmedState(user.email);
+        }
+      } catch (error) {
+        console.error('Erro ao verificar status:', error);
+        statusIcon.textContent = '❌';
+        statusTitle.textContent = 'Erro';
+        statusMessage.innerHTML = `<p>Ocorreu um erro ao verificar seu status: ${error.message}</p>`;
+        emailInputContainer.style.display = 'block';
+      }
+    }
+
+    // Mostrar estado de sessão expirada
+    function showSessionExpiredState() {
+      statusIcon.textContent = '⏰';
+      statusTitle.textContent = 'Sessão expirada';
+      statusMessage.innerHTML = `
+        <p>Para verificar o status da sua conta ou reenviar o e-mail de confirmação, 
+        informe seu endereço de e-mail abaixo.</p>
+      `;
+      emailInputContainer.style.display = 'block';
+      resendSection.style.display = 'none';
+      loginLink.style.display = 'block';
+    }
+
+    // Atualizar confirmação do usuário na tabela
+    async function updateUserConfirmation(userId) {
+      try {
+        const { error } = await supabase
+          .from('usuarios')
+          .update({
+            email_confirmado: true,
+            data_confirmacao_email: new Date().toISOString()
+          })
+          .eq('id', userId);
+          
+        if (error) {
+          console.error('Erro ao atualizar confirmação:', error);
+          // Não lançamos erro aqui para não interromper o fluxo
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar confirmação:', error);
+      }
+    }
+
+    // Mostrar estado confirmado
+    function showConfirmedState(email) {
+      statusIcon.textContent = '✅';
+      statusTitle.textContent = 'E-mail confirmado!';
+      statusMessage.innerHTML = `
+        <p>Seu e-mail <strong>${email}</strong> foi confirmado com sucesso!</p>
+        <p>Agora você pode acessar sua conta e começar a jogar.</p>
+      `;
+      resendSection.style.display = 'none';
+      emailInputContainer.style.display = 'none';
+      loginLink.style.display = 'block';
+    }
+
+    // Mostrar estado não confirmado
+    function showUnconfirmedState(email) {
+      statusIcon.textContent = '✉️';
+      statusTitle.textContent = 'Verifique seu e-mail';
+      statusMessage.innerHTML = `
+        <p>Enviamos um link de confirmação para <strong>${email}</strong>.</p>
+        <p>Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta.</p>
+        <p>Se não encontrar o e-mail, verifique sua pasta de spam.</p>
+      `;
+      emailInputContainer.style.display = 'none';
+      resendSection.style.display = 'block';
+      loginLink.style.display = 'none';
+      
+      // Armazenar email para reenvio
+      resendButton.dataset.email = email;
+    }
+
+    // Reenviar e-mail de confirmação
+    async function resendConfirmationEmail(email) {
+      try {
+        if (!email) {
+          throw new Error('E-mail não disponível para reenvio.');
+        }
+
+        // Mostrar estado de carregamento
+        resendButton.disabled = true;
+        resendButton.innerHTML = '<span class="loading-spinner"></span> Enviando...';
+        resendError.style.display = 'none';
+
+        // Enviar email de verificação
+        const { error } = await supabase.auth.resend({
+          type: 'signup',
+          email: email,
+          options: {
+            emailRedirectTo: `${window.location.origin}/confirmacao.html`
+          }
+        });
+
+        if (error) {
+          if (error.message.includes('already confirmed')) {
+            // Se o email já foi confirmado, atualizar a interface
+            await checkUserStatus();
+            throw new Error('Este e-mail já foi confirmado.');
+          } else if (error.message.includes('rate limit')) {
+            throw new Error('Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.');
+          } else {
+            throw error;
+          }
+        }
+
+        // Sucesso
+        showSuccess('E-mail de confirmação reenviado! Verifique sua caixa de entrada.');
+        
+      } catch (error) {
+        console.error('Erro ao reenviar e-mail:', error);
+        showError(error.message);
+      } finally {
+        setTimeout(() => {
+          resendButton.disabled = false;
+          resendButton.textContent = 'Reenviar e-mail de confirmação';
+        }, 2000);
+      }
+    }
+
+    // Validar formato de e-mail
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    // Inicializar página
+    document.addEventListener('DOMContentLoaded', function() {
+      // Verificar status do usuário
+      checkUserStatus();
+      
+      // Configurar evento de clique no botão de reenvio
+      resendButton.addEventListener('click', function() {
+        const email = resendButton.dataset.email;
+        resendConfirmationEmail(email);
+      });
+      
+      // Configurar evento de clique no botão de enviar e-mail
+      submitEmailButton.addEventListener('click', function() {
+        const email = emailInput.value.trim();
+        
+        if (!email) {
+          showError('Por favor, informe seu endereço de e-mail.', statusMessage);
+          return;
+        }
+        
+        if (!isValidEmail(email)) {
+          showError('Por favor, informe um endereço de e-mail válido.', statusMessage);
+          return;
+        }
+        
+        resendConfirmationEmail(email);
+      });
+      
+      // Adicionar estilos para o spinner de loading
+      const style = document.createElement('style');
+      style.textContent = `
+        .loading-spinner {
+          display: inline-block;
+          width: 16px;
+          height: 16px;
+          border: 2px solid #f3f3f3;
+          border-top: 2px solid #ffcc00;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin-right: 8px;
+          vertical-align: middle;
+        }
+        
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    });
+  </script>
 </body>
 </html>

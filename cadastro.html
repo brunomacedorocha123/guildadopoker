@@ -363,7 +363,7 @@
   </footer>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
+  <script>
     // Inicializa o Supabase
     const supabaseUrl = 'https://dabzautqymohyqbxaubr.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhYnphdXRxeW1vaHlxYnhhdWJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MzA1NDgsImV4cCI6MjA3MzEwNjU0OH0.UUNytj3JvV4ltdIM6B-EZ_Fr51xfCJ9WTqmH6r8YJA0';
@@ -597,6 +597,25 @@
 
         if (authError) throw authError;
 
+        // 2. Inserir usuário na tabela 'usuarios'
+        if (authData.user) {
+          const { error: dbError } = await supabase
+            .from('usuarios')
+            .insert([
+              {
+                id: authData.user.id,
+                email: formData.email,
+                nickname: formData.nickname,
+                nome_completo: formData.nome,
+                telefone: formData.telefone,
+                email_confirmado: false,
+                data_criacao: new Date().toISOString()
+              }
+            ]);
+
+          if (dbError) throw dbError;
+        }
+
         // Salvar email no localStorage para a página de confirmação
         localStorage.setItem('signup_email', formData.email);
         localStorage.setItem('signup_time', new Date().getTime());
@@ -629,7 +648,6 @@
         loading.style.display = 'none';
       }
     });
-</script>
-
+  </script>
 </body>
 </html>
