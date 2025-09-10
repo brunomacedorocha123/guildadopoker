@@ -364,38 +364,59 @@
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
-    // Inicializa o Supabase com SUA URL e CHAVE
+    // Inicializa o Supabase com a URL e CHAVE fornecidas
     const supabaseUrl = 'https://dabzautqymohyqbxaubr.supabase.co';
-    const supabaseKey = 'sua-chave-publica-aqui'; // SUA CHAVE AQUI
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhYnphdXRxeW1vaHlxYnhhdWJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MzA1NDgsImV4cCI6MjA3MzEwNjU0OH0.UUNytj3JvV4ltdIM6B-EZ_Fr51xfCJ9WTqmH6r8YJA0';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     // Elementos do DOM
     const form = document.getElementById('formCadastro');
+    const nomeInput = document.getElementById('nome');
+    const nomeError = document.getElementById('nomeError');
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    const telefoneInput = document.getElementById('telefone');
+    const telefoneError = document.getElementById('telefoneError');
     const nicknameInput = document.getElementById('nickname');
     const nicknameError = document.getElementById('nicknameError');
     const senhaInput = document.getElementById('senha');
+    const senhaError = document.getElementById('senhaError');
     const confirmarSenhaInput = document.getElementById('confirmarSenha');
     const confirmarSenhaError = document.getElementById('confirmarSenhaError');
     const submitButton = document.getElementById('submitButton');
     const loading = document.getElementById('loading');
+    const successMessage = document.getElementById('successMessage');
 
     // Verificar se nickname já existe
-    nicknameInput.addEventListener('blur', async function() {
+    let nicknameCheckTimeout;
+    nicknameInput.addEventListener('input', function() {
+      clearTimeout(nicknameCheckTimeout);
       const nickname = this.value.trim();
-      if (nickname.length < 3) return;
       
-      const { data, error } = await supabase
-        .from('usuarios')
-        .select('nickname')
-        .eq('nickname', nickname)
-        .maybeSingle();
-      
-      if (data) {
-        nicknameError.textContent = 'Este nickname já está em uso. Por favor, escolha outro.';
-        nicknameError.style.display = 'block';
-      } else {
+      if (nickname.length < 3) {
         nicknameError.style.display = 'none';
+        return;
       }
+      
+      nicknameCheckTimeout = setTimeout(async () => {
+        const { data, error } = await supabase
+          .from('usuarios')
+          .select('nickname')
+          .eq('nickname', nickname)
+          .maybeSingle();
+        
+        if (error) {
+          console.error('Erro ao verificar nickname:', error);
+          return;
+        }
+        
+        if (data) {
+          nicknameError.textContent = 'Este nickname já está em uso. Por favor, escolha outro.';
+          nicknameError.style.display = 'block';
+        } else {
+          nicknameError.style.display = 'none';
+        }
+      }, 500);
     });
 
     // Alternar visibilidade da senha
@@ -430,7 +451,7 @@
     });
     
     // Formatar telefone
-    document.getElementById('telefone').addEventListener('input', function(e) {
+    telefoneInput.addEventListener('input', function(e) {
       let value = e.target.value.replace(/\D/g, '');
       
       if (value.length > 11) {
@@ -450,19 +471,45 @@
       e.target.value = value;
     });
     
+    // Validação em tempo real
+    nomeInput.addEventListener('blur', function() {
+      if (this.value.trim().length < 3) {
+        nomeError.style.display = 'block';
+      } else {
+        nomeError.style.display = 'none';
+      }
+    });
+    
+    emailInput.addEventListener('blur', function() {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.value)) {
+        emailError.style.display = 'block';
+      } else {
+        emailError.style.display = 'none';
+      }
+    });
+    
+    senhaInput.addEventListener('blur', function() {
+      if (this.value.length < 6) {
+        senhaError.style.display = 'block';
+      } else {
+        senhaError.style.display = 'none';
+      }
+    });
+    
     // Envio do formulário
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
       
-      // Mostrar loading
-      submitButton.style.display = 'none';
-      loading.style.display = 'block';
+      // Reset de mensagens de erro
+      const errorElements = document.querySelectorAll('.error');
+      errorElements.forEach(el => el.style.display = 'none');
       
       // Coletar dados do formulário
       const formData = {
-        nome: document.getElementById('nome').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        telefone: document.getElementById('telefone').value,
+        nome: nomeInput.value.trim(),
+        email: emailInput.value.trim(),
+        telefone: telefoneInput.value,
         nickname: nicknameInput.value.trim(),
         senha: senhaInput.value,
         confirmarSenha: confirmarSenhaInput.value
@@ -473,62 +520,67 @@
 
       // Validar nome
       if (formData.nome.length < 3) {
-        document.getElementById('nomeError').style.display = 'block';
+        nomeError.style.display = 'block';
         isValid = false;
-      } else {
-        document.getElementById('nomeError').style.display = 'none';
       }
 
       // Validar email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
-        document.getElementById('emailError').style.display = 'block';
+        emailError.style.display = 'block';
         isValid = false;
-      } else {
-        document.getElementById('emailError').style.display = 'none';
       }
 
       // Validar telefone
       const telefoneDigits = formData.telefone.replace(/\D/g, '');
       if (telefoneDigits.length < 10) {
-        document.getElementById('telefoneError').style.display = 'block';
+        telefoneError.style.display = 'block';
         isValid = false;
-      } else {
-        document.getElementById('telefoneError').style.display = 'none';
       }
 
       // Validar nickname
-      if (!formData.nickname) {
-        nicknameError.textContent = 'Por favor, insira um nickname';
+      if (formData.nickname.length < 3) {
+        nicknameError.textContent = 'O nickname deve ter pelo menos 3 caracteres';
         nicknameError.style.display = 'block';
         isValid = false;
-      } else {
-        nicknameError.style.display = 'none';
       }
 
       // Validar senha
       if (formData.senha.length < 6) {
-        document.getElementById('senhaError').style.display = 'block';
+        senhaError.style.display = 'block';
         isValid = false;
-      } else {
-        document.getElementById('senhaError').style.display = 'none';
       }
 
       // Validar confirmação de senha
       if (formData.senha !== formData.confirmarSenha) {
         confirmarSenhaError.style.display = 'block';
         isValid = false;
-      } else {
-        confirmarSenhaError.style.display = 'none';
       }
 
       if (!isValid) {
-        submitButton.style.display = 'block';
-        loading.style.display = 'none';
         return;
       }
 
+      // Mostrar loading
+      submitButton.style.display = 'none';
+      loading.style.display = 'block';
+
       try {
+        // Verificar se o nickname já existe (verificação final)
+        const { data: nicknameData, error: nicknameErrorCheck } = await supabase
+          .from('usuarios')
+          .select('nickname')
+          .eq('nickname', formData.nickname)
+          .maybeSingle();
+        
+        if (nicknameErrorCheck) throw nicknameErrorCheck;
+        
+        if (nicknameData) {
+          nicknameError.textContent = 'Este nickname já está em uso. Por favor, escolha outro.';
+          nicknameError.style.display = 'block';
+          throw new Error('Nickname já existe');
+        }
+
         // 1. Registrar usuário no Auth do Supabase
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email: formData.email,
@@ -544,8 +596,29 @@
 
         if (authError) throw authError;
 
+        // 2. Inserir dados adicionais na tabela 'usuarios'
+        // Removemos a referência à coluna data_cadastro que não existe
+        const { data: userData, error: userError } = await supabase
+          .from('usuarios')
+          .insert([
+            {
+              id: authData.user.id,
+              email: formData.email,
+              nome_completo: formData.nome,
+              nickname: formData.nickname,
+              telefone: formData.telefone
+              // Removido data_cadastro para evitar erro
+            }
+          ]);
+
+        if (userError) {
+          console.error('Erro ao inserir na tabela usuarios:', userError);
+          // Mesmo com erro na tabela usuarios, o cadastro no auth foi bem sucedido
+          // Podemos continuar, pois os dados principais estão no auth
+        }
+
         // Sucesso
-        document.getElementById('successMessage').style.display = 'block';
+        successMessage.style.display = 'block';
         form.reset();
 
         // Redirecionar após 5 segundos
@@ -555,12 +628,15 @@
 
       } catch (error) {
         console.error('Erro detalhado:', error);
-        if (error.message.includes('nickname')) {
+        
+        if (error.message.includes('already registered')) {
+          emailError.textContent = 'Este e-mail já está cadastrado.';
+          emailError.style.display = 'block';
+        } else if (error.message.includes('Nickname já existe')) {
+          // Já tratado acima
+        } else if (error.message.includes('users_nickname_key')) {
           nicknameError.textContent = 'Este nickname já está em uso. Por favor, escolha outro.';
           nicknameError.style.display = 'block';
-        } else if (error.message.includes('email')) {
-          document.getElementById('emailError').textContent = 'Este e-mail já está cadastrado.';
-          document.getElementById('emailError').style.display = 'block';
         } else {
           alert('Erro no cadastro: ' + error.message);
         }

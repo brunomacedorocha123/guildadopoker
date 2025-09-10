@@ -6,7 +6,7 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>Guilda do Poker</title>
     <!-- Schema.org markup for Google Search -->
-    <script type="application/ld+json">
+     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
@@ -16,8 +16,6 @@
       "description": "Comunidade de poker online com torneios, cash games e uma equipe de jogadores apaixonados."
     }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W52XLG5Z2M"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -27,720 +25,454 @@
     </script>
     <style>
     :root {
-        --bg: #121212;
-        --bg-2: #1c1c1c;
-        --bg-3: #2c2c2c;
-        --gold: #ffcc00;
-        --gold-light: #ffdb4d;
-        --gold-dark: #e6b800;
-        --text: #f5f5f5;
-        --text-secondary: #cccccc;
-    }
+    --bg: #121212;
+    --bg-2: #1c1c1c;
+    --bg-3: #2c2c2c;
+    --gold: #ffcc00;
+    --gold-light: #ffdb4d;
+    --gold-dark: #e6b800;
+    --text: #f5f5f5;
+    --text-secondary: #cccccc;
+    --error: #ff4d4d;
+    --success: #4CAF50;
+    --info: #2196F3;
+}
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-    body {
-        font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-        background-color: var(--bg);
-        color: var(--text);
-        line-height: 1.6;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
+body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-    /* ===== CABEÇALHO COM BOTÕES ===== */
-    header {
-        background: var(--bg-2);
-        padding: 15px 20px;
-        text-align: center;
-        border-bottom: 2px solid var(--gold);
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        min-height: 100px;
-    }
+/* ===== CABEÇALHO COM BOTÕES ===== */
+header {
+    background: var(--bg-2);
+    padding: 15px 20px;
+    text-align: center;
+    border-bottom: 2px solid var(--gold);
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100px;
+}
 
-    /* ===== LOGO DO CABEÇALHO ===== */
-    .logo-container {
-        display: flex;
-        align-items: center;
-    }
+/* ===== LOGO DO CABEÇALHO ===== */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
 
-    .header-logo {
-        height: 80px;
-        width: auto;
-        transition: transform 0.3s ease;
-    }
+.header-logo {
+    height: 80px;
+    width: auto;
+    transition: transform 0.3s ease;
+}
 
-    .header-logo:hover {
-        transform: scale(1.05);
-    }
+.header-logo:hover {
+    transform: scale(1.05);
+}
 
-    /* ===== BOTÕES DE AUTENTICAÇÃO ===== */
-    .auth-buttons {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        margin-left: auto;
-    }
+/* ===== BOTÕES DE AUTENTICAÇÃO DESKTOP ===== */
+.desktop-auth {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: auto;
+}
 
-    .user-greeting {
-        color: var(--gold);
-        margin-right: 10px;
-        font-size: 0.9rem;
-        display: none;
-    }
+.auth-btn {
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid var(--gold);
+    display: inline-block;
+    text-align: center;
+}
 
-    .auth-btn {
-        padding: 7px 14px;
-        border-radius: 5px;
-        font-weight: bold;
-        text-decoration: none;
-        font-size: 0.85rem;
-        transition: all 0.3s ease;
-        white-space: nowrap;
-        cursor: pointer;
-        border: 1px solid var(--gold);
-        display: inline-block;
-        text-align: center;
-    }
+.login-btn {
+    background-color: transparent;
+    color: var(--gold);
+}
 
-    .login-btn {
-        background-color: transparent;
-        color: var(--gold);
-    }
+.login-btn:hover {
+    background-color: rgba(255, 204, 0, 0.1);
+}
 
-    .login-btn:hover {
-        background-color: rgba(255, 204, 0, 0.1);
-    }
+.signup-btn {
+    background-color: var(--gold);
+    color: var(--bg);
+    padding: 8px 18px !important;
+}
 
-    .signup-btn {
-        background-color: var(--gold);
-        color: var(--bg);
-        padding: 7px 16px !important;
-    }
+.signup-btn:hover {
+    background-color: #e6b800;
+    border-color: #e6b800;
+}
 
-    .signup-btn:hover {
-        background-color: #e6b800;
-        border-color: #e6b800;
-    }
+.profile-btn {
+    background-color: var(--gold);
+    color: var(--bg);
+}
 
-    .profile-btn {
-        background-color: var(--gold);
-        color: var(--bg);
-    }
+.profile-btn:hover {
+    background-color: #e6b800;
+    border-color: #e6b800;
+}
 
-    .profile-btn:hover {
-        background-color: #e6b800;
-        border-color: #e6b800;
-    }
+.logout-btn {
+    background-color: var(--bg);
+    color: var(--gold);
+    border: 1px solid var(--gold);
+}
 
-    .logout-btn {
-        background-color: var(--bg);
-        color: var(--gold);
-    }
+.logout-btn:hover {
+    background-color: rgba(255, 204, 0, 0.1);
+}
 
-    .logout-btn:hover {
-        background-color: rgba(255, 204, 0, 0.1);
-    }
+/* ===== BOTÕES DE AUTENTICAÇÃO MOBILE ===== */
+.mobile-auth-buttons {
+    display: none;
+    background: var(--bg-3);
+    padding: 15px;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid rgba(255, 204, 0, 0.3);
+}
 
-    /* ===== MENU DE NAVEGAÇÃO ===== */
-    nav {
-        background: var(--bg-3);
-        padding: 15px 0;
-        position: relative;
-        width: 100%;
-    }
+.mobile-auth-buttons.active {
+    display: flex;
+}
 
-    .menu-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
+.mobile-auth-btn {
+    width: 100%;
+    text-align: center;
+    padding: 12px !important;
+    font-size: 1rem !important;
+    margin: 5px 0;
+}
 
-    .menu {
-        display: flex;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        justify-content: center;
-    }
+/* ===== BOTÃO HAMBÚRGUER ===== */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 42px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+    margin-left: 15px;
+}
 
-    .menu li {
-        margin: 0;
-    }
+.hamburger span {
+    width: 100%;
+    height: 4px;
+    background-color: var(--gold);
+    border-radius: 3px;
+    transition: all 0.3s linear;
+}
 
-    .menu a {
-        color: var(--gold);
-        padding: 14px 22px;
-        text-decoration: none;
-        font-weight: bold;
-        transition: .2s;
-        display: block;
-        text-align: center;
-        font-size: 1.05rem;
-    }
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
 
-    .menu a:hover, .menu a.active {
-        color: #ffffff;
-        text-decoration: underline;
-        background-color: rgba(255, 204, 0, 0.15);
-        border-radius: 6px;
-    }
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
 
-    /* ===== BOTÃO HAMBÚRGUER ===== */
-    .hamburger {
-        display: none;
-        flex-direction: column;
-        justify-content: space-around;
-        width: 42px;
-        height: 36px;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-        z-index: 1001;
-        margin-left: 15px;
-    }
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
 
-    .hamburger span {
-        width: 100%;
-        height: 4px;
-        background-color: var(--gold);
-        border-radius: 3px;
-        transition: all 0.3s linear;
-    }
+/* ===== MENU DE NAVEGAÇÃO ===== */
+nav {
+    background: var(--bg-3);
+    padding: 15px 0;
+    position: relative;
+    width: 100%;
+}
 
-    .hamburger.active span:nth-child(1) {
-        transform: rotate(45deg) translate(8px, 8px);
-    }
+.menu-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
 
-    .hamburger.active span:nth-child(2) {
-        opacity: 0;
-    }
+.menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    justify-content: center;
+}
 
-    .hamburger.active span:nth-child(3) {
-        transform: rotate(-45deg) translate(7px, -7px);
-    }
+.menu li {
+    margin: 0;
+}
 
-    /* ===== CONTEÚDO PRINCIPAL ===== */
-    .conteudo-principal {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 30px 20px;
-        width: 100%;
-        flex: 1;
-    }
+.menu a {
+    color: var(--gold);
+    padding: 14px 22px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: .2s;
+    display: block;
+    text-align: center;
+    font-size: 1.05rem;
+}
 
-    /* NOVO LAYOUT DA SEÇÃO PRINCIPAL */
-    .hero-section {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 40px;
-        padding: 30px 0;
-        margin-bottom: 40px;
-    }
+.menu a:hover, .menu a.active {
+    color: #ffffff;
+    text-decoration: underline;
+    background-color: rgba(255, 204, 0, 0.15);
+    border-radius: 6px;
+}
 
-    .hero-text {
-        flex: 1;
-        min-width: 300px;
-    }
+/* ===== CONTEÚDO PRINCIPAL ===== */
+.conteudo-principal {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    width: 100%;
+    flex: 1;
+}
 
-    .hero-text h1 {
-        color: var(--gold);
-        margin-bottom: 20px;
-        font-size: 2.8em;
-        line-height: 1.2;
-        text-align: left;
-    }
+/* NOVO LAYOUT DA SEÇÃO PRINCIPAL */
+.hero-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 30px 0;
+    margin-bottom: 40px;
+}
 
-    .hero-text p {
-        color: var(--text-secondary);
-        font-size: 1.2em;
-        text-align: justify;
-        text-justify: inter-word;
-        margin-bottom: 30px;
-        line-height: 1.6;
-        hyphens: auto;
-    }
+.hero-text {
+    flex: 1;
+    min-width: 300px;
+}
 
-    .hero-image {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+.hero-text h1 {
+    color: var(--gold);
+    margin-bottom: 20px;
+    font-size: 2.8em;
+    line-height: 1.2;
+    text-align: left;
+}
 
-    .hero-image img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 16px;
-        border: 3px solid var(--gold);
-        box-shadow: 0 8px 25px rgba(0,0,0,.7);
-        transition: transform 0.3s ease;
-    }
+.hero-text p {
+    color: var(--text-secondary);
+    font-size: 1.2em;
+    text-align: justify;
+    text-justify: inter-word;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    hyphens: auto;
+}
 
-    .hero-image img:hover {
-        transform: scale(1.02);
-    }
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    /* NOVA SEÇÃO ONDE JOGAR */
- .onde-jogar-section {
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
+    border: 3px solid var(--gold);
+    box-shadow: 0 8px 25px rgba(0,0,0,.7);
+    transition: transform 0.3s ease;
+}
+
+.hero-image img:hover {
+    transform: scale(1.02);
+}
+
+/* NOVA SEÇÃO ONDE JOGAR */
+.onde-jogar-section {
     background: linear-gradient(to bottom, var(--bg-2), var(--bg-3));
     padding: 60px 30px;
     border-radius: 16px;
-    margin: 60px auto; /* Centraliza a seção */
+    margin: 60px auto;
     text-align: center;
     border: 1px solid var(--gold);
-    width: 80%; /* NOVO VALOR */
+    width: 80%;
 }
 
-    .onde-jogar-section h2 {
-        color: var(--gold);
-        font-size: 2.4em;
-        margin-bottom: 20px;
-        position: relative;
-        display: inline-block;
-        padding-bottom: 15px;
-    }
+.onde-jogar-section h2 {
+    color: var(--gold);
+    font-size: 2.4em;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 15px;
+}
 
-    .onde-jogar-section h2:after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 4px;
-        background: var(--gold);
-        border-radius: 2px;
-    }
+.onde-jogar-section h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: var(--gold);
+    border-radius: 2px;
+}
 
-    .onde-jogar-section p {
-        color: var(--text-secondary);
-        font-size: 1.2em;
-        max-width: 800px;
-        margin: 0 auto 40px;
-        line-height: 1.6;
-        text-align: justify;
-        text-justify: inter-word;
-        hyphens: auto;
-    }
+.onde-jogar-section p {
+    color: var(--text-secondary);
+    font-size: 1.2em;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+}
 
-    .plataformas-container {
-        display: flex;
-        justify-content: center;
-        gap: 40px;
-        flex-wrap: wrap;
-        margin-top: 30px;
-    }
+.plataformas-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
 
-    .plataforma-card {
-        background: var(--bg-2);
-        border-radius: 12px;
-        padding: 30px;
-        width: 320px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        cursor: pointer;
-        text-decoration: none;
-    }
+.plataforma-card {
+    background: var(--bg-2);
+    border-radius: 12px;
+    padding: 30px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+}
 
-    .plataforma-card:hover {
-        border-color: var(--gold);
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    }
+.plataforma-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
 
-    .plataforma-logo {
-        max-width: 200px;
-        height: auto;
-        margin-bottom: 25px;
-    }
+.plataforma-logo {
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 25px;
+}
 
-    .plataforma-card h3 {
-        color: var(--gold);
-        margin-bottom: 15px;
-        font-size: 1.6em;
-    }
+.plataforma-card h3 {
+    color: var(--gold);
+    margin-bottom: 15px;
+    font-size: 1.6em;
+}
 
-    .plataforma-card p {
-        color: var(--text-secondary);
-        margin-bottom: 20px;
-        font-size: 1em;
-        text-align: justify;
-        text-justify: inter-word;
-        hyphens: auto;
-    }
+.plataforma-card p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 1em;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+}
 
-    .id-info {
+.id-info {
     background: var(--bg);
     padding: 15px;
     border-radius: 8px;
     margin-top: auto;
     width: 100%;
     border-left: 4px solid var(--gold);
-    color: #ffffff; /* ADICIONE ESTA LINHA */
-}
-    .id-info strong {
-        color:  var(--gold);
-        font-size: 1.1em;
-    }
-
-    /* Seção Sobre Nós */
-    .sobre-nos {
-        background-color: var(--bg-2);
-        padding: 70px 40px;
-        margin: 80px auto 60px;
-        border-top: 2px solid var(--gold);
-        border-bottom: 2px solid var(--gold);
-        width: 95%;
-        max-width: 1100px;
-        border-radius: 12px;
-        position: relative;
-    }
-
-    .sobre-nos:before {
-        content: '';
-        position: absolute;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 3px;
-        background: var(--gold);
-        border-radius: 3px;
-    }
-
-    .sobre-nos h2 {
-        color: var(--gold);
-        text-align: center;
-        font-size: 2.4em;
-        margin-bottom: 40px;
-    }
-
-    .sobre-nos p {
-        color: #e6e6e6;
-        font-size: 1.1em;
-        line-height: 1.8;
-        text-align: justify;
-        text-justify: inter-word;
-        max-width: 1000px;
-        margin: 0 auto 25px;
-        hyphens: auto;
-    }
-
-    .sobre-nos .assinatura {
-        text-align: right;
-        margin-top: 40px;
-        font-style: italic;
-        color: var(--gold);
-        font-size: 1.2em;
-    }
-
-    footer {
-        background: var(--bg-2);
-        text-align: center;
-        padding: 25px 15px 15px;
-        margin-top: 40px;
-        border-top: 2px solid var(--gold);
-        font-size: 14px;
-        color: #bbb;
-    }
-
-    .aviso18 {
-        margin-top: 15px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .icone18 {
-        background: red;
-        color: white;
-        font-weight: bold;
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-size: 13px;
-    }
-
-    /* ===== RESPONSIVIDADE ===== */
-    @media (max-width: 992px) {
-        .menu a {
-            padding: 12px 18px;
-            font-size: 1rem;
-        }
-        
-        .auth-buttons {
-            gap: 8px;
-        }
-        
-        .auth-btn {
-            padding: 6px 12px;
-            font-size: 0.8rem;
-        }
-        
-        .signup-btn {
-            padding: 6px 14px !important;
-        }
-        
-        .user-greeting {
-            display: none;
-        }
-        
-        .hero-section {
-            flex-direction: column;
-            text-align: center;
-            gap: 30px;
-        }
-        
-        .hero-text h1, .hero-text p {
-            text-align: center;
-        }
-        
-        .hero-image {
-            order: -1;
-        }
-        
-        .hero-image img {
-            max-width: 80%;
-        }
-        
-        .plataformas-container {
-            gap: 25px;
-        }
-        
-        .plataforma-card {
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .plataforma-card p {
-            text-align: center;
-        }
-    }
-
-    @media (max-width: 768px) {
-        header {
-            padding: 12px 15px;
-            min-height: 80px;
-            flex-wrap: wrap;
-        }
-        
-        .logo-container {
-            order: 1;
-            margin-right: auto;
-        }
-        
-        .header-logo {
-            height: 60px;
-        }
-        
-        .auth-buttons {
-            order: 2;
-            margin-left: 0;
-            margin-right: 50px; /* Espaço para o hamburger */
-        }
-        
-        .auth-btn {
-            padding: 8px 16px;
-            font-size: 0.85rem;
-        }
-        
-        .signup-btn {
-            padding: 8px 18px !important;
-        }
-        
-        nav {
-            padding: 0;
-            background: transparent;
-        }
-        
-        .hamburger {
-            display: flex;
-            width: 36px;
-            height: 30px;
-            order: 3;
-            position: relative;
-            margin-left: 0;
-        }
-
-        .hamburger span {
-            height: 3px;
-        }
-
-        .menu {
-            flex-direction: column;
-            width: 100%;
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: var(--bg-3);
-            z-index: 1000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            padding: 15px 0;
-            border-top: 2px solid var(--gold);
-        }
-
-        .menu.active {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .menu li {
-            width: 100%;
-            text-align: center;
-        }
-
-        .menu a {
-            padding: 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-size: 1.1rem;
-        }
-        
-        .menu a:last-child {
-            border-bottom: none;
-        }
-        
-        .menu-container {
-            padding: 0;
-        }
-        
-        .conteudo-principal {
-            padding: 20px 15px;
-        }
-        
-        .hero-text h1 {
-            font-size: 2.2em;
-        }
-        
-        .hero-text p {
-            font-size: 1.1em;
-        }
-        
-        .onde-jogar-section {
-            padding: 40px 20px;
-        }
-        
-        .onde-jogar-section h2 {
-            font-size: 2em;
-        }
-        
-        .sobre-nos {
-            padding: 50px 25px;
-            margin: 50px auto 40px;
-        }
-        
-        .sobre-nos h2 {
-            font-size: 2em;
-        }
-        
-        .aviso18 {
-            flex-direction: column;
-            text-align: center;
-        }
-    }
-
-    @media (max-width: 600px) {
-        .auth-buttons {
-            margin-right: 40px;
-        }
-        
-        .auth-btn {
-            padding: 6px 10px;
-            font-size: 0.75rem;
-        }
-        
-        .signup-btn {
-            padding: 6px 12px !important;
-        }
-    }
-
-    @media (max-width: 480px) {
-        header {
-            padding: 10px 12px;
-        }
-        
-        .logo-container {
-            margin-left: 5px;
-        }
-        
-        .header-logo {
-            height: 50px;
-        }
-        
-        .auth-buttons {
-            gap: 6px;
-            margin-right: 35px;
-        }
-        
-        .auth-btn {
-            padding: 5px 8px;
-            font-size: 0.7rem;
-        }
-        
-        .signup-btn {
-            padding: 5px 10px !important;
-        }
-        
-        .hamburger {
-            width: 32px;
-            height: 28px;
-        }
-        
-        .hero-text h1 {
-            font-size: 1.9em;
-        }
-        
-        .onde-jogar-section {
-            padding: 30px 15px;
-        }
-        
-        .onde-jogar-section h2 {
-            font-size: 1.8em;
-        }
-        
-        .plataforma-card {
-            padding: 20px;
-        }
-        
-        .plataforma-logo {
-            max-width: 160px;
-        }
-        
-        .sobre-nos {
-            padding: 40px 20px;
-            margin: 40px auto 30px;
-        }
-    }
-
-    .forum-btn:hover {
-    background-color: transparent !important;
-    color: var(--gold) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+    color: #ffffff;
 }
 
-/* Estilos para o banner de afiliado */
+.id-info strong {
+    color: var(--gold);
+    font-size: 1.1em;
+}
+
+/* Seção Sobre Nós */
+.sobre-nos {
+    background-color: var(--bg-2);
+    padding: 70px 40px;
+    margin: 80px auto 60px;
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    width: 95%;
+    max-width: 1100px;
+    border-radius: 12px;
+    position: relative;
+}
+
+.sobre-nos:before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 3px;
+}
+
+.sobre-nos h2 {
+    color: var(--gold);
+    text-align: center;
+    font-size: 2.4em;
+    margin-bottom: 40px;
+}
+
+.sobre-nos p {
+    color: #e6e6e6;
+    font-size: 1.1em;
+    line-height: 1.8;
+    text-align: justify;
+    text-justify: inter-word;
+    max-width: 1000px;
+    margin: 0 auto 25px;
+    hyphens: auto;
+}
+
+.sobre-nos .assinatura {
+    text-align: right;
+    margin-top: 40px;
+    font-style: italic;
+    color: var(--gold);
+    font-size: 1.2em;
+}
+
+/* Banner de Afiliado */
 .affiliate-banner-container {
     margin: 40px auto;
     max-width: 800px;
@@ -762,13 +494,6 @@
     transform: scale(1.02);
 }
 
-/* Ajuste para mobile */
-@media (max-width: 768px) {
-    .affiliate-banner-container {
-        max-width: 600px;
-    }
-}
-
 /* Seta animada */
 .arrow-down {
     display: inline-block;
@@ -783,9 +508,367 @@
     40% {transform: translateY(-10px);}
     60% {transform: translateY(-5px);}
 }
+
+/* Botão do Fórum */
+.forum-btn:hover {
+    background-color: transparent !important;
+    color: var(--gold) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+}
+
+/* Notificações */
+.custom-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-width: 300px;
+    animation: slideIn 0.3s ease;
+}
+
+.custom-notification.success {
+    background: var(--success);
+}
+
+.custom-notification.error {
+    background: var(--error);
+}
+
+.custom-notification.info {
+    background: var(--info);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Loader para botões */
+.button-loader {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Rodapé */
+footer {
+    background: var(--bg-2);
+    text-align: center;
+    padding: 25px 15px 15px;
+    margin-top: 40px;
+    border-top: 2px solid var(--gold);
+    font-size: 14px;
+    color: #bbb;
+}
+
+.aviso18 {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.icone18 {
+    background: red;
+    color: white;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 992px) {
+    .menu a {
+        padding: 12px 18px;
+        font-size: 1rem;
+    }
+    
+    .auth-buttons {
+        gap: 8px;
+    }
+    
+    .auth-btn {
+        padding: 7px 14px;
+        font-size: 0.85rem;
+    }
+    
+    .signup-btn {
+        padding: 7px 16px !important;
+    }
+    
+    .hero-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+    }
+    
+    .hero-text h1, .hero-text p {
+        text-align: center;
+    }
+    
+    .hero-image {
+        order: -1;
+    }
+    
+    .hero-image img {
+        max-width: 80%;
+    }
+    
+    .plataformas-container {
+        gap: 25px;
+    }
+    
+    .plataforma-card {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .plataforma-card p {
+        text-align: center;
+    }
+    
+    .onde-jogar-section {
+        width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 12px 15px;
+        min-height: 80px;
+        flex-wrap: wrap;
+    }
+    
+    .logo-container {
+        order: 1;
+        margin-right: auto;
+    }
+    
+    .header-logo {
+        height: 60px;
+    }
+    
+    .desktop-auth {
+        order: 2;
+        display: none; /* Esconde botões desktop no mobile */
+    }
+    
+    .auth-btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+    
+    .signup-btn {
+        padding: 8px 18px !important;
+    }
+    
+    nav {
+        padding: 0;
+        background: transparent;
+    }
+    
+    .hamburger {
+        display: flex;
+        width: 36px;
+        height: 30px;
+        order: 3;
+        position: relative;
+        margin-left: 0;
+    }
+
+    .hamburger span {
+        height: 3px;
+    }
+
+    .menu {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--bg-3);
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        padding: 15px 0;
+        border-top: 2px solid var(--gold);
+    }
+
+    .menu.active {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu li {
+        width: 100%;
+        text-align: center;
+    }
+
+    .menu a {
+        padding: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 1.1rem;
+    }
+    
+    .menu a:last-child {
+        border-bottom: none;
+    }
+    
+    .menu-container {
+        padding: 0;
+    }
+    
+    .conteudo-principal {
+        padding: 20px 15px;
+    }
+    
+    .hero-text h1 {
+        font-size: 2.2em;
+    }
+    
+    .hero-text p {
+        font-size: 1.1em;
+    }
+    
+    .onde-jogar-section {
+        padding: 40px 20px;
+        width: 95%;
+    }
+    
+    .onde-jogar-section h2 {
+        font-size: 2em;
+    }
+    
+    .sobre-nos {
+        padding: 50px 25px;
+        margin: 50px auto 40px;
+    }
+    
+    .sobre-nos h2 {
+        font-size: 2em;
+    }
+    
+    .aviso18 {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .affiliate-banner-container {
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 600px) {
+    .auth-buttons {
+        margin-right: 40px;
+    }
+    
+    .auth-btn {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+    
+    .signup-btn {
+        padding: 6px 12px !important;
+    }
+    
+    .onde-jogar-section {
+        padding: 30px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 10px 12px;
+    }
+    
+    .logo-container {
+        margin-left: 5px;
+    }
+    
+    .header-logo {
+        height: 50px;
+    }
+    
+    .auth-buttons {
+        gap: 6px;
+        margin-right: 35px;
+    }
+    
+    .auth-btn {
+        padding: 5px 8px;
+        font-size: 0.7rem;
+    }
+    
+    .signup-btn {
+        padding: 5px 10px !important;
+    }
+    
+    .hamburger {
+        width: 32px;
+        height: 28px;
+    }
+    
+    .hero-text h1 {
+        font-size: 1.9em;
+    }
+    
+    .onde-jogar-section {
+        padding: 25px 12px;
+    }
+    
+    .onde-jogar-section h2 {
+        font-size: 1.8em;
+    }
+    
+    .plataforma-card {
+        padding: 20px;
+    }
+    
+    .plataforma-logo {
+        max-width: 160px;
+    }
+    
+    .sobre-nos {
+        padding: 40px 20px;
+        margin: 40px auto 30px;
+    }
+    
+    .mobile-auth-btn {
+        padding: 10px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .affiliate-banner-container {
+        padding: 0 10px;
+    }
+}
     </style>
 </head>
-
 <body>
     <!-- Cabeçalho com botões de autenticação -->
     <header>
@@ -793,17 +876,29 @@
         <img src="logoguidapoker1.png" alt="Guilda do Poker" class="header-logo">
       </div>
       
-      <!-- Botões de Autenticação - REMOVIDOS OS BOTÕES DE LOGIN E CADASTRO -->
-      <div class="auth-buttons" id="auth-buttons">
-          <!-- Botões de login e cadastro removidos -->
-          <a href="perfil.html" class="auth-btn profile-btn" id="profile-button" style="display: none;">Meu Perfil</a>
-          <button class="auth-btn logout-btn" id="logout-button" style="display: none;">Sair</button>
+      <!-- BOTÕES DE AUTENTICAÇÃO - VERSÃO ATUALIZADA -->
+      <div class="desktop-auth" id="auth-buttons">
+        <!-- Botões para usuário NÃO logado -->
+        <a href="login.html" class="auth-btn login-btn" id="login-button">Entrar</a>
+        <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastrar-se</a>
+        
+        <!-- Botões para usuário logado -->
+        <a href="perfil.html" class="auth-btn profile-btn" id="profile-button" style="display: none;">Meu Perfil</a>
+        <button class="auth-btn logout-btn" id="logout-button" style="display: none;">Sair</button>
+      </div>
+
+      <!-- Menu mobile de autenticação (será mostrado apenas em mobile) -->
+      <div class="mobile-auth-buttons" id="mobile-auth-buttons">
+        <a href="login.html" class="auth-btn login-btn mobile-auth-btn" id="mobile-login-button">Entrar</a>
+        <a href="cadastro.html" class="auth-btn signup-btn mobile-auth-btn" id="mobile-signup-button">Cadastrar-se</a>
+        <a href="perfil.html" class="auth-btn profile-btn mobile-auth-btn" id="mobile-profile-button" style="display: none;">Meu Perfil</a>
+        <button class="auth-btn logout-btn mobile-auth-btn" id="mobile-logout-button" style="display: none;">Sair</button>
       </div>
 
       <button class="hamburger" aria-label="Abrir menu">
-          <span></span>
-          <span></span>
-          <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
     </header>
 
@@ -830,7 +925,8 @@
             <div class="hero-text">
                 <h1>Bem-vindo à Guilda do Poker</h1>
                 <p>
-                    A Guilda do Poker é um espaço dedicado a jogadores que valorizam a combinação entre estratégia, entretenimento e competição saudável. Nosso objetivo é oferecer um ambiente dinâmico, onde você encontra torneios variados, mesas de cash games e a oportunidade de interagir com parceiros confiáveis. Aqui, cada partida é pensada para proporcionar desafios instigantes, aprendizado constante e uma experiência que une comunidade e diversão em torno do poker.
+                    A Guilda do Poker é um espaço dedicado a jogadores que valorizam a combinação entre estratégia, entretenimento and competição saudável. Nosso objetivo é oferecer um ambiente dinâmico, onde você encontra torneios variados, mesas de cash games e a oportunidade de interagir com parceiros confiáveis. Aqui, cada partida é pensada para proporcionar desafios instigantes, aprendizado constante e uma experiência que une comunidade e diversão em torno do poker.
+                </p>
             </div>
 
             <div class="hero-image">
@@ -851,13 +947,12 @@
                </p>
            </div>
            
-           <a href="https://go.hotmart.com/N101803649O?dp=1" target="_blank" rel="noopener noreferrer">
+           <a href="https://go.hotmart.com/N101803649O?dp=1" target="_blank" rel="noopener noreferrer sponsored">
                <picture>
-                   <!-- Imagem para Mobile (600x600) -->
                    <source media="(max-width: 768px)" srcset="mestrepokermobile.png">
-                   <!-- Imagem para Desktop (800x200) -->
-                   <img src="mestrepokerpc1.jpg" alt="Curse Mestres do Poker - Transforme seu jogo e torne-se um jogador de sucesso" class="responsive-affiliate-banner">
+                   <img src="mestrepokerpc1.jpg" alt="Curso Mestres do Poker - Transforme seu jogo e torne-se um jogador de sucesso" class="responsive-affiliate-banner">
                </picture>
+               <span>👉 Conheça o curso Mestres do Poker</span>
            </a>
        </div>
 
@@ -898,8 +993,9 @@
             <p>
                 A Guilda do Poker foi criada para reunir jogadores em uma comunidade acolhedora, aberta tanto a iniciantes quanto a experientes.
                 Nosso propósito e proporcionar uma experiência completa, com torneios acessíveis e mesas de cash games bem estruturadas, garantindo um ambiente que une diversão e competitividade de forma equilibrada.
+            </p>
             <p>
-                Estamos em constante crescimento e evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam
+                Estamos em constante crescimento and evolução, sempre buscando atrair novos jogadores e consolidar parcerias que fortaleçam
                 nossa comunidade. Um dos nossos principais objetivos e introduzir formatos inovadores de torneios, trazendo variedade e
                 dinamismo para nossas mesas, mantendo sempre a acessibilidade e o equilibrio competitivo.
             </p>
@@ -921,7 +1017,6 @@
         </div>
     </div>
 
-    <!-- Rodapé -->
     <footer>
         <p>© 2025 Guilda do Poker - Todos os direitos reservados</p>
         <div class="aviso18">
@@ -934,94 +1029,525 @@
         </div>
     </footer>
 
-    <!-- Script do menu mobile -->
     <script>
-    // Menu hamburger
-    const hamburger = document.querySelector('.hamburger');
-    const menu = document.querySelector('.menu');
+// =============================================
+// MÓDULO DE AUTENTICAÇÃO
+// =============================================
+const AuthModule = (function() {
+    // Verificar status de login
+    function checkLoginStatus() {
+        // Verificação com localStorage (substitua por sua lógica real)
+        return localStorage.getItem('userLoggedIn') === 'true';
+    }
+    
+    // Obter informações do usuário (se logado)
+    function getUserInfo() {
+        const userData = localStorage.getItem('userData');
+        return userData ? JSON.parse(userData) : null;
+    }
+    
+    // Atualizar a exibição dos botões de autenticação
+    function updateAuthButtons() {
+        const isLoggedIn = checkLoginStatus();
+        const userInfo = getUserInfo();
+        
+        // Elementos desktop
+        const loginButton = document.getElementById('login-button');
+        const signupButton = document.getElementById('signup-button');
+        const profileButton = document.getElementById('profile-button');
+        const logoutButton = document.getElementById('logout-button');
+        
+        // Elementos mobile
+        const mobileLoginButton = document.getElementById('mobile-login-button');
+        const mobileSignupButton = document.getElementById('mobile-signup-button');
+        const mobileProfileButton = document.getElementById('mobile-profile-button');
+        const mobileLogoutButton = document.getElementById('mobile-logout-button');
+        
+        if (isLoggedIn && userInfo) {
+            // Usuário logado - mostrar perfil e logout
+            if (loginButton) loginButton.style.display = 'none';
+            if (signupButton) signupButton.style.display = 'none';
+            if (profileButton) {
+                profileButton.style.display = 'inline-block';
+                profileButton.textContent = userInfo.name || 'Meu Perfil';
+            }
+            if (logoutButton) logoutButton.style.display = 'inline-block';
+            
+            if (mobileLoginButton) mobileLoginButton.style.display = 'none';
+            if (mobileSignupButton) mobileSignupButton.style.display = 'none';
+            if (mobileProfileButton) {
+                mobileProfileButton.style.display = 'block';
+                mobileProfileButton.textContent = userInfo.name || 'Meu Perfil';
+            }
+            if (mobileLogoutButton) mobileLogoutButton.style.display = 'block';
+        } else {
+            // Usuário não logado - mostrar login e cadastro
+            if (loginButton) loginButton.style.display = 'inline-block';
+            if (signupButton) signupButton.style.display = 'inline-block';
+            if (profileButton) profileButton.style.display = 'none';
+            if (logoutButton) logoutButton.style.display = 'none';
+            
+            if (mobileLoginButton) mobileLoginButton.style.display = 'block';
+            if (mobileSignupButton) mobileSignupButton.style.display = 'block';
+            if (mobileProfileButton) mobileProfileButton.style.display = 'none';
+            if (mobileLogoutButton) mobileLogoutButton.style.display = 'none';
+        }
+    }
+    
+    // Realizar logout
+    function logout() {
+        // Limpar dados de autenticação
+        localStorage.removeItem('userLoggedIn');
+        localStorage.removeItem('userData');
+        
+        // Atualizar a exibição dos botões
+        updateAuthButtons();
+        
+        // Mostrar notificação
+        showNotification('Logout realizado com sucesso!', 'success');
+        
+        // Redirecionar para a página inicial após um breve delay
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
+    }
+    
+    // Configurar eventos de logout
+    function setupLogoutListeners() {
+        const logoutButtons = document.querySelectorAll('.logout-btn');
+        
+        logoutButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                logout();
+            });
+        });
+    }
+    
+    // Inicializar módulo de autenticação
+    function init() {
+        updateAuthButtons();
+        setupLogoutListeners();
+        console.log('Módulo de autenticação inicializado');
+    }
+    
+    return {
+        init: init,
+        checkLoginStatus: checkLoginStatus,
+        getUserInfo: getUserInfo,
+        logout: logout,
+        updateAuthButtons: updateAuthButtons
+    };
+})();
 
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        menu.classList.toggle('active');
-    });
-
-    // Fechar menu ao clicar em um link (mobile)
-    const menuLinks = document.querySelectorAll('.menu a');
-    menuLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (window.innerWidth <= 768) {
-                hamburger.classList.remove('active');
-                menu.classList.remove('active');
+// =============================================
+// MÓDULO DE MENU E NAVEGAÇÃO
+// =============================================
+const MenuModule = (function() {
+    // Destacar item de menu ativo
+    function highlightActiveMenu() {
+        const currentPage = window.location.pathname.split('/').pop();
+        const menuItems = document.querySelectorAll('.menu a');
+        
+        menuItems.forEach(item => {
+            const href = item.getAttribute('href');
+            if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
             }
         });
-    });
-
-    // Configuração do Supabase
-    const SUPABASE_URL = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsudXBhbmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true
-        }
-    });
-
-    // Verificar se usuário está logado ao carregar a página
-    document.addEventListener('DOMContentLoaded', async function() {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session) {
-            console.log('Usuário logado:', session.user.email);
-            updateUIForLoggedInUser();
-        } else {
-            console.log('Usuário não logado');
-            updateUIForLoggedOutUser();
-        }
-        
-        // Adicionar evento de clique para o botão de logout
-        document.getElementById('logout-button').addEventListener('click', logout);
-    });
-
-    // Atualizar UI para usuário logado - SEM SAUDAÇÃO
-    function updateUIForLoggedInUser() {
-        // Mostrar botões de perfil/logout
-        document.getElementById('profile-button').style.display = 'block';
-        document.getElementById('logout-button').style.display = 'block';
-        
-        // ESCONDER COMPLETAMENTE A SAUDAÇÃO DO USUÁRIO
-        document.getElementById('user-greeting').style.display = 'none';
     }
-
-    // Atualizar UI para usuário não logado
-    function updateUIForLoggedOutUser() {
-        // Esconder botões de perfil/logout
-        document.getElementById('profile-button').style.display = 'none';
-        document.getElementById('logout-button').style.display = 'none';
-        
-        // Esconder saudação
-        document.getElementById('user-greeting').style.display = 'none';
+    
+    // Configurar scroll suave para links internos
+    function setupSmoothScrolling() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
     }
+    
+    // Inicializar módulo de menu
+    function init() {
+        highlightActiveMenu();
+        setupSmoothScrolling();
+        console.log('Módulo de menu inicializado');
+    }
+    
+    return {
+        init: init,
+        highlightActiveMenu: highlightActiveMenu
+    };
+})();
 
-    // Função de logout
-    async function logout() {
-        try {
-            const { error } = await supabase.auth.signOut();
-            if (error) {
-                console.error('Erro ao fazer logout:', error);
-                alert('Erro ao fazer logout. Tente novamente.');
-                return;
+// =============================================
+// MÓDULO DE NOTIFICAÇÕES
+// =============================================
+const NotificationModule = (function() {
+    // Mostrar notificação
+    function showNotification(message, type = 'info', duration = 5000) {
+        // Criar elemento de notificação
+        const notification = document.createElement('div');
+        notification.className = `custom-notification ${type}`;
+        notification.textContent = message;
+        
+        // Adicionar ao DOM
+        document.body.appendChild(notification);
+        
+        // Remover após o tempo especificado
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
             }
+        }, duration);
+        
+        // Permitir fechar clicando
+        notification.addEventListener('click', () => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        });
+    }
+    
+    return {
+        show: showNotification
+    };
+})();
+
+// =============================================
+// MÓDULO DE MELHORIAS DE UI
+// =============================================
+const UIModule = (function() {
+    // Configurar estados de loading para botões
+    function setupButtonLoaders() {
+        document.addEventListener('click', function(e) {
+            const button = e.target.closest('button, .auth-btn');
             
-            // Atualizar UI e recarregar
-            updateUIForLoggedOutUser();
-            window.location.reload();
+            if (button && !button.hasAttribute('disabled') && !button.classList.contains('logout-btn')) {
+                const originalText = button.textContent;
+                
+                button.setAttribute('data-original-text', originalText);
+                button.innerHTML = '<span class="button-loader"></span> Carregando...';
+                button.disabled = true;
+                
+                // Timeout de segurança para restaurar o botão
+                setTimeout(() => {
+                    if (button.parentNode) {
+                        button.textContent = originalText;
+                        button.disabled = false;
+                    }
+                }, 8000);
+            }
+        });
+    }
+    
+    // Melhorar acessibilidade
+    function enhanceAccessibility() {
+        // Adicionar labels ARIA se necessário
+        const hamburger = document.querySelector('.hamburger');
+        if (hamburger && !hamburger.getAttribute('aria-label')) {
+            hamburger.setAttribute('aria-label', 'Alternar menu de navegação');
+        }
+        
+        // Melhorar foco visual para elementos interativos
+        const focusableElements = document.querySelectorAll('button, a, input, select, textarea, [tabindex]');
+        focusableElements.forEach(el => {
+            if (!el.hasAttribute('tabindex') && el.getAttribute('tabindex') !== '-1') {
+                el.setAttribute('tabindex', '0');
+            }
+        });
+    }
+    
+    // Prevenir comportamentos indesejados
+    function preventUndesiredBehaviors() {
+        // Prevenir envio duplo de formulários
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const submitButton = this.querySelector('button[type="submit"], input[type="submit"]');
+                if (submitButton && submitButton.disabled) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.style.opacity = '0.7';
+                }
+                
+                return true;
+            });
+        });
+    }
+    
+    // Configurar lazy loading para imagens
+    function setupLazyLoading() {
+        if ('IntersectionObserver' in window) {
+            const lazyImages = document.querySelectorAll('img[data-src]');
             
-        } catch (error) {
-            console.error('Erro inesperado no logout:', error);
-            alert('Erro inesperado. Tente novamente.');
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+            
+            lazyImages.forEach(img => {
+                imageObserver.observe(img);
+            });
         }
     }
+    
+    // Inicializar módulo de UI
+    function init() {
+        setupButtonLoaders();
+        enhanceAccessibility();
+        preventUndesiredBehaviors();
+        setupLazyLoading();
+        console.log('Módulo de UI inicializado');
+    }
+    
+    return {
+        init: init
+    };
+})();
+
+// =============================================
+// MÓDULO DO MENU HAMBURGUER (MOBILE)
+// =============================================
+const HamburgerMenuModule = (function() {
+    let isOpen = false;
+    
+    // Alternar menu hamburger
+    function toggleMenu() {
+        const hamburger = document.querySelector('.hamburger');
+        const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
+        const menu = document.querySelector('.menu');
+        
+        isOpen = !isOpen;
+        
+        if (hamburger) {
+            hamburger.classList.toggle('active');
+            hamburger.setAttribute('aria-expanded', isOpen);
+        }
+        
+        if (mobileAuthButtons) {
+            mobileAuthButtons.classList.toggle('active');
+        }
+        
+        if (menu) {
+            menu.classList.toggle('active');
+        }
+        
+        // Prevenir/permitir scroll do body quando o menu estiver aberto
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+    
+    // Fechar menu ao clicar em um link
+    function setupMenuLinkListeners() {
+        const menuLinks = document.querySelectorAll('.menu a, .mobile-auth-buttons a');
+        
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (isOpen) {
+                    toggleMenu();
+                }
+            });
+        });
+    }
+    
+    // Fechar menu ao clicar fora dele
+    function setupOutsideClickListeners() {
+        document.addEventListener('click', (e) => {
+            if (!isOpen) return;
+            
+            const hamburger = document.querySelector('.hamburger');
+            const menu = document.querySelector('.menu');
+            const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
+            
+            const isClickInsideHamburger = hamburger && hamburger.contains(e.target);
+            const isClickInsideMenu = menu && menu.contains(e.target);
+            const isClickInsideAuthButtons = mobileAuthButtons && mobileAuthButtons.contains(e.target);
+            
+            if (!isClickInsideHamburger && !isClickInsideMenu && !isClickInsideAuthButtons) {
+                toggleMenu();
+            }
+        });
+    }
+    
+    // Inicializar módulo do menu hamburger
+    function init() {
+        const hamburger = document.querySelector('.hamburger');
+        
+        if (hamburger) {
+            hamburger.addEventListener('click', toggleMenu);
+            hamburger.setAttribute('aria-expanded', 'false');
+            
+            setupMenuLinkListeners();
+            setupOutsideClickListeners();
+            console.log('Módulo do menu hamburger inicializado');
+        }
+    }
+    
+    return {
+        init: init,
+        toggle: toggleMenu,
+        isOpen: () => isOpen
+    };
+})();
+
+// =============================================
+// MÓDULO DE COOKIES E LOCALSTORAGE
+// =============================================
+const StorageModule = (function() {
+    // Obter item do localStorage
+    function getItem(key, defaultValue = null) {
+        try {
+            const item = localStorage.getItem(key);
+            return item ? JSON.parse(item) : defaultValue;
+        } catch (e) {
+            console.error('Erro ao acessar localStorage:', e);
+            return defaultValue;
+        }
+    }
+    
+    // Salvar item no localStorage
+    function setItem(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+            return true;
+        } catch (e) {
+            console.error('Erro ao salvar no localStorage:', e);
+            return false;
+        }
+    }
+    
+    // Remover item do localStorage
+    function removeItem(key) {
+        try {
+            localStorage.removeItem(key);
+            return true;
+        } catch (e) {
+            console.error('Erro ao remover do localStorage:', e);
+            return false;
+        }
+    }
+    
+    // Verificar suporte a localStorage
+    function isSupported() {
+        try {
+            const test = 'test';
+            localStorage.setItem(test, test);
+            localStorage.removeItem(test);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+    
+    return {
+        get: getItem,
+        set: setItem,
+        remove: removeItem,
+        isSupported: isSupported
+    };
+})();
+
+// =============================================
+// INICIALIZAÇÃO GERAL DA APLICAÇÃO
+// =============================================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Guilda do Poker - Inicializando aplicação...');
+    
+    // Inicializar todos os módulos
+    AuthModule.init();
+    MenuModule.init();
+    UIModule.init();
+    HamburgerMenuModule.init();
+    
+    // Configurações adicionais
+    setupAnalytics();
+    setupErrorHandling();
+    
+    console.log('Guilda do Poker - Aplicação inicializada com sucesso');
+});
+
+// =============================================
+// FUNÇÕES UTILITÁRIAS
+// =============================================
+
+// Configurar analytics
+function setupAnalytics() {
+    // Sua configuração de analytics aqui
+    console.log('Analytics configurado');
+}
+
+// Configurar tratamento de erros
+function setupErrorHandling() {
+    window.addEventListener('error', function(e) {
+        console.error('Erro capturado:', e.error);
+    });
+    
+    window.addEventListener('unhandledrejection', function(e) {
+        console.error('Promise rejeitada não tratada:', e.reason);
+    });
+}
+
+// Função para debounce (para eventos de resize/scroll)
+function debounce(func, wait, immediate) {
+    let timeout;
+    return function() {
+        const context = this, args = arguments;
+        const later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        const callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+}
+
+// Função para detectar dispositivos móveis
+function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || 
+           (navigator.userAgent.indexOf('IEMobile') !== -1) ||
+           (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+}
+
+// Função para rolar suavemente para o topo
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// Função para mostrar notificação (atalho)
+function showNotification(message, type = 'info', duration = 5000) {
+    return NotificationModule.show(message, type, duration);
+}
 </script>
 </body>
 </html>
