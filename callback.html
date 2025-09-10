@@ -1,459 +1,658 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Processando - Guilda do Poker</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --bg: #121212;
-            --bg-2: #1c1c1c;
-            --gold: #ffcc00;
-            --text: #f5f5f5;
-            --success: #4caf50;
-            --error: #f44336;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, var(--bg), var(--bg-2));
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background-color: var(--bg-2);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 500px;
-            padding: 40px;
-            text-align: center;
-            border: 2px solid var(--gold);
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        .logo {
-            color: var(--gold);
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-        
-        h1 {
-            color: var(--gold);
-            margin-bottom: 20px;
-            font-size: 2rem;
-        }
-        
-        p {
-            color: #e6e6e6;
-            margin-bottom: 25px;
-            line-height: 1.6;
-            font-size: 16px;
-        }
-        
-        .status {
-            padding: 20px;
-            border-radius: 10px;
-            margin: 25px 0;
-            font-weight: 500;
-            animation: slideIn 0.5s ease-out;
-        }
-        
-        .loading {
-            background: linear-gradient(135deg, rgba(255, 204, 0, 0.1), rgba(255, 204, 0, 0.2));
-            color: var(--gold);
-            border: 2px solid var(--gold);
-        }
-        
-        .success {
-            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.2));
-            color: var(--success);
-            border: 2px solid var(--success);
-        }
-        
-        .error {
-            background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(244, 67, 54, 0.2));
-            color: var(--error);
-            border: 2px solid var(--error);
-        }
-        
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--gold), #e6b800);
-            color: var(--bg);
-            padding: 15px 30px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            margin: 10px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 204, 0, 0.3);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: var(--gold);
-            border: 2px solid var(--gold);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 204, 0, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .countdown {
-            margin-top: 25px;
-            color: #bbb;
-            font-size: 14px;
-        }
-        
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 204, 0, 0.3);
-            border-top: 4px solid var(--gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .debug-info {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            font-size: 12px;
-            text-align: left;
-            color: #bbb;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-        
-        @media (max-width: 480px) {
-            .container {
-                padding: 30px 20px;
-                margin: 10px;
-            }
-            
-            h1 {
-                font-size: 1.6rem;
-            }
-            
-            .btn {
-                padding: 12px 25px;
-                font-size: 14px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Processando - Guilda do Poker</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #121212;
+      --bg-2: #1c1c1c;
+      --gold: #ffcc00;
+      --text: #f5f5f5;
+      --success: #4caf50;
+      --error: #f44336;
+      --warning: #ff9800;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--bg), var(--bg-2));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background-color: var(--bg-2);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 500px;
+      padding: 40px;
+      text-align: center;
+      border: 2px solid var(--gold);
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .logo {
+      color: var(--gold);
+      font-size: 3rem;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    
+    h1 {
+      color: var(--gold);
+      margin-bottom: 20px;
+      font-size: 2rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    p {
+      color: #e6e6e6;
+      margin-bottom: 25px;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    
+    .status {
+      padding: 20px;
+      border-radius: 10px;
+      margin: 25px 0;
+      font-weight: 500;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    .loading {
+      background: linear-gradient(135deg, rgba(255, 204, 0, 0.1), rgba(255, 204, 0, 0.2));
+      color: var(--gold);
+      border: 2px solid var(--gold);
+    }
+    
+    .success {
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.2));
+      color: var(--success);
+      border: 2px solid var(--success);
+    }
+    
+    .error {
+      background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(244, 67, 54, 0.2));
+      color: var(--error);
+      border: 2px solid var(--error);
+    }
+    
+    .warning {
+      background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 152, 0, 0.2));
+      color: var(--warning);
+      border: 2px solid var(--warning);
+    }
+    
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), #e6b800);
+      color: var(--bg);
+      padding: 15px 30px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 10px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 14px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 204, 0, 0.3);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--gold);
+      border: 2px solid var(--gold);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 204, 0, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    .countdown {
+      margin-top: 25px;
+      color: #bbb;
+      font-size: 14px;
+      animation: fadeIn 1s ease-out;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 204, 0, 0.3);
+      border-top: 4px solid var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    .checkmark {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto 15px;
+      color: var(--success);
+    }
+    
+    .cross {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto 15px;
+      color: var(--error);
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .debug-info {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      font-size: 12px;
+      text-align: left;
+      color: #bbb;
+      max-height: 150px;
+      overflow-y: auto;
+      border-left: 3px solid var(--gold);
+    }
+    
+    .debug-toggle {
+      margin-top: 15px;
+      color: #888;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 204, 0, 0.2);
+      border-radius: 2px;
+      margin: 15px 0;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 2px;
+      animation: progress 2s ease-in-out infinite;
+    }
+    
+    @keyframes progress {
+      0% { width: 0%; }
+      50% { width: 70%; }
+      100% { width: 100%; }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+      
+      h1 {
+        font-size: 1.6rem;
+      }
+      
+      .btn {
+        padding: 12px 25px;
+        font-size: 14px;
+        margin: 8px;
+      }
+      
+      .logo {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">♠️♥️♣️♦️</div>
-        <h1>Processando Autenticação</h1>
-        
-        <div id="status" class="status loading">
-            <div class="spinner"></div>
-            <p id="status-message">Verificando sua sessão...</p>
-        </div>
-        
-        <div id="buttons" class="hidden">
-            <a href="https://guildadopoker.netlify.app/" class="btn">Página Principal</a>
-            <a href="https://guildadopoker.netlify.app/login.html" class="btn btn-secondary">Fazer Login</a>
-        </div>
-        
-        <div id="countdown" class="countdown hidden">
-            Redirecionando em <span id="countdown-value">5</span> segundos...
-        </div>
-        
-        <div id="debug" class="debug-info hidden">
-            <strong>Informações de Debug:</strong>
-            <div id="debug-content"></div>
-        </div>
+  <div class="container">
+    <div class="logo">♠️♥️♣️♦️</div>
+    <h1>Processando Autenticação</h1>
+    
+    <div id="status" class="status loading">
+      <div class="spinner"></div>
+      <p id="status-message">Iniciando verificação de sessão...</p>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
     </div>
+    
+    <div id="buttons" class="hidden">
+      <a href="https://guildadopoker.netlify.app/" class="btn">🏠 Página Principal</a>
+      <a href="https://guildadopoker.netlify.app/login.html" class="btn btn-secondary">🔑 Fazer Login</a>
+    </div>
+    
+    <div id="countdown" class="countdown hidden">
+      Redirecionando em <span id="countdown-value">5</span> segundos...
+    </div>
+    
+    <div class="debug-toggle" onclick="toggleDebug()">
+      🔍 Mostrar/Ocultar Informações de Debug
+    </div>
+    
+    <div id="debug" class="debug-info hidden">
+      <strong>🔧 Informações de Debug:</strong>
+      <div id="debug-content"></div>
+    </div>
+  </div>
 
-    <script>
-        // Configuração do Supabase
-        const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
+  <script>
+    // ========================================
+    // CONFIGURAÇÃO SUPABASE
+    // ========================================
+    const SUPABASE_CONFIG = {
+      url: 'https://ffyectkjlwgqzjgwhexy.supabase.co',
+      // ⚠️ EM PRODUÇÃO, USE VARIÁVEIS DE AMBIENTE
+      key: window.location.hostname === 'localhost' 
+        ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE'
+        : '', // Deixar vazio em produção e usar variáveis de ambiente
+      options: {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          storage: localStorage,
+          flowType: 'pkce'
+        }
+      }
+    };
+
+    // Inicializar Supabase
+    const supabase = window.supabase.createClient(
+      SUPABASE_CONFIG.url, 
+      SUPABASE_CONFIG.key, 
+      SUPABASE_CONFIG.options
+    );
+
+    // ========================================
+    // ELEMENTOS DOM
+    // ========================================
+    const statusElement = document.getElementById('status');
+    const statusMessage = document.getElementById('status-message');
+    const buttonsElement = document.getElementById('buttons');
+    const countdownElement = document.getElementById('countdown');
+    const debugElement = document.getElementById('debug');
+    const debugContent = document.getElementById('debug-content');
+
+    // ========================================
+    // CONFIGURAÇÃO
+    // ========================================
+    const DEBUG_MODE = true;
+    const MAX_RETRY_ATTEMPTS = 3;
+    const RETRY_DELAY = 1000;
+    const SESSION_CHECK_TIMEOUT = 10000; // 10 segundos
+
+    // ========================================
+    // ESTADOS DA APLICAÇÃO
+    // ========================================
+    const STATUS = {
+      PROCESSING: 'processing',
+      VALIDATING: 'validating',
+      SUCCESS: 'success',
+      ERROR: 'error',
+      WARNING: 'warning'
+    };
+
+    const STATUS_MESSAGES = {
+      [STATUS.PROCESSING]: "Processando autenticação...",
+      [STATUS.VALIDATING]: "Validando sessão de usuário...",
+      [STATUS.SUCCESS]: "Autenticação bem-sucedida!",
+      [STATUS.ERROR]: "Erro na autenticação",
+      [STATUS.WARNING]: "Aviso: Sessão expirada"
+    };
+
+    // ========================================
+    // FUNÇÕES UTILITÁRIAS
+    // ========================================
+    function logDebug(message) {
+      if (DEBUG_MODE) {
+        console.log('[DEBUG]', message);
+        const timestamp = new Date().toLocaleTimeString();
+        debugContent.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+        debugElement.scrollTop = debugElement.scrollHeight;
+      }
+    }
+
+    function toggleDebug() {
+      debugElement.classList.toggle('hidden');
+    }
+
+    function updateStatus(message, type = STATUS.PROCESSING) {
+      statusMessage.textContent = message;
+      statusElement.className = `status ${type}`;
+      
+      // Atualizar conteúdo baseado no tipo
+      switch(type) {
+        case STATUS.SUCCESS:
+          statusElement.innerHTML = `
+            <div class="checkmark">✅</div>
+            <p>${message}</p>
+          `;
+          break;
+        case STATUS.ERROR:
+          statusElement.innerHTML = `
+            <div class="cross">❌</div>
+            <p>${message}</p>
+          `;
+          break;
+        case STATUS.PROCESSING:
+          statusElement.innerHTML = `
+            <div class="spinner"></div>
+            <p>${message}</p>
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          `;
+          break;
+        default:
+          statusElement.innerHTML = `<p>${message}</p>`;
+      }
+    }
+
+    function showButtons() {
+      buttonsElement.classList.remove('hidden');
+    }
+
+    function hideButtons() {
+      buttonsElement.classList.add('hidden');
+    }
+
+    function startCountdown(url, seconds = 5) {
+      let countdown = seconds;
+      const countdownValue = document.getElementById('countdown-value');
+      countdownValue.textContent = countdown;
+      countdownElement.classList.remove('hidden');
+
+      const interval = setInterval(() => {
+        countdown--;
+        countdownValue.textContent = countdown;
         
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true,
-                detectSessionInUrl: true,
-                storage: localStorage
+        if (countdown <= 0) {
+          clearInterval(interval);
+          window.location.href = url;
+        }
+      }, 1000);
+    }
+
+    // ========================================
+    // FUNÇÕES DE AUTENTICAÇÃO
+    // ========================================
+    async function processAuthentication() {
+      let retryCount = 0;
+      
+      while (retryCount < MAX_RETRY_ATTEMPTS) {
+        try {
+          logDebug(`Tentativa ${retryCount + 1} de ${MAX_RETRY_ATTEMPTS}`);
+          
+          // 1. Verificar parâmetros da URL primeiro
+          const urlParams = new URLSearchParams(window.location.search);
+          const statusParam = urlParams.get('status');
+          const messageParam = urlParams.get('message');
+          
+          if (statusParam && messageParam) {
+            const decodedMessage = decodeURIComponent(messageParam);
+            if (statusParam === 'success') {
+              updateStatus(decodedMessage, STATUS.SUCCESS);
+              showButtons();
+              startCountdown('https://guildadopoker.netlify.app/', 3);
+              return true;
+            } else if (statusParam === 'error') {
+              updateStatus(decodedMessage, STATUS.ERROR);
+              showButtons();
+              return false;
             }
-        });
+          }
 
-        // Elementos DOM
-        const statusElement = document.getElementById('status');
-        const statusMessage = document.getElementById('status-message');
-        const buttonsElement = document.getElementById('buttons');
-        const countdownElement = document.getElementById('countdown');
-        const debugElement = document.getElementById('debug');
-        const debugContent = document.getElementById('debug-content');
-
-        // Modo debug - habilitar para troubleshooting
-        const DEBUG_MODE = true;
-
-        // Função para debug
-        function logDebug(message) {
-            if (DEBUG_MODE) {
-                console.log('[DEBUG]', message);
-                debugContent.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${message}</div>`;
-                debugElement.classList.remove('hidden');
-            }
-        }
-
-        // Processar autenticação
-        async function processAuthentication() {
-            try {
-                logDebug('Iniciando processamento de autenticação...');
-
-                // 1. Verificar se há hash de autenticação na URL
-                if (window.location.hash) {
-                    logDebug('Hash encontrado na URL: ' + window.location.hash.substring(0, 50) + '...');
-                    
-                    // O Supabase deve processar automaticamente o hash
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-
-                // 2. Aguardar a persistência da sessão
-                logDebug('Aguardando persistência da sessão...');
-                statusMessage.textContent = 'Persistindo sessão...';
-                
-                await waitForSessionPersisted();
-
-                // 3. Verificar sessão novamente
-                logDebug('Verificando sessão persistida...');
-                statusMessage.textContent = 'Verificando sessão...';
-                
-                const { data: { session }, error } = await supabase.auth.getSession();
-
-                if (error) {
-                    logDebug('Erro ao obter sessão: ' + error.message);
-                    throw new Error('Erro na autenticação: ' + error.message);
-                }
-
-                if (session) {
-                    // Verificar validade da sessão
-                    const expiresAt = new Date(session.expires_at);
-                    const isValid = expiresAt > new Date();
-                    
-                    logDebug(`Sessão encontrada - Válida: ${isValid}, Expira: ${expiresAt}`);
-                    
-                    if (isValid) {
-                        logDebug('Autenticação bem-sucedida!');
-                        showSuccess('Login realizado com sucesso! Redirecionando...');
-                        startCountdown('https://guildadopoker.netlify.app/', 3);
-                        return;
-                    } else {
-                        logDebug('Sessão expirada');
-                        // Tentar renovar o token
-                        await attemptTokenRefresh();
-                    }
-                }
-
-                // 4. Se chegou aqui, a autenticação falhou
-                logDebug('Autenticação falhou - Nenhuma sessão válida encontrada');
-                throw new Error('Não foi possível autenticar a sessão');
-
-            } catch (error) {
-                logDebug('Erro no processamento: ' + error.message);
-                showError('Problema na sessão. Tente novamente.');
-                
-                // Limpar sessão inválida
-                await cleanupInvalidSession();
-            }
-        }
-
-        // Aguardar a sessão ser persistida
-        async function waitForSessionPersisted() {
-            return new Promise((resolve, reject) => {
-                let attempts = 0;
-                const maxAttempts = 20; // 10 segundos no total
-                
-                const checkInterval = setInterval(async () => {
-                    attempts++;
-                    
-                    try {
-                        const { data: { session } } = await supabase.auth.getSession();
-                        const storageKey = 'sb-ffyectkjlwgqzjgwhexy-auth-token';
-                        const storedSession = localStorage.getItem(storageKey);
-                        
-                        logDebug(`Tentativa ${attempts}: Sessão: ${!!session}, Storage: ${!!storedSession}`);
-                        
-                        if (session || attempts >= maxAttempts) {
-                            clearInterval(checkInterval);
-                            resolve();
-                        }
-                    } catch (error) {
-                        clearInterval(checkInterval);
-                        reject(error);
-                    }
-                }, 500);
-            });
-        }
-
-        // Tentar renovar o token
-        async function attemptTokenRefresh() {
-            try {
-                logDebug('Tentando renovar token...');
-                const { data, error } = await supabase.auth.refreshSession();
-                
-                if (error) {
-                    logDebug('Erro ao renovar token: ' + error.message);
-                    return false;
-                }
-                
-                if (data.session) {
-                    logDebug('Token renovado com sucesso');
-                    return true;
-                }
-                
-                return false;
-            } catch (error) {
-                logDebug('Erro na renovação: ' + error.message);
-                return false;
-            }
-        }
-
-        // Limpar sessão inválida
-        async function cleanupInvalidSession() {
-            try {
-                await supabase.auth.signOut();
-                localStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
-                sessionStorage.removeItem('sb-ffyectkjlwgqzjgwhexy-auth-token');
-                logDebug('Sessão inválida limpa');
-            } catch (error) {
-                logDebug('Erro ao limpar sessão: ' + error.message);
-            }
-        }
-
-        // Funções de UI
-        function showSuccess(message) {
-            statusElement.className = 'status success';
-            statusElement.innerHTML = `<p>✅ ${message}</p>`;
-            buttonsElement.classList.remove('hidden');
-            countdownElement.classList.remove('hidden');
-        }
-
-        function showError(message) {
-            statusElement.className = 'status error';
-            statusElement.innerHTML = `<p>❌ ${message}</p>`;
-            buttonsElement.classList.remove('hidden');
-            countdownElement.classList.add('hidden');
-        }
-
-        function startCountdown(url, seconds = 5) {
-            let countdown = seconds;
-            const countdownElement = document.getElementById('countdown-value');
-            countdownElement.textContent = countdown;
+          // 2. Processar hash de autenticação
+          updateStatus("Processando URL de autenticação...", STATUS.PROCESSING);
+          
+          if (window.location.hash) {
+            logDebug('Hash OAuth detectado na URL');
+            const { data, error } = await supabase.auth.getSessionFromUrl();
             
-            countdownElement.parentElement.classList.remove('hidden');
-            
-            const interval = setInterval(() => {
-                countdown--;
-                countdownElement.textContent = countdown;
-                
-                if (countdown <= 0) {
-                    clearInterval(interval);
-                    window.location.href = url;
-                }
-            }, 1000);
-        }
-
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', async function() {
-            logDebug('Página carregada - Iniciando autenticação');
-            
-            // Processar parâmetros da URL primeiro
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get('status');
-            const message = urlParams.get('message');
-            
-            if (status && message) {
-                const decodedMessage = decodeURIComponent(message);
-                if (status === 'success') {
-                    showSuccess(decodedMessage);
-                    return;
-                } else if (status === 'error') {
-                    showError(decodedMessage);
-                    return;
-                }
+            if (error) {
+              logDebug('Erro ao processar hash: ' + error.message);
+              throw error;
             }
             
-            // Processar autenticação
-            try {
-                await processAuthentication();
-            } catch (error) {
-                logDebug('Erro fatal: ' + error.message);
-                showError('Erro inesperado. Tente novamente.');
+            if (data?.session) {
+              logDebug('Sessão OAuth processada com sucesso');
+              await handleSuccessfulAuth(data.session);
+              return true;
             }
-        });
+          }
 
-        // Listener para eventos de auth do Supabase
-        supabase.auth.onAuthStateChange((event, session) => {
-            logDebug(`Evento de auth: ${event}, Sessão: ${!!session}`);
-            
-            if (event === 'SIGNED_IN' && session) {
-                logDebug('SIGNED_IN - Redirecionando...');
-                setTimeout(() => {
-                    window.location.href = 'https://guildadopoker.netlify.app/';
-                }, 1000);
+          // 3. Verificar sessão existente
+          updateStatus("Verificando sessão atual...", STATUS.VALIDATING);
+          const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+          
+          if (sessionError) {
+            logDebug('Erro ao verificar sessão: ' + sessionError.message);
+            throw sessionError;
+          }
+
+          if (session) {
+            const isValid = await validateSession(session);
+            if (isValid) {
+              await handleSuccessfulAuth(session);
+              return true;
             }
-        });
-    </script>
+          }
+
+          // 4. Se não há sessão válida
+          throw new Error('Nenhuma sessão de autenticação válida encontrada');
+
+        } catch (error) {
+          retryCount++;
+          logDebug(`Erro na tentativa ${retryCount}: ${error.message}`);
+          
+          if (retryCount >= MAX_RETRY_ATTEMPTS) {
+            await handleAuthFailure(error);
+            return false;
+          }
+          
+          // Aguardar antes de tentar novamente
+          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * retryCount));
+        }
+      }
+    }
+
+    async function validateSession(session) {
+      try {
+        // Verificar expiração
+        const expiresAt = new Date(session.expires_at);
+        const now = new Date();
+        const isValid = expiresAt > now;
+        
+        logDebug(`Sessão expira em: ${expiresAt.toLocaleString()}`);
+        logDebug(`Sessão válida: ${isValid}`);
+        
+        if (!isValid) {
+          logDebug('Tentando renovar sessão expirada...');
+          const { data, error } = await supabase.auth.refreshSession();
+          
+          if (error) throw error;
+          if (data.session) return true;
+        }
+        
+        return isValid;
+      } catch (error) {
+        logDebug('Erro na validação da sessão: ' + error.message);
+        return false;
+      }
+    }
+
+    async function handleSuccessfulAuth(session) {
+      logDebug('Autenticação bem-sucedida!');
+      logDebug(`Usuário: ${session.user.email}`);
+      logDebug(`Expira: ${new Date(session.expires_at).toLocaleString()}`);
+      
+      updateStatus("Autenticação concluída com sucesso!", STATUS.SUCCESS);
+      showButtons();
+      startCountdown('https://guildadopoker.netlify.app/', 3);
+      
+      // Opcional: Registrar evento de login bem-sucedido
+      await trackAuthEvent('login_success');
+    }
+
+    async function handleAuthFailure(error) {
+      logDebug('Falha na autenticação após todas as tentativas');
+      
+      updateStatus(
+        "Não foi possível completar a autenticação. Por favor, tente novamente.",
+        STATUS.ERROR
+      );
+      
+      showButtons();
+      
+      // Limpar sessão inválida
+      await cleanupInvalidSession();
+      
+      // Registrar evento de falha
+      await trackAuthEvent('login_failure', error.message);
+    }
+
+    async function cleanupInvalidSession() {
+      try {
+        await supabase.auth.signOut();
+        // Limpar storage específico do Supabase
+        const storageKeys = Object.keys(localStorage).filter(key => 
+          key.includes('supabase') || key.includes('sb-')
+        );
+        
+        storageKeys.forEach(key => localStorage.removeItem(key));
+        logDebug('Sessão inválida limpa com sucesso');
+      } catch (error) {
+        logDebug('Erro ao limpar sessão: ' + error.message);
+      }
+    }
+
+    async function trackAuthEvent(eventName, details = '') {
+      if (!DEBUG_MODE) return;
+      
+      try {
+        logDebug(`Evento de auth: ${eventName} ${details ? '- ' + details : ''}`);
+        // Aqui você pode adicionar tracking para analytics
+      } catch (error) {
+        logDebug('Erro no tracking: ' + error.message);
+      }
+    }
+
+    // ========================================
+    // LISTENERS DE EVENTOS
+    // ========================================
+    supabase.auth.onAuthStateChange((event, session) => {
+      logDebug(`Estado de auth alterado: ${event}`);
+      
+      switch(event) {
+        case 'SIGNED_IN':
+          logDebug('Usuário autenticado com sucesso');
+          break;
+        case 'SIGNED_OUT':
+          logDebug('Usuário desconectado');
+          break;
+        case 'TOKEN_REFRESHED':
+          logDebug('Token renovado');
+          break;
+        case 'USER_UPDATED':
+          logDebug('Usuário atualizado');
+          break;
+      }
+    });
+
+    // ========================================
+    // INICIALIZAÇÃO
+    // ========================================
+    document.addEventListener('DOMContentLoaded', async function() {
+      logDebug('=== INICIANDO PROCESSAMENTO DE AUTENTICAÇÃO ===');
+      logDebug(`URL: ${window.location.href}`);
+      logDebug(`User Agent: ${navigator.userAgent}`);
+      
+      try {
+        // Adicionar timeout para evitar loops infinitos
+        const authTimeout = setTimeout(() => {
+          logDebug('Timeout excedido no processamento de auth');
+          updateStatus("Tempo excedido. Recarregue a página e tente novamente.", STATUS.ERROR);
+          showButtons();
+        }, SESSION_CHECK_TIMEOUT);
+
+        await processAuthentication();
+        clearTimeout(authTimeout);
+        
+      } catch (error) {
+        logDebug('Erro fatal na inicialização: ' + error.message);
+        updateStatus("Erro inesperado. Recarregue a página.", STATUS.ERROR);
+        showButtons();
+      }
+    });
+
+    // Handler para errors não capturados
+    window.addEventListener('error', (event) => {
+      logDebug(`Erro não capturado: ${event.error?.message || 'Unknown error'}`);
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+      logDebug(`Promise rejeitada: ${event.reason?.message || 'Unknown reason'}`);
+    });
+  </script>
 </body>
 </html>
