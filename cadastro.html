@@ -235,78 +235,119 @@
         </div>
     </div>
 
-   <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+ <script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  const supabaseUrl = "https://SEU_PROJETO.supabase.co"; // troque pelo seu
-  const supabaseKey = "SEU_PUBLIC_ANON_KEY"; // troque pelo seu
-  const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = 'https://SEU_PROJETO.supabase.co'; // substitua pelo seu
+const supabaseKey = 'SEU_PUBLIC_ANON_KEY'; // substitua pelo seu
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const form = document.getElementById("cadastro-form");
+// Elementos do formulário
+const form = document.getElementById("cadastro-form");
+const submitButton = document.getElementById("submit-button");
+const messageElement = document.getElementById("message");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const nome = document.getElementById("nome").value.trim();
-    const apelido = document.getElementById("apelido").value.trim();
-    const telefone = document.getElementById("telefone").value.trim();
-    const plataforma = document.getElementById("plataforma").value.trim();
+  // Bloqueia o botão durante o processamento
+  submitButton.disabled = true;
+  submitButton.textContent = "Processando...";
 
-    try {
-      // 1) Cria o usuário no Supabase Auth
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: window.location.origin + "/callback.html"
-        }
-      });
+  // Coletar valores
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const confirmPassword = document.getElementById("confirm-password").value.trim();
+  const nome = document.getElementById("nome_completo") ? document.getElementById("nome_completo").value.trim() : "";
+  const apelido = document.getElementById("apelido_poker") ? document.getElementById("apelido_poker").value.trim() : "";
+  const telefone = document.getElementById("telefone") ? document.getElementById("telefone").value.trim() : "";
+  const plataforma = document.getElementById("plataforma_preferida") ? document.getElementById("plataforma_preferida").value.trim() : "";
 
-      if (error) {
-        alert("Erro no cadastro: " + error.message);
-        console.error("Erro no signUp:", error);
-        return;
+  // Validações básicas
+  if (!email || !password || !confirmPassword) {
+    showMessage("Preencha todos os campos obrigatórios.", "error");
+    resetButton();
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    showMessage("As senhas não coincidem.", "error");
+    resetButton();
+    return;
+  }
+
+  if (password.length < 6) {
+    showMessage("A senha deve ter pelo menos 6 caracteres.", "error");
+    resetButton();
+    return;
+  }
+
+  try {
+    // 1) Criar usuário no Supabase Auth
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: window.location.origin + "/callback.html" }
+    });
+
+    if (signUpError) {
+      if (signUpError.message.includes("already registered")) {
+        showMessage("Este e-mail já está cadastrado.", "error");
+      } else {
+        showMessage("Erro no cadastro: " + signUpError.message, "error");
       }
-
-      const user = data.user;
-
-      if (!user) {
-        alert("Não foi possível criar o usuário.");
-        return;
-      }
-
-      // 2) Insere o perfil manualmente na tabela "perfis"
-      const { error: perfilError } = await supabase
-        .from("perfis")
-        .insert([
-          {
-            usuario_id: user.id,
-            email: user.email,
-            nome_completo: nome,
-            apelido_poker: apelido,
-            telefone: telefone,
-            plataforma_preferida: plataforma
-          }
-        ]);
-
-      if (perfilError) {
-        alert("Usuário criado, mas erro ao salvar perfil: " + perfilError.message);
-        console.error("Erro no insert em perfis:", perfilError);
-        return;
-      }
-
-      // 3) Sucesso
-      alert("Cadastro realizado com sucesso! Verifique seu e-mail para confirmar.");
-      window.location.href = "/login.html";
-
-    } catch (err) {
-      console.error("Erro inesperado:", err);
-      alert("Erro inesperado: " + err.message);
+      resetButton();
+      return;
     }
-  });
+
+    const user = signUpData.user;
+    if (!user) throw new Error("Usuário não retornou após cadastro.");
+
+    // 2) Inserir o perfil manualmente na tabela "perfis"
+    const { error: perfilError } = await supabase.from("perfis").insert([{
+      usuario_id: user.id,
+      email: user.email,
+      nome_completo: nome,
+      apelido_poker: apelido,
+      telefone: telefone,
+      plataforma_preferida: plataforma
+    }]);
+
+    if (perfilError) {
+      showMessage("Usuário criado, mas houve um problema ao salvar o perfil.", "warning");
+      console.error("Erro no insert em perfis:", perfilError);
+      resetButton();
+      return;
+    }
+
+    // 3) Sucesso
+    showMessage("Cadastro realizado com sucesso! Verifique seu e-mail para confirmar.", "success");
+    setTimeout(() => {
+      window.location.href = "/login.html";
+    }, 2000);
+
+  } catch (err) {
+    console.error("Erro inesperado:", err);
+    showMessage("Erro inesperado: " + err.message, "error");
+    resetButton();
+  }
+});
+
+// Função para mostrar mensagens
+function showMessage(text, type) {
+  messageElement.textContent = text;
+  messageElement.className = `message ${type}`;
+  messageElement.classList.remove("hidden");
+  messageElement.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+// Função para liberar o botão
+function resetButton() {
+  submitButton.disabled = false;
+  submitButton.textContent = "Criar Conta";
+}
 </script>
+
 
 </body>
 </html>
