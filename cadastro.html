@@ -14,6 +14,7 @@
             --text: #f5f5f5;
             --success: #4caf50;
             --error: #f44336;
+            --warning: #ff9800;
         }
         
         * {
@@ -38,7 +39,7 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             padding: 25px;
             border: 1px solid var(--gold);
         }
@@ -122,6 +123,7 @@
             margin-bottom: 15px;
             text-align: center;
             font-size: 14px;
+            transition: opacity 0.3s ease;
         }
         
         .success {
@@ -134,6 +136,12 @@
             background-color: rgba(220, 53, 69, 0.1);
             color: #dc3545;
             border: 1px solid #dc3545;
+        }
+        
+        .warning {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
         }
         
         .hidden {
@@ -153,41 +161,37 @@
             text-decoration: underline;
         }
         
-        .password-strength {
-            height: 4px;
-            background-color: #444;
-            border-radius: 2px;
-            margin-top: 5px;
-            overflow: hidden;
-        }
-        
-        .strength-fill {
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 2px;
-        }
-        
-        .password-weak .strength-fill {
-            width: 33%;
-            background-color: #dc3545;
-        }
-        
-        .password-medium .strength-fill {
-            width: 66%;
-            background-color: #ffcc00;
-        }
-        
-        .password-strong .strength-fill {
-            width: 100%;
-            background-color: #28a745;
-        }
-        
-        .password-text {
-            font-size: 11px;
-            margin-top: 3px;
-            text-align: right;
+        .debug-info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: var(--bg-3);
+            border-radius: 5px;
+            font-size: 12px;
             color: #bbb;
+            border-left: 3px solid var(--gold);
+        }
+        
+        .debug-toggle {
+            text-align: center;
+            margin-top: 15px;
+            color: var(--gold);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -207,10 +211,6 @@
             <div class="form-group">
                 <label for="password">Senha</label>
                 <input type="password" id="password" required minlength="6" placeholder="Mínimo 6 caracteres">
-                <div class="password-strength">
-                    <div class="strength-fill"></div>
-                </div>
-                <div class="password-text" id="password-strength-text"></div>
             </div>
             
             <div class="form-group">
@@ -218,7 +218,7 @@
                 <input type="password" id="confirm-password" required placeholder="Digite novamente sua senha">
             </div>
             
-            <button type="submit">Criar Conta</button>
+            <button type="submit" id="submit-button">Criar Conta</button>
             
             <a href="index.html" class="back-button">Voltar para a página inicial</a>
         </form>
@@ -226,116 +226,87 @@
         <div class="login-link">
             Já tem uma conta? <a href="login.html">Faça login</a>
         </div>
+        
+        <div class="debug-toggle" onclick="toggleDebug()">Exibir informações de diagnóstico</div>
+        
+        <div id="debug-info" class="debug-info hidden">
+            <strong>Informações de diagnóstico:</strong>
+            <div id="debug-content"></div>
+        </div>
     </div>
 
-    <script>
-        // Inicialização do Supabase
-        const supabaseUrl = 'https://ffyectkjlwgqzjgwhexy.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeWVjdGtqbHdncXpqZ3doZXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzMTAxNDAsImV4cCI6MjA3MTg4NjE0MH0.bWxnDQaJ6wILzK09TZ9B9ZdUdqVS7bukabBwZDmyvrE';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        
-        // Elementos da interface
-        const cadastroForm = document.getElementById('cadastro-form');
-        const messageElement = document.getElementById('message');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirm-password');
-        const passwordStrengthText = document.getElementById('password-strength-text');
-        const passwordStrengthBar = document.querySelector('.password-strength');
-        
-        // Verificar força da senha
-        passwordInput.addEventListener('input', function() {
-            const password = passwordInput.value;
-            let text = '';
-            
-            if (password.length > 0) {
-                if (password.length < 6) {
-                    text = 'Senha fraca';
-                    passwordStrengthBar.className = 'password-strength password-weak';
-                } else if (password.length < 10) {
-                    text = 'Senha média';
-                    passwordStrengthBar.className = 'password-strength password-medium';
-                } else {
-                    text = 'Senha forte';
-                    passwordStrengthBar.className = 'password-strength password-strong';
-                }
-            } else {
-                passwordStrengthBar.className = 'password-strength';
-                text = '';
-            }
-            
-            passwordStrengthText.textContent = text;
-        });
-        
-        // Processar o formulário de cadastro
-        cadastroForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Resetar mensagem
-            messageElement.classList.add('hidden');
-            
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
-            
-            // Validações
-            if (!email || !password || !confirmPassword) {
-                showMessage('Preencha todos os campos.', 'error');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                showMessage('As senhas não coincidem!', 'error');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showMessage('A senha deve ter pelo menos 6 caracteres!', 'error');
-                return;
-            }
-            
-            try {
-                // Mostrar mensagem de processamento
-                showMessage('Processando seu cadastro...', 'success');
-                
-                // Cadastrar usuário
-                const { data, error } = await supabase.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        emailRedirectTo: window.location.origin + '/callback.html'
-                    }
-                });
+   <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-                if (error) {
-                    if (error.message.includes('already registered')) {
-                        showMessage('Este e-mail já está cadastrado.', 'error');
-                    } else {
-                        showMessage('Erro no cadastro: ' + error.message, 'error');
-                    }
-                    return;
-                }
+  const supabaseUrl = "https://SEU_PROJETO.supabase.co"; // troque pelo seu
+  const supabaseKey = "SEU_PUBLIC_ANON_KEY"; // troque pelo seu
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
-                // Sucesso
-                showMessage('Cadastro realizado! Verifique seu e-mail.', 'success');
-                
-                // Limpar formulário
-                emailInput.value = '';
-                passwordInput.value = '';
-                confirmPasswordInput.value = '';
-                passwordStrengthText.textContent = '';
-                passwordStrengthBar.className = 'password-strength';
-                
-            } catch (error) {
-                showMessage('Erro inesperado: ' + error.message, 'error');
-            }
-        });
-        
-        function showMessage(text, type) {
-            messageElement.textContent = text;
-            messageElement.className = `message ${type}`;
-            messageElement.classList.remove('hidden');
+  const form = document.getElementById("cadastro-form");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const nome = document.getElementById("nome").value.trim();
+    const apelido = document.getElementById("apelido").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+    const plataforma = document.getElementById("plataforma").value.trim();
+
+    try {
+      // 1) Cria o usuário no Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: window.location.origin + "/callback.html"
         }
-    </script>
+      });
+
+      if (error) {
+        alert("Erro no cadastro: " + error.message);
+        console.error("Erro no signUp:", error);
+        return;
+      }
+
+      const user = data.user;
+
+      if (!user) {
+        alert("Não foi possível criar o usuário.");
+        return;
+      }
+
+      // 2) Insere o perfil manualmente na tabela "perfis"
+      const { error: perfilError } = await supabase
+        .from("perfis")
+        .insert([
+          {
+            usuario_id: user.id,
+            email: user.email,
+            nome_completo: nome,
+            apelido_poker: apelido,
+            telefone: telefone,
+            plataforma_preferida: plataforma
+          }
+        ]);
+
+      if (perfilError) {
+        alert("Usuário criado, mas erro ao salvar perfil: " + perfilError.message);
+        console.error("Erro no insert em perfis:", perfilError);
+        return;
+      }
+
+      // 3) Sucesso
+      alert("Cadastro realizado com sucesso! Verifique seu e-mail para confirmar.");
+      window.location.href = "/login.html";
+
+    } catch (err) {
+      console.error("Erro inesperado:", err);
+      alert("Erro inesperado: " + err.message);
+    }
+  });
+</script>
+
 </body>
 </html>
