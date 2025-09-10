@@ -789,24 +789,22 @@
 <body>
     <!-- Cabeçalho com botões de autenticação -->
     <header>
-
       <div class="logo-container">
         <img src="logoguidapoker1.png" alt="Guilda do Poker" class="header-logo">
-    </div>
-        <!-- Botões de Autenticação -->
-        <div class="auth-buttons" id="auth-buttons">
-            <span class="user-greeting" id="user-greeting"></span>
-            <a href="login.html" class="auth-btn login-btn" id="login-button">Login</a>
-            <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastre-se</a>
-            <a href="perfil.html" class="auth-btn profile-btn" id="profile-button">Meu Perfil</a>
-            <button class="auth-btn logout-btn" id="logout-button">Sair</button>
-        </div>
+      </div>
+      
+      <!-- Botões de Autenticação - REMOVIDOS OS BOTÕES DE LOGIN E CADASTRO -->
+      <div class="auth-buttons" id="auth-buttons">
+          <!-- Botões de login e cadastro removidos -->
+          <a href="perfil.html" class="auth-btn profile-btn" id="profile-button" style="display: none;">Meu Perfil</a>
+          <button class="auth-btn logout-btn" id="logout-button" style="display: none;">Sair</button>
+      </div>
 
-        <button class="hamburger" aria-label="Abrir menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+      <button class="hamburger" aria-label="Abrir menu">
+          <span></span>
+          <span></span>
+          <span></span>
+      </button>
     </header>
 
     <!-- Navegação -->
@@ -840,30 +838,29 @@
             </div>
         </div>
 
-       <!-- Banner de Afiliado - Entre "Onde Jogar" e "Sobre Nós" --><!-- Banner de Afiliado - Entre "Onde Jogar" e "Sobre Nós" -->
-<!-- Banner de Afiliado com seta indicativa -->
-<div class="affiliate-banner-container">
-    <!-- Título com seta indicativa -->
-    <div style="text-align: center; margin-bottom: 20px;">
-        <h3 style="color: var(--gold); font-size: 1.8em; margin-bottom: 10px; display: flex; justify-content: center; align-items: center;">
-            <span style="margin-right: 15px;">Adquira E-book (Mestres do Poker)</span>
-            <span class="arrow-down">↓</span>
-        </h3>
-        <p style="color: var(--text-secondary); margin-bottom: 25px;">
-            Torne-se um jogador de sucesso com as estratégias dos mestres do poker
-        </p>
-    </div>
-    
-    <a href="https://go.hotmart.com/N101803649O?dp=1" target="_blank" rel="noopener noreferrer">
-        <picture>
-            <!-- Imagem para Mobile (600x600) -->
-            <source media="(max-width: 768px)" srcset="mestrepokermobile.png">
-            <!-- Imagem para Desktop (800x200) -->
-            <img src="mestrepokerpc1.jpg" alt="Curso Mestres do Poker - Transforme seu jogo e torne-se um jogador de sucesso" class="responsive-affiliate-banner">
-        </picture>
-    </a>
-</div>
-    </div>
+       <!-- Banner de Afiliado - Entre "Onde Jogar" e "Sobre Nós" -->
+       <div class="affiliate-banner-container">
+           <!-- Título com seta indicativa -->
+           <div style="text-align: center; margin-bottom: 20px;">
+               <h3 style="color: var(--gold); font-size: 1.8em; margin-bottom: 10px; display: flex; justify-content: center; align-items: center;">
+                   <span style="margin-right: 15px;">Adquira E-book (Mestres do Poker)</span>
+                   <span class="arrow-down">↓</span>
+               </h3>
+               <p style="color: var(--text-secondary); margin-bottom: 25px;">
+                   Torne-se um jogador de sucesso com as estratégias dos mestres do poker
+               </p>
+           </div>
+           
+           <a href="https://go.hotmart.com/N101803649O?dp=1" target="_blank" rel="noopener noreferrer">
+               <picture>
+                   <!-- Imagem para Mobile (600x600) -->
+                   <source media="(max-width: 768px)" srcset="mestrepokermobile.png">
+                   <!-- Imagem para Desktop (800x200) -->
+                   <img src="mestrepokerpc1.jpg" alt="Curse Mestres do Poker - Transforme seu jogo e torne-se um jogador de sucesso" class="responsive-affiliate-banner">
+               </picture>
+           </a>
+       </div>
+
         <!-- Nova seção: Onde Jogar -->
         <div class="onde-jogar-section">
             <h2>Onde Jogar</h2>
@@ -923,15 +920,6 @@
             <p class="assinatura">Bruno Macedo<br>Fundador da Guilda do Poker</p>
         </div>
     </div>
-
-    <div class="forum-button-container" id="forum-button-container" style="display: none; text-align: center; margin: 40px 0;">
-    <a href="forum.html" class="forum-btn" style="display: inline-block; padding: 15px 35px; background-color: var(--gold); color: var(--bg); text-decoration: none; font-weight: bold; border-radius: 8px; font-size: 1.2em; transition: all 0.3s ease; border: 2px solid var(--gold);">
-        Acesse o Chat
-    </a>
-    <p style="color: var(--text-secondary); margin-top: 15px; font-size: 1em;">
-        Converse em tempo real com nossa comunidade, compartilhe dicas e estratégias de poker!
-    </p>
-</div>
 
     <!-- Rodapé -->
     <footer>
@@ -997,36 +985,22 @@
 
     // Atualizar UI para usuário logado - SEM SAUDAÇÃO
     function updateUIForLoggedInUser() {
-        // Esconder botões de login/cadastro
-        document.getElementById('login-button').style.display = 'none';
-        document.getElementById('signup-button').style.display = 'none';
-        
         // Mostrar botões de perfil/logout
         document.getElementById('profile-button').style.display = 'block';
         document.getElementById('logout-button').style.display = 'block';
         
         // ESCONDER COMPLETAMENTE A SAUDAÇÃO DO USUÁRIO
         document.getElementById('user-greeting').style.display = 'none';
-        
-        // MOSTRAR BOTÃO DO FÓRUM
-        document.getElementById('forum-button-container').style.display = 'block';
     }
 
     // Atualizar UI para usuário não logado
     function updateUIForLoggedOutUser() {
-        // Mostrar botões de login/cadastro
-        document.getElementById('login-button').style.display = 'block';
-        document.getElementById('signup-button').style.display = 'block';
-        
         // Esconder botões de perfil/logout
         document.getElementById('profile-button').style.display = 'none';
         document.getElementById('logout-button').style.display = 'none';
         
         // Esconder saudação
         document.getElementById('user-greeting').style.display = 'none';
-        
-        // ESCONDER BOTÃO DO FÓRUM
-        document.getElementById('forum-button-container').style.display = 'none';
     }
 
     // Função de logout
