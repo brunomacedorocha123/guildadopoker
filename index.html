@@ -83,90 +83,6 @@ header {
     transform: scale(1.05);
 }
 
-/* ===== BOTÕES DE AUTENTICAÇÃO DESKTOP ===== */
-.desktop-auth {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-left: auto;
-}
-
-.auth-btn {
-    padding: 8px 16px;
-    border-radius: 5px;
-    font-weight: bold;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    cursor: pointer;
-    border: 1px solid var(--gold);
-    display: inline-block;
-    text-align: center;
-}
-
-.login-btn {
-    background-color: transparent;
-    color: var(--gold);
-}
-
-.login-btn:hover {
-    background-color: rgba(255, 204, 0, 0.1);
-}
-
-.signup-btn {
-    background-color: var(--gold);
-    color: var(--bg);
-    padding: 8px 18px !important;
-}
-
-.signup-btn:hover {
-    background-color: #e6b800;
-    border-color: #e6b800;
-}
-
-.profile-btn {
-    background-color: var(--gold);
-    color: var(--bg);
-}
-
-.profile-btn:hover {
-    background-color: #e6b800;
-    border-color: #e6b800;
-}
-
-.logout-btn {
-    background-color: var(--bg);
-    color: var(--gold);
-    border: 1px solid var(--gold);
-}
-
-.logout-btn:hover {
-    background-color: rgba(255, 204, 0, 0.1);
-}
-
-/* ===== BOTÕES DE AUTENTICAÇÃO MOBILE ===== */
-.mobile-auth-buttons {
-    display: none;
-    background: var(--bg-3);
-    padding: 15px;
-    flex-direction: column;
-    gap: 10px;
-    border-top: 1px solid rgba(255, 204, 0, 0.3);
-}
-
-.mobile-auth-buttons.active {
-    display: flex;
-}
-
-.mobile-auth-btn {
-    width: 100%;
-    text-align: center;
-    padding: 12px !important;
-    font-size: 1rem !important;
-    margin: 5px 0;
-}
-
 /* ===== BOTÃO HAMBÚRGUER ===== */
 .hamburger {
     display: none;
@@ -509,13 +425,6 @@ nav {
     60% {transform: translateY(-5px);}
 }
 
-/* Botão do Fórum */
-.forum-btn:hover {
-    background-color: transparent !important;
-    color: var(--gold) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
-}
 
 /* Notificações */
 .custom-notification {
@@ -553,18 +462,6 @@ nav {
         transform: translateX(0);
         opacity: 1;
     }
-}
-
-/* Loader para botões */
-.button-loader {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-    margin-right: 8px;
 }
 
 @keyframes spin {
@@ -605,19 +502,6 @@ footer {
     .menu a {
         padding: 12px 18px;
         font-size: 1rem;
-    }
-    
-    .auth-buttons {
-        gap: 8px;
-    }
-    
-    .auth-btn {
-        padding: 7px 14px;
-        font-size: 0.85rem;
-    }
-    
-    .signup-btn {
-        padding: 7px 16px !important;
     }
     
     .hero-section {
@@ -670,20 +554,6 @@ footer {
     
     .header-logo {
         height: 60px;
-    }
-    
-    .desktop-auth {
-        order: 2;
-        display: none; /* Esconde botões desktop no mobile */
-    }
-    
-    .auth-btn {
-        padding: 8px 16px;
-        font-size: 0.85rem;
-    }
-    
-    .signup-btn {
-        padding: 8px 18px !important;
     }
     
     nav {
@@ -782,24 +652,10 @@ footer {
     }
 }
 
-@media (max-width: 600px) {
-    .auth-buttons {
-        margin-right: 40px;
-    }
-    
-    .auth-btn {
-        padding: 6px 10px;
-        font-size: 0.75rem;
-    }
-    
-    .signup-btn {
-        padding: 6px 12px !important;
-    }
     
     .onde-jogar-section {
         padding: 30px 15px;
     }
-}
 
 @media (max-width: 480px) {
     header {
@@ -812,20 +668,6 @@ footer {
     
     .header-logo {
         height: 50px;
-    }
-    
-    .auth-buttons {
-        gap: 6px;
-        margin-right: 35px;
-    }
-    
-    .auth-btn {
-        padding: 5px 8px;
-        font-size: 0.7rem;
-    }
-    
-    .signup-btn {
-        padding: 5px 10px !important;
     }
     
     .hamburger {
@@ -858,11 +700,6 @@ footer {
         margin: 40px auto 30px;
     }
     
-    .mobile-auth-btn {
-        padding: 10px !important;
-        font-size: 0.9rem !important;
-    }
-    
     .affiliate-banner-container {
         padding: 0 10px;
     }
@@ -875,26 +712,7 @@ footer {
       <div class="logo-container">
         <img src="logoguidapoker1.png" alt="Guilda do Poker" class="header-logo">
       </div>
-      
-      <!-- BOTÕES DE AUTENTICAÇÃO - VERSÃO ATUALIZADA -->
-      <div class="desktop-auth" id="auth-buttons">
-        <!-- Botões para usuário NÃO logado -->
-        <a href="login.html" class="auth-btn login-btn" id="login-button">Entrar</a>
-        <a href="cadastro.html" class="auth-btn signup-btn" id="signup-button">Cadastrar-se</a>
-        
-        <!-- Botões para usuário logado -->
-        <a href="perfil.html" class="auth-btn profile-btn" id="profile-button" style="display: none;">Meu Perfil</a>
-        <button class="auth-btn logout-btn" id="logout-button" style="display: none;">Sair</button>
-      </div>
-
-      <!-- Menu mobile de autenticação (será mostrado apenas em mobile) -->
-      <div class="mobile-auth-buttons" id="mobile-auth-buttons">
-        <a href="login.html" class="auth-btn login-btn mobile-auth-btn" id="mobile-login-button">Entrar</a>
-        <a href="cadastro.html" class="auth-btn signup-btn mobile-auth-btn" id="mobile-signup-button">Cadastrar-se</a>
-        <a href="perfil.html" class="auth-btn profile-btn mobile-auth-btn" id="mobile-profile-button" style="display: none;">Meu Perfil</a>
-        <button class="auth-btn logout-btn mobile-auth-btn" id="mobile-logout-button" style="display: none;">Sair</button>
-      </div>
-
+    
       <button class="hamburger" aria-label="Abrir menu">
         <span></span>
         <span></span>
@@ -1028,119 +846,8 @@ footer {
             <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
         </div>
     </footer>
-
-    <script>
-// =============================================
-// MÓDULO DE AUTENTICAÇÃO
-// =============================================
-const AuthModule = (function() {
-    // Verificar status de login
-    function checkLoginStatus() {
-        // Verificação com localStorage (substitua por sua lógica real)
-        return localStorage.getItem('userLoggedIn') === 'true';
-    }
-    
-    // Obter informações do usuário (se logado)
-    function getUserInfo() {
-        const userData = localStorage.getItem('userData');
-        return userData ? JSON.parse(userData) : null;
-    }
-    
-    // Atualizar a exibição dos botões de autenticação
-    function updateAuthButtons() {
-        const isLoggedIn = checkLoginStatus();
-        const userInfo = getUserInfo();
-        
-        // Elementos desktop
-        const loginButton = document.getElementById('login-button');
-        const signupButton = document.getElementById('signup-button');
-        const profileButton = document.getElementById('profile-button');
-        const logoutButton = document.getElementById('logout-button');
-        
-        // Elementos mobile
-        const mobileLoginButton = document.getElementById('mobile-login-button');
-        const mobileSignupButton = document.getElementById('mobile-signup-button');
-        const mobileProfileButton = document.getElementById('mobile-profile-button');
-        const mobileLogoutButton = document.getElementById('mobile-logout-button');
-        
-        if (isLoggedIn && userInfo) {
-            // Usuário logado - mostrar perfil e logout
-            if (loginButton) loginButton.style.display = 'none';
-            if (signupButton) signupButton.style.display = 'none';
-            if (profileButton) {
-                profileButton.style.display = 'inline-block';
-                profileButton.textContent = userInfo.name || 'Meu Perfil';
-            }
-            if (logoutButton) logoutButton.style.display = 'inline-block';
-            
-            if (mobileLoginButton) mobileLoginButton.style.display = 'none';
-            if (mobileSignupButton) mobileSignupButton.style.display = 'none';
-            if (mobileProfileButton) {
-                mobileProfileButton.style.display = 'block';
-                mobileProfileButton.textContent = userInfo.name || 'Meu Perfil';
-            }
-            if (mobileLogoutButton) mobileLogoutButton.style.display = 'block';
-        } else {
-            // Usuário não logado - mostrar login e cadastro
-            if (loginButton) loginButton.style.display = 'inline-block';
-            if (signupButton) signupButton.style.display = 'inline-block';
-            if (profileButton) profileButton.style.display = 'none';
-            if (logoutButton) logoutButton.style.display = 'none';
-            
-            if (mobileLoginButton) mobileLoginButton.style.display = 'block';
-            if (mobileSignupButton) mobileSignupButton.style.display = 'block';
-            if (mobileProfileButton) mobileProfileButton.style.display = 'none';
-            if (mobileLogoutButton) mobileLogoutButton.style.display = 'none';
-        }
-    }
-    
-    // Realizar logout
-    function logout() {
-        // Limpar dados de autenticação
-        localStorage.removeItem('userLoggedIn');
-        localStorage.removeItem('userData');
-        
-        // Atualizar a exibição dos botões
-        updateAuthButtons();
-        
-        // Mostrar notificação
-        showNotification('Logout realizado com sucesso!', 'success');
-        
-        // Redirecionar para a página inicial após um breve delay
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1500);
-    }
-    
-    // Configurar eventos de logout
-    function setupLogoutListeners() {
-        const logoutButtons = document.querySelectorAll('.logout-btn');
-        
-        logoutButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                logout();
-            });
-        });
-    }
-    
-    // Inicializar módulo de autenticação
-    function init() {
-        updateAuthButtons();
-        setupLogoutListeners();
-        console.log('Módulo de autenticação inicializado');
-    }
-    
-    return {
-        init: init,
-        checkLoginStatus: checkLoginStatus,
-        getUserInfo: getUserInfo,
-        logout: logout,
-        updateAuthButtons: updateAuthButtons
-    };
-})();
-
-// =============================================
+<script>
+    // =============================================
 // MÓDULO DE MENU E NAVEGAÇÃO
 // =============================================
 const MenuModule = (function() {
@@ -1233,30 +940,7 @@ const NotificationModule = (function() {
 // =============================================
 // MÓDULO DE MELHORIAS DE UI
 // =============================================
-const UIModule = (function() {
-    // Configurar estados de loading para botões
-    function setupButtonLoaders() {
-        document.addEventListener('click', function(e) {
-            const button = e.target.closest('button, .auth-btn');
-            
-            if (button && !button.hasAttribute('disabled') && !button.classList.contains('logout-btn')) {
-                const originalText = button.textContent;
-                
-                button.setAttribute('data-original-text', originalText);
-                button.innerHTML = '<span class="button-loader"></span> Carregando...';
-                button.disabled = true;
-                
-                // Timeout de segurança para restaurar o botão
-                setTimeout(() => {
-                    if (button.parentNode) {
-                        button.textContent = originalText;
-                        button.disabled = false;
-                    }
-                }, 8000);
-            }
-        });
-    }
-    
+const UIModule = (function() {    
     // Melhorar acessibilidade
     function enhanceAccessibility() {
         // Adicionar labels ARIA se necessário
@@ -1271,28 +955,6 @@ const UIModule = (function() {
             if (!el.hasAttribute('tabindex') && el.getAttribute('tabindex') !== '-1') {
                 el.setAttribute('tabindex', '0');
             }
-        });
-    }
-    
-    // Prevenir comportamentos indesejados
-    function preventUndesiredBehaviors() {
-        // Prevenir envio duplo de formulários
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.addEventListener('submit', function(e) {
-                const submitButton = this.querySelector('button[type="submit"], input[type="submit"]');
-                if (submitButton && submitButton.disabled) {
-                    e.preventDefault();
-                    return false;
-                }
-                
-                if (submitButton) {
-                    submitButton.disabled = true;
-                    submitButton.style.opacity = '0.7';
-                }
-                
-                return true;
-            });
         });
     }
     
@@ -1320,9 +982,7 @@ const UIModule = (function() {
     
     // Inicializar módulo de UI
     function init() {
-        setupButtonLoaders();
         enhanceAccessibility();
-        preventUndesiredBehaviors();
         setupLazyLoading();
         console.log('Módulo de UI inicializado');
     }
@@ -1341,7 +1001,6 @@ const HamburgerMenuModule = (function() {
     // Alternar menu hamburger
     function toggleMenu() {
         const hamburger = document.querySelector('.hamburger');
-        const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
         const menu = document.querySelector('.menu');
         
         isOpen = !isOpen;
@@ -1349,10 +1008,6 @@ const HamburgerMenuModule = (function() {
         if (hamburger) {
             hamburger.classList.toggle('active');
             hamburger.setAttribute('aria-expanded', isOpen);
-        }
-        
-        if (mobileAuthButtons) {
-            mobileAuthButtons.classList.toggle('active');
         }
         
         if (menu) {
@@ -1365,7 +1020,7 @@ const HamburgerMenuModule = (function() {
     
     // Fechar menu ao clicar em um link
     function setupMenuLinkListeners() {
-        const menuLinks = document.querySelectorAll('.menu a, .mobile-auth-buttons a');
+        const menuLinks = document.querySelectorAll('.menu a');
         
         menuLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -1383,13 +1038,11 @@ const HamburgerMenuModule = (function() {
             
             const hamburger = document.querySelector('.hamburger');
             const menu = document.querySelector('.menu');
-            const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
             
             const isClickInsideHamburger = hamburger && hamburger.contains(e.target);
             const isClickInsideMenu = menu && menu.contains(e.target);
-            const isClickInsideAuthButtons = mobileAuthButtons && mobileAuthButtons.contains(e.target);
             
-            if (!isClickInsideHamburger && !isClickInsideMenu && !isClickInsideAuthButtons) {
+            if (!isClickInsideHamburger && !isClickInsideMenu) {
                 toggleMenu();
             }
         });
@@ -1480,7 +1133,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Guilda do Poker - Inicializando aplicação...');
     
     // Inicializar todos os módulos
-    AuthModule.init();
     MenuModule.init();
     UIModule.init();
     HamburgerMenuModule.init();
