@@ -695,6 +695,52 @@ footer {
         padding: 0 10px;
     }
 }
+
+/* ===== BOTÃO FAQ ===== */
+.faq-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.faq-button:hover {
+  background-color: var(--gold);
+  color: var(--bg);
+}
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+  .faq-button {
+    position: static;
+    order: 2;
+    margin-right: 15px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+  
+  header {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .faq-button {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    margin-right: 10px;
+  }
+}
     </style>
 </head>
 <body>
@@ -704,6 +750,9 @@ footer {
         <img src="logoguidapoker1.png" alt="Guilda do Poker" class="header-logo">
       </div>
     
+       <!-- Botão FAQ (novo) -->
+  <a href="faq.html" class="faq-button" aria-label="Perguntas frequentes">FAQ</a>
+
       <button class="hamburger" aria-label="Abrir menu">
         <span></span>
         <span></span>

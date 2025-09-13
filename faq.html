@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico?v=3" type="image/x-icon">
+  <title>Perguntas Frequentes - Guilda do Poker</title>
+  <style>
+    :root{
+      --bg:#121212;
+      --bg-2:#1c1c1c;
+      --bg-3:#2c2c2c;
+      --gold:#ffcc00;
+      --text:#f5f5f5;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header{
+      background: var(--bg-2);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80px;
+    }
+    header img{ max-width: 200px; height: auto; }
+
+    /* ===== MENU DE NAVEGAÇÃO ===== */
+    nav {
+      background: var(--bg-3);
+      padding: 15px 0;
+      position: relative;
+      width: 100%;
+    }
+
+    .menu-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .menu li {
+      margin: 0;
+    }
+
+    .menu a {
+      color: var(--gold);
+      padding: 14px 22px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+      display: block;
+      text-align: center;
+      font-size: 1.05rem;
+    }
+
+    .menu a:hover, .menu a.active {
+      color: #ffffff;
+      text-decoration: underline;
+      background-color: rgba(255, 204, 0, 0.15);
+      border-radius: 6px;
+    }
+
+    /* ===== BOTÃO HAMBÚRGUER ===== */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 42px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      position: absolute;
+      right: 25px;
+      top: 20px;
+      z-index: 1001;
+    }
+
+    .hamburger span {
+      width: 100%;
+      height: 4px;
+      background-color: var(--gold);
+      border-radius: 3px;
+      transition: all 0.3s linear;
+    }
+
+    /* Efeito ao clicar no hamburger */
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    section{
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    section h1{ color: var(--gold); margin-bottom: 16px; text-align:center; }
+    section h2{ color: var(--gold); margin: 20px 0 10px; }
+    section p{
+      color:#e6e6e6;
+      margin: 8px auto;
+      text-align:justify;
+      width: 90%;
+    }
+
+    /* ===== ESTILOS DA FAQ ===== */
+    .faq-container {
+      max-width: 900px;
+      margin: 30px auto;
+    }
+
+    .faq-category {
+      margin-bottom: 40px;
+      background: var(--bg-2);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,.3);
+    }
+
+    .faq-category h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold);
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .faq-item {
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 15px;
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: bold;
+      padding: 12px 0;
+      transition: color 0.3s;
+    }
+
+    .faq-question:hover {
+      color: var(--gold);
+    }
+
+    .faq-question::after {
+      content: '+';
+      font-size: 1.5rem;
+      color: var(--gold);
+      transition: transform 0.3s;
+    }
+
+    .faq-item.active .faq-question::after {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      color: #e6e6e6;
+      padding-left: 20px;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 500px;
+    }
+
+    .search-container {
+      margin: 30px auto;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 12px 20px;
+      border: 2px solid var(--gold);
+      border-radius: 30px;
+      background: var(--bg-2);
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .search-box:focus {
+      outline: none;
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+    }
+
+    .no-results {
+      text-align: center;
+      color: #999;
+      margin: 30px 0;
+      display: none;
+    }
+
+    .btn{
+      display:inline-block;
+      margin: 30px auto;
+      padding: 12px 24px;
+      background: var(--gold);
+      color: #121212;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: .2s;
+      text-align:center;
+      white-space: nowrap;
+    }
+    .btn:hover{ transform: scale(1.04); }
+
+    footer {
+      background: var(--bg-2);
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #ccc;
+      border-top: 2px solid var(--gold);
+    }
+
+    .aviso18 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .icone18 {
+      background: red;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
+
+    .aviso18 p {
+      margin: 0;
+      color: #ccc;
+    }
+
+    /* ===== MEDIA QUERIES ===== */
+    @media (max-width: 992px) {
+      .menu a {
+        padding: 12px 18px;
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        justify-content: center;
+        padding: 15px;
+        position: relative;
+      }
+      
+      nav {
+        padding: 0;
+        background: transparent;
+      }
+      
+      .hamburger {
+        display: flex;
+        width: 40px;
+        height: 34px;
+        right: 20px;
+        top: 20px;
+      }
+
+      .menu {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        background-color: var(--bg-3);
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        padding: 70px 0 20px;
+        border-top: 2px solid var(--gold);
+        overflow-y: auto;
+      }
+
+      .menu.active {
+        display: flex;
+      }
+
+      .menu li {
+        width: 100%;
+        text-align: center;
+      }
+
+      .menu a {
+        padding: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 1.1rem;
+      }
+      
+      .menu a:last-child {
+        border-bottom: none;
+      }
+      
+      .menu-container {
+        padding: 0;
+      }
+      
+      /* Responsividade geral */
+      section p{ width: 95%; }
+      .btn{ width: 80%; max-width: 300px; display:block; margin:20px auto; }
+      
+      /* FAQ mobile */
+      .faq-category {
+        padding: 15px;
+      }
+      
+      .faq-question {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="logosupremapoker.png" alt="Logo Suprema Poker">
+    <button class="hamburger" id="hamburger" aria-label="Abrir menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Navegação -->
+  <nav id="main-nav">
+    <div class="menu-container">
+      <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="pppoker.html">PPPoker</a></li>
+        <li><a href="suprema.html">Suprema Poker</a></li>
+        <li><a href="torneios.html">Torneios</a></li>
+        <li><a href="regrasdopoker.html">Regras do Poker</a></li>
+        <li><a href="divulgacao.html">Divulgação</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="dicionario.html">Dicionário</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section>
+    <h1>Perguntas Frequentes</h1>
+    <p>Encontre respostas para as dúvidas mais comuns sobre nossos serviços, depósitos, saques e muito mais.</p>
+
+    <div class="search-container">
+      <input type="text" class="search-box" id="faq-search" placeholder="Pesquisar perguntas...">
+    </div>
+
+    <div class="faq-container">
+      <!-- DEPÓSITOS - SUPREMA POKER -->
+      <div class="faq-category">
+        <h2>💰 Depósitos - Suprema Poker</h2>
+        
+        <div class="faq-item">
+          <div class="faq-question">1. Quais são as formas de depósito disponíveis?</div>
+          <div class="faq-answer">
+            <p>Pix e transferência bancária. Envie o comprovante pelo WhatsApp oficial para liberar o crédito.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">2. Existe valor mínimo para depósito?</div>
+          <div class="faq-answer">
+            <p>Não. No Suprema Poker não há valor mínimo.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">3. Quanto tempo leva para o saldo cair?</div>
+          <div class="faq-answer">
+            <p>Crédito liberado em poucos minutos após o envio do comprovante — sistema funciona 24 horas por dia.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEPÓSITOS - PPPOKER -->
+      <div class="faq-category">
+        <h2>💰 Depósitos - PPPoker</h2>
+        
+        <div class="faq-item">
+          <div class="faq-question">4. Quais são as formas de depósito disponíveis?</div>
+          <div class="faq-answer">
+            <p>Pix e transferência bancária. Envie o comprovante pelo WhatsApp oficial para liberação.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">5. Existe valor mínimo para depósito?</div>
+          <div class="faq-answer">
+            <p>Não. O clube PPPoker aceita qualquer valor.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">6. Qual é o horário de funcionamento para depósitos?</div>
+          <div class="faq-answer">
+            <p>Depósitos podem ser feitos entre 09:00 e 01:00. Fora desse período, a liberação ocorre no próximo horário de atendimento.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SAQUES - SUPREMA POKER -->
+      <div class="faq-category">
+        <h2>💸 Saques - Suprema Poker</h2>
+        
+        <div class="faq-item">
+          <div class="faq-question">7. Como solicito um saque?</div>
+          <div class="faq-answer">
+            <p>Pelo WhatsApp oficial ou chat do site. O saque é feito para a mesma conta cadastrada.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">8. Prazo para receber?</div>
+          <div class="faq-answer">
+            <p>Processado em até 24 horas, a qualquer hora do dia.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">9. Existe valor mínimo ou taxa?</div>
+          <div class="faq-answer">
+            <p>Não. Não há valor mínimo nem taxa para saques.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SAQUES - PPPOKER -->
+      <div class="faq-category">
+        <h2>💸 Saques - PPPoker</h2>
+        
+        <div class="faq-item">
+          <div class="faq-question">10. Como solicito um saque?</div>
+          <div class="faq-answer">
+            <p>Entre em contato pelo WhatsApp oficial ou chat do site, informando o valor desejado.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">11. Qual é o horário para solicitar saques?</div>
+          <div class="faq-answer">
+            <p>Saques de saldo comum podem ser feitos entre 09:00 e 01:00.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">12. Existe valor mínimo ou taxa?</div>
+          <div class="faq-answer">
+            <p>Para saques de saldo comum, não há valor mínimo nem taxa.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">13. Como funcionam os saques de rake gerado pelos jogadores?</div>
+          <div class="faq-answer">
+            <p>São realizados somente às segundas e terças-feiras. Há um valor mínimo de R$ 10,00 para este tipo de saque.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">14. Como funcionam os saques de bônus?</div>
+          <div class="faq-answer">
+            <p>Cada tipo de bônus segue regras específicas, que devem ser conferidas antes de solicitar o saque: Bônus por indicação, Bônus do primeiro depósito, Bônus sem depósito.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TICKETS -->
+      <div class="faq-category">
+        <h2>🎟️ Tickets</h2>
+        
+        <div class="faq-item">
+          <div class="faq-question">15. Qual é o prazo de validade dos tickets?</div>
+          <div class="faq-answer">
+            <p>Os tickets têm validade máxima de 30 dias a partir da data de emissão.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">16. O que acontece se eu não usar o ticket dentro do prazo?</div>
+          <div class="faq-answer">
+            <p>Caso o torneio correspondente não seja realizado dentro da validade, o prêmio é convertido em dinheiro e creditado após a data de expiração do ticket.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTATO E SUPORTE -->
+      <div class="faq-category">
+        <h2>📞 Contato e Suporte</h2>
+        
+        <div class="faq-item">
+          <div class="faq-question">17. Como entro em contato com o suporte?</div>
+          <div class="faq-answer">
+            <p>Via WhatsApp oficial (link no rodapé ou bio do Instagram) ou e-mail suporte@seudominio.com. Pelo próprio site (formulário de contato).</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">18. Horário de atendimento</div>
+          <div class="faq-answer">
+            <p>Para operações do clube PPPoker: 09:00 às 01:00. Para Suprema Poker: suporte e operações 24 horas.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">19. Prazo de resposta pelo site</div>
+          <div class="faq-answer">
+            <p>As mensagens enviadas pelo formulário do site têm resposta em até 48 horas.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">20. O que fazer se não receber a confirmação do depósito ou saque no prazo?</div>
+          <div class="faq-answer">
+            <p>Encaminhe imediatamente o comprovante para o WhatsApp oficial, informando o horário da operação. A equipe verifica e retorna o mais rápido possível.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <div class="faq-question">21. Posso alterar meus dados de contato ou conta bancária?</div>
+          <div class="faq-answer">
+            <p>Sim. Entre em contato com o suporte e solicite a atualização. Por segurança, poderá ser solicitado um documento de identificação.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-results" id="no-results">
+      <p>Nenhuma pergunta encontrada. Tente usar outras palavras-chave.</p>
+    </div>
+
+    <div style="text-align:center;">
+      <a class="btn" href="contato.html">Entre em Contato Conosco</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+    <div class="aviso18">
+      <span class="icone18">18+</span>
+      <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+    </div>
+    <!-- Links para Política de Privacidade e Termos e Condições -->
+    <div style="margin-top: 15px; text-align: center;">
+      <a href="politica.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Política de Privacidade</a>
+      <span style="color: #666;">|</span>
+      <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
+    </div>
+  </footer>
+
+  <script>
+    // Menu mobile toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.getElementById('hamburger');
+      const menu = document.querySelector('.menu');
+      
+      hamburger.addEventListener('click', function() {
+        menu.classList.toggle('active');
+        hamburger.classList.toggle('active');
+      });
+      
+      // Fechar menu ao clicar em um link (em dispositivos móveis)
+      const menuLinks = document.querySelectorAll('.menu a');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 768) {
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+          }
+        });
+      });
+
+      // FAQ Accordion
+      const faqItems = document.querySelectorAll('.faq-item');
+      
+      faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        
+        question.addEventListener('click', () => {
+          // Fecha outros itens abertos (opcional)
+          // faqItems.forEach(otherItem => {
+          //   if (otherItem !== item) {
+          //     otherItem.classList.remove('active');
+          //   }
+          // });
+          
+          item.classList.toggle('active');
+        });
+      });
+
+      // FAQ Search Functionality
+      const searchBox = document.getElementById('faq-search');
+      const noResults = document.getElementById('no-results');
+      
+      searchBox.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        let foundResults = false;
+        
+        // Esconde todas as categorias inicialmente
+        document.querySelectorAll('.faq-category').forEach(category => {
+          category.style.display = 'none';
+        });
+        
+        // Procura por perguntas que correspondam ao termo de busca
+        document.querySelectorAll('.faq-item').forEach(item => {
+          const question = item.querySelector('.faq-question').textContent.toLowerCase();
+          const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+          
+          if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+            item.style.display = 'block';
+            item.parentElement.style.display = 'block';
+            foundResults = true;
+          } else {
+            item.style.display = 'none';
+          }
+        });
+        
+        // Mostra mensagem se não encontrar resultados
+        noResults.style.display = foundResults ? 'none' : 'block';
+      });
+    });
+  </script>
+
+</body>
+</html>
