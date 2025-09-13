@@ -220,25 +220,9 @@
       color: #ccc;
     }
 
-    /* BOTÃO FECHAR MENU MOBILE */
+    /* BOTÃO FECHAR MENU MOBILE - REMOVIDO */
     .close-menu {
-      display: none;
-      position: fixed;
-      top: 25px;
-      right: 25px;
-      background: none;
-      border: none;
-      color: var(--gold);
-      font-size: 28px;
-      cursor: pointer;
-      z-index: 1002;
-      width: 40px;
-      height: 40px;
-    }
-
-    /* Mostrar o botão de fechar apenas quando o menu estiver ativo */
-    .menu.active ~ .close-menu {
-      display: block;
+      display: none !important;
     }
 
     /* ===== MEDIA QUERIES - NOVO ESTILO ===== */
@@ -313,12 +297,6 @@
       .btn{ width: 80%; max-width: 300px; display:block; margin:20px auto; }
       .mesa{ max-width: 90%; }
     }
-
-    @media (min-width: 769px) {
-      .close-menu {
-        display: none !important;
-      }
-    }
   </style>
 </head>
 <body>
@@ -348,9 +326,6 @@
       </ul>
     </div>
   </nav>
-
-  <!-- Botão de fechar menu mobile (fora da nav) -->
-  <button class="close-menu" id="close-menu">X</button>
 
   <section>
     <h1>Suprema Poker</h1>
@@ -401,7 +376,6 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const hamburger = document.getElementById('hamburger');
-      const closeMenu = document.getElementById('close-menu');
       const menu = document.querySelector('.menu');
       
       // Função para abrir o menu
@@ -409,31 +383,23 @@
         menu.classList.add('active');
         hamburger.classList.add('active');
         document.body.style.overflow = 'hidden'; // Impede scroll
-        closeMenu.style.display = 'block'; // Mostra o botão de fechar
       }
       
       // Função para fechar o menu
-      function closeMenuFunc() {
+      function closeMenu() {
         menu.classList.remove('active');
         hamburger.classList.remove('active');
         document.body.style.overflow = 'auto'; // Permite scroll
-        closeMenu.style.display = 'none'; // Esconde o botão de fechar
       }
       
       // Evento de clique no hamburger
       hamburger.addEventListener('click', function(e) {
         e.stopPropagation();
         if (menu.classList.contains('active')) {
-          closeMenuFunc();
+          closeMenu();
         } else {
           openMenu();
         }
-      });
-      
-      // Evento de clique no botão fechar
-      closeMenu.addEventListener('click', function(e) {
-        e.stopPropagation();
-        closeMenuFunc();
       });
       
       // Fechar menu ao clicar em um link
@@ -441,7 +407,7 @@
       menuLinks.forEach(link => {
         link.addEventListener('click', function() {
           if (window.innerWidth <= 768) {
-            closeMenuFunc();
+            closeMenu();
           }
         });
       });
@@ -451,21 +417,17 @@
         if (window.innerWidth <= 768 && 
             menu.classList.contains('active') &&
             !menu.contains(event.target) && 
-            !hamburger.contains(event.target) &&
-            !closeMenu.contains(event.target)) {
-          closeMenuFunc();
+            !hamburger.contains(event.target)) {
+          closeMenu();
         }
       });
       
       // Fechar menu ao redimensionar para desktop
       window.addEventListener('resize', function() {
         if (window.innerWidth > 768 && menu.classList.contains('active')) {
-          closeMenuFunc();
+          closeMenu();
         }
       });
-      
-      // Inicialmente esconder o botão de fechar
-      closeMenu.style.display = 'none';
     });
   </script>
 
