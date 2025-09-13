@@ -287,9 +287,9 @@
         padding: 0;
       }
       
-      /* Botão de fechar para mobile */
+      /* Botão de fechar para mobile - OCULTO POR PADRÃO */
       .close-menu {
-        display: block;
+        display: none;
         position: absolute;
         top: 20px;
         right: 20px;
@@ -299,6 +299,12 @@
         font-size: 24px;
         cursor: pointer;
         z-index: 1002;
+      }
+      
+      /* Mostrar o botão de fechar apenas quando o menu estiver ativo */
+      .menu.active + .menu-container .close-menu,
+      .menu.active ~ .close-menu {
+        display: block;
       }
       
       /* Responsividade geral */
@@ -401,6 +407,7 @@
         menu.classList.add('active');
         hamburger.classList.add('active');
         document.body.style.overflow = 'hidden'; // Impede scroll
+        closeMenu.style.display = 'block'; // Mostra o botão de fechar
       }
       
       // Função para fechar o menu
@@ -408,6 +415,7 @@
         menu.classList.remove('active');
         hamburger.classList.remove('active');
         document.body.style.overflow = 'auto'; // Permite scroll
+        closeMenu.style.display = 'none'; // Esconde o botão de fechar
       }
       
       // Evento de clique no hamburger
@@ -441,7 +449,8 @@
         if (window.innerWidth <= 768 && 
             menu.classList.contains('active') &&
             !menu.contains(event.target) && 
-            !hamburger.contains(event.target)) {
+            !hamburger.contains(event.target) &&
+            !closeMenu.contains(event.target)) {
           closeMenuFunc();
         }
       });
@@ -452,6 +461,9 @@
           closeMenuFunc();
         }
       });
+      
+      // Inicialmente esconder o botão de fechar
+      closeMenu.style.display = 'none';
     });
   </script>
 
