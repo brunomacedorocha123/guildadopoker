@@ -6,16 +6,7 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>Guilda do Poker</title>
     <!-- Schema.org markup for Google Search -->
-     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "url": "https://guidadopoker.com.br/",
-      "logo": "https://guidadopoker.com.br/logoguidaporgoogle.png",
-      "name": "Guilda do Poker",
-      "description": "Comunidade de poker online com torneios, cash games e uma equipe de jogadores apaixonados."
-    }
-    </script>
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W52XLG5Z2M"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -898,46 +889,7 @@ const MenuModule = (function() {
     };
 })();
 
-// =============================================
-// MÓDULO DE NOTIFICAÇÕES
-// =============================================
-const NotificationModule = (function() {
-    // Mostrar notificação
-    function showNotification(message, type = 'info', duration = 5000) {
-        // Criar elemento de notificação
-        const notification = document.createElement('div');
-        notification.className = `custom-notification ${type}`;
-        notification.textContent = message;
         
-        // Adicionar ao DOM
-        document.body.appendChild(notification);
-        
-        // Remover após o tempo especificado
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.style.animation = 'slideIn 0.3s ease reverse';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }
-        }, duration);
-        
-        // Permitir fechar clicando
-        notification.addEventListener('click', () => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        });
-    }
-    
-    return {
-        show: showNotification
-    };
-})();
-
-// =============================================
 // MÓDULO DE MELHORIAS DE UI
 // =============================================
 const UIModule = (function() {    
