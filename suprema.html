@@ -220,6 +220,27 @@
       color: #ccc;
     }
 
+    /* BOTÃO FECHAR MENU MOBILE */
+    .close-menu {
+      display: none;
+      position: fixed;
+      top: 25px;
+      right: 25px;
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 28px;
+      cursor: pointer;
+      z-index: 1002;
+      width: 40px;
+      height: 40px;
+    }
+
+    /* Mostrar o botão de fechar apenas quando o menu estiver ativo */
+    .menu.active ~ .close-menu {
+      display: block;
+    }
+
     /* ===== MEDIA QUERIES - NOVO ESTILO ===== */
     @media (max-width: 992px) {
       .menu a {
@@ -252,7 +273,7 @@
         flex-direction: column;
         width: 100%;
         display: none;
-        position: fixed; /* Alterado para fixed para cobrir toda a tela */
+        position: fixed;
         top: 0;
         left: 0;
         height: 100vh;
@@ -287,26 +308,6 @@
         padding: 0;
       }
       
-      /* Botão de fechar para mobile - OCULTO POR PADRÃO */
-      .close-menu {
-        display: none;
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: none;
-        border: none;
-        color: var(--gold);
-        font-size: 24px;
-        cursor: pointer;
-        z-index: 1002;
-      }
-      
-      /* Mostrar o botão de fechar apenas quando o menu estiver ativo */
-      .menu.active + .menu-container .close-menu,
-      .menu.active ~ .close-menu {
-        display: block;
-      }
-      
       /* Responsividade geral */
       section p{ width: 95%; }
       .btn{ width: 80%; max-width: 300px; display:block; margin:20px auto; }
@@ -334,7 +335,6 @@
   <!-- Navegação - NOVO MENU -->
   <nav id="main-nav">
     <div class="menu-container">
-      <button class="close-menu" id="close-menu">X</button>
       <ul class="menu">
         <li><a href="index.html">Home</a></li>
         <li><a href="pppoker.html">PPPoker</a></li>
@@ -348,6 +348,9 @@
       </ul>
     </div>
   </nav>
+
+  <!-- Botão de fechar menu mobile (fora da nav) -->
+  <button class="close-menu" id="close-menu">X</button>
 
   <section>
     <h1>Suprema Poker</h1>
@@ -399,7 +402,6 @@
     document.addEventListener('DOMContentLoaded', function() {
       const hamburger = document.getElementById('hamburger');
       const closeMenu = document.getElementById('close-menu');
-      const nav = document.getElementById('main-nav');
       const menu = document.querySelector('.menu');
       
       // Função para abrir o menu
