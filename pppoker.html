@@ -242,6 +242,96 @@
       font-weight: bold;
     }
 
+    /* NOVA SEÇÃO: PROGRAMA DE RAKEBACK */
+    .rakeback-section {
+      background: linear-gradient(135deg, var(--bg-2) 0%, var(--bg-3) 100%);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 40px 0;
+      border: 2px solid var(--gold);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    .rakeback-title {
+      text-align: center;
+      color: var(--gold);
+      font-size: 32px;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .rakeback-subtitle {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 30px;
+      color: #f5f5f5;
+    }
+    
+    .rakeback-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      background: var(--bg-2);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .rakeback-table th {
+      background-color: var(--gold);
+      color: #121212;
+      padding: 15px;
+      text-align: center;
+      font-size: 18px;
+    }
+    
+    .rakeback-table td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .rakeback-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .rakeback-table tr:nth-child(even) {
+      background-color: rgba(255,255,255,0.05);
+    }
+    
+    .rakeback-percent {
+      font-weight: bold;
+      font-size: 22px;
+      color: var(--gold);
+    }
+    
+    .rakeback-highlight {
+      background: rgba(255, 204, 0, 0.1) !important;
+      font-weight: bold;
+    }
+    
+    .rakeback-info {
+      background: var(--bg-2);
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid var(--gold);
+    }
+    
+    .rakeback-info h3 {
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    
+    .rakeback-cta {
+      text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255, 204, 0, 0.1);
+      border-radius: 10px;
+      border: 2px dashed var(--gold);
+    }
+
     footer{
       background: var(--bg-2);
       text-align: center;
@@ -359,6 +449,25 @@
         white-space: normal;
         font-size: 14px;
       }
+      
+      /* Responsividade da tabela de rakeback */
+      .rakeback-table th, 
+      .rakeback-table td {
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      .rakeback-percent {
+        font-size: 18px;
+      }
+      
+      .rakeback-title {
+        font-size: 26px;
+      }
+      
+      .rakeback-subtitle {
+        font-size: 18px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -368,6 +477,15 @@
       }
       header img{ 
         max-width: 120px;
+      }
+      
+      .rakeback-table {
+        font-size: 12px;
+      }
+      
+      .rakeback-table th, 
+      .rakeback-table td {
+        padding: 8px 5px;
       }
     }
 
@@ -404,7 +522,7 @@
   <section>
     <h1>PPPoker - Plataforma de Clubes Privados</h1>
 
-    <p>O <strong>PPPoker</strong> permite que jogadores formem clubes privados e disputem partidas em um ambiente exclusivo e personalizado. Com presença em mais de 100 países, é uma das maiores plataformas de poker online desse modelo.</p>
+    <p>O <strong>PPPoker</strong> permite que jogadores formem clubes privados e disputem partidas em um ambiente exclusivo e personalizado. Com presença em more de 100 países, é uma das maiores plataformas de poker online desse modelo.</p>
 
     <h2>Diferenciais da Plataforma</h2>
     <p>• Criação de clubes fechados apenas para convidados.</p>
@@ -415,6 +533,51 @@
 
     <h2>PPPoker no Brasil</h2>
     <p>O aplicativo chegou em 2017 e rapidamente conquistou jogadores, oferecendo ligas e comunidades atrativas para poker recreativo ou competitivo.</p>
+
+    <!-- NOVA SEÇÃO: PROGRAMA DE RAKEBACK -->
+    <div class="rakeback-section">
+      <h2 class="rakeback-title">Programa de Rakeback</h2>
+      <p class="rakeback-subtitle">Quanto mais você joga, mais você ganha! Seu esforço é recompensado toda semana.</p>
+      
+      <table class="rakeback-table">
+        <thead>
+          <tr>
+            <th>Rake Gerado na Semana</th>
+            <th>Percentual de Rakeback</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>R$ 0 a R$ 100</td>
+            <td class="rakeback-percent">40%</td>
+          </tr>
+          <tr>
+            <td>R$ 101 a R$ 999</td>
+            <td class="rakeback-percent">50%</td>
+          </tr>
+          <tr class="rakeback-highlight">
+            <td>Acima de R$ 1.000</td>
+            <td class="rakeback-percent">60%</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="rakeback-info">
+        <h3>Como funciona?</h3>
+        <p>Seu rakeback é calculado semanalmente com base no valor total de rake que você gerou jogando em nossas mesas. Quanto mais você joga, maior será sua porcentagem de retorno!</p>
+        <p><strong>Pagamento:</strong> Toda segunda-feira até 20h diretamente na sua conta.</p>
+        <p><strong>Válido apenas</strong> para as mesas do clube Guilda do Poker no PPPoker.</p>
+      </div>
+      
+      <p style="text-align: center; font-size: 20px; margin-top: 25px;">
+        <strong>Não perca tempo! Quanto mais rake você gerar, maior será seu retorno!</strong>
+      </p>
+      
+      <div class="rakeback-cta">
+        <h3>Junte-se ao Nosso Clube</h3>
+        <p>Entre em contato conosco para receber informações sobre como participar do nosso clube e aproveitar todos os benefícios do nosso programa de rakeback.</p>
+      </div>
+    </div>
 
     <h2>Jogue com a Guilda do Poker</h2>
     <p>Junte-se ao nosso clube, participe de cash games e torneios de qualidade dentro da Guilda do Poker.</p>
@@ -432,13 +595,13 @@
       <p>• Ambiente amigável e competitivo</p>
       <p>• Bônus de boas-vindas para novos membros</p>
       <p>• Aprenda com os melhores jogadores</p>
-      <p class="destaque">Use nosso ID: 4583211 para entrar no clube!</p>
+      <p class="destaque">Entre em contato para mais informações!</p>
     </div>
 
     <div class="logos">
       <div>
         <img src="logoguidapoker1.png" alt="Logo Guilda do Poker">
-        <p>Guilda do Poker - ID: 4583211</p>
+        <p>Guilda do Poker</p>
       </div>
     </div>
 
