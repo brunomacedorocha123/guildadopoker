@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Hold'em: Escolhendo as Mãos Certas Pré-Flop</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --bg: #121212;
+            --bg-2: #1c1c1c;
+            --bg-3: #2c2c2c;
+            --gold: #ffcc00;
+            --text: #f5f5f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--bg-2);
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 160px;
+        }
+        
+        .logo {
+            max-height: 150px;
+            width: auto;
+        }
+
+        /* Article Page */
+        .article-content {
+            padding: 30px;
+            background-color: var(--bg-3);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 40px auto;
+            max-width: 1100px;
+        }
+        
+        .article-header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .article-header h2 {
+            font-size: 32px;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .article-meta {
+            color: #cccccc;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .image-container {
+            width: 70%;
+            max-width: 500px;
+            margin: 0 auto 25px;
+            display: block;
+            background-color: var(--bg-2);
+            border-radius: 8px;
+            padding: 0;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .article-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            border-radius: 8px;
+        }
+        
+        .article-text h3 {
+            color: var(--gold);
+            margin: 25px 0 15px;
+            font-size: 24px;
+        }
+        
+        .article-text p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #e6e6e6;
+            text-align: justify;
+            text-justify: inter-word;
+            hyphens: auto;
+        }
+        
+        .tips-list {
+            background-color: var(--bg-2);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        
+        .tips-list h4 {
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 15px;
+            margin-left: 20px;
+            color: #e6e6e6;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+        
+        .quote {
+            border-left: 4px solid var(--gold);
+            padding-left: 20px;
+            margin: 25px 0;
+            font-style: italic;
+            color: #e6e6e6;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+        
+        .back-to-blog {
+            display: inline-block;
+            background-color: var(--bg-2);
+            color: var(--gold);
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background 0.3s;
+            text-align: center;
+        }
+        
+        .back-to-blog:hover {
+            background-color: #0a291f;
+        }
+        
+        /* Footer - Padrão igual ao index.html */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-2);
+            margin-top: 40px;
+            border-top: 2px solid var(--gold);
+            font-size: 14px;
+            color: #bbb;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            color: #cccccc;
+            font-size: 16px;
+        }
+        
+        .aviso18 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .icone18 {
+            background: red;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+        
+        .aviso18 p {
+            margin: 0;
+            color: #ccc;
+        }
+        
+        .authors {
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 768px) {
+            .article-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .article-header h2 {
+                font-size: 26px;
+            }
+            
+            .image-container {
+                width: 100%;
+            }
+            
+            .article-text p {
+                font-size: 16px;
+                text-align: justify;
+                text-justify: inter-word;
+                hyphens: auto;
+            }
+            
+            .tips-list li {
+                text-align: justify;
+                text-justify: inter-word;
+            }
+            
+            .quote {
+                text-align: justify;
+                text-justify: inter-word;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logoguidapoker1.png" alt="Logo" class="logo">
+    </header>
+
+    <div class="article-content">
+        <div class="article-header">
+            <h2>Texas Hold'em: Escolhendo as Mãos Certas Pré-Flop</h2>
+            <div class="article-meta">
+                <span>Publicado em: 14 de Setembro de 2025</span> | 
+                <span class="authors">Autor: Bruno Macedo</span> | 
+                <span>Categoria: Estratégia</span> |
+            </div>
+        </div>
+        
+        <div class="image-container">
+            <img src="cartainicialtexas.jpg" alt="Texas Hold'em: Escolhendo as Mãos Certas Pré-Flop" class="article-image">
+        </div>
+        
+        <div class="article-text">
+            <p>No imaginário popular, o Texas Hold'em é cheio de momentos dramáticos: grandes blefes, calls heroicos e viradas no river. Mas quem realmente estuda o jogo sabe que a maior parte do lucro vem das decisões tomadas antes do flop.</p>
+            
+            <p>É nessa fase que você define se vai disputar o pote em vantagem ou se vai desperdiçar fichas em situações arriscadas. Aprender a selecionar as mãos corretas pré-flop é o primeiro passo para se tornar um jogador consistente — seja em cash games ou torneios.</p>
+            
+            <h3>1. Por que o pré-flop decide seu resultado no longo prazo</h3>
+            <p>Cada mão de Texas Hold'em é um equilíbrio entre informação incompleta e decisões estratégicas. Antes mesmo do flop, você já precisa avaliar:</p>
+            
+            <div class="tips-list">
+                <h4>Fatores importantes:</h4>
+                <ul>
+                    <li>Força real da sua mão em comparação ao range provável dos adversários</li>
+                    <li>Posição na mesa, que determina quanta informação você terá nas rodadas seguintes</li>
+                    <li>Tamanho dos stacks e blinds, que influenciam se vale a pena ver o flop</li>
+                </ul>
+            </div>
+            
+            <p>Jogar mãos ruins apenas porque "estão na vez" gera um padrão invisível de perdas. Por outro lado, selecionar mãos iniciais fortes simplifica as decisões pós-flop e evita cair em armadilhas.</p>
+            
+            <h3>2. Mãos premium – sempre agressivas</h3>
+            <p>As mãos premium têm vantagem estatística tão grande que devem ser jogadas com raise ou 3-bet quase sempre, independentemente da posição:</p>
+            
+            <div class="tips-list">
+                <h4>Mãos premium:</h4>
+                <ul>
+                    <li>Pares Altos: A-A, K-K, Q-Q</li>
+                    <li>Broadways Fortes: A-K (suited ou offsuit), A-Q suited</li>
+                </ul>
+            </div>
+            
+            <p>Com essas mãos, a prioridade é construir pote e reduzir o número de oponentes. Por exemplo, abrir raise de 2,5 a 3 big blinds força adversários a pagar mais caro e dificulta que mãos fracas vejam o flop barato.</p>
+            
+            <div class="quote">
+                "O grande erro de iniciantes é 'slowplay' (apenas pagar) com A-A ou K-K e acabar permitindo que múltiplos oponentes entrem no pote e acertem um flop improvável."
+            </div>
+            
+            <h3>3. Mãos fortes que exigem leitura de mesa</h3>
+            <p>Logo abaixo das premium, estão as mãos que continuam lucrativas, mas precisam de um pouco mais de contexto para serem jogadas com segurança:</p>
+            
+            <div class="tips-list">
+                <h4>Mãos fortes:</h4>
+                <ul>
+                    <li>Pares médios/altos: J-J, T-T, 9-9</li>
+                    <li>Broadways fortes: A-Q offsuit, A-J suited, K-Q suited</li>
+                </ul>
+            </div>
+            
+            <p>Essas mãos valem raise em posição e, contra jogadores passivos, podem até justificar um 3-bet. Contudo, se houver muita ação pré-flop — como um 4-bet grande — é preciso cautela. Por exemplo, J-J perde força contra ranges de 4-bet que costumam ser dominados por A-A, K-K e A-K.</p>
+            
+            <h3>4. Mãos especulativas – jogue barato, jogue em posição</h3>
+            <p>Nem toda mão boa precisa ser de cartas altas. Algumas mãos "especulativas" geram grande lucro quando conectam bem no flop:</p>
+            
+            <div class="tips-list">
+                <h4>Mãos especulativas:</h4>
+                <ul>
+                    <li>Conectores suited: J-Ts, T-9s, 9-8s, 8-7s</li>
+                    <li>Suited aces baixos: A-5s, A-4s (potencial para flush nut e wheel straight)</li>
+                    <li>Pares pequenos: 8-8, 7-7, 6-6</li>
+                </ul>
+            </div>
+            
+            <p>O segredo é entrar em potes baratos e com posição, para explorar o valor implícito. Por exemplo, pagar um raise moderado no botão com 7-7 pode ser lucrativo se você acertar um set (trinca) e extrair fichas de quem tem overpair.</p>
+            
+            <h3>5. O poder da posição</h3>
+            <p>No Texas Hold'em, posição é vantagem estratégica. Agir por último em todas as rodadas pós-flop (no botão) permite:</p>
+            
+            <div class="tips-list">
+                <h4>Vantagens da posição:</h4>
+                <ul>
+                    <li>Ver as decisões dos adversários antes de agir</li>
+                    <li>Controlar o tamanho do pote com mais precisão</li>
+                    <li>Extrair mais valor quando tem a melhor mão</li>
+                </ul>
+            </div>
+            
+            <p>Por isso, em primeiras posições (UTG, UTG+1), jogue apenas as mãos mais fortes — seu range deve ser tight. Em últimas posições (cutoff, botão), você pode ampliar o range para incluir conectores suited e pares médios.</p>
+            
+            <div class="quote">
+                "Um jogador que entende a importância da posição já tem meio caminho andado para lucrar."
+            </div>
+            
+            <h3>6. Saber quando largar – fold é lucro</h3>
+            <p>Foldar não é sinal de fraqueza, mas de maturidade estratégica. Mãos como K-9 offsuit, Q-8 offsuit ou A-2 offsuit parecem boas à primeira vista, mas costumam estar dominadas por mãos mais fortes com cartas semelhantes e kicker melhor.</p>
+            
+            <p>Jogar essas mãos fora de posição cria situações de "second best hand", em que você perde potes grandes mesmo acertando top pair. Guardar fichas para spots realmente favoráveis é uma das principais fontes de lucro a longo prazo.</p>
+            
+            <h3>7. Ajustes para cash game e torneios</h3>
+            
+            <div class="tips-list">
+                <h4>Cash Game:</h4>
+                <ul>
+                    <li>Stacks mais profundos permitem ver mais flops com mãos especulativas, mas exigem paciência</li>
+                    <li>Valorize pares pequenos e conectores suited quando em posição, pois os implied odds (possibilidade de ganhar potes grandes) compensam o investimento inicial</li>
+                </ul>
+            </div>
+            
+            <div class="tips-list">
+                <h4>Torneios:</h4>
+                <ul>
+                    <li>Blinds crescentes e stacks variáveis exigem mais adaptação</li>
+                    <li>Em fases iniciais, jogue mais tight; conforme os blinds sobem, abra um pouco o range, especialmente quando seu stack cair para menos de 20 big blinds</li>
+                    <li>Nas fases de bolha e mesa final, avalie a pressão de ICM: em alguns spots, é melhor preservar fichas do que entrar em confrontos marginais</li>
+                </ul>
+            </div>
+            
+            <h3>8. Gerenciamento de variância e disciplina</h3>
+            <p>Mesmo selecionando bem as mãos, variância faz parte do jogo. Você pode perder potes grandes mesmo com A-A. O segredo é manter disciplina:</p>
+            
+            <div class="tips-list">
+                <h4>Princípios de disciplina:</h4>
+                <ul>
+                    <li>Siga o range pré-flop com consistência, sem ceder à frustração</li>
+                    <li>Evite tilt — decisões emocionais corroem o lucro acumulado</li>
+                    <li>Tenha um plano de banca adequado (20 a 30 buy-ins para cash, mais para torneios) para absorver as oscilações naturais</li>
+                </ul>
+            </div>
+            
+            <h3>Conclusão</h3>
+            <p>No Texas Hold'em, a vitória começa no pré-flop. Ao selecionar cuidadosamente as mãos iniciais, você cria uma base sólida para o restante da mão, reduz perdas e aumenta a frequência de potes ganhos.</p>
+            
+            <p>Prefira jogar forte em posição, ajuste seu range ao formato (cash ou torneio) e não tenha medo de foldar. Com disciplina e prática, você vai perceber que o verdadeiro segredo do sucesso não está em blefes mirabolantes, mas na simples arte de escolher as cartas certas antes do flop.</p>
+            
+            <a href="blog.html" class="back-to-blog">Voltar para o Blog</a>
+        </div>
+    </div>
+
+    <!-- Rodapé atualizado seguindo o padrão do index.html -->
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+        </div>
+        
+        <!-- Links para Política de Privacidade e Termos e Condições -->
+        <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
+            <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
+        </div>
+        
+        <div class="aviso18">
+            <span class="icone18">18+</span>
+            <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

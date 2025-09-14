@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stack Baixo no Poker: Dicas Práticas</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --bg: #121212;
+            --bg-2: #1c1c1c;
+            --bg-3: #2c2c2c;
+            --gold: #ffcc00;
+            --text: #f5f5f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--bg-2);
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 160px;
+        }
+        
+        .logo {
+            max-height: 150px;
+            width: auto;
+        }
+
+        /* Article Page */
+        .article-content {
+            padding: 30px;
+            background-color: var(--bg-3);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 40px auto;
+            max-width: 1100px;
+        }
+        
+        .article-header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .article-header h2 {
+            font-size: 32px;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .article-meta {
+            color: #cccccc;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .image-container {
+            width: 70%;
+            max-width: 500px;
+            margin: 0 auto 25px;
+            display: block;
+            background-color: var(--bg-2);
+            border-radius: 8px;
+            padding: 0;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .article-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            border-radius: 8px;
+        }
+        
+        .article-text h3 {
+            color: var(--gold);
+            margin: 25px 0 15px;
+            font-size: 24px;
+        }
+        
+        .article-text p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #e6e6e6;
+            text-align: justify;
+            text-justify: inter-word;
+            hyphens: auto;
+        }
+        
+        .tips-list {
+            background-color: var(--bg-2);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        
+        .tips-list h4 {
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 15px;
+            margin-left: 20px;
+            color: #e6e6e6;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+        
+        .quote {
+            border-left: 4px solid var(--gold);
+            padding-left: 20px;
+            margin: 25px 0;
+            font-style: italic;
+            color: #e6e6e6;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+        
+        .back-to-blog {
+            display: inline-block;
+            background-color: var(--bg-2);
+            color: var(--gold);
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background 0.3s;
+            text-align: center;
+        }
+        
+        .back-to-blog:hover {
+            background-color: #0a291f;
+        }
+        
+        /* Footer - Padrão igual ao index.html */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-2);
+            margin-top: 40px;
+            border-top: 2px solid var(--gold);
+            font-size: 14px;
+            color: #bbb;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            color: #cccccc;
+            font-size: 16px;
+        }
+        
+        .aviso18 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .icone18 {
+            background: red;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+        
+        .aviso18 p {
+            margin: 0;
+            color: #ccc;
+        }
+        
+        .authors {
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 768px) {
+            .article-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .article-header h2 {
+                font-size: 26px;
+            }
+            
+            .image-container {
+                width: 100%;
+            }
+            
+            .article-text p {
+                font-size: 16px;
+                text-align: justify;
+                text-justify: inter-word;
+                hyphens: auto;
+            }
+            
+            .tips-list li {
+                text-align: justify;
+                text-justify: inter-word;
+            }
+            
+            .quote {
+                text-align: justify;
+                text-justify: inter-word;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logoguidapoker1.png" alt="Logo" class="logo">
+    </header>
+
+    <div class="article-content">
+        <div class="article-header">
+            <h2>Stack Baixo no Poker: Dicas Práticas</h2>
+            <div class="article-meta">
+                <span>Publicado em: 14 de Setembro de 2025</span> | 
+                <span class="authors">Autor: Bruno Macedo</span> | 
+                <span>Categoria: Estratégia</span> |
+            </div>
+        </div>
+        
+        <div class="image-container">
+            <img src="cartainicialtexas.jpg" alt="Stack Baixo no Poker: Dicas Práticas" class="article-image">
+        </div>
+        
+        <div class="article-text">
+            <p>Em torneios de poker, especialmente em eventos locais ou clubes, é comum que o stack inicial seja limitado a 10 mil fichas. Essa estrutura cria um ambiente de pressão constante, onde cada ficha vale muito mais do que em torneios deep stack.</p>
+            
+            <p>O jogo muda: você precisa pensar rápido, adaptar sua estratégia e maximizar oportunidades desde as primeiras mãos. Aqui está como se comportar quando as fichas estão curtas.</p>
+            
+            <h3>1. Avaliando Stack x Blinds: o cálculo essencial</h3>
+            <p>O tamanho do stack por si só não diz tudo — o que importa é quantos big blinds (BB) você tem em relação aos blinds e antes.</p>
+            
+            <div class="tips-list">
+                <h4>Exemplo prático:</h4>
+                <ul>
+                    <li>Stack máximo de 10k, blinds 500/1.000 → você tem 10 BB</li>
+                    <li>Se os blinds subirem para 750/1.500 rapidamente, seu stack cai para aproximadamente 6-7 BB, entrando na zona crítica</li>
+                </ul>
+            </div>
+            
+            <p>Entre 10 e 15 BB, você ainda pode aplicar raises estratégicos, mas cada aposta precisa ser calculada.</p>
+            
+            <div class="quote">
+                "Dica prática: conte sempre os big blinds antes de decidir qualquer jogada. Isso ajuda a planejar push/fold com clareza."
+            </div>
+            
+            <h3>2. Push ou Fold: simplificando decisões</h3>
+            <p>Com poucas fichas, o poker muda de um jogo de múltiplas decisões para uma disputa direta de sobrevivência.</p>
+            
+            <div class="tips-list">
+                <h4>Estratégias:</h4>
+                <ul>
+                    <li>Push (all-in): use mãos fortes ou razoáveis com fold equity</li>
+                    <li>Fold: evite jogar mãos marginais que possam te eliminar</li>
+                </ul>
+            </div>
+            
+            <p>Exemplo: você tem 9 BB e A-9 suited no botão. Todos foldaram até você, e os blinds são jogadores tight. Um all-in aqui é lucrativo: mesmo que seu A-9 não seja premium, os blinds podem foldar.</p>
+            
+            <p>Exemplo 2: você tem 8 BB com 7-6 offsuit fora de posição. Fold é a decisão correta, pois as chances de ganhar um pote grande são baixas e você está vulnerável a qualquer raise.</p>
+            
+            <h3>3. Roubo de Blinds: maximize cada oportunidade</h3>
+            <p>Em torneios curtos, os blinds e antes representam uma parte significativa do stack.</p>
+            
+            <div class="tips-list">
+                <h4>Oportunidades de roubo:</h4>
+                <ul>
+                    <li>No botão e cutoff, aumente o range para tentar roubar blinds com mãos como K-T, Q-J suited, ou pares pequenos</li>
+                    <li>No small blind, se todos foldarem, um shove leve pode pressionar o big blind a foldar</li>
+                </ul>
+            </div>
+            
+            <p>Exemplo: blinds 1.000/2.000, você no botão com 9 BB e mão A-7 suited. Um shove aqui pressiona o big blind, que provavelmente foldará se não tiver mãos fortes.</p>
+            
+            <h3>4. Valorize cada ficha: seletividade máxima</h3>
+            <p>Com stacks curtos, cada ficha perdida pesa mais. Mãos especulativas que funcionam em deep stack agora podem custar a eliminação.</p>
+            
+            <div class="tips-list">
+                <h4>Prioridades:</h4>
+                <ul>
+                    <li>Priorize spots com fold equity</li>
+                    <li>Evite ver o flop caro com mãos marginais</li>
+                </ul>
+            </div>
+            
+            <p>Exemplo: você tem 10 BB com 8-8 em posição intermediária. Alguém raiseou 2.000. Call custaria quase 50% do seu stack. Melhor fold ou shove dependendo do perfil do adversário.</p>
+            
+            <h3>5. Ajuste à estrutura do torneio e à fase</h3>
+            <p>Stack baixo + blinds subindo rápido = decisões urgentes.</p>
+            
+            <div class="tips-list">
+                <h4>Fases do torneio:</h4>
+                <ul>
+                    <li>Perto da bolha: muitos jogadores evitam riscos. Aplicar all-in com mãos decentes pode forçar folds e permitir dobrar fichas sem confronto direto</li>
+                    <li>Mesa final: avalie o ICM (matemática de premiação). Um shove com A-J pode ser mais lucrativo do que tentar um call marginal com 7-7, pois a diferença de premiação pesa mais</li>
+                </ul>
+            </div>
+            
+            <p>Exemplo: bolha próxima, você tem 9 BB com K-Q suited no cutoff. Todos foldaram até você → shove é lucrativo, pois a maioria foldará e você ganhará blinds e antes.</p>
+            
+            <h3>6. Escolha alvos estratégicos</h3>
+            <p>Evite confrontos com stacks grandes, que podem pagar facilmente. Prefira jogadores médios ou curtos, que podem desistir mais facilmente ou estar dispostos a correr risco com stacks similares.</p>
+            
+            <div class="quote">
+                "Exemplo: você tem 7 BB e está em posição contra um jogador com 20 BB e outro com 8 BB. Um shove contra o de 8 BB pode eliminá-lo ou dobrar seu stack, enquanto o de 20 BB tende a pagar mais, aumentando seu risco."
+            </div>
+            
+            <h3>7. Controle emocional: mantenha a calma</h3>
+            <p>Stack curto aumenta a ansiedade e a pressão para dobrar rápido.</p>
+            
+            <div class="tips-list">
+                <h4>Dicas de controle emocional:</h4>
+                <ul>
+                    <li>Respire e planeje cada jogada</li>
+                    <li>Aceite a variância: mesmo jogando corretamente, você pode ser eliminado</li>
+                    <li>Foque em decisões consistentes, não em resultados imediatos</li>
+                </ul>
+            </div>
+            
+            <p>Exemplo: você perdeu uma mão crucial e caiu para 5 BB. Em vez de jogar impulsivamente, analise posição e o range dos adversários. Um shove bem calculado pode recolocar você no jogo rapidamente.</p>
+            
+            <h3>Conclusão: disciplina é a chave</h3>
+            <p>Em torneios com stack limitado a 10 mil fichas, cada decisão pesa mais do que em torneios deep stack.</p>
+            
+            <div class="tips-list">
+                <h4>Princípios fundamentais:</h4>
+                <ul>
+                    <li>Entenda a relação stack/blinds</li>
+                    <li>Aplique push/fold de forma estratégica</li>
+                    <li>Roube blinds quando possível</li>
+                    <li>Escolha adversários de acordo com seus stacks</li>
+                </ul>
+            </div>
+            
+            <p>Com essas estratégias, você transforma a limitação do stack baixo em uma vantagem competitiva, tomando decisões mais assertivas e aumentando suas chances de chegar à mesa final.</p>
+            
+            <a href="blog.html" class="back-to-blog">Voltar para o Blog</a>
+        </div>
+    </div>
+
+    <!-- Rodapé atualizado seguindo o padrão do index.html -->
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+        </div>
+        
+        <!-- Links para Política de Privacidade e Termos e Condições -->
+        <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
+            <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
+        </div>
+        
+        <div class="aviso18">
+            <span class="icone18">18+</span>
+            <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

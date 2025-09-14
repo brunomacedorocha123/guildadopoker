@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Como Escolher as Melhores Mãos Iniciais no Omaha PLO5</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --bg: #121212;
+            --bg-2: #1c1c1c;
+            --bg-3: #2c2c2c;
+            --gold: #ffcc00;
+            --text: #f5f5f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--bg-2);
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 160px;
+        }
+        
+        .logo {
+            max-height: 150px;
+            width: auto;
+        }
+
+        /* Article Page */
+        .article-content {
+            padding: 30px;
+            background-color: var(--bg-3);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 40px auto;
+            max-width: 1100px;
+        }
+        
+        .article-header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .article-header h2 {
+            font-size: 32px;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .article-meta {
+            color: #cccccc;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .image-container {
+            width: 70%;
+            max-width: 500px;
+            margin: 0 auto 25px;
+            display: block;
+            background-color: var(--bg-2);
+            border-radius: 8px;
+            padding: 0;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .article-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            border-radius: 8px;
+        }
+        
+        .article-text h3 {
+            color: var(--gold);
+            margin: 25px 0 15px;
+            font-size: 24px;
+        }
+        
+        .article-text p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #e6e6e6;
+            text-align: justify;
+            text-justify: inter-word;
+            hyphens: auto;
+        }
+        
+        .tips-list {
+            background-color: var(--bg-2);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        
+        .tips-list h4 {
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 15px;
+            margin-left: 20px;
+            color: #e6e6e6;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+        
+        .quote {
+            border-left: 4px solid var(--gold);
+            padding-left: 20px;
+            margin: 25px 0;
+            font-style: italic;
+            color: #e6e6e6;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+        
+        .back-to-blog {
+            display: inline-block;
+            background-color: var(--bg-2);
+            color: var(--gold);
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background 0.3s;
+            text-align: center;
+        }
+        
+        .back-to-blog:hover {
+            background-color: #0a291f;
+        }
+        
+        /* Footer - Padrão igual ao index.html */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-2);
+            margin-top: 40px;
+            border-top: 2px solid var(--gold);
+            font-size: 14px;
+            color: #bbb;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            color: #cccccc;
+            font-size: 16px;
+        }
+        
+        .aviso18 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .icone18 {
+            background: red;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+        
+        .aviso18 p {
+            margin: 0;
+            color: #ccc;
+        }
+        
+        .authors {
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 768px) {
+            .article-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .article-header h2 {
+                font-size: 26px;
+            }
+            
+            .image-container {
+                width: 100%;
+            }
+            
+            .article-text p {
+                font-size: 16px;
+                text-align: justify;
+                text-justify: inter-word;
+                hyphens: auto;
+            }
+            
+            .tips-list li {
+                text-align: justify;
+                text-justify: inter-word;
+            }
+            
+            .quote {
+                text-align: justify;
+                text-justify: inter-word;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logoguidapoker1.png" alt="Logo" class="logo">
+    </header>
+
+    <div class="article-content">
+        <div class="article-header">
+            <h2>Como Escolher as Melhores Mãos Iniciais no Omaha PLO5</h2>
+            <div class="article-meta">
+                <span>Publicado em: 25 de Agosto de 2025</span> | 
+                <span class="authors">Autor: Bruno Macedo</span> | 
+                <span>Categoria: Estratégia</span> |
+                <span>Baseado em obra publicada em: 2023</span>
+            </div>
+        </div>
+        
+        <div class="image-container">
+            <img src="blogcartasplo5.jpg" alt="Como Escolher as Melhores Mãos Iniciais no Omaha PLO5" class="article-image">
+        </div>
+        
+        <div class="article-text">
+            <p>O Omaha PLO5 (Pot-Limit Omaha de cinco cartas) é um dos formatos de poker que mais cresce em popularidade, principalmente em clubes online. O jogo tem ação intensa, potes grandes e muita variância — ingredientes que atraem jogadores experientes em busca de desafio e diversão.</p>
+            
+            <p>Mas para quem quer ganhar de forma consistente, o ponto de partida é dominar a seleção de mãos iniciais. Com cinco cartas na mão, é fácil se deixar levar pela quantidade de combinações possíveis, mas apenas algumas dessas mãos realmente têm valor a longo prazo.</p>
+            
+            <h3>1. Entenda a Regra Fundamental do Omaha</h3>
+            <p>Antes de pensar em estratégia, é crucial compreender a principal diferença em relação ao Texas Hold'em: no Omaha, você deve obrigatoriamente usar exatamente duas cartas da mão combinadas com três cartas da mesa para formar seu jogo final.</p>
+            
+            <div class="quote">
+                "Isso significa que, mesmo com cinco cartas iniciais, você nunca usará mais de duas delas para compor sua mão."
+            </div>
+            
+            <p>Esse detalhe aumenta muito as combinações de possíveis nuts, e é justamente aí que mora a complexidade do jogo. Por exemplo, ter quatro cartas de um mesmo naipe não garante flush — você ainda precisa que o board ofereça pelo menos três cartas desse naipe para completar a combinação.</p>
+            
+            <h3>2. Por Que a Seleção de Mãos É Mais Crítica no PLO5</h3>
+            <p>No Texas Hold'em, uma mão como A♠-K♠ pode ser jogada agressivamente pré-flop porque tem alto valor isolado. No PLO5, mesmo mãos com Ases podem se tornar vulneráveis se não tiverem suporte.</p>
+            
+            <p>Como cada jogador recebe cinco cartas, é comum que vários adversários tenham draws muito fortes, o que torna mãos fracas ou descoordenadas um grande risco.</p>
+            
+            <div class="tips-list">
+                <h4>Escolher mãos iniciais sólidas ajuda a:</h4>
+                <ul>
+                    <li>Reduzir situações de "second best hand" (a segunda melhor mão, que perde potes grandes)</li>
+                    <li>Maximizar o potencial de fazer nuts (a melhor combinação possível)</li>
+                    <li>Diminuir a variância em sessões longas</li>
+                </ul>
+            </div>
+            
+            <h3>3. Priorize Mãos Conectadas e Coordenadas</h3>
+            <p>As mãos mais lucrativas no PLO5 são aquelas em que as cartas "conversam" entre si, criando múltiplos caminhos para formar mãos fortes:</p>
+            
+            <div class="tips-list">
+                <h4>Exemplos de mãos valiosas:</h4>
+                <ul>
+                    <li><strong>Sequências possíveis:</strong> cartas em ordem, como T♠-9♠-8♦-7♦-6♠, permitem vários draws de straight</li>
+                    <li><strong>Cartas altas conectadas:</strong> A-K-Q-J-T é o tipo de mão que pode gerar nuts de straight e, ao mesmo tempo, flush alto</li>
+                    <li><strong>Duplas de conectores médios:</strong> 9-8-7-6-5 é excelente, principalmente quando acompanhada de naipes variados</li>
+                </ul>
+            </div>
+            
+            <p>Quanto mais coordenadas as cartas estiverem, maior a chance de você acertar uma combinação que domine seus adversários.</p>
+            
+            <h3>4. O Poder dos Duplos Naipes (Double-Suited)</h3>
+            <p>Uma característica única do Omaha é a possibilidade de receber mãos com dois pares de naipes diferentes, conhecidas como "double-suited".</p>
+            
+            <div class="quote">
+                "Exemplo: A♠-K♠-Q♥-J♥-T♦. Essas mãos são especialmente valiosas porque oferecem duas oportunidades de flush nuts."
+            </div>
+            
+            <p>Essas mãos são especialmente valiosas porque oferecem duas oportunidades de flush nuts, aumentando o número de outs e o potencial de potes grandes. Contudo, não basta ter flush baixo: em PLO5, flush de nuts (A-high flush) é quase obrigatório para disputar potes grandes com segurança.</p>
+            
+            <h3>5. Pares Altos e a Força de Sets</h3>
+            <p>Pares altos como A-A, K-K ou Q-Q são sempre interessantes, principalmente quando combinados com cartas conectadas que permitam formar outros draws.</p>
+            
+            <p>Mas aqui vai um alerta: no Omaha, um par isolado de Ases não garante nada. Uma mão como A-A-7-3-2 sem naipes ou conexões não tem o mesmo valor de A-A-K-Q-J double-suited.</p>
+            
+            <p>O objetivo é ter cartas que possibilitem formar um set (trinca) e ainda oferecer sequências ou flushes para aumentar as chances de nuts pós-flop.</p>
+            
+            <h3>6. Armadilhas: Mãos Desconectadas e de Baixo Potencial</h3>
+            <p>É comum iniciantes caírem na tentação de jogar qualquer mão por ter "cinco cartas" e achar que isso basta.</p>
+            
+            <div class="tips-list">
+                <h4>Exemplos perigosos:</h4>
+                <ul>
+                    <li>A♠-9♦-4♣-3♥-2♠</li>
+                    <li>7♣-5♦-2♠-2♥-Q♠</li>
+                </ul>
+            </div>
+            
+            <p>Essas mãos têm poucas ou nenhuma possibilidade de straight, possuem flush baixo (que frequentemente é dominado) e podem levar você a investir fichas com a segunda melhor mão, o que custa caro no longo prazo.</p>
+            
+            <p>O segredo é foldar mais do que parece intuitivo, especialmente fora de posição.</p>
+            
+            <h3>7. Posição na Mesa: Como Ajustar o Range</h3>
+            <p>A posição é um dos fatores mais importantes no PLO5.</p>
+            
+            <div class="tips-list">
+                <h4>Estratégia por posição:</h4>
+                <ul>
+                    <li><strong>Em posição (botão ou cut-off):</strong> você tem mais informação sobre as ações dos adversários, podendo jogar um range um pouco mais amplo, especialmente mãos coordenadas com potencial de nuts</li>
+                    <li><strong>Fora de posição:</strong> o ideal é jogar apenas mãos premium, com conectividade alta e duplos naipes. Jogar fraco sem posição é receita para perder potes grandes</li>
+                </ul>
+            </div>
+            
+            <h3>8. Variância: O Desafio de Longo Prazo</h3>
+            <p>Mesmo selecionando mãos excelentes, o PLO5 é conhecido pela alta variância. Com cinco cartas para cada jogador, os draws são frequentes e reviravoltas no river são parte do jogo.</p>
+            
+            <p>Uma seleção de mãos sólida não elimina o risco, mas ajuda a evitar cenários de all-in com expectativa negativa. Por isso, disciplina e gerenciamento de banca são complementos indispensáveis para quem quer lucrar de forma consistente.</p>
+            
+            <h3>Conclusão</h3>
+            <p>No Omaha PLO5, a seleção de mãos iniciais é um diferencial enorme para quem quer ter vantagem competitiva. Prefira mãos que ofereçam múltiplos caminhos para o nuts, dê prioridade a double-suiteds e cartas conectadas e tenha sempre em mente que um par isolado não é suficiente.</p>
+            
+            <p>Com estudo e paciência, você vai reconhecer padrões e aprender a explorar a dinâmica explosiva desse jogo, jogando de forma agressiva apenas quando realmente tem potencial para dominar o pote.</p>
+            
+            <a href="blog.html" class="back-to-blog">Voltar para o Blog</a>
+        </div>
+    </div>
+
+    <!-- Rodapé atualizado seguindo o padrão do index.html -->
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+        </div>
+        
+        <!-- Links para Política de Privacidade e Termos e Condições -->
+        <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <a href="politica.html" style="color: #bbb; text-decoration: underline;">Política de Privacidade</a>
+            <a href="termos.html" style="color: #bbb; text-decoration: underline;">Termos e Condições</a>
+        </div>
+        
+        <div class="aviso18">
+            <span class="icone18">18+</span>
+            <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
