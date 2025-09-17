@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico?v=3" type="image/x-icon">
+  <title>Guilda do Poker - KKPOKER</title>
+  <style>
+    :root{
+      --bg:#121212;
+      --bg-2:#1c1c1c;
+      --bg-3:#2c2c2c;
+      --gold:#ffcc00;
+      --text:#f5f5f5;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header{
+      background: var(--bg-2);
+      padding: 15px 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 60px;
+    }
+    header img{ 
+      max-width: 150px;
+      height: auto; 
+    }
+
+    /* ===== MENU DE NAVEGAÇÃO RESPONSIVO - NOVO ESTILO ===== */
+    nav {
+      background: var(--bg-3);
+      padding: 15px 0;
+      position: relative;
+      width: 100%;
+    }
+
+    .menu-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .menu li {
+      margin: 0;
+    }
+
+    .menu a {
+      color: var(--gold);
+      padding: 14px 22px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .2s;
+      display: block;
+      text-align: center;
+      font-size: 1.05rem;
+    }
+
+    .menu a:hover, .menu a.active {
+      color: #ffffff;
+      text-decoration: underline;
+      background-color: rgba(255, 204, 0, 0.15);
+      border-radius: 6px;
+    }
+
+    /* ===== BOTÃO HAMBÚRGUER - NOVO ESTILO ===== */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 42px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      position: absolute;
+      right: 25px;
+      top: 12px;
+      z-index: 1001;
+    }
+
+    .hamburger span {
+      width: 100%;
+      height: 4px;
+      background-color: var(--gold);
+      border-radius: 3px;
+      transition: all 0.3s linear;
+    }
+
+    /* Efeito ao clicar no hamburger */
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    section{
+      padding: 30px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    section h1{ color: var(--gold); margin-bottom: 16px; text-align:center; }
+    section h2{ color: var(--gold); margin: 20px 0 10px; }
+    section p{
+      color:#e6e6e6;
+      margin: 8px auto;
+      text-align:justify;
+      width: 90%;
+    }
+
+    .logos{
+      display:flex;
+      justify-content:center;
+      gap:80px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin:30px 0;
+    }
+    .logos div{ 
+      text-align:center;
+      min-width: 180px;
+    }
+    .logos img{
+      width:150px;
+      height:auto;
+      border-radius:8px;
+      box-shadow:0 4px 8px rgba(0,0,0,.5);
+    }
+
+    .app-screenshots {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 30px 0;
+    }
+    
+    .app-screenshot {
+      max-width: 300px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,.5);
+    }
+
+    .mesa-btn-container{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 30px 0;
+    }
+    .mesa{
+      max-width: 200px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,.5);
+    }
+    .btn{
+      display:inline-block;
+      padding: 12px 24px;
+      background: var(--gold);
+      color: #121212;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: .2s;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .btn:hover{ transform: scale(1.04); }
+    
+    .btn-clube {
+      background: #4CAF50;
+    }
+    
+    .btn-clube:hover {
+      background: #45a049;
+    }
+
+    .btn-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    /* Novo estilo para o texto chamativo */
+    .chamada-guilda {
+      text-align: center;
+      margin: 30px 0;
+      padding: 20px;
+      background: var(--bg-2);
+      border-radius: 10px;
+      border: 1px solid var(--gold);
+    }
+    
+    .chamada-guilda h2 {
+      color: var(--gold);
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+    
+    .chamada-guilda p {
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    
+    .destaque {
+      color: var(--gold);
+      font-weight: bold;
+    }
+
+    /* NOVA SEÇÃO: PROGRAMA DE RAKEBACK */
+    .rakeback-section {
+      background: linear-gradient(135deg, var(--bg-2) 0%, var(--bg-3) 100%);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 40px 0;
+      border: 2px solid var(--gold);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    .rakeback-title {
+      text-align: center;
+      color: var(--gold);
+      font-size: 32px;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .rakeback-subtitle {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 30px;
+      color: #f5f5f5;
+    }
+    
+    .rakeback-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      background: var(--bg-2);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .rakeback-table th {
+      background-color: var(--gold);
+      color: #121212;
+      padding: 15px;
+      text-align: center;
+      font-size: 18px;
+    }
+    
+    .rakeback-table td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .rakeback-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .rakeback-table tr:nth-child(even) {
+      background-color: rgba(255,255,255,0.05);
+    }
+    
+    .rakeback-percent {
+      font-weight: bold;
+      font-size: 22px;
+      color: var(--gold);
+    }
+    
+    .rakeback-highlight {
+      background: rgba(255, 204, 0, 0.1) !important;
+      font-weight: bold;
+    }
+    
+    .rakeback-info {
+      background: var(--bg-2);
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid var(--gold);
+    }
+    
+    .rakeback-info h3 {
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    
+    .rakeback-cta {
+      text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255, 204, 0, 0.1);
+      border-radius: 10px;
+      border: 2px dashed var(--gold);
+    }
+
+    /* NOVA SEÇÃO: LICENÇA E SEGURANÇA */
+    .licenca-section {
+      background: var(--bg-2);
+      padding: 25px;
+      border-radius: 10px;
+      margin: 30px 0;
+      border-left: 4px solid var(--gold);
+    }
+    
+    .licenca-section h3 {
+      color: var(--gold);
+      margin-bottom: 15px;
+    }
+    
+    .licenca-badge {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 20px 0;
+      padding: 15px;
+      background: var(--bg-3);
+      border-radius: 8px;
+    }
+    
+    .licenca-badge img {
+      width: 60px;
+      height: auto;
+    }
+
+    footer{
+      background: var(--bg-2);
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      color:#ccc;
+      border-top: 2px solid var(--gold);
+      margin-top: 0;
+    }
+    .aviso18{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .icone18{
+      background: red;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
+    .aviso18 p{ margin: 0; color:#ccc; }
+
+    /* ===== MEDIA QUERIES - NOVO ESTILO ===== */
+    @media (max-width: 992px) {
+      .menu a {
+        padding: 12px 18px;
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        justify-content: center;
+        padding: 12px 15px;
+        position: relative;
+      }
+      
+      nav {
+        padding: 0;
+        background: transparent;
+      }
+      
+      .hamburger {
+        display: flex;
+        width: 40px;
+        height: 34px;
+        right: 15px;
+        top: 12px;
+      }
+
+      .menu {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--bg-3);
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        padding: 15px 0;
+        border-top: 2px solid var(--gold);
+      }
+
+      .menu.active {
+        display: flex;
+      }
+
+      .menu li {
+        width: 100%;
+        text-align: center;
+      }
+
+      .menu a {
+        padding: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 1.1rem;
+      }
+      
+      .menu a:last-child {
+        border-bottom: none;
+      }
+      
+      .menu-container {
+        padding: 0;
+      }
+      
+      /* Responsividade geral */
+      section p{ width: 95%; }
+      .mesa-btn-container{
+        flex-direction: column;
+        gap: 15px;
+      }
+      .btn{ width: 80%; max-width: 300px; margin: 0 auto; display:block; }
+      .logos {
+        gap: 40px;
+      }
+      
+      .chamada-guilda p {
+        font-size: 16px;
+      }
+      
+      .logos {
+        gap: 30px;
+      }
+      .logos div {
+        min-width: auto;
+      }
+      
+      /* Responsividade da tabela de rakeback */
+      .rakeback-table th, 
+      .rakeback-table td {
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      .rakeback-percent {
+        font-size: 18px;
+      }
+      
+      .rakeback-title {
+        font-size: 26px;
+      }
+      
+      .rakeback-subtitle {
+        font-size: 18px;
+      }
+      
+      .licenca-badge {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .btn-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .app-screenshots {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .app-screenshot {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logos {
+        flex-direction: column;
+        gap: 25px;
+      }
+      header img{ 
+        max-width: 120px;
+      }
+      
+      .rakeback-table {
+        font-size: 12px;
+      }
+      
+      .rakeback-table th, 
+      .rakeback-table td {
+        padding: 8px 5px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="logokkpoker.png" alt="Logo KKPoker">
+    <button class="hamburger" aria-label="Abrir menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Navegação - NOVO MENU -->
+  <nav>
+    <div class="menu-container">
+      <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="suprema.html">Suprema Poker</a></li>
+        <li><a href="pppoker.html">PPPoker</a></li>
+        <li><a href="torneios.html">Torneios</a></li>
+        <li><a href="regrasdopoker.html">Regras do Poker</a></li>
+        <li><a href="divulgacao.html">Divulgação</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="dicionario.html">Dicionário</a></li>
+        <li><a href="contato.html">Contato</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section>
+    <h1>KKPoker - Plataforma Internacional de Poker</h1>
+
+    <p>O <strong>KKPoker</strong> é uma plataforma internacional de poker online que pertence ao mesmo grupo do PPPoker. O aplicativo oferece mesas públicas abertas a todos os jogadores e também clubes privados com mesas exclusivas, permitindo a création de comunidades de jogo personalizadas.</p>
+
+    <h2>Diferenciais da Plataforma</h2>
+    <p>• Mesas públicas para todos os jogadores do mundo.</p>
+    <p>• Clubes privados para quem deseja criar um ambiente exclusivo.</p>
+    <p>• Torneios regulares, freerolls e promoções sazonais.</p>
+    <p>• Disponível para Android, iOS e Windows.</p>
+    <p>• Segurança e criptografia garantindo jogos justos.</p>
+
+    <!-- SEÇÃO: LICENÇA E SEGURANÇA -->
+    <div class="licenca-section">
+      <h2>Licenciamento e Segurança</h2>
+      <p>A marca é licenciada e regulamentada pela Isle of Man Gambling Supervision Commission, uma das jurisdições mais respeitadas do setor de jogos. Essa licença garante padrões de segurança, políticas de jogo responsável e verificação de identidade.</p>
+      
+      <div class="licenca-badge">
+        <div>
+          <h3>Licença Isle of Man</h3>
+          <p>Regulado desde 24 de julho de 2019. License renovada em 2024.</p>
+        </div>
+      </div>
+      
+      <p>O sistema conta com tecnologia anti-bot, que monitora constantemente as mesas para garantir que todos os participantes sejam jogadores reais, oferecendo um ambiente confiável e protegido.</p>
+    </div>
+
+    <!-- SEÇÃO: DEPÓSITOS E SAQUES -->
+    <div class="licenca-section">
+      <h2>Depósitos e Saques</h2>
+      <p><strong>Depósito mínimo:</strong> US$ 10</p>
+      <p><strong>Saque mínimo:</strong> US$ 20</p>
+      <p>Todas as transações são feitas em dólares americanos.</p>
+      <p>Os jogadores realizam compras de fichas e retiradas diretamente pelo KKPoker, sem necessidade de atravessadores.</p>
+    </div>
+
+    <!-- NOVA SEÇÃO: PROGRAMA DE RAKEBACK -->
+    <div class="rakeback-section">
+      <h2 class="rakeback-title">Programa de Rakeback</h2>
+      <p class="rakeback-subtitle">Todos os jogadores têm <strong>50% de rakeback garantido</strong>, com sistema de retirada automática!</p>
+      
+      <div class="rakeback-info">
+        <h3>Como funciona?</h3>
+        <p>Seu rakeback é calculado automaticamente e fica disponível para resgate assim que é gerado, facilitando o controle de ganhos.</p>
+        <p><strong>Vantagem:</strong> O valor do rakeback fica disponível para resgate imediatamente após ser gerado.</p>
+        <p><strong>Válido apenas</strong> para as mesas do clube Guilda do Poker no KKPoker.</p>
+      </div>
+      
+      <p style="text-align: center; font-size: 20px; margin-top: 25px;">
+        <strong>Não perca tempo! Com rakeback automático de 50%, você sempre tem retorno garantido!</strong>
+      </p>
+    </div>
+
+    <!-- SEÇÃO: BÔNUS E PROMOÇÕES -->
+    <div class="licenca-section">
+      <h2>Bônus e Promoções</h2>
+      <p>O KKPoker oferece promoções de primeiro depósito e missões diárias ou semanais que concedem prêmios e bônus extras. Essas recompensas são ideais para quem está começando ou quer aumentar sua banca com desafios simples.</p>
+    </div>
+
+    <h2>Interface do KKPoker</h2>
+    <p>Conheça a interface intuitiva e moderna do KKPoker, desenvolvida para oferecer a melhor experiência de jogo:</p>
+    
+    <div class="app-screenshots">
+      <img class="app-screenshot" src="printkkpoker1.jpg" alt="Interface do KKPoker - Sala de Jogo">
+      <img class="app-screenshot" src="printkkpoker2.jpg" alt="Interface do KKPoker - Mesas Disponíveis">
+    </div>
+
+    <h2>Junte-se ao Nosso Clube no KKPoker</h2>
+    <p>Participe da Guilda do Poker no KKPoker e desfrute de uma experiência premium de poker online com jogadores de todo o mundo.</p>
+
+    <!-- Botões de ação -->
+    <div class="btn-container">
+      <a class="btn" href="https://kkpoker.club/405525" target="_blank" rel="noopener">Entrar no Nosso Clube</a>
+      <a class="btn btn-clube" href="https://www.kkpoker.net/" target="_blank" rel="noopener">Baixar KKPoker</a>
+    </div>
+
+    <!-- Texto chamativo para entrar na Guilda -->
+    <div class="chamada-guilda">
+      <h2>JUNTE-SE À NOSSA COMUNIDADE!</h2>
+      <p>Na <span class="destaque">Guilda do Poker</span>, você encontra:</p>
+      <p>• Torneios diários com premiações incríveis</p>
+      <p>• Mesas de cash game em dólar</p>
+      <p>• Ambiente seguro e regulamentado</p>
+      <p>• Rakeback automático de 50%</p>
+      <p>• Bônus de boas-vindas para novos membros</p>
+      <p class="destaque">Use o link acima para entrar no nosso clube!</p>
+    </div>
+
+    <div class="logos">
+      <div>
+        <img src="logoguidapoker1.png" alt="Logo Guilda do Poker">
+      </div>
+    </div>
+
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Guilda do Poker - Todos os direitos reservados</p>
+    <div class="aviso18">
+      <span class="icone18">18+</span>
+      <p>Proibido para menores de 18 anos. Jogue com responsabilidade.</p>
+    </div>
+    <div style="margin-top: 15px; text-align: center;">
+      <a href="politica.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Política de Privacidade</a>
+      <a href="termos.html" style="color: #bbb; text-decoration: underline; margin: 0 10px;">Termos e Condições</a>
+    </div>
+  </footer>
+
+  <!-- Script do menu mobile - NOVO SCRIPT -->
+  <script>
+    // JavaScript para controlar o menu hamburger
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.querySelector('.hamburger');
+      const menu = document.querySelector('.menu');
+      
+      hamburger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menu.classList.toggle('active');
+        hamburger.classList.toggle('active');
+      });
+      
+      // Fechar o menu ao clicar em um link (útil para dispositivos móveis)
+      const menuLinks = document.querySelectorAll('.menu a');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 768) {
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+          }
+        });
+      });
+      
+      // Fechar o menu ao clicar fora dele
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 768 && menu.classList.contains('active')) {
+          if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
